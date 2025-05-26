@@ -96,4 +96,22 @@ jobs:
           git config --local user.name "GitHub Action"
           VERSION=$(node -p "require('./package.json').version")
           git tag -a "v$VERSION" -m "Release version $VERSION"
-          git push origin "v$VERSION" 
+          git push origin "v$VERSION"
+
+  notify:
+    needs: [lint, build, security-scan, deploy]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Create pipeline summary
+        run: |
+          echo "## 📊 Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lint**: ${{ needs.lint.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build**: ${{ needs.build.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Security**: ${{ needs.security-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Deploy**: ${{ needs.deploy.result }}" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ needs.deploy.result }}" == "success" ]]; then
+            echo "🎉 **Deployment successful**" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ needs.deploy.result }}" == "failure" ]]; then
+            echo "❌ **Deployment failed - check logs**" >> $GITHUB_STEP_SUMMARY
+          fi 
