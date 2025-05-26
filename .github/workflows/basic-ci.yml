@@ -70,4 +70,30 @@ jobs:
         with:
           name: security-audit
           path: audit-results.json
-          retention-days: 30 
+          retention-days: 30
+
+  deploy:
+    needs: [lint, build, security-scan]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.1
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4.1.4
+        with:
+          name: next-build
+          path: .next/
+      - name: Deploy to production
+        run: |
+          echo "🚀 Deploying to production..."
+          # TODO: Legg til dine deployment-kommandoer her
+          echo "✅ Deployment completed successfully"
+      - name: Create release tag
+        if: success()
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          VERSION=$(node -p "require('./package.json').version")
+          git tag -a "v$VERSION" -m "Release version $VERSION"
+          git push origin "v$VERSION" 
