@@ -1,17 +1,11 @@
 'use client'
 import { useState, useCallback, useEffect } from 'react'
-import ColorPalette from '../ColorPicker'
+import type { ColoringInterfaceProps } from '@/types/coloring'
+import ColorPicker from '@/components/ColorPicker'
 import SVGCanvas from './SVGCanvas'
 import Link from 'next/link'
-
-interface ColoringInterfaceProps {
-  drawingId: string
-  title: string
-  svgContent: string
-  downloadUrl?: string
-  suggestedColors?: Array<{ name: string; hex: string }>
-  backUrl?: string
-}
+import { DEFAULT_CANVAS_SIZE } from '@/constants/coloring'
+import ColoringErrorBoundary from '@/components/ui/ErrorBoundary'
 
 export default function ColoringInterface({ 
   drawingId,
@@ -118,7 +112,7 @@ export default function ColoringInterface({
       <div className={`flex ${isMobile ? 'flex-col' : 'h-[calc(100vh-73px)]'}`}>
         {(!isMobile || showMobilePalette) && (
           <div className={`${isMobile ? 'border-b bg-white' : 'flex-shrink-0'}`}>
-            <ColorPalette
+            <ColorPicker
               onColorSelect={setCurrentColor}
               selectedColor={currentColor}
               suggestedColors={suggestedColors}
@@ -128,13 +122,15 @@ export default function ColoringInterface({
         )}
         
         <div className="flex-1 min-h-0">
-          <SVGCanvas
-            drawingId={drawingId}
-            svgContent={svgContent}
-            currentColor={currentColor}
-            onSave={handleSave}
-            onColorChange={handleColorChange}
-          />
+          <ColoringErrorBoundary>
+            <SVGCanvas
+              drawingId={drawingId}
+              svgContent={svgContent}
+              currentColor={currentColor}
+              onSave={handleSave}
+              onColorChange={handleColorChange}
+            />
+          </ColoringErrorBoundary>
         </div>
       </div>
     </div>

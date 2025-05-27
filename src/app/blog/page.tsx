@@ -8,25 +8,6 @@ import { getPosts } from '@/lib/sanity';
 import Image from 'next/image';
 import { urlForImage } from '@/lib/sanityImageUrl';
 
-// Funksjon for å formatere dato
-function formatDate(dateString: string) {
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat('nb-NO', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(date);
-}
-
-// Funksjon for å bygge url for Sanity-bilder
-export function urlForImage(source: any) {
-  return source ? `https://cdn.sanity.io/images/fn0kjvlp/production/${source.asset._ref
-    .replace('image-', '')
-    .replace('-jpg', '.jpg')
-    .replace('-png', '.png')
-    .replace('-webp', '.webp')}` : '/placeholder.jpg';
-}
-
 export default function BlogPage() {
   return (
     <div className="container mx-auto p-8">

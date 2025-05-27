@@ -1,11 +1,12 @@
-import DOMPurify from 'isomorphic-dompurify'
+import type { SanitizeOptions, SVGValidationResult } from '@/types/coloring'
+import {
+  DEFAULT_ALLOWED_SVG_TAGS,
+  DEFAULT_ALLOWED_SVG_ATTRIBUTES,
+  FORBIDDEN_SVG_TAGS,
+  FORBIDDEN_SVG_ATTRIBUTES
+} from '@/constants/coloring'
 
-interface SanitizeOptions {
-  allowedTags?: string[]
-  allowedAttributes?: string[]
-}
-
-export function sanitizeSVG(svgContent: string, options: SanitizeOptions = {}): string {
+export async function sanitizeSVG(svgContent: string, options: SanitizeOptions = {}): Promise<string> {
   // Client-side guard
   if (typeof window === 'undefined') {
     // Server-side: basic validation only
@@ -15,22 +16,11 @@ export function sanitizeSVG(svgContent: string, options: SanitizeOptions = {}): 
     return svgContent
   }
 
-  const defaultAllowedTags = [
-    'svg', 'g', 'path', 'rect', 'circle', 'ellipse', 'line', 'polyline', 
-    'polygon', 'text', 'tspan', 'defs', 'clipPath', 'mask', 'pattern',
-    'linearGradient', 'radialGradient', 'stop', 'use', 'symbol'
-  ]
+  // Lazy load DOMPurify
+  const DOMPurify = await import('isomorphic-dompurify').then(mod => mod.default)
 
-  const defaultAllowedAttributes = [
-    'class', 'id', 'data-region', 'data-noninteractive',
-    'viewBox', 'width', 'height', 'x', 'y', 'cx', 'cy', 'r', 'rx', 'ry',
-    'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin',
-    'd', 'points', 'x1', 'y1', 'x2', 'y2', 'transform',
-    'opacity', 'fill-opacity', 'stroke-opacity'
-  ]
-
-  const allowedTags = options.allowedTags || defaultAllowedTags
-  const allowedAttributes = options.allowedAttributes || defaultAllowedAttributes
+  const allowedTags = options.allowedTags || DEFAULT_ALLOWED_SVG_TAGS
+  const allowedAttributes = options.allowedAttributes || DEFAULT_ALLOWED_SVG_ATTRIBUTES
 
   // Konfigurer DOMPurify
   const cleanSVG = DOMPurify.sanitize(svgContent, {
@@ -39,8 +29,8 @@ export function sanitizeSVG(svgContent: string, options: SanitizeOptions = {}): 
     ALLOWED_ATTR: allowedAttributes,
     ALLOW_DATA_ATTR: true,
     SANITIZE_NAMED_PROPS: true,
-    FORBID_TAGS: ['script', 'object', 'embed', 'link', 'style'],
-    FORBID_ATTR: ['onclick', 'onload', 'onerror', 'onmouseover', 'onfocus', 'onblur', 'style']
+    FORBID_TAGS: FORBIDDEN_SVG_TAGS,
+    FORBID_ATTR: FORBIDDEN_SVG_ATTRIBUTES
   })
 
   // Valider at det er gyldig SVG
@@ -51,12 +41,7 @@ export function sanitizeSVG(svgContent: string, options: SanitizeOptions = {}): 
   return cleanSVG
 }
 
-export function validateSVGForColoring(svgContent: string): {
-  isValid: boolean
-  hasColorableAreas: boolean
-  colorableAreasCount: number
-  warnings: string[]
-} {
+export function validateSVGForColoring(svgContent: string): SVGValidationResult {
   const warnings: string[] = []
   
   // Client-side guard

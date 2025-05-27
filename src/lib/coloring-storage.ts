@@ -1,14 +1,10 @@
-interface ColoringState {
-  drawingId: string
-  coloredRegions: Record<string, string>
-  timestamp: number
-  version: string
-}
-
-const STORAGE_KEY = 'coloring_auto_save'
-const STORAGE_VERSION = '1.0'
-const MAX_STORAGE_AGE = 7 * 24 * 60 * 60 * 1000 // 7 dager
-const MAX_STORAGE_SIZE = 5 * 1024 * 1024 // 5MB limit
+import type { ColoringState } from '@/types/coloring'
+import {
+  STORAGE_KEY,
+  STORAGE_VERSION,
+  MAX_STORAGE_AGE,
+  MAX_STORAGE_SIZE
+} from '@/constants/coloring'
 
 export class ColoringStorage {
   private static isClient(): boolean {

@@ -1,15 +1,10 @@
 'use client'
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
-import { sanitizeSVG, validateSVGForColoring } from '../../src/lib/svg-sanitizer'
-import { ColoringStorage } from '../../src/lib/coloring-storage'
-
-interface SVGCanvasProps {
-  drawingId: string
-  svgContent: string
-  currentColor: string
-  onSave?: (svgData: string) => void
-  onColorChange?: (coloredRegions: Record<string, string>) => void
-}
+import type { SVGCanvasProps } from '@/types/coloring'
+import { sanitizeSVG, validateSVGForColoring } from '@/lib/svg-sanitizer'
+import { ColoringStorage } from '@/lib/coloring-storage'
+import { AUTO_SAVE_DELAY, MAX_UNDO_STACK_SIZE } from '@/constants/coloring'
+import ColoringSkeletonLoader from '@/components/ui/SkeletonLoader'
 
 export default function SVGCanvas({ 
   drawingId, 
@@ -38,7 +33,7 @@ export default function SVGCanvas({
       if (!success) {
         console.warn('Auto-save feilet - localStorage kan være full')
       }
-    }, 1000)
+    }, AUTO_SAVE_DELAY)
   }, [drawingId])
 
   // Sjekk for lagret arbeid ved oppstart
@@ -119,7 +114,7 @@ export default function SVGCanvas({
     // Lagre til undo stack (begrenset størrelse)
     setUndoStack(prev => {
       const newStack = [...prev, { ...coloredRegions }]
-      return newStack.slice(-20) // Behold kun siste 20 endringer
+      return newStack.slice(-MAX_UNDO_STACK_SIZE)
     })
 
     // Oppdater farge umiddelbart for responsivitet
@@ -135,84 +130,88 @@ export default function SVGCanvas({
 
   // Memoized SVG innhold for å unngå unødvendige re-renders
   const sanitizedSVG = useMemo(() => {
-    if (!svgContent) return ''
+    if (!svgContent) return Promise.resolve('')
     
-    try {
-      return sanitizeSVG(svgContent)
-    } catch (error) {
+    return sanitizeSVG(svgContent).catch(error => {
       console.error('SVG sanitering feilet:', error)
       return ''
-    }
+    })
   }, [svgContent])
 
   // Initialiser SVG - optimiert dependencies
   useEffect(() => {
-    if (!sanitizedSVG) {
-      setError('Ingen gyldig SVG-innhold')
-      setIsLoading(false)
-      return
-    }
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      // Valider SVG
-      const validation = validateSVGForColoring(sanitizedSVG)
-      if (!validation.isValid) {
-        throw new Error('Ugyldig SVG for fargelegging')
+    const initializeSVG = async () => {
+      const sanitized = await sanitizedSVG
+      
+      if (!sanitized) {
+        setError('Ingen gyldig SVG-innhold')
+        setIsLoading(false)
+        return
       }
 
-      // Sett inn sanitert SVG
-      if (containerRef.current) {
-        containerRef.current.innerHTML = sanitizedSVG
-        
-        const svg = containerRef.current.querySelector('svg')
-        if (svg) {
-          // Gjør SVG responsiv
-          svg.style.maxWidth = '100%'
-          svg.style.height = 'auto'
-          svg.style.cursor = 'pointer'
+      setIsLoading(true)
+      setError(null)
 
-          // Legg til delegert event listener
-          svg.addEventListener('click', handleSVGClick, { passive: true })
-
-          // Sett opp hover effekter
-          const fillableAreas = svg.querySelectorAll('.fillable-area')
-          fillableAreas.forEach((area) => {
-            const element = area as SVGElement
-            
-            // Standardstyling
-            if (!element.getAttribute('fill') || element.getAttribute('fill') === 'none') {
-              element.setAttribute('fill', 'white')
-            }
-            element.style.transition = 'opacity 0.2s ease'
-
-            // Hover effekter med passive listeners
-            const handleMouseEnter = () => {
-              if (element.getAttribute('data-noninteractive') !== 'true') {
-                element.style.opacity = '0.8'
-              }
-            }
-
-            const handleMouseLeave = () => {
-              element.style.opacity = '1'
-            }
-
-            element.addEventListener('mouseenter', handleMouseEnter, { passive: true })
-            element.addEventListener('mouseleave', handleMouseLeave, { passive: true })
-          })
-
-          // Anvend eksisterende farger
-          applyColorsToSVG(coloredRegions)
+      try {
+        // Valider SVG
+        const validation = validateSVGForColoring(sanitized)
+        if (!validation.isValid) {
+          throw new Error('Ugyldig SVG for fargelegging')
         }
-      }
 
-      setIsLoading(false)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Kunne ikke laste SVG')
-      setIsLoading(false)
+        // Sett inn sanitert SVG
+        if (containerRef.current) {
+          containerRef.current.innerHTML = sanitized
+          
+          const svg = containerRef.current.querySelector('svg')
+          if (svg) {
+            // Gjør SVG responsiv
+            svg.style.maxWidth = '100%'
+            svg.style.height = 'auto'
+            svg.style.cursor = 'pointer'
+
+            // Legg til delegert event listener
+            svg.addEventListener('click', handleSVGClick, { passive: true })
+
+            // Sett opp hover effekter
+            const fillableAreas = svg.querySelectorAll('.fillable-area')
+            fillableAreas.forEach((area) => {
+              const element = area as SVGElement
+              
+              // Standardstyling
+              if (!element.getAttribute('fill') || element.getAttribute('fill') === 'none') {
+                element.setAttribute('fill', 'white')
+              }
+              element.style.transition = 'opacity 0.2s ease'
+
+              // Hover effekter med passive listeners
+              const handleMouseEnter = () => {
+                if (element.getAttribute('data-noninteractive') !== 'true') {
+                  element.style.opacity = '0.8'
+                }
+              }
+
+              const handleMouseLeave = () => {
+                element.style.opacity = '1'
+              }
+
+              element.addEventListener('mouseenter', handleMouseEnter, { passive: true })
+              element.addEventListener('mouseleave', handleMouseLeave, { passive: true })
+            })
+
+            // Anvend eksisterende farger
+            applyColorsToSVG(coloredRegions)
+          }
+        }
+
+        setIsLoading(false)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Kunne ikke laste SVG')
+        setIsLoading(false)
+      }
     }
+    
+    initializeSVG()
 
     // Cleanup function
     return () => {
@@ -313,14 +312,7 @@ export default function SVGCanvas({
   }, [drawingId])
 
   if (isLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Laster fargelegging...</p>
-        </div>
-      </div>
-    )
+    return <ColoringSkeletonLoader />
   }
 
   if (error) {

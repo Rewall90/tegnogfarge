@@ -1,18 +1,5 @@
 import { defineField, defineType } from 'sanity'
 
-interface ColorPreviewSelection {
-  title?: string
-  hex?: string
-}
-
-interface DrawingPreviewSelection {
-  title?: string
-  media?: any
-  hasDigital?: boolean
-  category?: string
-  svgContent?: string
-}
-
 export default defineType({
   name: 'drawingImage',
   title: 'Tegnebilder',
@@ -96,7 +83,7 @@ export default defineType({
               title: 'name',
               hex: 'hex'
             },
-            prepare(selection: ColorPreviewSelection) {
+            prepare(selection: { title?: string; hex?: string }) {
               return {
                 title: selection.title || 'Unavngitt farge',
                 subtitle: selection.hex || 'Ingen farge'
@@ -154,7 +141,7 @@ export default defineType({
       category: 'category.title',
       svgContent: 'svgContent'
     },
-    prepare(selection: DrawingPreviewSelection) {
+    prepare(selection: { title?: string; media?: any; hasDigital?: boolean; category?: string; svgContent?: string }) {
       const { title, media, hasDigital, category, svgContent } = selection
       
       // Tell fargeleggbare områder
