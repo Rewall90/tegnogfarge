@@ -118,4 +118,100 @@ export async function getPostsByCategory(categorySlug: string) {
       }
     }
   `, { categorySlug });
+}
+
+// Hent bilde for fargelegging med validering
+export async function getColoringImage(id: string) {
+  return client.fetch(`
+    *[_type == "drawingImage" && _id == $id][0] {
+      _id,
+      title,
+      description,
+      svgContent,
+      hasDigitalColoring,
+      suggestedColors,
+      "imageUrl": mainImage.asset->url,
+      "downloadUrl": downloadFile.asset->url,
+      "category": category->{ 
+        title, 
+        "slug": slug.current 
+      },
+      tags,
+      difficulty,
+      _createdAt,
+      _updatedAt
+    }
+  `, { id })
+}
+
+// Hent bilder i kategori med fargelegging-info (oppdatert versjon)
+export async function getCategoryImagesWithColoring(categorySlug: string) {
+  return client.fetch(`
+    *[_type == "drawingImage" && category->slug.current == $categorySlug] {
+      _id,
+      title,
+      description,
+      "imageUrl": mainImage.asset->url,
+      "downloadUrl": downloadFile.asset->url,
+      hasDigitalColoring,
+      difficulty,
+      "slug": slug.current
+    } | order(_createdAt desc)
+  `, { categorySlug })
+}
+
+// Hent alle bilder som kan fargelegges (for static paths)
+export async function getAllColoringImages() {
+  return client.fetch(`
+    *[_type == "drawingImage" && hasDigitalColoring == true] {
+      _id,
+      "slug": slug.current
+    }
+  `)
+}
+
+// Admin-funksjon: Valider alle fargeleggingsbilder
+export async function validateAllColoringImages() {
+  const images = await client.fetch(`
+    *[_type == "drawingImage" && hasDigitalColoring == true] {
+      _id,
+      title,
+      svgContent
+    }
+  `)
+  
+  if (typeof window === 'undefined') {
+    // Server-side: returnerer bare grunnleggende info
+    return images.map((image: any) => ({
+      id: image._id,
+      title: image.title,
+      hasSvg: !!image.svgContent,
+      validation: null
+    }))
+  }
+  
+  // Client-side: full validering
+  const { validateSVGForColoring } = await import('./svg-sanitizer')
+  
+  return images.map((image: any) => {
+    try {
+      const validation = validateSVGForColoring(image.svgContent || '')
+      return {
+        id: image._id,
+        title: image.title,
+        validation
+      }
+    } catch (error) {
+      return {
+        id: image._id,
+        title: image.title,
+        validation: {
+          isValid: false,
+          hasColorableAreas: false,
+          colorableAreasCount: 0,
+          warnings: ['Validering feilet']
+        }
+      }
+    }
+  })
 } 
