@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 interface FavoriteButtonProps {
   initialFavorited?: boolean;
-  itemId: string;
   onToggle?: (isFavorited: boolean) => void;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
@@ -10,7 +9,6 @@ interface FavoriteButtonProps {
 
 export default function FavoriteButton({
   initialFavorited = false,
-  itemId,
   onToggle,
   size = 'md',
   className = '',

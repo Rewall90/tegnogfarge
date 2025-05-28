@@ -213,10 +213,12 @@ export default function SVGCanvas({
     
     initializeSVG()
 
+    // Kopier ref til lokal variabel
+    const container = containerRef.current;
     // Cleanup function
     return () => {
-      if (containerRef.current) {
-        const svg = containerRef.current.querySelector('svg')
+      if (container) {
+        const svg = container.querySelector('svg')
         if (svg) {
           svg.removeEventListener('click', handleSVGClick)
         }

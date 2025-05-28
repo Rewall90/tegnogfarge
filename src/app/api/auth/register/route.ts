@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { hash } from 'bcrypt';
-import clientPromise from '../../../../../lib/db';
+import clientPromise from '@/lib/db';
 import { toSafeUser } from '../../../../../models/user';
 
 export async function POST(request: Request) {
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
     // Return the safe user (without password)
     return NextResponse.json(
-      { user: toSafeUser(newUser) },
+      { user: newUser ? toSafeUser(newUser) : null },
       { status: 201 }
     );
   } catch (error) {

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/route';
-import clientPromise from '../../../../lib/db';
+import clientPromise from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { mapToColoringModel } from '../../../../models/coloring';
 
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     const db = client.db();
     const collection = db.collection('colorings');
 
-    const query: any = {};
+    const query: Record<string, unknown> = {};
     
     // If userId is specified, filter by user
     if (userId) {

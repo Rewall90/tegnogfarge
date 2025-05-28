@@ -1,5 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
+import '../globals.css';
+import PageLayout from '@/components/shared/PageLayout';
 
 // Metadata for hovedkategorisiden
 export const metadata: Metadata = {
@@ -30,8 +32,8 @@ export default function CategoriesLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
+    <PageLayout>
       {children}
-    </>
+    </PageLayout>
   );
 } 

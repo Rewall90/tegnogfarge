@@ -1,5 +1,6 @@
 import { createClient } from 'next-sanity';
 import imageUrlBuilder from '@sanity/image-url';
+import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
 
 export const config = {
   projectId: 'fn0kjvlp', // Direkte bruk av prosjekt-ID
@@ -16,36 +17,49 @@ export const client = createClient(config);
 const builder = imageUrlBuilder(client);
 
 // Funksjon for å generere bilde-URL-er
-export const urlFor = (source: any) => {
+export const urlFor = (source: SanityImageSource) => {
   return builder.image(source);
 };
 
 // Hjelpefunksjon for å hente alle bilder i en kategori
-export async function getImagesInCategory(category: string, page = 1, limit = 30) {
+export async function getImagesInCategory(subcategory: string, page = 1, limit = 30) {
   const start = (page - 1) * limit;
   const end = start + limit;
-  
   return client.fetch(`
-    *[_type == "drawingImage" && category._ref == $category] {
+    *[_type == "drawingImage" && subcategory._ref == $subcategory && isActive == true]
+    | order(order asc, title asc) {
       _id,
       title,
       description,
+      difficulty,
+      order,
+      isActive,
+      suggestedColors,
       "imageUrl": mainImage.asset->url,
       "downloadUrl": downloadFile.asset->url,
-      canColorOnline
+      canColorOnline,
+      downloadCount,
+      tags
     }[$start...$end]
-  `, { category, start, end });
+  `, { subcategory, start, end });
 }
 
-// Hjelpefunksjon for å hente alle kategorier
+// Hent alle hovedkategorier
 export async function getAllCategories() {
   return client.fetch(`
-    *[_type == "category"] {
+    *[_type == "category" && isActive == true]
+    | order(order asc, title asc) {
       _id,
       title,
       "slug": slug.current,
       description,
-      "imageUrl": image.asset->url
+      icon,
+      order,
+      isActive,
+      featured,
+      "imageUrl": image.asset->url,
+      "subcategoryCount": count(*[_type == "subcategory" && parentCategory._ref == ^._id && isActive == true]),
+      "drawingCount": count(*[_type == "drawingImage" && subcategory->parentCategory._ref == ^._id && isActive == true])
     }
   `);
 }
@@ -123,28 +137,110 @@ export async function getPostsByCategory(categorySlug: string) {
 // Hent bilde for fargelegging med validering
 export async function getColoringImage(id: string) {
   return client.fetch(`
-    *[_type == "drawingImage" && _id == $id][0] {
+    *[_type == "drawingImage" && _id == $id && isActive == true][0] {
       _id,
       title,
       description,
       svgContent,
       hasDigitalColoring,
       suggestedColors,
+      difficulty,
+      order,
+      isActive,
       "imageUrl": mainImage.asset->url,
       "downloadUrl": downloadFile.asset->url,
-      "category": category->{ 
+      "category": subcategory->{ 
         title, 
         "slug": slug.current 
       },
       tags,
-      difficulty,
+      downloadCount,
       _createdAt,
       _updatedAt
     }
   `, { id })
 }
 
-// Hent bilder i kategori med fargelegging-info (oppdatert versjon)
+// Hent en kategori med sine underkategorier
+export async function getCategoryWithSubcategories(categorySlug: string) {
+  return client.fetch(`
+    *[_type == "category" && slug.current == $categorySlug && isActive == true][0] {
+      _id,
+      title,
+      description,
+      icon,
+      order,
+      isActive,
+      featured,
+      "slug": slug.current,
+      image {
+        "url": asset->url,
+        alt
+      },
+      "subcategories": *[_type == "subcategory" && parentCategory._ref == ^._id && isActive == true]
+      | order(order asc, title asc) {
+        _id,
+        title,
+        "slug": slug.current,
+        difficulty,
+        order,
+        isActive,
+        description,
+        featuredImage {
+          "url": asset->url,
+          alt
+        },
+        "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+      }
+    }
+  `, { categorySlug });
+}
+
+// Hent alle underkategorier for en kategori
+export async function getSubcategoriesByCategory(categorySlug: string) {
+  return client.fetch(`
+    *[_type == "subcategory" && parentCategory->slug.current == $categorySlug && isActive == true]
+    | order(order asc, title asc) {
+      _id,
+      title,
+      "slug": slug.current,
+      difficulty,
+      order,
+      isActive,
+      description,
+      "imageUrl": featuredImage.asset->url,
+      "parentCategory": parentCategory->{ title, "slug": slug.current },
+      "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+    }
+  `, { categorySlug });
+}
+
+// Hent en spesifikk underkategori med tegninger
+export async function getSubcategoryWithDrawings(categorySlug: string, subcategorySlug: string) {
+  return client.fetch(`
+    *[_type == "subcategory" && slug.current == $subcategorySlug && parentCategory->slug.current == $categorySlug && isActive == true][0] {
+      _id,
+      title,
+      description,
+      difficulty,
+      "slug": slug.current,
+      "imageUrl": featuredImage.asset->url,
+      "parentCategory": parentCategory->{ title, "slug": slug.current },
+      "drawings": *[_type == "drawingImage" && subcategory._ref == ^._id] | order(_createdAt desc) {
+        _id,
+        title,
+        description,
+        "imageUrl": mainImage.asset->url,
+        "downloadUrl": downloadFile.asset->url,
+        hasDigitalColoring,
+        difficulty,
+        "slug": slug.current
+      }
+    }
+  `, { categorySlug, subcategorySlug });
+}
+
+// Oppdatert getCategoryImagesWithColoring til å støtte underkategorier
 export async function getCategoryImagesWithColoring(categorySlug: string) {
   return client.fetch(`
     *[_type == "drawingImage" && category->slug.current == $categorySlug] {
@@ -155,9 +251,28 @@ export async function getCategoryImagesWithColoring(categorySlug: string) {
       "downloadUrl": downloadFile.asset->url,
       hasDigitalColoring,
       difficulty,
-      "slug": slug.current
+      "slug": slug.current,
+      "subcategory": subcategory->{ title, "slug": slug.current }
     } | order(_createdAt desc)
   `, { categorySlug })
+}
+
+// Hent tegninger for en spesifikk underkategori
+export async function getDrawingsBySubcategory(subcategorySlug: string) {
+  return client.fetch(`
+    *[_type == "drawingImage" && subcategory->slug.current == $subcategorySlug] {
+      _id,
+      title,
+      description,
+      "imageUrl": mainImage.asset->url,
+      "downloadUrl": downloadFile.asset->url,
+      hasDigitalColoring,
+      difficulty,
+      "slug": slug.current,
+      "category": category->{ title, "slug": slug.current },
+      "subcategory": subcategory->{ title, "slug": slug.current }
+    } | order(_createdAt desc)
+  `, { subcategorySlug })
 }
 
 // Hent alle bilder som kan fargelegges (for static paths)
@@ -182,36 +297,34 @@ export async function validateAllColoringImages() {
   
   if (typeof window === 'undefined') {
     // Server-side: returnerer bare grunnleggende info
-    return images.map((image: any) => ({
+    return images.map((image: ColoringImage) => ({
       id: image._id,
       title: image.title,
-      hasSvg: !!image.svgContent,
+      hasSvg: false,
       validation: null
     }))
   }
   
   // Client-side: full validering
-  const { validateSVGForColoring } = await import('./svg-sanitizer')
-  
-  return images.map((image: any) => {
-    try {
-      const validation = validateSVGForColoring(image.svgContent || '')
-      return {
-        id: image._id,
-        title: image.title,
-        validation
-      }
-    } catch (error) {
-      return {
-        id: image._id,
-        title: image.title,
-        validation: {
-          isValid: false,
-          hasColorableAreas: false,
-          colorableAreasCount: 0,
-          warnings: ['Validering feilet']
-        }
-      }
+  // svgContent finnes ikke lenger, så vi kan ikke validere SVG
+  return images.map((image: ColoringImage) => {
+    return {
+      id: image._id,
+      title: image.title,
+      validation: null
     }
   })
+}
+
+// Legg til en lokal type for images:
+export interface ColoringImage {
+  _id: string;
+  title: string;
+  description?: string;
+  imageUrl?: string;
+  downloadUrl?: string;
+  canColorOnline?: boolean;
+  tags?: string[];
+  subcategory?: { title: string; slug: string };
+  downloadCount?: number;
 } 

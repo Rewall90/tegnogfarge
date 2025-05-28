@@ -3,7 +3,7 @@ type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 interface RequestOptions {
   method?: HTTPMethod;
   headers?: Record<string, string>;
-  body?: any;
+  body?: unknown;
 }
 
 interface ApiResponse<T> {
@@ -66,13 +66,13 @@ export const apiClient = {
   get: <T>(endpoint: string, headers?: Record<string, string>) => 
     fetchApi<T>(endpoint, { method: 'GET', headers }),
   
-  post: <T>(endpoint: string, data: any, headers?: Record<string, string>) => 
+  post: <T>(endpoint: string, data: unknown, headers?: Record<string, string>) => 
     fetchApi<T>(endpoint, { method: 'POST', body: data, headers }),
   
-  put: <T>(endpoint: string, data: any, headers?: Record<string, string>) => 
+  put: <T>(endpoint: string, data: unknown, headers?: Record<string, string>) => 
     fetchApi<T>(endpoint, { method: 'PUT', body: data, headers }),
   
-  patch: <T>(endpoint: string, data: any, headers?: Record<string, string>) => 
+  patch: <T>(endpoint: string, data: unknown, headers?: Record<string, string>) => 
     fetchApi<T>(endpoint, { method: 'PATCH', body: data, headers }),
   
   delete: <T>(endpoint: string, headers?: Record<string, string>) => 

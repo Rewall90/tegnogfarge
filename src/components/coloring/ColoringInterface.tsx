@@ -1,10 +1,9 @@
 'use client'
 import { useState, useCallback, useEffect } from 'react'
 import type { ColoringInterfaceProps } from '@/types/coloring'
-import ColorPicker from '@/components/ColorPicker'
+import ColorPalette from './ColorPalette'
 import SVGCanvas from './SVGCanvas'
 import Link from 'next/link'
-import { DEFAULT_CANVAS_SIZE } from '@/constants/coloring'
 import ColoringErrorBoundary from '@/components/ui/ErrorBoundary'
 
 export default function ColoringInterface({ 
@@ -31,7 +30,7 @@ export default function ColoringInterface({
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  const handleSave = useCallback((svgData: string) => {
+  const handleSave = useCallback(() => {
     // TODO: Implementer lagring til database
     console.log('Lagrer SVG data for tegning:', drawingId)
     console.log('Fargede områder:', coloredRegions)
@@ -112,7 +111,7 @@ export default function ColoringInterface({
       <div className={`flex ${isMobile ? 'flex-col' : 'h-[calc(100vh-73px)]'}`}>
         {(!isMobile || showMobilePalette) && (
           <div className={`${isMobile ? 'border-b bg-white' : 'flex-shrink-0'}`}>
-            <ColorPicker
+            <ColorPalette
               onColorSelect={setCurrentColor}
               selectedColor={currentColor}
               suggestedColors={suggestedColors}

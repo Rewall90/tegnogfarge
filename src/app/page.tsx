@@ -1,41 +1,35 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
-import Header from "../../components/shared/Header";
-import Footer from "../../components/shared/Footer";
-import { useState } from "react";
-import { categories, Category } from "../data/categoriesData";
-import CategoryCard from "../../components/ui/CategoryCard";
+import Header from '@/components/shared/Header';
+import Footer from '@/components/shared/Footer';
+import { getAllCategories } from '@/lib/sanity';
+import Image from 'next/image';
+import { FrontpageCategories } from '@/components/frontpage/FrontpageCategories';
+import { FrontpageHero } from '@/components/frontpage/FrontpageHero';
 
-export default function Home() {
+export default async function Home() {
+  let categories = await getAllCategories();
+  // Vis kun aktive kategorier, sorter på featured først, deretter order, så title
+  categories = categories
+    .filter((cat: any) => cat.isActive)
+    .sort((a: any, b: any) => {
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      if (a.order !== b.order) return a.order - b.order;
+      return a.title.localeCompare(b.title);
+    });
+  // Vis kun de 12 første hovedkategoriene
+  const mainCategories = categories.slice(0, 12);
+
   return (
     <>
       <Header />
+      <FrontpageHero />
       <main>
         {/* Hero Section */}
-        <section className="bg-gray-600 text-white py-20">
-          <div className="container mx-auto px-4">
-            <div className="max-w-2xl">
-              <h1 className="text-4xl font-bold mb-4">
-                Slipp fantasien løs – fargelegg på din måte
-              </h1>
-              <p className="text-lg mb-8">
-                Velkommen til et sted der kreativitet har frihet. Her kan du leke med 
-                farger, uttrykke motiver og lage noe helt eget. Alt du trenger å gjøre 
-                er å starte – så tar vi deg med videre.
-              </p>
-              <Link 
-                href="/coloring" 
-                className="bg-white text-black px-6 py-3 rounded inline-block font-medium hover:bg-gray-100"
-                aria-label="Kom i gang med fargelegging"
-              >
-                Kom i Gang
-              </Link>
-            </div>
-          </div>
-        </section>
+        {/* ... (fjernet Hero Section, nå i FrontpageHero) */}
         
         {/* How It Works Section */}
         <section className="py-16" aria-labelledby="how-it-works-heading">
@@ -109,23 +103,14 @@ export default function Home() {
           </div>
         </section>
         
-        {/* Popular Categories Section */}
-        <section className="py-16 bg-gray-50" aria-labelledby="categories-heading">
-          <div className="container mx-auto px-4">
-            <h2 id="categories-heading" className="text-3xl font-bold text-center mb-4">
-              Se på noen av våre mest populære kategorier
-            </h2>
-            <p className="text-center text-gray-600 mb-12">
-              Utforsk vårt utvalg av fargelige bilder.
-            </p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {categories.map((category: Category) => (
-                <CategoryCard key={category.id} category={category} />
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Hovedkategorier Grid */}
+        <FrontpageCategories
+          categories={mainCategories.map((cat: any) => ({
+            name: cat.title,
+            imageUrl: cat.imageUrl,
+            slug: cat.slug,
+          }))}
+        />
         
         {/* Testimonials Section */}
         <section className="py-16" aria-labelledby="testimonials-heading">
@@ -142,7 +127,7 @@ export default function Home() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-lg font-bold mb-4">"Jeg elsker hvor enkelt det er å bruke!"</p>
+                <p className="text-lg font-bold mb-4">&quot;Jeg elsker hvor enkelt det er å bruke!&quot;</p>
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-gray-200 rounded-full mr-3" aria-hidden="true"></div>
                   <div>
@@ -160,7 +145,7 @@ export default function Home() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-lg font-bold mb-4">"En fantastisk plattform for alle kunstnere!"</p>
+                <p className="text-lg font-bold mb-4">&quot;En fantastisk plattform for alle kunstnere!&quot;</p>
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-gray-200 rounded-full mr-3" aria-hidden="true"></div>
                   <div>
@@ -178,7 +163,7 @@ export default function Home() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-lg font-bold mb-4">"Fargelegging har aldri vært så gøy!"</p>
+                <p className="text-lg font-bold mb-4">&quot;Fargelegging har aldri vært så gøy!&quot;</p>
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-gray-200 rounded-full mr-3" aria-hidden="true"></div>
                   <div>
@@ -214,7 +199,7 @@ export default function Home() {
                 </div>
                 <div id="faq-1-content" className="mt-2">
                   <p className="text-gray-600">
-                    For å registere deg, klikk på "Registrer deg" knappen på hjemmesiden. Fyll ut skjemaet med nødvendig informasjon. Når du har sendt inn, vil du motta en bekreftelse e-post.
+                    For å registere deg, klikk på &quot;Registrer deg&quot; knappen på hjemmesiden. Fyll ut skjemaet med nødvendig informasjon. Når du har sendt inn, vil du motta en bekreftelse e-post.
                   </p>
                 </div>
               </div>
@@ -256,7 +241,7 @@ export default function Home() {
                 </div>
                 <div id="faq-3-content" className="mt-2">
                   <p className="text-gray-600">
-                    Ditt arbeid lagres automatisk når du bruker plattformen. Du kan også lagre det manuelt ved å klikke på "Lagre" knappen. Bruk Dashboard-siden for å se alle lagrede verk.
+                    Ditt arbeid lagres automatisk når du bruker plattformen. Du kan også lagre det manuelt ved å klikke på &quot;Lagre&quot; knappen. Bruk Dashboard-siden for å se alle lagrede verk.
                   </p>
                 </div>
               </div>
@@ -277,7 +262,7 @@ export default function Home() {
                 </div>
                 <div id="faq-4-content" className="mt-2">
                   <p className="text-gray-600">
-                    Ja, du kan enkelt dele arbeidet ditt på sosiale medier. Klikk på "Del" knappen for å få tilgang til delingsmuligheter. Vi har også innebygd støtte for å venneliste!
+                    Ja, du kan enkelt dele arbeidet ditt på sosiale medier. Klikk på &quot;Del&quot; knappen for å få tilgang til delingsmuligheter. Vi har også innebygd støtte for å venneliste!
                   </p>
                 </div>
               </div>

@@ -16,24 +16,21 @@ export class ColoringStorage {
     
     let total = 0
     try {
-      for (let key in localStorage) {
+      for (const key in localStorage) {
         if (localStorage.hasOwnProperty(key)) {
           total += localStorage[key].length + key.length
         }
       }
-    } catch (error) {
-      console.warn('Kunne ikke beregne localStorage størrelse:', error)
-    }
+    } catch {}
     return total
   }
 
-  static save(drawingId: string, coloredRegions: Record<string, string>): boolean {
+  static save(drawingId: string, colors: Record<string, string>): boolean {
     if (!this.isClient()) return false
     
     try {
       const state: ColoringState = {
-        drawingId,
-        coloredRegions,
+        colors: colors,
         timestamp: Date.now(),
         version: STORAGE_VERSION
       }
@@ -54,10 +51,8 @@ export class ColoringStorage {
       
       localStorage.setItem(`${STORAGE_KEY}_${drawingId}`, stateString)
       return true
-    } catch (error) {
-      console.warn('Kunne ikke lagre fargelegging:', error)
-      return false
-    }
+    } catch {}
+    return false
   }
 
   static load(drawingId: string): Record<string, string> | null {
@@ -81,11 +76,9 @@ export class ColoringStorage {
         return null
       }
 
-      return state.coloredRegions || null
-    } catch (error) {
-      console.warn('Kunne ikke laste fargelegging:', error)
-      return null
-    }
+      return state.colors || null
+    } catch {}
+    return null
   }
 
   static clear(drawingId: string): void {
@@ -93,9 +86,7 @@ export class ColoringStorage {
     
     try {
       localStorage.removeItem(`${STORAGE_KEY}_${drawingId}`)
-    } catch (error) {
-      console.warn('Kunne ikke slette lagret fargelegging:', error)
-    }
+    } catch {}
   }
 
   static hasStoredColoring(drawingId: string): boolean {
@@ -120,10 +111,7 @@ export class ColoringStorage {
               if (state.timestamp < cutoffTime) {
                 keysToRemove.push(key)
               }
-            } catch (error) {
-              // Ugyldig data - fjern det
-              keysToRemove.push(key)
-            }
+            } catch {}
           }
         }
       }
@@ -133,8 +121,6 @@ export class ColoringStorage {
       if (keysToRemove.length > 0) {
         console.log(`Ryddet opp ${keysToRemove.length} gamle fargelegginger`)
       }
-    } catch (error) {
-      console.warn('Kunne ikke rydde i lagrede fargelegginger:', error)
-    }
+    } catch {}
   }
 } 

@@ -2,9 +2,7 @@ import { NextAuthOptions } from 'next-auth';
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcrypt';
-import clientPromise from '../../../../../lib/db';
-import { ObjectId } from 'mongodb';
-import { toSafeUser } from '../../../../../models/user';
+import clientPromise from '@/lib/db';
 
 export const authOptions: NextAuthOptions = {
   providers: [

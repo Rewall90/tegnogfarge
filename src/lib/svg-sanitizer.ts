@@ -1,4 +1,4 @@
-import type { SanitizeOptions, SVGValidationResult } from '@/types/coloring'
+import type { SVGValidationResult } from '@/types/coloring'
 import {
   DEFAULT_ALLOWED_SVG_TAGS,
   DEFAULT_ALLOWED_SVG_ATTRIBUTES,
@@ -6,7 +6,7 @@ import {
   FORBIDDEN_SVG_ATTRIBUTES
 } from '@/constants/coloring'
 
-export async function sanitizeSVG(svgContent: string, options: SanitizeOptions = {}): Promise<string> {
+export async function sanitizeSVG(svgContent: string): Promise<string> {
   // Client-side guard
   if (typeof window === 'undefined') {
     // Server-side: basic validation only
@@ -19,8 +19,8 @@ export async function sanitizeSVG(svgContent: string, options: SanitizeOptions =
   // Lazy load DOMPurify
   const DOMPurify = await import('isomorphic-dompurify').then(mod => mod.default)
 
-  const allowedTags = options.allowedTags || DEFAULT_ALLOWED_SVG_TAGS
-  const allowedAttributes = options.allowedAttributes || DEFAULT_ALLOWED_SVG_ATTRIBUTES
+  const allowedTags = DEFAULT_ALLOWED_SVG_TAGS
+  const allowedAttributes = DEFAULT_ALLOWED_SVG_ATTRIBUTES
 
   // Konfigurer DOMPurify
   const cleanSVG = DOMPurify.sanitize(svgContent, {
@@ -92,7 +92,7 @@ export function validateSVGForColoring(svgContent: string): SVGValidationResult 
       colorableAreasCount,
       warnings
     }
-  } catch (error) {
+  } catch {
     return {
       isValid: false,
       hasColorableAreas: false,

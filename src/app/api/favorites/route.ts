@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/route';
-import clientPromise from '../../../../lib/db';
+import clientPromise from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { mapToFavoriteModel } from '../../../../models/favorite';
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     

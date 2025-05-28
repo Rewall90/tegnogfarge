@@ -1,11 +1,12 @@
-"use client";
-
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAllCategories } from '../../lib/sanity';
+import { getAllCategories } from '@/lib/sanity';
 
 export const revalidate = 3600; // Oppdater siden hver time
+
+// Legg til en lokal type for category:
+type CategoryType = { _id: string; slug: string; imageUrl?: string; title: string; description?: string };
 
 async function CategoriesPage() {
   const categories = await getAllCategories();
@@ -15,7 +16,7 @@ async function CategoriesPage() {
       <h1 className="text-3xl font-bold mb-8">Alle kategorier</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categories.map((category: any) => (
+        {categories.map((category: CategoryType) => (
           <Link 
             key={category._id} 
             href={`/categories/${category.slug}`}

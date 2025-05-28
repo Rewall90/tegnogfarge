@@ -2,6 +2,7 @@ import { getPost } from '@/lib/sanity';
 import { urlForImage } from '@/lib/sanityImageUrl';
 import Link from 'next/link';
 import { PortableText } from '@portabletext/react';
+import Image from 'next/image';
 
 // Funksjon for å formatere dato
 function formatDate(dateString: string) {
@@ -12,6 +13,9 @@ function formatDate(dateString: string) {
     year: 'numeric',
   }).format(date);
 }
+
+// Legg til en lokal type for category:
+type CategoryType = { _id: string; title: string; slug: { current: string } };
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = await getPost(params.slug);
@@ -34,10 +38,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       <article className="bg-white rounded-lg shadow-md overflow-hidden">
         {post.mainImage && (
           <div className="w-full h-[400px] relative">
-            <img
-              src={urlForImage(post.mainImage)}
+            <Image
+              src={urlForImage(post.mainImage).toString()}
               alt={post.title}
               className="w-full h-full object-cover"
+              fill
             />
           </div>
         )}
@@ -56,7 +61,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               <div className="flex ml-4">
                 <span className="mr-2">|</span>
                 <div className="flex gap-2 flex-wrap">
-                  {post.categories.map((category: any) => (
+                  {post.categories.map((category: CategoryType) => (
                     <Link 
                       key={category._id}
                       href={`/blog/category/${category.slug.current}`}

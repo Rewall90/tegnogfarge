@@ -7,6 +7,9 @@ interface ColoringPageProps {
   params: { id: string }
 }
 
+// Legg til en lokal type for image:
+type ImageType = { _id: string };
+
 export default async function ColoringPage({ params }: ColoringPageProps) {
   const image = await getColoringImage(params.id)
   
@@ -37,7 +40,7 @@ export async function generateStaticParams() {
   try {
     const images = await getAllColoringImages()
     
-    return images.map((image: any) => ({
+    return images.map((image: ImageType) => ({
       id: image._id
     }))
   } catch (error) {

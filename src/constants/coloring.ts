@@ -34,4 +34,24 @@ export const MAX_UNDO_STACK_SIZE = 20
 export const DEFAULT_CANVAS_SIZE = {
   width: 800,
   height: 600
-} 
+}
+
+// Standard fargepaletter for ColorPalette
+export const DEFAULT_COLOR_CATEGORIES = {
+  basic: {
+    title: 'Grunnfarger',
+    colors: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFA500', '#800080']
+  },
+  skin: {
+    title: 'Hudtoner',
+    colors: ['#FDBCB4', '#EAA985', '#D1A167', '#B08D57', '#8D6A42', '#654321']
+  },
+  pastels: {
+    title: 'Pastellfarger',
+    colors: ['#FFB6C1', '#98FB98', '#87CEEB', '#DDA0DD', '#F0E68C', '#FFEFD5']
+  },
+  neutral: {
+    title: 'Nøytrale',
+    colors: ['#FFFFFF', '#F5F5F5', '#D3D3D3', '#A9A9A9', '#696969', '#000000']
+  }
+}; 

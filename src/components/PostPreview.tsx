@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface PostPreviewProps {
   post: {
@@ -18,10 +19,13 @@ export default function PostPreview({ post, className = '' }: PostPreviewProps) 
     <article className={`bg-white rounded-lg shadow-md overflow-hidden ${className}`}>
       {post.imageUrl && (
         <div className="relative h-48 bg-gray-200">
-          <img
+          <Image
             src={post.imageUrl}
             alt={post.title}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority={true}
           />
         </div>
       )}

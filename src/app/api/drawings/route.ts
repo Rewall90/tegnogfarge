@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
-import clientPromise from '../../../../lib/db';
+import clientPromise from '@/lib/db';
 import { Drawing, mapToDrawingModel } from '../../../../models/drawing';
 import { ObjectId } from 'mongodb';
+
+interface Query { isPublished: boolean; categoryId?: ObjectId }
 
 export async function GET(request: Request) {
   try {
@@ -15,7 +17,7 @@ export async function GET(request: Request) {
     const db = client.db();
     const collection = db.collection('drawings');
 
-    const query: any = { isPublished: true };
+    const query: Query = { isPublished: true };
     if (categoryId) {
       query.categoryId = new ObjectId(categoryId);
     }

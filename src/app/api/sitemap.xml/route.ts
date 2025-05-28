@@ -1,30 +1,14 @@
 import { NextResponse } from 'next/server';
-import clientPromise from '../../../../lib/db';
+import { getAllCategories, getPosts, getAllColoringImages } from '@/lib/sanity';
 
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://example.com';
   
   try {
-    const client = await clientPromise;
-    const db = client.db();
-    
-    // Get published blog posts
-    const blogPosts = await db.collection('blogPosts')
-      .find({ published: true })
-      .project({ slug: 1, updatedAt: 1 })
-      .toArray();
-    
-    // Get categories
-    const categories = await db.collection('categories')
-      .find({ isActive: true })
-      .project({ slug: 1, updatedAt: 1 })
-      .toArray();
-      
-    // Get drawings (limit to published ones)
-    const drawings = await db.collection('drawings')
-      .find({ isPublished: true })
-      .project({ _id: 1, updatedAt: 1 })
-      .toArray();
+    // Hent data fra Sanity
+    const categories = await getAllCategories();
+    const blogPosts = await getPosts();
+    const drawings = await getAllColoringImages();
     
     // XML generation
     let sitemap = '<?xml version="1.0" encoding="UTF-8"?>';
@@ -58,8 +42,7 @@ export async function GET() {
     for (const post of blogPosts) {
       sitemap += `
       <url>
-        <loc>${baseUrl}/blog/${post.slug}</loc>
-        <lastmod>${new Date(post.updatedAt).toISOString()}</lastmod>
+        <loc>${baseUrl}/blog/${post.slug?.current || post.slug}</loc>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
       </url>`;
@@ -70,7 +53,6 @@ export async function GET() {
       sitemap += `
       <url>
         <loc>${baseUrl}/categories/${category.slug}</loc>
-        <lastmod>${new Date(category.updatedAt).toISOString()}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
       </url>`;
@@ -81,7 +63,6 @@ export async function GET() {
       sitemap += `
       <url>
         <loc>${baseUrl}/coloring/${drawing._id}</loc>
-        <lastmod>${new Date(drawing.updatedAt).toISOString()}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
       </url>`;
