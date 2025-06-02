@@ -1,6 +1,6 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcrypt';
-import clientPromise from '@/lib/db';
+// import clientPromise from '@/lib/db';
 
 const authOptions = {
   providers: [
@@ -16,27 +16,23 @@ const authOptions = {
           throw new Error('Email og passord er påkrevd');
         }
 
-        const client = await clientPromise;
-        const db = client.db();
-        const user = await db.collection('users').findOne({ email: credentials.email });
+        // const client = await clientPromise;
+        // const db = client.db();
+        // const user = await db.collection('users').findOne({ email: credentials.email });
 
-        if (!user || !user.password) {
-          throw new Error('Bruker ikke funnet');
-        }
-
-        const isCorrectPassword = await compare(credentials.password, user.password);
-
-        if (!isCorrectPassword) {
-          throw new Error('Feil passord');
-        }
-
-        return {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-          image: user.image,
-          role: user.role || 'user',
-        };
+        // if (!user || !user.password) {
+        //   return null;
+        // }
+        // if (!(await compare(credentials.password, user.password))) {
+        //   return null;
+        // }
+        // return {
+        //   id: user._id,
+        //   email: user.email,
+        //   name: user.name,
+        //   image: user.image,
+        // };
+        return null;
       },
     }),
   ],

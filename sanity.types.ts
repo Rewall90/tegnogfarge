@@ -82,20 +82,7 @@ export interface DrawingImage {
   _rev: string;
   title?: string;
   slug?: Slug;
-  description?: string;
-  mainImage?: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-  outlineImage?: {
+  image?: {
     asset?: {
       _ref: string;
       _type: "reference";
@@ -117,22 +104,9 @@ export interface DrawingImage {
     media?: unknown;
     _type: "file";
   };
-  subcategory?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "subcategory";
-  };
   tags?: Array<string>;
-  canColorOnline?: boolean;
-  downloadCount?: number;
-  coloringSettings?: {
-    defaultTolerance?: number;
-    maxBrushSize?: number;
-    enableSmoothing?: boolean;
-    preserveDetails?: boolean;
-  };
-  suggestedColors?: Array<{ name: string; hex: string }>;
+  order?: number;
+  isActive?: boolean;
 }
 
 export type Subcategory = {

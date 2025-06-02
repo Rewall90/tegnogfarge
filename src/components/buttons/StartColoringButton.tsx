@@ -1,5 +1,7 @@
+'use client'
+
 import React from 'react';
-import Button from '../ui/Button';
+import { useRouter } from 'next/navigation';
 
 interface StartColoringButtonProps {
   drawingId: string;
@@ -7,15 +9,24 @@ interface StartColoringButtonProps {
   className?: string;
 }
 
-export function StartColoringButton({ drawingId, title = 'Start fargelegging', className }: StartColoringButtonProps) {
+export function StartColoringButton({ drawingId, title = 'Online Coloring', className }: StartColoringButtonProps) {
+  const router = useRouter();
+
+  function handleClick() {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('coloringAppImageId', drawingId);
+      router.push('/coloring-app');
+    }
+  }
+
   return (
-    <Button
-      href={`/coloring/${drawingId}`}
-      variant="secondary"
+    <button
+      type="button"
       className={className}
-      ariaLabel={title}
+      aria-label={title}
+      onClick={handleClick}
     >
       {title}
-    </Button>
+    </button>
   );
 } 

@@ -52,9 +52,7 @@ export function DrawingDetail({
           {downloadUrl && (
             <DownloadPdfButton downloadUrl={downloadUrl} title="Download PDF" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded transition" />
           )}
-          {hasDigitalColoring && (
-            <StartColoringButton drawingId={drawingId} title="Online Coloring" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded transition" />
-          )}
+          <StartColoringButton drawingId={drawingId} title="Online Coloring" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded transition" />
         </div>
       </div>
     </section>

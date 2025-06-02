@@ -140,23 +140,12 @@ export async function getColoringImage(id: string) {
     *[_type == "drawingImage" && _id == $id && isActive == true][0] {
       _id,
       title,
-      description,
-      canColorOnline,
-      suggestedColors,
-      coloringSettings,
-      difficulty,
-      order,
-      isActive,
-      "imageUrl": mainImage.asset->url,
+      "slug": slug.current,
+      "imageUrl": coalesce(mainImage.asset->url, image.asset->url),
       "downloadUrl": downloadFile.asset->url,
-      "category": subcategory->{ 
-        title, 
-        "slug": slug.current 
-      },
       tags,
-      downloadCount,
-      _createdAt,
-      _updatedAt
+      order,
+      isActive
     }
   `, { id })
 }
@@ -230,10 +219,8 @@ export async function getSubcategoryWithDrawings(categorySlug: string, subcatego
         _id,
         title,
         description,
-        "imageUrl": mainImage.asset->url,
+        "imageUrl": coalesce(image.asset->url, mainImage.asset->url),
         "downloadUrl": downloadFile.asset->url,
-        "hasDigitalColoring": coalesce(hasDigitalColoring, canColorOnline),
-        canColorOnline,
         difficulty,
         "slug": slug.current
       }
@@ -250,7 +237,6 @@ export async function getCategoryImagesWithColoring(categorySlug: string) {
       description,
       "imageUrl": mainImage.asset->url,
       "downloadUrl": downloadFile.asset->url,
-      hasDigitalColoring,
       difficulty,
       "slug": slug.current,
       "subcategory": subcategory->{ title, "slug": slug.current }
@@ -264,22 +250,20 @@ export async function getDrawingsBySubcategory(subcategorySlug: string) {
     *[_type == "drawingImage" && subcategory->slug.current == $subcategorySlug] {
       _id,
       title,
-      description,
-      "imageUrl": mainImage.asset->url,
-      "downloadUrl": downloadFile.asset->url,
-      hasDigitalColoring,
-      difficulty,
       "slug": slug.current,
-      "category": category->{ title, "slug": slug.current },
-      "subcategory": subcategory->{ title, "slug": slug.current }
-    } | order(_createdAt desc)
+      "imageUrl": image.asset->url,
+      "downloadUrl": downloadFile.asset->url,
+      tags,
+      order,
+      isActive
+    } | order(order asc, title asc)
   `, { subcategorySlug })
 }
 
 // Hent alle bilder som kan fargelegges (for static paths)
 export async function getAllColoringImages() {
   return client.fetch(`
-    *[_type == "drawingImage" && canColorOnline == true && isActive == true] {
+    *[_type == "drawingImage" && isActive == true] {
       _id
     }
   `)
@@ -311,4 +295,49 @@ export async function validateAllColoringImages() {
       validation: null
     }
   })
+}
+
+// Hent bilde med WebP URL for fargelegging
+export async function getColoringImageWebP(id: string) {
+  return client.fetch(`
+    *[_type == "drawingImage" && _id == $id][0] {
+      _id,
+      title,
+      "webpImageUrl": coalesce(webpImage.asset->url, image.asset->url, mainImage.asset->url),
+      suggestedColors,
+      "category": subcategory->parentCategory->{ 
+        title, 
+        "slug": slug.current 
+      },
+      "subcategory": subcategory->{ 
+        title, 
+        "slug": slug.current 
+      }
+    }
+  `, { id })
+}
+
+// Hent alle fargeleggingsbilder i en underkategori
+export async function getSubcategoryColoringImages(categorySlug: string, subcategorySlug: string) {
+  return client.fetch(`
+    *[_type == "drawingImage" && 
+      subcategory->slug.current == $subcategorySlug && 
+      subcategory->parentCategory->slug.current == $categorySlug &&
+      hasDigitalColoring == true &&
+      isActive == true] {
+      _id,
+      title,
+      "webpImageUrl": webpImage.asset->url,
+      "thumbnailUrl": mainImage.asset->url,
+      suggestedColors,
+      "category": subcategory->parentCategory->{ 
+        title, 
+        "slug": slug.current 
+      },
+      "subcategory": subcategory->{ 
+        title, 
+        "slug": slug.current 
+      }
+    } | order(order asc, title asc)
+  `, { categorySlug, subcategorySlug })
 } 

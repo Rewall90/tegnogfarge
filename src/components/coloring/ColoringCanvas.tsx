@@ -17,6 +17,7 @@ export default function ColoringCanvas({
   backUrl = '/'
 }: ColoringCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const imageRef = useRef<HTMLImageElement | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
@@ -33,54 +34,63 @@ export default function ColoringCanvas({
 
   // Laste inn bilde
   useEffect(() => {
+    console.log('[ColoringCanvas] useEffect START', imageUrl)
+    let isMounted = true
     const loadImage = async () => {
       try {
+        if (!isMounted) return
         setIsLoading(true)
-        const img = new Image()
+        console.log('[ColoringCanvas] setIsLoading(true)')
+        const img = new window.Image()
+        imageRef.current = img // Hold på referansen
         img.crossOrigin = 'anonymous'
-        
         img.onload = () => {
+          console.log('[ColoringCanvas] img.onload', imageUrl, img.width, img.height, img.naturalWidth, img.naturalHeight)
+          if (!isMounted) return
           const canvas = canvasRef.current
-          if (!canvas) return
-          
+          if (!canvas) { console.log('[ColoringCanvas] canvasRef.current mangler'); return }
           const ctx = canvas.getContext('2d', { willReadFrequently: true })
-          if (!ctx) return
-          
-          // Sett canvas størrelse
+          if (!ctx) { console.log('[ColoringCanvas] ctx mangler'); return }
           canvas.width = img.width
           canvas.height = img.height
-          
-          // Tegn bilde på canvas
           ctx.drawImage(img, 0, 0)
-          
-          // Lagre image data
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
           const originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-          
-          setState(prev => ({
-            ...prev,
-            imageData,
-            originalImageData,
-            history: [imageData],
-            historyStep: 0
-          }))
-          
+          setState(prev => {
+            console.log('[ColoringCanvas] setState imageData')
+            return {
+              ...prev,
+              imageData,
+              originalImageData,
+              history: [imageData],
+              historyStep: 0
+            }
+          })
           setIsLoading(false)
+          console.log('[ColoringCanvas] setIsLoading(false)')
         }
-        
-        img.onerror = () => {
+        img.onerror = (e) => {
+          console.error('[ColoringCanvas] img.onerror', imageUrl, e, img.width, img.height, img.naturalWidth, img.naturalHeight)
+          if (!isMounted) return
           setError('Kunne ikke laste bilde')
           setIsLoading(false)
         }
-        
+        console.log('[ColoringCanvas] Event-handlere satt')
+        console.log('[ColoringCanvas] Setter img.src til', imageUrl)
         img.src = imageUrl
+        console.log('[ColoringCanvas] img.src er satt')
       } catch (err) {
+        console.error('[ColoringCanvas] Exception ved lasting av bilde', imageUrl, err)
         setError('En feil oppstod ved lasting av bildet')
         setIsLoading(false)
       }
     }
-    
     loadImage()
+    return () => {
+      isMounted = false
+      imageRef.current = null // Rydd opp
+      console.log('[ColoringCanvas] useEffect CLEANUP (unmount eller imageUrl endret)')
+    }
   }, [imageUrl])
 
   // Flood fill handler

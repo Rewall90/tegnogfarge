@@ -1,118 +1,6 @@
-# Canvas + Smart Tolerance Implementeringsguide
-
-## Innholdsfortegnelse
-
-1. [Oversikt](#oversikt)
-2. [Del 1: Fjerne gammel SVG-løsning](#del-1-fjerne-gammel-svg-løsning)
-3. [Del 2: Oppdatere Sanity Schema](#del-2-oppdatere-sanity-schema)
-4. [Del 3: Implementere Canvas + Smart Tolerance](#del-3-implementere-canvas--smart-tolerance)
-5. [Del 4: Integrasjon med eksisterende kode](#del-4-integrasjon-med-eksisterende-kode)
-6. [Del 5: Testing og verifisering](#del-5-testing-og-verifisering)
-
-## Oversikt
-
-### Nåværende arkitektur (SVG-basert)
-- SVG-baserte fargelegginger med forhåndsdefinerte områder
-- Krever `.fillable-area` klasser og `data-region` attributter
-- Lagrer kun farger per region
-- Begrenset til forhåndsdefinerte områder
-
-### Ny arkitektur (Canvas + Smart Tolerance)
-- Canvas-basert fargelegging med smart flood fill algoritme
-- Automatisk kantdeteksjon med justerbar toleranse
-- Støtte for både PNG/JPG og SVG-filer
-- Mer fleksibel brukeropplevelse
-
-## Del 1: Fjerne gammel SVG-løsning
-
-### 1.1 Filer som skal slettes helt
-
-```bash
-# Slett gamle fargeleggingskomponenter
-rm -rf src/components/coloring/SVGCanvas.tsx
-rm -rf src/components/coloring/ColoringInterface.tsx
-rm -rf src/components/coloring/ColorPalette.tsx
-
-# Slett SVG-relaterte utilities
-rm -rf src/lib/svg-sanitizer.ts
-rm -rf src/lib/coloring-storage.ts
-
-# Slett gamle types
-rm -rf src/types/coloring.ts
-
-# Slett gamle constants
-rm -rf src/constants/coloring.ts
-
-# Slett UI komponenter som ikke trengs
-rm -rf src/components/ui/SkeletonLoader.tsx
-
-1.2 Oppdater package.json
-Fjern disse dependencies:
-// Fjern fra dependencies:
-"isomorphic-dompurify": "^2.25.0",
-"dompurify": "^3.2.6"
-
-1.3 Oppdater eksisterende filer
-src/app/coloring/[id]/page.tsx
-Erstatt hele filen med:
-import { notFound } from 'next/navigation'
-import { getColoringImage, getAllColoringImages } from '@/lib/sanity'
-import ColoringCanvas from '@/components/coloring/ColoringCanvas'
-import { Metadata } from 'next'
-
-interface ColoringPageProps {
-  params: { id: string }
-}
-
-export default async function ColoringPage({ params }: ColoringPageProps) {
-  const image = await getColoringImage(params.id)
-  
-  if (!image || !image.hasDigitalColoring) {
-    notFound()
-  }
-
-  return (
-    <ColoringCanvas
-      drawingId={image._id}
-      title={image.title}
-      imageUrl={image.imageUrl}
-      suggestedColors={image.suggestedColors}
-      backUrl={image.category ? `/categories/${image.category.slug}` : '/categories'}
-    />
-  )
-}
-
-export async function generateStaticParams() {
-  try {
-    const images = await getAllColoringImages()
-    return images.map((image: { _id: string }) => ({
-      id: image._id
-    }))
-  } catch (error) {
-    console.error('Feil ved generering av statiske parametere:', error)
-    return []
-  }
-}
-
-export async function generateMetadata({ params }: ColoringPageProps): Promise<Metadata> {
-  const image = await getColoringImage(params.id)
-  
-  if (!image) {
-    return {
-      title: 'Fargelegging ikke funnet'
-    }
-  }
-
-  return {
-    title: `Fargelegg ${image.title}`,
-    description: `Fargelegg ${image.title} digitalt med vårt online fargeleggingsverktøy.`
-  }
-}
-
-Del 2: Oppdatere Sanity Schema
-2.1 Oppdater drawingImage schema
-Legg til nye felter i sanity-schema/drawingImage.ts:
-
+Steg 1: Oppdater Sanity schema for WebP bilder
+Fil: sanity-studio/schemaTypes/drawingImage.ts
+Legg til WebP bildestøtte:
 import { defineField, defineType } from 'sanity'
 
 export default defineType({
@@ -123,343 +11,125 @@ export default defineType({
     // ... eksisterende felter ...
     
     defineField({
-      name: 'coloringSettings',
-      title: 'Fargeleggingsinnstillinger',
-      type: 'object',
+      name: 'webpImage',
+      title: 'WebP Bilde for Online Fargelegging',
+      type: 'image',
+      options: {
+        accept: 'image/webp'
+      },
       hidden: ({ document }) => !document?.hasDigitalColoring,
-      fields: [
-        defineField({
-          name: 'defaultTolerance',
-          title: 'Standard toleranse',
-          type: 'number',
-          description: 'Standard toleranseverdi for flood fill (0-255). Høyere verdi = mer fleksibel fylling',
-          validation: Rule => Rule.min(0).max(255),
-          initialValue: 32
-        }),
-        defineField({
-          name: 'maxBrushSize',
-          title: 'Maks penselstørrelse',
-          type: 'number',
-          description: 'Maksimal penselstørrelse i piksler',
-          validation: Rule => Rule.min(1).max(100),
-          initialValue: 50
-        }),
-        defineField({
-          name: 'enableSmoothing',
-          title: 'Aktiver utjevning',
-          type: 'boolean',
-          description: 'Aktiver kantutjevning for jevnere fargelegging',
-          initialValue: true
-        }),
-        defineField({
-          name: 'preserveDetails',
-          title: 'Bevar detaljer',
-          type: 'boolean',
-          description: 'Bevar små detaljer ved fargelegging',
-          initialValue: true
-        })
-      ]
+      description: 'Last opp bildet i WebP format for best ytelse ved online fargelegging',
+      validation: Rule => Rule.custom((value, context) => {
+        const { document } = context as any
+        if (document?.hasDigitalColoring && !value) {
+          return 'WebP bilde er påkrevd for online fargelegging'
+        }
+        return true
+      })
     }),
-    
-    defineField({
-      name: 'suggestedColors',
-      title: 'Foreslåtte farger',
-      type: 'array',
-      of: [{
-        type: 'object',
-        fields: [
-          defineField({
-            name: 'name',
-            type: 'string',
-            title: 'Navn'
-          }),
-          defineField({
-            name: 'hex',
-            type: 'string',
-            title: 'Hex-kode',
-            validation: Rule => Rule.regex(/^#[0-9A-Fa-f]{6}$/)
-          })
-        ]
-      }]
-    })
   ]
 })
 
-2.2 Fjern svgContent felt
-Fjern svgContent feltet fra drawingImage schema siden vi ikke lenger trenger SVG-data.
-Del 3: Implementere Canvas + Smart Tolerance
-3.1 Opprett ny type-fil
-Opprett src/types/canvas-coloring.ts:
-export interface ColoringCanvasProps {
-  drawingId: string
-  title: string
-  imageUrl: string
-  suggestedColors?: Array<{ name: string; hex: string }>
-  backUrl?: string
-}
+Steg 2: Opprett ny fargeleggingsapp-side
+Ny fil: src/app/coloring-app/page.tsx
+'use client'
 
-export interface ColoringSettings {
-  defaultTolerance?: number
-  maxBrushSize?: number
-  enableSmoothing?: boolean
-  preserveDetails?: boolean
-}
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import ColoringApp from '@/components/coloring/ColoringApp'
+import { getColoringImageWebP } from '@/lib/sanity'
 
-export interface ColoringState {
-  imageData: ImageData | null
-  originalImageData: ImageData | null
-  currentColor: string
-  brushSize: number
-  tolerance: number
-  isDrawing: boolean
-  history: ImageData[]
-  historyStep: number
-}
+export default function ColoringAppPage() {
+  const searchParams = useSearchParams()
+  const imageId = searchParams.get('image')
+  const [imageData, setImageData] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-export interface Point {
-  x: number
-  y: number
-}
-
-export interface ColorRGB {
-  r: number
-  g: number
-  b: number
-  a: number
-}
-
-3.2 Opprett flood fill utility
-Opprett src/lib/flood-fill.ts:
-
-import type { ColorRGB, Point } from '@/types/canvas-coloring'
-
-export class FloodFill {
-  private imageData: ImageData
-  private tolerance: number
-  private width: number
-  private height: number
-  private pixels: Uint8ClampedArray
-  private fillColor: ColorRGB
-  private startColor: ColorRGB
-  private pixelsChecked: Set<number>
-  private pixelStack: Point[]
-  private preserveDetails: boolean
-
-  constructor(
-    imageData: ImageData, 
-    tolerance: number = 32,
-    preserveDetails: boolean = true
-  ) {
-    this.imageData = imageData
-    this.tolerance = tolerance
-    this.width = imageData.width
-    this.height = imageData.height
-    this.pixels = imageData.data
-    this.preserveDetails = preserveDetails
-    this.pixelsChecked = new Set()
-    this.pixelStack = []
-  }
-
-  fill(x: number, y: number, fillColor: string): ImageData {
-    // Konverter hex til RGB
-    this.fillColor = this.hexToRGB(fillColor)
-    
-    // Få startfarge
-    const startPos = (y * this.width + x) * 4
-    this.startColor = {
-      r: this.pixels[startPos],
-      g: this.pixels[startPos + 1],
-      b: this.pixels[startPos + 2],
-      a: this.pixels[startPos + 3]
+  useEffect(() => {
+    if (!imageId) {
+      setError('Ingen bilde valgt')
+      setIsLoading(false)
+      return
     }
 
-    // Hvis start og fyll-farge er like, returner
-    if (this.colorsMatch(this.startColor, this.fillColor, 0)) {
-      return this.imageData
-    }
-
-    // Start flood fill
-    this.pixelStack.push({ x, y })
-    
-    while (this.pixelStack.length > 0) {
-      const newPos = this.pixelStack.pop()!
-      const pixelPos = (newPos.y * this.width + newPos.x) * 4
-      
-      // Sjekk om piksel allerede er sjekket
-      if (this.pixelsChecked.has(pixelPos)) continue
-      this.pixelsChecked.add(pixelPos)
-      
-      // Hent current pixel color
-      const currentColor = {
-        r: this.pixels[pixelPos],
-        g: this.pixels[pixelPos + 1],
-        b: this.pixels[pixelPos + 2],
-        a: this.pixels[pixelPos + 3]
-      }
-      
-      // Sjekk om piksel matcher startfarge innenfor toleranse
-      if (this.colorsMatch(this.startColor, currentColor, this.tolerance)) {
-        // Fyll piksel
-        this.pixels[pixelPos] = this.fillColor.r
-        this.pixels[pixelPos + 1] = this.fillColor.g
-        this.pixels[pixelPos + 2] = this.fillColor.b
-        this.pixels[pixelPos + 3] = this.fillColor.a
-        
-        // Legg til nabopiksler
-        this.addNeighbors(newPos.x, newPos.y)
-      }
-    }
-    
-    // Apply edge smoothing hvis aktivert
-    if (this.preserveDetails) {
-      this.smoothEdges()
-    }
-    
-    return this.imageData
-  }
-
-  private addNeighbors(x: number, y: number): void {
-    // Sjekk alle 8 naboer for bedre fylling
-    const neighbors = [
-      { x: x - 1, y }, // Venstre
-      { x: x + 1, y }, // Høyre
-      { x, y: y - 1 }, // Opp
-      { x, y: y + 1 }, // Ned
-      { x: x - 1, y: y - 1 }, // Øverst venstre
-      { x: x + 1, y: y - 1 }, // Øverst høyre
-      { x: x - 1, y: y + 1 }, // Nederst venstre
-      { x: x + 1, y: y + 1 }  // Nederst høyre
-    ]
-    
-    for (const neighbor of neighbors) {
-      if (
-        neighbor.x >= 0 && 
-        neighbor.x < this.width && 
-        neighbor.y >= 0 && 
-        neighbor.y < this.height
-      ) {
-        const pos = (neighbor.y * this.width + neighbor.x) * 4
-        if (!this.pixelsChecked.has(pos)) {
-          this.pixelStack.push(neighbor)
+    const loadImage = async () => {
+      try {
+        const data = await getColoringImageWebP(imageId)
+        if (!data) {
+          setError('Bilde ikke funnet')
+          return
         }
+        setImageData(data)
+      } catch (err) {
+        setError('Kunne ikke laste bilde')
+      } finally {
+        setIsLoading(false)
       }
     }
+
+    loadImage()
+  }, [imageId])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p>Laster fargeleggingsapp...</p>
+        </div>
+      </div>
+    )
   }
 
-  private colorsMatch(color1: ColorRGB, color2: ColorRGB, tolerance: number): boolean {
-    const dr = Math.abs(color1.r - color2.r)
-    const dg = Math.abs(color1.g - color2.g)
-    const db = Math.abs(color1.b - color2.b)
-    const da = Math.abs(color1.a - color2.a)
-    
-    return dr <= tolerance && dg <= tolerance && db <= tolerance && da <= tolerance
+  if (error || !imageData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error || 'En feil oppstod'}</p>
+          <a href="/categories" className="text-blue-600 hover:underline">
+            Tilbake til kategorier
+          </a>
+        </div>
+      </div>
+    )
   }
 
-  private hexToRGB(hex: string): ColorRGB {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16),
-      a: 255
-    } : { r: 0, g: 0, b: 0, a: 255 }
-  }
-
-  private smoothEdges(): void {
-    // Implementer edge smoothing algoritme for jevnere kanter
-    // Dette er en forenklet versjon
-    const tempData = new Uint8ClampedArray(this.pixels)
-    
-    for (let y = 1; y < this.height - 1; y++) {
-      for (let x = 1; x < this.width - 1; x++) {
-        const pos = (y * this.width + x) * 4
-        
-        // Sjekk om dette er en kantpiksel
-        if (this.isEdgePixel(x, y)) {
-          // Beregn gjennomsnitt av nabopiksler
-          let r = 0, g = 0, b = 0, count = 0
-          
-          for (let dy = -1; dy <= 1; dy++) {
-            for (let dx = -1; dx <= 1; dx++) {
-              if (dx === 0 && dy === 0) continue
-              
-              const nPos = ((y + dy) * this.width + (x + dx)) * 4
-              r += tempData[nPos]
-              g += tempData[nPos + 1]
-              b += tempData[nPos + 2]
-              count++
-            }
-          }
-          
-          // Anvend utjevning
-          this.pixels[pos] = Math.round(r / count)
-          this.pixels[pos + 1] = Math.round(g / count)
-          this.pixels[pos + 2] = Math.round(b / count)
-        }
-      }
-    }
-  }
-
-  private isEdgePixel(x: number, y: number): boolean {
-    const pos = (y * this.width + x) * 4
-    const currentColor = {
-      r: this.pixels[pos],
-      g: this.pixels[pos + 1],
-      b: this.pixels[pos + 2],
-      a: this.pixels[pos + 3]
-    }
-    
-    // Sjekk om noen nabopiksler har forskjellig farge
-    for (let dy = -1; dy <= 1; dy++) {
-      for (let dx = -1; dx <= 1; dx++) {
-        if (dx === 0 && dy === 0) continue
-        
-        const nx = x + dx
-        const ny = y + dy
-        
-        if (nx >= 0 && nx < this.width && ny >= 0 && ny < this.height) {
-          const nPos = (ny * this.width + nx) * 4
-          const neighborColor = {
-            r: this.pixels[nPos],
-            g: this.pixels[nPos + 1],
-            b: this.pixels[nPos + 2],
-            a: this.pixels[nPos + 3]
-          }
-          
-          if (!this.colorsMatch(currentColor, neighborColor, 10)) {
-            return true
-          }
-        }
-      }
-    }
-    
-    return false
-  }
+  return <ColoringApp imageData={imageData} />
 }
 
-3.3 Opprett hovedkomponent
-Opprett src/components/coloring/ColoringCanvas.tsx:
+Steg 3: Opprett ny ColoringApp komponent
+Ny fil: src/components/coloring/ColoringApp.tsx
 
 'use client'
+
 import { useState, useRef, useEffect, useCallback } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { FloodFill } from '@/lib/flood-fill'
 import ColorPalette from './ColorPalette'
 import ToolBar from './ToolBar'
-import type { ColoringCanvasProps, ColoringState } from '@/types/canvas-coloring'
+import ImageSelector from './ImageSelector'
+import type { ColoringState } from '@/types/canvas-coloring'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
+
+interface ColoringAppProps {
+  imageData: {
+    _id: string
+    title: string
+    webpImageUrl: string
+    suggestedColors?: Array<{ name: string; hex: string }>
+    category: { title: string; slug: string }
+    subcategory: { title: string; slug: string }
+  }
+}
 
 const MAX_HISTORY = 50
 
-export default function ColoringCanvas({
-  drawingId,
-  title,
-  imageUrl,
-  suggestedColors,
-  backUrl = '/'
-}: ColoringCanvasProps) {
+export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
+  const router = useRouter()
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [currentImage, setCurrentImage] = useState(initialImageData)
+  const [showImageSelector, setShowImageSelector] = useState(false)
   
   const [state, setState] = useState<ColoringState>({
     imageData: null,
@@ -472,199 +142,50 @@ export default function ColoringCanvas({
     historyStep: -1
   })
 
-  // Laste inn bilde
+  // Laste inn bilde når currentImage endres
   useEffect(() => {
     const loadImage = async () => {
-      try {
-        setIsLoading(true)
-        const img = new Image()
-        img.crossOrigin = 'anonymous'
+      const img = new Image()
+      img.crossOrigin = 'anonymous'
+      
+      img.onload = () => {
+        const canvas = canvasRef.current
+        if (!canvas) return
         
-        img.onload = () => {
-          const canvas = canvasRef.current
-          if (!canvas) return
-          
-          const ctx = canvas.getContext('2d', { willReadFrequently: true })
-          if (!ctx) return
-          
-          // Sett canvas størrelse
-          canvas.width = img.width
-          canvas.height = img.height
-          
-          // Tegn bilde på canvas
-          ctx.drawImage(img, 0, 0)
-          
-          // Lagre image data
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-          const originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-          
-          setState(prev => ({
-            ...prev,
-            imageData,
-            originalImageData,
-            history: [imageData],
-            historyStep: 0
-          }))
-          
-          setIsLoading(false)
-        }
+        const ctx = canvas.getContext('2d', { willReadFrequently: true })
+        if (!ctx) return
         
-        img.onerror = () => {
-          setError('Kunne ikke laste bilde')
-          setIsLoading(false)
-        }
+        canvas.width = img.width
+        canvas.height = img.height
+        ctx.drawImage(img, 0, 0)
         
-        img.src = imageUrl
-      } catch (err) {
-        setError('En feil oppstod ved lasting av bildet')
-        setIsLoading(false)
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        const originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        
+        setState(prev => ({
+          ...prev,
+          imageData,
+          originalImageData,
+          history: [imageData],
+          historyStep: 0
+        }))
       }
+      
+      img.src = currentImage.webpImageUrl
     }
     
     loadImage()
-  }, [imageUrl])
+  }, [currentImage])
 
-  // Flood fill handler
-  const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current
-    if (!canvas || !state.imageData) return
-    
-    const ctx = canvas.getContext('2d', { willReadFrequently: true })
-    if (!ctx) return
-    
-    const rect = canvas.getBoundingClientRect()
-    const scaleX = canvas.width / rect.width
-    const scaleY = canvas.height / rect.height
-    
-    const x = Math.floor((e.clientX - rect.left) * scaleX)
-    const y = Math.floor((e.clientY - rect.top) * scaleY)
-    
-    // Utfør flood fill
-    const floodFill = new FloodFill(state.imageData, state.tolerance, true)
-    const newImageData = floodFill.fill(x, y, state.currentColor)
-    
-    // Oppdater canvas
-    ctx.putImageData(newImageData, 0, 0)
-    
-    // Oppdater history
-    const newHistory = state.history.slice(0, state.historyStep + 1)
-    newHistory.push(ctx.getImageData(0, 0, canvas.width, canvas.height))
-    
-    setState(prev => ({
-      ...prev,
-      imageData: newImageData,
-      history: newHistory.slice(-MAX_HISTORY),
-      historyStep: Math.min(newHistory.length - 1, MAX_HISTORY - 1)
-    }))
-  }, [state.currentColor, state.tolerance, state.imageData, state.history, state.historyStep])
-
-  // Undo handler
-  const handleUndo = useCallback(() => {
-    if (state.historyStep <= 0) return
-    
-    const canvas = canvasRef.current
-    if (!canvas) return
-    
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-    
-    const newStep = state.historyStep - 1
-    const imageData = state.history[newStep]
-    
-    ctx.putImageData(imageData, 0, 0)
-    
-    setState(prev => ({
-      ...prev,
-      imageData,
-      historyStep: newStep
-    }))
-  }, [state.history, state.historyStep])
-
-  // Redo handler
-  const handleRedo = useCallback(() => {
-    if (state.historyStep >= state.history.length - 1) return
-    
-    const canvas = canvasRef.current
-    if (!canvas) return
-    
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-    
-    const newStep = state.historyStep + 1
-    const imageData = state.history[newStep]
-    
-    ctx.putImageData(imageData, 0, 0)
-    
-    setState(prev => ({
-      ...prev,
-      imageData,
-      historyStep: newStep
-    }))
-  }, [state.history, state.historyStep])
-
-  // Reset handler
-  const handleReset = useCallback(() => {
-    if (!state.originalImageData) return
-    
-    const canvas = canvasRef.current
-    if (!canvas) return
-    
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-    
-    ctx.putImageData(state.originalImageData, 0, 0)
-    
-    setState(prev => ({
-      ...prev,
-      imageData: state.originalImageData,
-      history: [state.originalImageData!],
-      historyStep: 0
-    }))
-  }, [state.originalImageData])
-
-  // Download handler
-  const handleDownload = useCallback(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    
-    canvas.toBlob(blob => {
-      if (!blob) return
-      
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `fargelegging-${drawingId}.png`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    }, 'image/png', 0.95)
-  }, [drawingId])
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p>Laster fargelegging...</p>
-        </div>
-      </div>
-    )
+  // Håndter bildevelger
+  const handleImageChange = (newImageData: any) => {
+    setCurrentImage(newImageData)
+    setShowImageSelector(false)
+    // Oppdater URL uten å laste siden på nytt
+    router.push(`/coloring-app?image=${newImageData._id}`, { scroll: false })
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center text-red-600">
-          <p className="text-lg font-semibold mb-2">Feil</p>
-          <p>{error}</p>
-          <Link href={backUrl} className="text-blue-600 hover:underline mt-4 inline-block">
-            Gå tilbake
-          </Link>
-        </div>
-      </div>
-    )
-  }
+  // ... resten av flood fill, undo, redo, reset, download handlers (samme som før)
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -673,27 +194,44 @@ export default function ColoringCanvas({
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link href={backUrl} className="text-blue-600 hover:text-blue-800">
-                ← Tilbake
-              </Link>
-              <h1 className="text-xl md:text-2xl font-bold">{title}</h1>
+              <h1 className="text-xl md:text-2xl font-bold">Fargeleggingsapp</h1>
+              <button
+                onClick={() => setShowImageSelector(true)}
+                className="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded"
+              >
+                Bytt bilde ({currentImage.title})
+              </button>
             </div>
+            <a 
+              href={`/categories/${currentImage.category.slug}/${currentImage.subcategory.slug}`}
+              className="text-blue-600 hover:text-blue-800"
+            >
+              Tilbake til {currentImage.subcategory.title}
+            </a>
           </div>
         </div>
       </header>
 
+      {/* Image Selector Modal */}
+      {showImageSelector && (
+        <ImageSelector
+          currentImageId={currentImage._id}
+          categorySlug={currentImage.category.slug}
+          subcategorySlug={currentImage.subcategory.slug}
+          onSelect={handleImageChange}
+          onClose={() => setShowImageSelector(false)}
+        />
+      )}
+
       {/* Main content */}
       <div className="flex h-[calc(100vh-73px)]">
-        {/* Color palette */}
         <ColorPalette
           selectedColor={state.currentColor}
           onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}
-          suggestedColors={suggestedColors}
+          suggestedColors={currentImage.suggestedColors}
         />
 
-        {/* Canvas area */}
         <div className="flex-1 flex flex-col">
-          {/* Toolbar */}
           <ToolBar
             tolerance={state.tolerance}
             onToleranceChange={(t) => setState(prev => ({ ...prev, tolerance: t }))}
@@ -705,7 +243,6 @@ export default function ColoringCanvas({
             onDownload={handleDownload}
           />
 
-          {/* Canvas */}
           <div className="flex-1 overflow-auto bg-gray-50 p-4">
             <div className="max-w-4xl mx-auto">
               <canvas
@@ -722,368 +259,242 @@ export default function ColoringCanvas({
   )
 }
 
-3.4 Opprett ColorPalette komponent
-Opprett src/components/coloring/ColorPalette.tsx
+Steg 4: Opprett ImageSelector komponent
+Ny fil: src/components/coloring/ImageSelector.tsx
 'use client'
-import { useState } from 'react'
 
-interface ColorPaletteProps {
-  selectedColor: string
-  onColorSelect: (color: string) => void
-  suggestedColors?: Array<{ name: string; hex: string }>
+import { useState, useEffect } from 'react'
+import { getSubcategoryColoringImages } from '@/lib/sanity'
+import Image from 'next/image'
+
+interface ImageSelectorProps {
+  currentImageId: string
+  categorySlug: string
+  subcategorySlug: string
+  onSelect: (image: any) => void
+  onClose: () => void
 }
 
-export default function ColorPalette({
-  selectedColor,
-  onColorSelect,
-  suggestedColors
-}: ColorPaletteProps) {
-  const [showCustomPicker, setShowCustomPicker] = useState(false)
+export default function ImageSelector({
+  currentImageId,
+  categorySlug,
+  subcategorySlug,
+  onSelect,
+  onClose
+}: ImageSelectorProps) {
+  const [images, setImages] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const defaultColors = [
-    '#FF0000', '#FF7F00', '#FFFF00', '#00FF00',
-    '#0000FF', '#4B0082', '#9400D3', '#FF1493',
-    '#00CED1', '#FFD700', '#8B4513', '#000000',
-    '#808080', '#FFFFFF', '#FFC0CB', '#87CEEB'
-  ]
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const data = await getSubcategoryColoringImages(categorySlug, subcategorySlug)
+        setImages(data)
+      } catch (error) {
+        console.error('Kunne ikke laste bilder:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadImages()
+  }, [categorySlug, subcategorySlug])
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-full overflow-y-auto">
-      <div className="p-4">
-        <h3 className="text-lg font-semibold mb-4">Fargepalett</h3>
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-hidden">
+        <div className="p-4 border-b flex justify-between items-center">
+          <h2 className="text-xl font-bold">Velg et annet bilde</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            ✕
+          </button>
+        </div>
         
-        {/* Foreslåtte farger */}
-        {suggestedColors && suggestedColors.length > 0 && (
-          <div className="mb-6">
-            <h4 className="text-sm font-medium text-gray-700 mb-3">Foreslåtte farger</h4>
-            <div className="grid grid-cols-4 gap-2">
-              {suggestedColors.map((color, index) => (
+        <div className="p-4 overflow-y-auto max-h-[60vh]">
+          {isLoading ? (
+            <p className="text-center">Laster bilder...</p>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {images.map((image: any) => (
                 <button
-                  key={index}
-                  className={`w-12 h-12 rounded-lg border-2 transition-all hover:scale-105 ${
-                    selectedColor === color.hex ? 'border-gray-800 ring-2 ring-blue-300' : 'border-gray-300'
+                  key={image._id}
+                  onClick={() => onSelect(image)}
+                  className={`border-2 rounded-lg overflow-hidden hover:border-blue-500 transition ${
+                    image._id === currentImageId ? 'border-blue-500 ring-2 ring-blue-300' : 'border-gray-200'
                   }`}
-                  style={{ backgroundColor: color.hex }}
-                  onClick={() => onColorSelect(color.hex)}
-                  title={color.name}
-                />
+                >
+                  <div className="relative aspect-[3/4] bg-gray-100">
+                    <Image
+                      src={image.thumbnailUrl || image.webpImageUrl}
+                      alt={image.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                  </div>
+                  <p className="p-2 text-sm font-medium truncate">{image.title}</p>
+                </button>
               ))}
             </div>
-          </div>
-        )}
-
-        {/* Standard farger */}
-        <div className="mb-6">
-          <h4 className="text-sm font-medium text-gray-700 mb-3">Standard farger</h4>
-          <div className="grid grid-cols-4 gap-2">
-            {defaultColors.map((color) => (
-              <button
-                key={color}
-                className={`w-12 h-12 rounded-lg border-2 transition-all hover:scale-105 ${
-                  selectedColor === color ? 'border-gray-800 ring-2 ring-blue-300' : 'border-gray-300'
-                }`}
-                style={{ backgroundColor: color }}
-                onClick={() => onColorSelect(color)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Egendefinert farge */}
-        <div>
-          <button
-            onClick={() => setShowCustomPicker(!showCustomPicker)}
-            className="w-full bg-gray-100 hover:bg-gray-200 py-2 px-4 rounded-lg transition-colors"
-          >
-            Egendefinert farge
-          </button>
-          
-          {showCustomPicker && (
-            <div className="mt-3">
-              <input
-                type="color"
-                value={selectedColor}
-                onChange={(e) => onColorSelect(e.target.value)}
-                className="w-full h-12 rounded cursor-pointer"
-              />
-            </div>
           )}
-        </div>
-
-        {/* Valgt farge */}
-        <div className="mt-6 pt-6 border-t">
-          <div className="text-sm text-gray-600 mb-2">Valgt farge:</div>
-          <div 
-            className="w-full h-16 rounded-lg border-2 border-gray-300"
-            style={{ backgroundColor: selectedColor }}
-          />
-          <div className="text-xs text-gray-600 mt-2 text-center font-mono">
-            {selectedColor.toUpperCase()}
-          </div>
         </div>
       </div>
     </div>
   )
 }
 
-3.5 Opprett ToolBar komponent
-Opprett src/components/coloring/ToolBar.tsx:
-'use client'
-
-interface ToolBarProps {
-  tolerance: number
-  onToleranceChange: (tolerance: number) => void
-  canUndo: boolean
-  canRedo: boolean
-  onUndo: () => void
-  onRedo: () => void
-  onReset: () => void
-  onDownload: () => void
-}
-
-export default function ToolBar({
-  tolerance,
-  onToleranceChange,
-  canUndo,
- canRedo,
- onUndo,
- onRedo,
- onReset,
- onDownload
-}: ToolBarProps) {
- return (
-   <div className="bg-white border-b border-gray-200 p-4">
-     <div className="flex flex-wrap items-center gap-4">
-       {/* Undo/Redo */}
-       <div className="flex gap-2">
-         <button
-           onClick={onUndo}
-           disabled={!canUndo}
-           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-           title="Angre (Ctrl+Z)"
-         >
-           ↶ Angre
-         </button>
-         <button
-           onClick={onRedo}
-           disabled={!canRedo}
-           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-           title="Gjør om (Ctrl+Y)"
-         >
-           ↷ Gjør om
-         </button>
-       </div>
-
-       {/* Tolerance slider */}
-       <div className="flex items-center gap-3">
-         <label htmlFor="tolerance" className="text-sm font-medium text-gray-700">
-           Toleranse:
-         </label>
-         <input
-           id="tolerance"
-           type="range"
-           min="0"
-           max="100"
-           value={tolerance}
-           onChange={(e) => onToleranceChange(Number(e.target.value))}
-           className="w-32"
-         />
-         <span className="text-sm text-gray-600 w-10">{tolerance}</span>
-       </div>
-
-       {/* Reset og Download */}
-       <div className="flex gap-2 ml-auto">
-         <button
-           onClick={onReset}
-           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-         >
-           ↺ Tilbakestill
-         </button>
-         <button
-           onClick={onDownload}
-           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-         >
-           ⬇ Last ned
-         </button>
-       </div>
-     </div>
-   </div>
- )
-}
-
-Del 4: Integrasjon med eksisterende kode
-4.1 Oppdater Sanity queries
-Oppdater src/lib/sanity.ts for å hente nye felter:
-// Oppdater getColoringImage query
-export async function getColoringImage(id: string) {
+Steg 5: Oppdater Sanity queries
+Fil: src/lib/sanity.ts
+Legg til nye queries:
+// Hent bilde med WebP URL for fargelegging
+export async function getColoringImageWebP(id: string) {
   return client.fetch(`
-    *[_type == "drawingImage" && _id == $id && isActive == true][0] {
+    *[_type == "drawingImage" && _id == $id && hasDigitalColoring == true][0] {
       _id,
       title,
-      description,
-      hasDigitalColoring,
+      "webpImageUrl": webpImage.asset->url,
       suggestedColors,
-      coloringSettings,
-      difficulty,
-      order,
-      isActive,
-      "imageUrl": mainImage.asset->url,
-      "downloadUrl": downloadFile.asset->url,
-      "category": subcategory->{ 
+      "category": subcategory->parentCategory->{ 
         title, 
         "slug": slug.current 
       },
-      tags,
-      downloadCount,
-      _createdAt,
-      _updatedAt
+      "subcategory": subcategory->{ 
+        title, 
+        "slug": slug.current 
+      }
     }
   `, { id })
 }
 
-// Oppdater getAllColoringImages for å bare hente nødvendig data
-export async function getAllColoringImages() {
+// Hent alle fargeleggingsbilder i en underkategori
+export async function getSubcategoryColoringImages(categorySlug: string, subcategorySlug: string) {
   return client.fetch(`
-    *[_type == "drawingImage" && hasDigitalColoring == true && isActive == true] {
-      _id
-    }
-  `)
-}
-
-4.2 Oppdater TypeScript definitions
-Oppdater Sanity types i sanity.types.ts:
-// Legg til i DrawingImage type
-coloringSettings?: {
-  defaultTolerance?: number;
-  maxBrushSize?: number;
-  enableSmoothing?: boolean;
-  preserveDetails?: boolean;
-};
-
-4.3 Oppdater subcategory page
-Oppdater src/app/categories/[slug]/[subcategorySlug]/page.tsx for å vise digital fargelegging-knapp:
-// I DrawingCard komponenten, legg til:
-{drawing.hasDigitalColoring && (
-  <Link
-    href={`/coloring/${drawing._id}`}
-    className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition text-sm"
-  >
-    Fargelegg digitalt
-  </Link>
-)}
-
-4.4 Oppdater ErrorBoundary
-Oppdater src/components/ui/ErrorBoundary.tsx for å håndtere Canvas-feil:
-export class CanvasErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = { hasError: false }
-  }
-
-  static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error }
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('CanvasErrorBoundary caught an error:', error, errorInfo)
-    
-    // Spesifikk håndtering for Canvas-relaterte feil
-    if (error.message.includes('getContext')) {
-      console.error('Canvas context error - browser may not support Canvas')
-    }
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center text-red-600 max-w-md mx-auto p-6">
-            <p className="text-lg font-semibold mb-2">Noe gikk galt</p>
-            <p className="text-sm text-gray-600 mb-4">
-              Det oppstod en feil med fargeleggingsverktøyet. 
-              Sjekk at nettleseren din støtter Canvas.
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Last siden på nytt
-            </button>
-          </div>
-        </div>
-      )
-    }
-
-    return this.props.children
-  }
-}
-
-4.5 Legg til keyboard shortcuts
-Opprett src/hooks/useKeyboardShortcuts.ts:
-
-import { useEffect } from 'react'
-
-interface ShortcutHandlers {
-  onUndo: () => void
-  onRedo: () => void
-  onSave?: () => void
-}
-
-export function useKeyboardShortcuts({ onUndo, onRedo, onSave }: ShortcutHandlers) {
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl/Cmd + Z for undo
-      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
-        e.preventDefault()
-        onUndo()
-      }
-      
-      // Ctrl/Cmd + Y eller Ctrl/Cmd + Shift + Z for redo
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
-        e.preventDefault()
-        onRedo()
-      }
-      
-      // Ctrl/Cmd + S for save
-      if ((e.ctrlKey || e.metaKey) && e.key === 's' && onSave) {
-        e.preventDefault()
-        onSave()
-      }
-    }
-    
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onUndo, onRedo, onSave])
-}
-
-Bruk denne i ColoringCanvas komponenten:
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
-
-// I komponenten:
-useKeyboardShortcuts({
-  onUndo: handleUndo,
-  onRedo: handleRedo,
-  onSave: handleDownload
-})
-
-4.6 Oppdater miljøvariabler
-
-Oppdater next.config.ts:
-const nextConfig: NextConfig = {
-  images: {
-    domains: ['cdn.sanity.io'],
-  },
-  // Legg til headers for CORS
-  async headers() {
-    return [
-      {
-        source: '/api/:path*',
-        headers: [
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,DELETE,OPTIONS' },
-          { key: 'Access-Control-Allow-Headers', value: 'Content-Type' },
-        ],
+    *[_type == "drawingImage" && 
+      subcategory->slug.current == $subcategorySlug && 
+      subcategory->parentCategory->slug.current == $categorySlug &&
+      hasDigitalColoring == true &&
+      isActive == true] {
+      _id,
+      title,
+      "webpImageUrl": webpImage.asset->url,
+      "thumbnailUrl": mainImage.asset->url,
+      suggestedColors,
+      "category": subcategory->parentCategory->{ 
+        title, 
+        "slug": slug.current 
       },
-    ]
-  },
+      "subcategory": subcategory->{ 
+        title, 
+        "slug": slug.current 
+      }
+    } | order(order asc, title asc)
+  `, { categorySlug, subcategorySlug })
 }
+
+Steg 6: Oppdater StartColoringButton
+Fil: src/components/buttons/StartColoringButton.tsx
+
+import React from 'react';
+import Button from '../ui/Button';
+
+interface StartColoringButtonProps {
+  drawingId: string;
+  title?: string;
+  className?: string;
+}
+
+export function StartColoringButton({ drawingId, title = 'Online Coloring', className }: StartColoringButtonProps) {
+  return (
+    <Button
+      href={`/coloring-app?image=${drawingId}`}
+      variant="secondary"
+      className={className}
+      ariaLabel={title}
+    >
+      {title}
+    </Button>
+  );
+}
+
+Steg 7: Fjern gammel coloring-rute
+Slett hele mappen:
+src/app/coloring/
+
+Steg 8: Oppdater DrawingDetail komponent
+Fil: src/components/drawing/DrawingDetail.tsx
+Ingen endringer nødvendig - komponenten bruker allerede StartColoringButton som nå peker til ny URL.
+Del 3: Migrering av eksisterende data
+Migreringsscript for Sanity
+Opprett et script for å konvertere eksisterende bilder til WebP:
+Ny fil: scripts/migrate-to-webp.js
+// Dette scriptet må kjøres lokalt med Node.js
+const sharp = require('sharp');
+const { createClient } = require('@sanity/client');
+const imageUrlBuilder = require('@sanity/image-url');
+
+const client = createClient({
+  projectId: 'fn0kjvlp',
+  dataset: 'production',
+  apiVersion: '2024-06-05',
+  token: process.env.SANITY_WRITE_TOKEN, // Trenger skrivetilgang
+  useCdn: false
+});
+
+const builder = imageUrlBuilder(client);
+
+async function migrateImages() {
+  // Hent alle bilder som har digital coloring
+  const images = await client.fetch(`
+    *[_type == "drawingImage" && hasDigitalColoring == true && !defined(webpImage)] {
+      _id,
+      title,
+      mainImage
+    }
+  `);
+
+  console.log(`Fant ${images.length} bilder som må konverteres`);
+
+  for (const image of images) {
+    try {
+      // Hent original bilde
+      const imageUrl = builder.image(image.mainImage).url();
+      
+      // Last ned og konverter til WebP
+      const response = await fetch(imageUrl);
+      const buffer = await response.arrayBuffer();
+      
+      const webpBuffer = await sharp(Buffer.from(buffer))
+        .webp({ quality: 90 })
+        .toBuffer();
+      
+      // Last opp WebP til Sanity
+      const asset = await client.assets.upload('image', webpBuffer, {
+        filename: `${image.title.replace(/\s+/g, '-').toLowerCase()}.webp`,
+        contentType: 'image/webp'
+      });
+      
+      // Oppdater dokument med WebP referanse
+      await client
+        .patch(image._id)
+        .set({
+          webpImage: {
+            _type: 'image',
+            asset: {
+              _type: 'reference',
+              _ref: asset._id
+            }
+          }
+        })
+        .commit();
+      
+      console.log(`✓ Konvertert: ${image.title}`);
+    } catch (error) {
+      console.error(`✗ Feil ved konvertering av ${image.title}:`, error);
+    }
+  }
+}
+
+migrateImages();
