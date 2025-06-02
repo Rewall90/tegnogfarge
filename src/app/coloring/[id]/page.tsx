@@ -1,46 +1,34 @@
-import { notFound, redirect } from 'next/navigation'
-import { getColoringImage, getAllColoringImages } from '../../../lib/sanity'
-import ColoringInterface from '@/components/coloring/ColoringInterface'
+import { notFound } from 'next/navigation'
+import { getColoringImage, getAllColoringImages } from '@/lib/sanity'
+import ColoringCanvas from '@/components/coloring/ColoringCanvas'
 import { Metadata } from 'next'
 
 interface ColoringPageProps {
   params: { id: string }
 }
 
-// Legg til en lokal type for image:
-type ImageType = { _id: string };
-
 export default async function ColoringPage({ params }: ColoringPageProps) {
   const image = await getColoringImage(params.id)
   
-  // Redirect hvis bildet ikke finnes
-  if (!image) {
+  if (!image || !image.hasDigitalColoring) {
     notFound()
-  }
-  
-  // Redirect hvis bildet ikke kan fargelegges digitalt
-  if (!image.hasDigitalColoring || !image.svgContent) {
-    redirect(`/categories/${image.category?.slug || ''}`)
   }
 
   return (
-    <ColoringInterface
+    <ColoringCanvas
       drawingId={image._id}
       title={image.title}
-      svgContent={image.svgContent}
-      downloadUrl={image.downloadUrl || undefined}
-      suggestedColors={image.suggestedColors || undefined}
+      imageUrl={image.imageUrl}
+      suggestedColors={image.suggestedColors}
       backUrl={image.category ? `/categories/${image.category.slug}` : '/categories'}
     />
   )
 }
 
-// Generer statiske paths for alle fargeleggingsbilder
 export async function generateStaticParams() {
   try {
     const images = await getAllColoringImages()
-    
-    return images.map((image: ImageType) => ({
+    return images.map((image: { _id: string }) => ({
       id: image._id
     }))
   } catch (error) {
@@ -49,42 +37,17 @@ export async function generateStaticParams() {
   }
 }
 
-// Metadata for SEO
 export async function generateMetadata({ params }: ColoringPageProps): Promise<Metadata> {
-  try {
-    const image = await getColoringImage(params.id)
-    
-    if (!image) {
-      return {
-        title: 'Fargelegging ikke funnet',
-        description: 'Denne fargeleggingen eksisterer ikke eller er ikke tilgjengelig.'
-      }
-    }
-
-    const baseTitle = `Fargelegg ${image.title}`
-    const description = `Fargelegg ${image.title} digitalt med vårt online fargeleggingsverktøy. Gratis, morsomt og enkelt å bruke!`
-
+  const image = await getColoringImage(params.id)
+  
+  if (!image) {
     return {
-      title: baseTitle,
-      description: description,
-      openGraph: {
-        title: baseTitle,
-        description: description,
-        images: [
-          {
-            url: image.imageUrl,
-            width: 1200,
-            height: 630,
-            alt: image.title
-          }
-        ]
-      }
+      title: 'Fargelegging ikke funnet'
     }
-  } catch (error) {
-    console.error('Feil ved generering av metadata:', error)
-    return {
-      title: 'Fargelegging',
-      description: 'Digital fargelegging av tegninger'
-    }
+  }
+
+  return {
+    title: `Fargelegg ${image.title}`,
+    description: `Fargelegg ${image.title} digitalt med vårt online fargeleggingsverktøy.`
   }
 } 

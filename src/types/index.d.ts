@@ -1,5 +1,3 @@
-import { ObjectId } from 'mongodb';
-
 // Extend NextAuth types
 declare module 'next-auth' {
   interface User {

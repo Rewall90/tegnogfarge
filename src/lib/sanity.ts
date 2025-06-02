@@ -141,9 +141,9 @@ export async function getColoringImage(id: string) {
       _id,
       title,
       description,
-      svgContent,
-      hasDigitalColoring,
+      canColorOnline,
       suggestedColors,
+      coloringSettings,
       difficulty,
       order,
       isActive,
@@ -232,7 +232,8 @@ export async function getSubcategoryWithDrawings(categorySlug: string, subcatego
         description,
         "imageUrl": mainImage.asset->url,
         "downloadUrl": downloadFile.asset->url,
-        hasDigitalColoring,
+        "hasDigitalColoring": coalesce(hasDigitalColoring, canColorOnline),
+        canColorOnline,
         difficulty,
         "slug": slug.current
       }
@@ -278,9 +279,8 @@ export async function getDrawingsBySubcategory(subcategorySlug: string) {
 // Hent alle bilder som kan fargelegges (for static paths)
 export async function getAllColoringImages() {
   return client.fetch(`
-    *[_type == "drawingImage" && hasDigitalColoring == true] {
-      _id,
-      "slug": slug.current
+    *[_type == "drawingImage" && canColorOnline == true && isActive == true] {
+      _id
     }
   `)
 }
@@ -288,43 +288,27 @@ export async function getAllColoringImages() {
 // Admin-funksjon: Valider alle fargeleggingsbilder
 export async function validateAllColoringImages() {
   const images = await client.fetch(`
-    *[_type == "drawingImage" && hasDigitalColoring == true] {
+    *[_type == "drawingImage" && canColorOnline == true] {
       _id,
-      title,
-      svgContent
+      title
     }
   `)
   
   if (typeof window === 'undefined') {
     // Server-side: returnerer bare grunnleggende info
-    return images.map((image: ColoringImage) => ({
+    return images.map((image: any) => ({
       id: image._id,
       title: image.title,
-      hasSvg: false,
       validation: null
     }))
   }
   
   // Client-side: full validering
-  // svgContent finnes ikke lenger, så vi kan ikke validere SVG
-  return images.map((image: ColoringImage) => {
+  return images.map((image: any) => {
     return {
       id: image._id,
       title: image.title,
       validation: null
     }
   })
-}
-
-// Legg til en lokal type for images:
-export interface ColoringImage {
-  _id: string;
-  title: string;
-  description?: string;
-  imageUrl?: string;
-  downloadUrl?: string;
-  canColorOnline?: boolean;
-  tags?: string[];
-  subcategory?: { title: string; slug: string };
-  downloadCount?: number;
 } 

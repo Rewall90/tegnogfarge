@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Category } from '../../../models/category';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface FrontpageCategoriesProps {
   categories: Pick<Category, 'name' | 'imageUrl' | 'slug'>[];
@@ -20,7 +21,7 @@ export function FrontpageCategories({ categories }: FrontpageCategoriesProps) {
               <div className="relative w-full aspect-[4/5] bg-[#2EC4B6] rounded-[32px] shadow-lg flex flex-col items-center justify-center overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-xl">
                 {/* Kategori-bilde */}
                 {cat.imageUrl && (
-                  <img src={cat.imageUrl} alt={cat.name} className="w-36 h-36 object-contain mb-4 mt-10" />
+                  <Image src={cat.imageUrl} alt={cat.name} width={144} height={144} className="w-36 h-36 object-contain mb-4 mt-10" />
                 )}
                 {/* Kategori-navn */}
                 <div className="mt-auto mb-10 text-white text-2xl font-bold text-center w-full drop-shadow-sm">

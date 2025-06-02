@@ -3,6 +3,7 @@ import { urlForImage } from '@/lib/sanityImageUrl';
 import Link from 'next/link';
 import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
+import type { CategoryType } from '@/types/coloring';
 
 // Funksjon for å formatere dato
 function formatDate(dateString: string) {
@@ -14,11 +15,9 @@ function formatDate(dateString: string) {
   }).format(date);
 }
 
-// Legg til en lokal type for category:
-type CategoryType = { _id: string; title: string; slug: { current: string } };
-
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getPost(params.slug);
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = await getPost(slug);
   
   if (!post) {
     return (
@@ -88,4 +87,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       </article>
     </main>
   );
+}
+
+export async function generateStaticParams() {
+  const posts = await import('@/lib/sanity').then(mod => mod.getPosts());
+  return posts.map((post: { slug: { current: string } }) => ({ slug: post.slug.current }));
 } 

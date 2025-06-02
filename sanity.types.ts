@@ -74,7 +74,7 @@ export type Post = {
   excerpt?: string;
 };
 
-export type DrawingImage = {
+export interface DrawingImage {
   _id: string;
   _type: "drawingImage";
   _createdAt: string;
@@ -126,7 +126,14 @@ export type DrawingImage = {
   tags?: Array<string>;
   canColorOnline?: boolean;
   downloadCount?: number;
-};
+  coloringSettings?: {
+    defaultTolerance?: number;
+    maxBrushSize?: number;
+    enableSmoothing?: boolean;
+    preserveDetails?: boolean;
+  };
+  suggestedColors?: Array<{ name: string; hex: string }>;
+}
 
 export type Subcategory = {
   _id: string;

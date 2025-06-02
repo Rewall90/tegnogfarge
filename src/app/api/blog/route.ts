@@ -1,13 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]/route';
-import clientPromise from '@/lib/db';
-import { Document } from 'mongodb';
-import { mapToBlogPostModel } from '../../../../models/blogPost';
-import { createSlug } from '../../../../utils/slug';
 import { getPosts } from '@/lib/sanity';
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     // Hent blogginnlegg fra Sanity
     const blogPosts = await getPosts();
@@ -26,21 +20,4 @@ export async function GET(request: Request) {
 }
 
 // POST/PUT/DELETE er deaktivert fordi all skriving skal skje via Sanity Studio.
-// Hvis du ønsker å støtte admin-skriving til Sanity via API, må du bruke Sanity sitt API og tokens.
-
-// Helper function to generate unique slug
-function generateUniqueSlug(slug: string, existingSlugs: string[]): string {
-  if (!existingSlugs.includes(slug)) {
-    return slug;
-  }
-
-  let counter = 1;
-  let uniqueSlug = `${slug}-${counter}`;
-
-  while (existingSlugs.includes(uniqueSlug)) {
-    counter++;
-    uniqueSlug = `${slug}-${counter}`;
-  }
-
-  return uniqueSlug;
-} 
+// Hvis du ønsker å støtte admin-skriving til Sanity via API, må du bruke Sanity sitt API og tokens. 

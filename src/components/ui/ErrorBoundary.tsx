@@ -23,6 +23,10 @@ export class ColoringErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ColoringErrorBoundary caught an error:', error, errorInfo)
+    // Spesifikk håndtering for Canvas-relaterte feil
+    if (error.message.includes('getContext')) {
+      console.error('Canvas context error - browser may not support Canvas')
+    }
   }
 
   render() {
@@ -37,7 +41,8 @@ export class ColoringErrorBoundary extends Component<Props, State> {
             </div>
             <p className="text-lg font-semibold mb-2">Noe gikk galt</p>
             <p className="text-sm text-gray-600 mb-4">
-              Det oppstod en feil med fargeleggingsverktøyet.
+              Det oppstod en feil med fargeleggingsverktøyet. 
+              Sjekk at nettleseren din støtter Canvas.
             </p>
             <button
               onClick={() => this.setState({ hasError: false })}

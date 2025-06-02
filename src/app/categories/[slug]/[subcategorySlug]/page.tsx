@@ -3,20 +3,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getSubcategoryWithDrawings, getAllCategories, getSubcategoriesByCategory } from '@/lib/sanity';
 import { notFound } from 'next/navigation';
-import { Metadata } from 'next';
+import { DownloadPdfButton } from '@/components/buttons/DownloadPdfButton';
+import { StartColoringButton } from '@/components/buttons/StartColoringButton';
+import { DrawingDetail } from '@/components/drawing/DrawingDetail';
 
 export const revalidate = 1800; // Oppdater siden hver 30. min
 
-interface SubcategoryPageProps {
-  params: { 
-    slug: string;
-    subcategorySlug: string;
-  }
-}
-
 // Generer metadata
-export async function generateMetadata({ params }: SubcategoryPageProps): Promise<Metadata> {
-  const subcategory = await getSubcategoryWithDrawings(params.slug, params.subcategorySlug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; subcategorySlug: string }> }) {
+  const { slug, subcategorySlug } = await params;
+  const subcategory = await getSubcategoryWithDrawings(slug, subcategorySlug);
   
   if (!subcategory) {
     return { title: 'Underkategori ikke funnet' };
@@ -51,8 +47,19 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function SubcategoryPage({ params }: SubcategoryPageProps) {
-  const { slug, subcategorySlug } = params;
+// Legg til type for Drawing
+interface Drawing {
+  _id: string;
+  title: string;
+  description?: string;
+  imageUrl?: string;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  hasDigitalColoring?: boolean;
+  downloadUrl?: string;
+}
+
+export default async function SubcategoryPage({ params }: { params: Promise<{ slug: string; subcategorySlug: string }> }) {
+  const { slug, subcategorySlug } = await params;
   const subcategory = await getSubcategoryWithDrawings(slug, subcategorySlug);
   
   if (!subcategory) {
@@ -71,7 +78,7 @@ export default async function SubcategoryPage({ params }: SubcategoryPageProps) 
     hard: 'Vanskelig'
   };
   
-  const getDifficultyKey = (value: any): 'easy' | 'medium' | 'hard' => {
+  const getDifficultyKey = (value: string | undefined): 'easy' | 'medium' | 'hard' => {
     if (value === 'easy' || value === 'medium' || value === 'hard') return value;
     return 'medium';
   };
@@ -105,39 +112,19 @@ export default async function SubcategoryPage({ params }: SubcategoryPageProps) 
           <div className={`inline-block px-3 py-1 rounded text-xs font-medium ${difficultyColors[getDifficultyKey(subcategory.difficulty)]}`}>{difficultyLabels[getDifficultyKey(subcategory.difficulty)]}</div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {subcategory.drawings?.map((drawing: any) => (
-            <div key={drawing._id} className="bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              {drawing.imageUrl && (
-                <div className="relative h-48 w-full bg-gray-100">
-                  <Image 
-                    src={drawing.imageUrl}
-                    alt={drawing.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover"
-                  />
-                </div>
-              )}
-              <div className="p-4">
-                <h2 className="font-bold text-lg mb-2">{drawing.title}</h2>
-                {drawing.description && (
-                  <p className="text-gray-600 text-sm mb-3">{drawing.description}</p>
-                )}
-                <div className="flex items-center justify-between text-sm mb-2">
-                  <span className={`px-2 py-1 rounded text-xs ${difficultyColors[getDifficultyKey(drawing.difficulty)]}`}>{difficultyLabels[getDifficultyKey(drawing.difficulty)]}</span>
-                  {drawing.hasDigitalColoring && (
-                    <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs ml-2">Digital</span>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  {drawing.downloadUrl && (
-                    <a href={drawing.downloadUrl} download className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-sm">Last ned PDF</a>
-                  )}
-                  {/* Her kan du legge til en knapp for digital fargelegging hvis ønskelig */}
-                </div>
-              </div>
-            </div>
+        <div className="grid grid-cols-1 gap-10">
+          {subcategory.drawings?.map((drawing: Drawing) => (
+            <DrawingDetail
+              key={drawing._id}
+              title={drawing.title}
+              date={undefined} // Sett inn dato hvis tilgjengelig
+              badge={drawing.difficulty ? difficultyLabels[getDifficultyKey(drawing.difficulty)] : undefined}
+              description={drawing.description}
+              imageUrl={drawing.imageUrl || ''}
+              downloadUrl={drawing.downloadUrl}
+              drawingId={drawing._id}
+              hasDigitalColoring={drawing.hasDigitalColoring}
+            />
           ))}
         </div>
 

@@ -3,17 +3,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getCategoryWithSubcategories, getAllCategories } from '../../../lib/sanity';
 import { notFound } from 'next/navigation';
-import { Metadata } from 'next';
 
 export const revalidate = 1800; // Oppdater siden hver 30. min
 
-interface CategoryPageProps {
-  params: { slug: string }
-}
-
 // Generer metadata
-export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const category = await getCategoryWithSubcategories(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const category = await getCategoryWithSubcategories(slug);
   
   if (!category) {
     return { title: 'Kategori ikke funnet' };
@@ -25,11 +21,32 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   };
 }
 
+// Legg til type for subcategory
+interface Subcategory {
+  _id: string;
+  slug: string;
+  title: string;
+  description?: string;
+  icon?: string;
+  featuredImage?: { url: string; alt?: string };
+  difficulty?: number;
+  drawingCount?: number;
+}
+
+// Oppdater Category hvis nødvendig
+interface Category {
+  slug: string;
+  title: string;
+  description?: string;
+  icon?: string;
+  subcategories?: Subcategory[];
+}
+
 // Generer statiske paths
 export async function generateStaticParams() {
   try {
     const categories = await getAllCategories();
-    return categories.map((category: any) => ({
+    return categories.map((category: Category) => ({
       slug: category.slug
     }));
   } catch (error) {
@@ -46,8 +63,8 @@ function getDifficultyLabel(difficulty: number | undefined) {
   return 'Ukjent';
 }
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
-  const { slug } = params;
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const category = await getCategoryWithSubcategories(slug);
   
   if (!category) {
@@ -81,7 +98,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {category.subcategories?.map((subcategory: any) => (
+          {category.subcategories?.map((subcategory: Subcategory) => (
             <Link
               key={subcategory._id}
               href={`/categories/${category.slug}/${subcategory.slug}`}

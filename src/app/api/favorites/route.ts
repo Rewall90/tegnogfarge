@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
 import clientPromise from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { mapToFavoriteModel } from '../../../../models/favorite';
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const session = await getServerSession(authOptions as any) as any;
     
     if (!session?.user) {
       return NextResponse.json(
@@ -59,7 +60,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const session = await getServerSession(authOptions);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const session = await getServerSession(authOptions as any) as any;
     
     if (!session?.user) {
       return NextResponse.json(

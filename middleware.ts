@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { getToken } = require('next-auth/jwt');
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ 

@@ -1,27 +1,31 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import { getAllCategories } from '@/lib/sanity';
-import Image from 'next/image';
 import { FrontpageCategories } from '@/components/frontpage/FrontpageCategories';
 import { FrontpageHero } from '@/components/frontpage/FrontpageHero';
 
+interface Category {
+  title: string;
+  imageUrl: string;
+  slug: string;
+  isActive: boolean;
+  featured?: boolean;
+  order?: number;
+}
+
 export default async function Home() {
-  let categories = await getAllCategories();
-  // Vis kun aktive kategorier, sorter på featured først, deretter order, så title
-  categories = categories
-    .filter((cat: any) => cat.isActive)
-    .sort((a: any, b: any) => {
+  const categories: Category[] = await getAllCategories();
+  const mainCategories = categories
+    .filter((cat) => cat.isActive)
+    .sort((a, b) => {
       if (a.featured && !b.featured) return -1;
       if (!a.featured && b.featured) return 1;
-      if (a.order !== b.order) return a.order - b.order;
+      if ((a.order ?? 0) !== (b.order ?? 0)) return (a.order ?? 0) - (b.order ?? 0);
       return a.title.localeCompare(b.title);
-    });
-  // Vis kun de 12 første hovedkategoriene
-  const mainCategories = categories.slice(0, 12);
+    })
+    .slice(0, 12);
 
   return (
     <>
@@ -105,7 +109,7 @@ export default async function Home() {
         
         {/* Hovedkategorier Grid */}
         <FrontpageCategories
-          categories={mainCategories.map((cat: any) => ({
+          categories={mainCategories.map((cat) => ({
             name: cat.title,
             imageUrl: cat.imageUrl,
             slug: cat.slug,
