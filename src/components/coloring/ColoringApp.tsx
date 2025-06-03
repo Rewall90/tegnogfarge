@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { FloodFill } from '@/lib/flood-fill'
+import { FloodFill, type PixelChange } from '@/lib/flood-fill'
 import ColorPalette from './ColorPalette'
 import ToolBar from './ToolBar'
 import ImageSelector from './ImageSelector'
@@ -19,7 +19,9 @@ interface ColoringAppProps {
   }
 }
 
-const MAX_HISTORY = 50
+type HistoryStep = PixelChange[];
+
+const MAX_HISTORY = 5
 
 export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
   const router = useRouter()
@@ -37,6 +39,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     history: [],
     historyStep: -1
   })
+  const [history, setHistory] = useState<HistoryStep[]>([]);
+  const [historyStep, setHistoryStep] = useState(-1);
 
   useEffect(() => {
     const loadImage = async () => {
@@ -87,64 +91,62 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const x = Math.floor((e.clientX - rect.left) * scaleX)
     const y = Math.floor((e.clientY - rect.top) * scaleY)
     const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height)
-    const floodFill = new FloodFill(imageData, state.tolerance, false)
-    const newImageData = floodFill.fill(x, y, state.currentColor)
+    const floodFill = new FloodFill(imageData, state.tolerance, 50)
+    const { imageData: newImageData, changes } = floodFill.fill(x, y, state.currentColor)
+    if (changes.length === 0) return
     shadowCtx.putImageData(newImageData, 0, 0)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.drawImage(shadowCanvas, 0, 0)
-    const historyImageData = new ImageData(
-      new Uint8ClampedArray(newImageData.data),
-      shadowCanvas.width,
-      shadowCanvas.height
-    )
-    const newHistory = state.history.slice(0, state.historyStep + 1)
-    newHistory.push(historyImageData)
+    const newHistory = history.slice(0, historyStep + 1)
+    newHistory.push(changes)
+    setHistory(newHistory.slice(-MAX_HISTORY))
+    setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1))
     setState(prev => ({
       ...prev,
-      imageData: newImageData,
-      history: newHistory.slice(-MAX_HISTORY),
-      historyStep: Math.min(newHistory.length - 1, MAX_HISTORY - 1)
+      imageData: newImageData
     }))
+  }
+
+  function applyChanges(pixels32: Uint32Array, changes: PixelChange[], reverse = false) {
+    for (const change of changes) {
+      pixels32[change.index] = reverse ? change.oldColor : change.newColor
+    }
   }
 
   const handleUndo = () => {
-    if (state.historyStep <= 0) return
+    if (historyStep < 0) return
     const canvas = canvasRef.current
     const shadowCanvas = shadowCanvasRef.current
     if (!canvas || !shadowCanvas) return
     const ctx = canvas.getContext('2d')
     const shadowCtx = shadowCanvas.getContext('2d')
     if (!ctx || !shadowCtx) return
-    const newStep = state.historyStep - 1
-    const imageData = state.history[newStep]
+    const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height)
+    const pixels32 = new Uint32Array(imageData.data.buffer)
+    applyChanges(pixels32, history[historyStep], true)
     shadowCtx.putImageData(imageData, 0, 0)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.drawImage(shadowCanvas, 0, 0)
-    setState(prev => ({
-      ...prev,
-      imageData,
-      historyStep: newStep
-    }))
+    setHistoryStep(historyStep - 1)
+    setState(prev => ({ ...prev, imageData }))
   }
 
   const handleRedo = () => {
-    if (state.historyStep >= state.history.length - 1) return
+    if (historyStep >= history.length - 1) return
     const canvas = canvasRef.current
     const shadowCanvas = shadowCanvasRef.current
     if (!canvas || !shadowCanvas) return
     const ctx = canvas.getContext('2d')
     const shadowCtx = shadowCanvas.getContext('2d')
     if (!ctx || !shadowCtx) return
-    const newStep = state.historyStep + 1
-    const imageData = state.history[newStep]
+    const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height)
+    const pixels32 = new Uint32Array(imageData.data.buffer)
+    applyChanges(pixels32, history[historyStep + 1], false)
     shadowCtx.putImageData(imageData, 0, 0)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.drawImage(shadowCanvas, 0, 0)
-    setState(prev => ({
-      ...prev,
-      imageData,
-      historyStep: newStep
-    }))
+    setHistoryStep(historyStep + 1)
+    setState(prev => ({ ...prev, imageData }))
   }
 
   const handleReset = () => {

@@ -1,4 +1,10 @@
-import type { ColorRGB, Point } from '@/types/canvas-coloring'
+import type { ColorRGB } from '@/types/canvas-coloring'
+
+export interface PixelChange {
+  index: number;
+  oldColor: number;
+  newColor: number;
+}
 
 export class FloodFill {
   private imageData: ImageData
@@ -6,200 +12,144 @@ export class FloodFill {
   private width: number
   private height: number
   private pixels: Uint8ClampedArray
-  private fillColor: ColorRGB = { r: 0, g: 0, b: 0, a: 255 }
-  private startColor: ColorRGB = { r: 0, g: 0, b: 0, a: 255 }
-  private pixelsChecked: Set<number>
-  private pixelStack: Point[]
-  private preserveDetails: boolean
+  private pixels32: Uint32Array
+  private blackThreshold: number
+  private stack: Int32Array
+  private stackPtr: number = 0
 
   constructor(
-    imageData: ImageData, 
+    imageData: ImageData,
     tolerance: number = 32,
-    preserveDetails: boolean = true
+    blackThreshold: number = 50
   ) {
     this.imageData = imageData
     this.tolerance = tolerance
     this.width = imageData.width
     this.height = imageData.height
     this.pixels = imageData.data
-    this.preserveDetails = preserveDetails
-    this.pixelsChecked = new Set()
-    this.pixelStack = []
+    this.pixels32 = new Uint32Array(imageData.data.buffer)
+    this.blackThreshold = blackThreshold
+    this.stack = new Int32Array(this.width * this.height * 2)
   }
 
-  fill(x: number, y: number, fillColor: string): ImageData {
-    // Konverter hex til RGB
-    this.fillColor = this.hexToRGB(fillColor)
-    
-    // Få startfarge
-    const startPos = (y * this.width + x) * 4
-    this.startColor = {
-      r: this.pixels[startPos],
-      g: this.pixels[startPos + 1],
-      b: this.pixels[startPos + 2],
-      a: this.pixels[startPos + 3]
+  fill(x: number, y: number, fillColor: string): { imageData: ImageData, changes: PixelChange[] } {
+    const fillRGBA = this.hexToRGBA32(fillColor)
+    const startPos = y * this.width + x
+    const startColor = this.pixels32[startPos]
+    const changes: PixelChange[] = [];
+
+    // Ikke fyll hvis startpunkt er svart
+    if (this.isProtectedColor(startColor) || this.colorMatches32(startColor, fillRGBA, 0)) {
+      return { imageData: this.imageData, changes };
     }
 
-    // Hvis start og fyll-farge er like, returner
-    if (this.colorsMatch(this.startColor, this.fillColor, 0)) {
-      return this.imageData
-    }
+    // Gjenbruk stack-arrayen
+    this.stackPtr = 0
+    this.stack[this.stackPtr++] = x
+    this.stack[this.stackPtr++] = y
 
-    // Start flood fill
-    this.pixelStack.push({ x, y })
-    
-    while (this.pixelStack.length > 0) {
-      const newPos = this.pixelStack.pop()!
-      const pixelPos = (newPos.y * this.width + newPos.x) * 4
-      
-      // Sjekk om piksel allerede er sjekket
-      if (this.pixelsChecked.has(pixelPos)) continue
-      this.pixelsChecked.add(pixelPos)
-      
-      // Hent current pixel color
-      const currentColor = {
-        r: this.pixels[pixelPos],
-        g: this.pixels[pixelPos + 1],
-        b: this.pixels[pixelPos + 2],
-        a: this.pixels[pixelPos + 3]
-      }
-      
-      // Sjekk om piksel matcher startfarge innenfor toleranse
-      if (this.colorsMatch(this.startColor, currentColor, this.tolerance)) {
-        // Fyll piksel
-        this.pixels[pixelPos] = this.fillColor.r
-        this.pixels[pixelPos + 1] = this.fillColor.g
-        this.pixels[pixelPos + 2] = this.fillColor.b
-        this.pixels[pixelPos + 3] = this.fillColor.a
-        
-        // Legg til nabopiksler
-        this.addNeighbors(newPos.x, newPos.y)
-      }
-    }
-    
-    // Apply edge smoothing hvis aktivert
-    if (this.preserveDetails) {
-      this.smoothEdges()
-    }
-    
-    return this.imageData
-  }
+    // Scanline flood fill
+    while (this.stackPtr > 0) {
+      const py = this.stack[--this.stackPtr]
+      const px = this.stack[--this.stackPtr]
+      let idx = py * this.width + px
 
-  private addNeighbors(x: number, y: number): void {
-    // Sjekk alle 8 naboer for bedre fylling
-    const neighbors = [
-      { x: x - 1, y }, // Venstre
-      { x: x + 1, y }, // Høyre
-      { x, y: y - 1 }, // Opp
-      { x, y: y + 1 }, // Ned
-      { x: x - 1, y: y - 1 }, // Øverst venstre
-      { x: x + 1, y: y - 1 }, // Øverst høyre
-      { x: x - 1, y: y + 1 }, // Nederst venstre
-      { x: x + 1, y: y + 1 }  // Nederst høyre
-    ]
-    
-    for (const neighbor of neighbors) {
-      if (
-        neighbor.x >= 0 && 
-        neighbor.x < this.width && 
-        neighbor.y >= 0 && 
-        neighbor.y < this.height
+      // Hopp over hvis allerede fylt, ikke matcher, eller beskyttet
+      if (!this.canFill(this.pixels32[idx], startColor, fillRGBA)) continue
+
+      // Finn venstre kant
+      let leftX = px
+      let leftIdx = idx
+      while (
+        leftX > 0 &&
+        this.canFill(this.pixels32[leftIdx - 1], startColor, fillRGBA)
       ) {
-        const pos = (neighbor.y * this.width + neighbor.x) * 4
-        if (!this.pixelsChecked.has(pos)) {
-          this.pixelStack.push(neighbor)
-        }
+        leftX--
+        leftIdx--
       }
-    }
-  }
 
-  private colorsMatch(color1: ColorRGB, color2: ColorRGB, tolerance: number): boolean {
-    const dr = Math.abs(color1.r - color2.r)
-    const dg = Math.abs(color1.g - color2.g)
-    const db = Math.abs(color1.b - color2.b)
-    const da = Math.abs(color1.a - color2.a)
-    
-    return dr <= tolerance && dg <= tolerance && db <= tolerance && da <= tolerance
-  }
+      // Fyll linjen og se etter hull over/under
+      let spanAbove = false
+      let spanBelow = false
+      idx = py * this.width + leftX
 
-  private hexToRGB(hex: string): ColorRGB {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16),
-      a: 255
-    } : { r: 0, g: 0, b: 0, a: 255 }
-  }
-
-  private smoothEdges(): void {
-    // Implementer edge smoothing algoritme for jevnere kanter
-    // Dette er en forenklet versjon
-    const tempData = new Uint8ClampedArray(this.pixels)
-    
-    for (let y = 1; y < this.height - 1; y++) {
-      for (let x = 1; x < this.width - 1; x++) {
-        const pos = (y * this.width + x) * 4
-        
-        // Sjekk om dette er en kantpiksel
-        if (this.isEdgePixel(x, y)) {
-          // Beregn gjennomsnitt av nabopiksler
-          let r = 0, g = 0, b = 0, count = 0
-          
-          for (let dy = -1; dy <= 1; dy++) {
-            for (let dx = -1; dx <= 1; dx++) {
-              if (dx === 0 && dy === 0) continue
-              
-              const nPos = ((y + dy) * this.width + (x + dx)) * 4
-              r += tempData[nPos]
-              g += tempData[nPos + 1]
-              b += tempData[nPos + 2]
-              count++
-            }
-          }
-          
-          // Anvend utjevning
-          this.pixels[pos] = Math.round(r / count)
-          this.pixels[pos + 1] = Math.round(g / count)
-          this.pixels[pos + 2] = Math.round(b / count)
+      while (
+        leftX < this.width &&
+        this.canFill(this.pixels32[idx], startColor, fillRGBA)
+      ) {
+        if (this.pixels32[idx] !== fillRGBA) {
+          changes.push({ index: idx, oldColor: this.pixels32[idx], newColor: fillRGBA });
+          this.pixels32[idx] = fillRGBA;
         }
-      }
-    }
-  }
 
-  private isEdgePixel(x: number, y: number): boolean {
-    const pos = (y * this.width + x) * 4
-    const currentColor = {
-      r: this.pixels[pos],
-      g: this.pixels[pos + 1],
-      b: this.pixels[pos + 2],
-      a: this.pixels[pos + 3]
-    }
-    
-    // Sjekk om noen nabopiksler har forskjellig farge
-    for (let dy = -1; dy <= 1; dy++) {
-      for (let dx = -1; dx <= 1; dx++) {
-        if (dx === 0 && dy === 0) continue
-        
-        const nx = x + dx
-        const ny = y + dy
-        
-        if (nx >= 0 && nx < this.width && ny >= 0 && ny < this.height) {
-          const nPos = (ny * this.width + nx) * 4
-          const neighborColor = {
-            r: this.pixels[nPos],
-            g: this.pixels[nPos + 1],
-            b: this.pixels[nPos + 2],
-            a: this.pixels[nPos + 3]
-          }
-          
-          if (!this.colorsMatch(currentColor, neighborColor, 10)) {
-            return true
+        // Sjekk linjen over
+        if (py > 0) {
+          const aboveIdx = idx - this.width
+          if (!spanAbove && this.canFill(this.pixels32[aboveIdx], startColor, fillRGBA)) {
+            this.stack[this.stackPtr++] = leftX
+            this.stack[this.stackPtr++] = py - 1
+            spanAbove = true
+          } else if (spanAbove && !this.canFill(this.pixels32[aboveIdx], startColor, fillRGBA)) {
+            spanAbove = false
           }
         }
+
+        // Sjekk linjen under
+        if (py < this.height - 1) {
+          const belowIdx = idx + this.width
+          if (!spanBelow && this.canFill(this.pixels32[belowIdx], startColor, fillRGBA)) {
+            this.stack[this.stackPtr++] = leftX
+            this.stack[this.stackPtr++] = py + 1
+            spanBelow = true
+          } else if (spanBelow && !this.canFill(this.pixels32[belowIdx], startColor, fillRGBA)) {
+            spanBelow = false
+          }
+        }
+
+        leftX++
+        idx++
       }
     }
-    
-    return false
+
+    return { imageData: this.imageData, changes };
+  }
+
+  private canFill(color: number, targetColor: number, fillRGBA: number): boolean {
+    // Ikke fyll svarte/mørke piksler
+    if (this.isProtectedColor(color)) return false
+    // Ikke fyll allerede fylt
+    if (color === fillRGBA) return false
+    // Toleranse
+    if (this.tolerance === 0) return color === targetColor
+    return this.colorMatches32(color, targetColor, this.tolerance)
+  }
+
+  private colorMatches32(color1: number, color2: number, tolerance: number): boolean {
+    if (tolerance === 0) return color1 === color2
+    const r1 = color1 & 0xFF
+    const g1 = (color1 >> 8) & 0xFF
+    const b1 = (color1 >> 16) & 0xFF
+    const r2 = color2 & 0xFF
+    const g2 = (color2 >> 8) & 0xFF
+    const b2 = (color2 >> 16) & 0xFF
+    return (
+      Math.abs(r1 - r2) <= tolerance &&
+      Math.abs(g1 - g2) <= tolerance &&
+      Math.abs(b1 - b2) <= tolerance
+    )
+  }
+
+  private isProtectedColor(color: number): boolean {
+    const r = color & 0xFF
+    const g = (color >> 8) & 0xFF
+    const b = (color >> 16) & 0xFF
+    return r < this.blackThreshold && g < this.blackThreshold && b < this.blackThreshold
+  }
+
+  private hexToRGBA32(hex: string): number {
+    const r = parseInt(hex.substr(1, 2), 16)
+    const g = parseInt(hex.substr(3, 2), 16)
+    const b = parseInt(hex.substr(5, 2), 16)
+    return (255 << 24) | (b << 16) | (g << 8) | r
   }
 } 

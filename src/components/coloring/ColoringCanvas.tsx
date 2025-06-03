@@ -1,13 +1,15 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { FloodFill } from '@/lib/flood-fill'
+import { FloodFill, type PixelChange } from '@/lib/flood-fill'
 import ColorPalette from './ColorPalette'
 import ToolBar from './ToolBar'
 import type { ColoringCanvasProps, ColoringState } from '@/types/canvas-coloring'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 
-const MAX_HISTORY = 50
+type HistoryStep = PixelChange[];
+
+const MAX_HISTORY = 5
 
 export default function ColoringCanvas({
   drawingId,
@@ -31,6 +33,9 @@ export default function ColoringCanvas({
     history: [],
     historyStep: -1
   })
+
+  const [history, setHistory] = useState<HistoryStep[]>([]);
+  const [historyStep, setHistoryStep] = useState(-1);
 
   // Laste inn bilde
   useEffect(() => {
@@ -97,79 +102,60 @@ export default function ColoringCanvas({
   const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current
     if (!canvas || !state.imageData) return
-    
     const ctx = canvas.getContext('2d', { willReadFrequently: true })
     if (!ctx) return
-    
     const rect = canvas.getBoundingClientRect()
     const scaleX = canvas.width / rect.width
     const scaleY = canvas.height / rect.height
-    
     const x = Math.floor((e.clientX - rect.left) * scaleX)
     const y = Math.floor((e.clientY - rect.top) * scaleY)
-    
-    // Utfør flood fill
-    const floodFill = new FloodFill(state.imageData, state.tolerance, true)
-    const newImageData = floodFill.fill(x, y, state.currentColor)
-    
-    // Oppdater canvas
+    const floodFill = new FloodFill(state.imageData, state.tolerance, 50)
+    const { imageData: newImageData, changes } = floodFill.fill(x, y, state.currentColor)
+    if (changes.length === 0) return
     ctx.putImageData(newImageData, 0, 0)
-    
-    // Oppdater history
-    const newHistory = state.history.slice(0, state.historyStep + 1)
-    newHistory.push(ctx.getImageData(0, 0, canvas.width, canvas.height))
-    
+    const newHistory = history.slice(0, historyStep + 1)
+    newHistory.push(changes)
+    setHistory(newHistory.slice(-MAX_HISTORY))
+    setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1))
     setState(prev => ({
       ...prev,
-      imageData: newImageData,
-      history: newHistory.slice(-MAX_HISTORY),
-      historyStep: Math.min(newHistory.length - 1, MAX_HISTORY - 1)
+      imageData: newImageData
     }))
-  }, [state.currentColor, state.tolerance, state.imageData, state.history, state.historyStep])
+  }, [state.currentColor, state.tolerance, state.imageData, state.history, state.historyStep, history, historyStep])
 
-  // Undo handler
+  function applyChanges(pixels32: Uint32Array, changes: PixelChange[], reverse = false) {
+    for (const change of changes) {
+      pixels32[change.index] = reverse ? change.oldColor : change.newColor
+    }
+  }
+
   const handleUndo = useCallback(() => {
-    if (state.historyStep <= 0) return
-    
+    if (historyStep < 0) return
     const canvas = canvasRef.current
     if (!canvas) return
-    
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
     if (!ctx) return
-    
-    const newStep = state.historyStep - 1
-    const imageData = state.history[newStep]
-    
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const pixels32 = new Uint32Array(imageData.data.buffer)
+    applyChanges(pixels32, history[historyStep], true)
     ctx.putImageData(imageData, 0, 0)
-    
-    setState(prev => ({
-      ...prev,
-      imageData,
-      historyStep: newStep
-    }))
-  }, [state.history, state.historyStep])
+    setHistoryStep(historyStep - 1)
+    setState(prev => ({ ...prev, imageData }))
+  }, [history, historyStep])
 
-  // Redo handler
   const handleRedo = useCallback(() => {
-    if (state.historyStep >= state.history.length - 1) return
-    
+    if (historyStep >= history.length - 1) return
     const canvas = canvasRef.current
     if (!canvas) return
-    
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
     if (!ctx) return
-    
-    const newStep = state.historyStep + 1
-    const imageData = state.history[newStep]
-    
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const pixels32 = new Uint32Array(imageData.data.buffer)
+    applyChanges(pixels32, history[historyStep + 1], false)
     ctx.putImageData(imageData, 0, 0)
-    
-    setState(prev => ({
-      ...prev,
-      imageData,
-      historyStep: newStep
-    }))
-  }, [state.history, state.historyStep])
+    setHistoryStep(historyStep + 1)
+    setState(prev => ({ ...prev, imageData }))
+  }, [history, historyStep])
 
   // Reset handler
   const handleReset = useCallback(() => {
