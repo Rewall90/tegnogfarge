@@ -24,6 +24,7 @@ const MAX_HISTORY = 50
 export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
   const router = useRouter()
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const shadowCanvasRef = useRef<HTMLCanvasElement>(null)
   const [currentImage, setCurrentImage] = useState(initialImageData)
   const [showImageSelector, setShowImageSelector] = useState(false)
   const [state, setState] = useState<ColoringState>({
@@ -43,18 +44,22 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       img.crossOrigin = 'anonymous'
       img.onload = () => {
         const canvas = canvasRef.current
-        if (!canvas) return
-        const ctx = canvas.getContext('2d', { willReadFrequently: true })
-        if (!ctx) return
+        const shadowCanvas = shadowCanvasRef.current
+        if (!canvas || !shadowCanvas) return
         canvas.width = img.width
         canvas.height = img.height
+        shadowCanvas.width = img.width
+        shadowCanvas.height = img.height
+        const ctx = canvas.getContext('2d')
+        const shadowCtx = shadowCanvas.getContext('2d')
+        if (!ctx || !shadowCtx) return
+        shadowCtx.drawImage(img, 0, 0)
         ctx.drawImage(img, 0, 0)
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        const originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height)
         setState(prev => ({
           ...prev,
           imageData,
-          originalImageData,
+          originalImageData: imageData,
           history: [imageData],
           historyStep: 0
         }))
@@ -69,13 +74,113 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     setShowImageSelector(false)
   }
 
-  // Flood fill, undo, redo, reset, download handlers må implementeres her
-  // For nå: tomme funksjoner for å unngå linter-feil
-  function handleCanvasClick() {}
-  function handleUndo() {}
-  function handleRedo() {}
-  function handleReset() {}
-  function handleDownload() {}
+  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current
+    const shadowCanvas = shadowCanvasRef.current
+    if (!canvas || !shadowCanvas) return
+    const ctx = canvas.getContext('2d')
+    const shadowCtx = shadowCanvas.getContext('2d')
+    if (!ctx || !shadowCtx) return
+    const rect = canvas.getBoundingClientRect()
+    const scaleX = canvas.width / rect.width
+    const scaleY = canvas.height / rect.height
+    const x = Math.floor((e.clientX - rect.left) * scaleX)
+    const y = Math.floor((e.clientY - rect.top) * scaleY)
+    const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height)
+    const floodFill = new FloodFill(imageData, state.tolerance, false)
+    const newImageData = floodFill.fill(x, y, state.currentColor)
+    shadowCtx.putImageData(newImageData, 0, 0)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.drawImage(shadowCanvas, 0, 0)
+    const historyImageData = new ImageData(
+      new Uint8ClampedArray(newImageData.data),
+      shadowCanvas.width,
+      shadowCanvas.height
+    )
+    const newHistory = state.history.slice(0, state.historyStep + 1)
+    newHistory.push(historyImageData)
+    setState(prev => ({
+      ...prev,
+      imageData: newImageData,
+      history: newHistory.slice(-MAX_HISTORY),
+      historyStep: Math.min(newHistory.length - 1, MAX_HISTORY - 1)
+    }))
+  }
+
+  const handleUndo = () => {
+    if (state.historyStep <= 0) return
+    const canvas = canvasRef.current
+    const shadowCanvas = shadowCanvasRef.current
+    if (!canvas || !shadowCanvas) return
+    const ctx = canvas.getContext('2d')
+    const shadowCtx = shadowCanvas.getContext('2d')
+    if (!ctx || !shadowCtx) return
+    const newStep = state.historyStep - 1
+    const imageData = state.history[newStep]
+    shadowCtx.putImageData(imageData, 0, 0)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.drawImage(shadowCanvas, 0, 0)
+    setState(prev => ({
+      ...prev,
+      imageData,
+      historyStep: newStep
+    }))
+  }
+
+  const handleRedo = () => {
+    if (state.historyStep >= state.history.length - 1) return
+    const canvas = canvasRef.current
+    const shadowCanvas = shadowCanvasRef.current
+    if (!canvas || !shadowCanvas) return
+    const ctx = canvas.getContext('2d')
+    const shadowCtx = shadowCanvas.getContext('2d')
+    if (!ctx || !shadowCtx) return
+    const newStep = state.historyStep + 1
+    const imageData = state.history[newStep]
+    shadowCtx.putImageData(imageData, 0, 0)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.drawImage(shadowCanvas, 0, 0)
+    setState(prev => ({
+      ...prev,
+      imageData,
+      historyStep: newStep
+    }))
+  }
+
+  const handleReset = () => {
+    if (!state.originalImageData) return
+    const canvas = canvasRef.current
+    const shadowCanvas = shadowCanvasRef.current
+    if (!canvas || !shadowCanvas) return
+    const ctx = canvas.getContext('2d')
+    const shadowCtx = shadowCanvas.getContext('2d')
+    if (!ctx || !shadowCtx) return
+    shadowCtx.putImageData(state.originalImageData, 0, 0)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.drawImage(shadowCanvas, 0, 0)
+    setState(prev => ({
+      ...prev,
+      imageData: state.originalImageData,
+      history: state.originalImageData ? [state.originalImageData] : prev.history,
+      historyStep: 0
+    }))
+  }
+
+  const handleDownload = () => {
+    const shadowCanvas = shadowCanvasRef.current
+    if (!shadowCanvas) return
+    shadowCanvas.toBlob(blob => {
+      if (!blob) return
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `fargelegging-${currentImage.title.replace(/\s+/g, '-').toLowerCase()}.png`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    }, 'image/png', 0.95)
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -131,9 +236,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               <canvas
                 ref={canvasRef}
                 onClick={handleCanvasClick}
+                width={state.imageData?.width || 0}
+                height={state.imageData?.height || 0}
                 className="max-w-full h-auto bg-white shadow-lg cursor-crosshair"
-                style={{ imageRendering: 'crisp-edges' }}
+                style={{ imageRendering: 'pixelated' }}
               />
+              <canvas ref={shadowCanvasRef} style={{ display: 'none' }} />
             </div>
           </div>
         </div>
