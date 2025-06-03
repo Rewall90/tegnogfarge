@@ -1,3 +1,5 @@
+export type DrawingMode = 'fill' | 'brush';
+
 export interface ColoringCanvasProps {
   drawingId: string
   title: string
@@ -22,6 +24,9 @@ export interface ColoringState {
   isDrawing: boolean
   history: ImageData[]
   historyStep: number
+  drawingMode: DrawingMode
+  lastX: number | null
+  lastY: number | null
 }
 
 export interface Point {

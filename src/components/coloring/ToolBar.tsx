@@ -1,6 +1,8 @@
 'use client'
 
-interface ToolBarProps {
+import { type DrawingMode } from '@/types/canvas-coloring'
+
+export interface ToolBarProps {
   tolerance: number
   onToleranceChange: (tolerance: number) => void
   canUndo: boolean
@@ -9,6 +11,10 @@ interface ToolBarProps {
   onRedo: () => void
   onReset: () => void
   onDownload: () => void
+  drawingMode: DrawingMode
+  onDrawingModeChange: (mode: DrawingMode) => void
+  brushSize: number
+  onBrushSizeChange: (size: number) => void
 }
 
 export default function ToolBar({
@@ -19,64 +25,111 @@ export default function ToolBar({
   onUndo,
   onRedo,
   onReset,
-  onDownload
+  onDownload,
+  drawingMode,
+  onDrawingModeChange,
+  brushSize,
+  onBrushSizeChange
 }: ToolBarProps) {
- return (
-   <div className="bg-white border-b border-gray-200 p-4">
-     <div className="flex flex-wrap items-center gap-4">
-       {/* Undo/Redo */}
-       <div className="flex gap-2">
-         <button
-           onClick={onUndo}
-           disabled={!canUndo}
-           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-           title="Angre (Ctrl+Z)"
-         >
-           ↶ Angre
-         </button>
-         <button
-           onClick={onRedo}
-           disabled={!canRedo}
-           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-           title="Gjør om (Ctrl+Y)"
-         >
-           ↷ Gjør om
-         </button>
-       </div>
+  return (
+    <div className="bg-white border-b px-4 py-2 flex items-center gap-4">
+      {/* Drawing Mode */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => onDrawingModeChange('fill')}
+          className={`px-3 py-1 rounded ${
+            drawingMode === 'fill'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-100 hover:bg-gray-200'
+          }`}
+        >
+          Fyll
+        </button>
+        <button
+          onClick={() => onDrawingModeChange('brush')}
+          className={`px-3 py-1 rounded ${
+            drawingMode === 'brush'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-100 hover:bg-gray-200'
+          }`}
+        >
+          Tegn
+        </button>
+      </div>
 
-       {/* Tolerance slider */}
-       <div className="flex items-center gap-3">
-         <label htmlFor="tolerance" className="text-sm font-medium text-gray-700">
-           Toleranse:
-         </label>
-         <input
-           id="tolerance"
-           type="range"
-           min="0"
-           max="100"
-           value={tolerance}
-           onChange={(e) => onToleranceChange(Number(e.target.value))}
-           className="w-32"
-         />
-         <span className="text-sm text-gray-600 w-10">{tolerance}</span>
-       </div>
+      {/* Brush Size (only show when in brush mode) */}
+      {drawingMode === 'brush' && (
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-gray-600">Penselstørrelse:</label>
+          <input
+            type="range"
+            min="1"
+            max="50"
+            value={brushSize}
+            onChange={(e) => onBrushSizeChange(Number(e.target.value))}
+            className="w-32"
+          />
+          <span className="text-sm text-gray-600">{brushSize}px</span>
+        </div>
+      )}
 
-       {/* Reset og Download */}
-       <div className="flex gap-2 ml-auto">
-         <button
-           onClick={onReset}
-           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-         >
-           ↺ Tilbakestill
-         </button>
-         <button
-           onClick={onDownload}
-           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-         >
-           ⬇ Last ned
-         </button>
-       </div>
-     </div>
-   </div>
- )
+      {/* Tolerance (only show when in fill mode) */}
+      {drawingMode === 'fill' && (
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-gray-600">Toleranse:</label>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={tolerance}
+            onChange={(e) => onToleranceChange(Number(e.target.value))}
+            className="w-32"
+          />
+          <span className="text-sm text-gray-600">{tolerance}</span>
+        </div>
+      )}
+
+      {/* History Controls */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onUndo}
+          disabled={!canUndo}
+          className={`px-3 py-1 rounded ${
+            canUndo
+              ? 'bg-gray-100 hover:bg-gray-200'
+              : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+          }`}
+        >
+          Angre
+        </button>
+        <button
+          onClick={onRedo}
+          disabled={!canRedo}
+          className={`px-3 py-1 rounded ${
+            canRedo
+              ? 'bg-gray-100 hover:bg-gray-200'
+              : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+          }`}
+        >
+          Gjør om
+        </button>
+      </div>
+
+      {/* Reset & Download */}
+      <div className="flex items-center gap-2 ml-auto">
+        <button
+          onClick={onReset}
+          className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200"
+        >
+          Nullstill
+        </button>
+        <button
+          onClick={onDownload}
+          className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
+        >
+          Last ned
+        </button>
+      </div>
+    </div>
+  )
 } 

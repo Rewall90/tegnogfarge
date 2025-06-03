@@ -5,7 +5,7 @@ import ColoringApp from '@/components/coloring/ColoringApp'
 import { getColoringImageWebP } from '@/lib/sanity'
 
 export default function ColoringAppPage() {
-  const [imageData, setImageData] = useState(null)
+  const [imageData, setImageData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
