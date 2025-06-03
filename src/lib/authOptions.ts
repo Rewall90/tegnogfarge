@@ -1,6 +1,16 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcrypt';
-// import clientPromise from '@/lib/db';
+import clientPromise from '@/lib/db';
+import { JWT } from 'next-auth/jwt';
+import { Session } from 'next-auth';
+
+type UserType = {
+  id: string;
+  email: string;
+  name: string;
+  image?: string;
+  role: 'user' | 'admin';
+};
 
 const authOptions = {
   providers: [
@@ -16,23 +26,26 @@ const authOptions = {
           throw new Error('Email og passord er påkrevd');
         }
 
-        // const client = await clientPromise;
-        // const db = client.db();
-        // const user = await db.collection('users').findOne({ email: credentials.email });
+        const client = await clientPromise;
+        const db = client.db('fargeleggingsapp');
+        const user = await db.collection('users').findOne({ email: credentials.email });
 
-        // if (!user || !user.password) {
-        //   return null;
-        // }
-        // if (!(await compare(credentials.password, user.password))) {
-        //   return null;
-        // }
-        // return {
-        //   id: user._id,
-        //   email: user.email,
-        //   name: user.name,
-        //   image: user.image,
-        // };
-        return null;
+        if (!user || !user.password) {
+          return null;
+        }
+
+        const isPasswordValid = await compare(credentials.password, user.password);
+        if (!isPasswordValid) {
+          return null;
+        }
+
+        return {
+          id: user._id.toString(),
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          role: user.role || 'user'
+        };
       },
     }),
   ],
@@ -45,17 +58,17 @@ const authOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: UserType }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (token) {
         session.user.id = token.id as string;
-        session.user.role = token.role as string;
+        session.user.role = token.role as 'user' | 'admin';
       }
       return session;
     },

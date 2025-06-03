@@ -1,5 +1,7 @@
 import React from "react";
 import Image from "next/image";
+import { DownloadPdfButton } from "../buttons/DownloadPdfButton";
+import { StartColoringButton } from "../buttons/StartColoringButton";
 
 interface DrawingCardProps {
   drawing: {
@@ -50,15 +52,20 @@ export function DrawingCard({ drawing }: DrawingCardProps) {
             <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs ml-2">Digital</span>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {drawing.downloadUrl && (
-            <a
-              href={drawing.downloadUrl}
-              download
+            <DownloadPdfButton
+              downloadUrl={drawing.downloadUrl}
+              title="Last ned PDF"
               className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-sm"
-            >
-              Last ned PDF
-            </a>
+            />
+          )}
+          {drawing.hasDigitalColoring && (
+            <StartColoringButton
+              drawingId={drawing._id}
+              title="Online Fargelegging"
+              className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition text-sm"
+            />
           )}
         </div>
       </div>

@@ -22,6 +22,10 @@ export async function middleware(request: NextRequest) {
   
   if (isAuthPage) {
     if (isAuth) {
+      const redirectParam = request.nextUrl.searchParams.get('redirect');
+      if (redirectParam) {
+        return NextResponse.redirect(new URL(redirectParam, request.url));
+      }
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
     return NextResponse.next();

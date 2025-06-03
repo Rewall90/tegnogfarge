@@ -2,12 +2,18 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleSignOut = () => {
+    signOut({ callbackUrl: '/' });
   };
 
   return (
@@ -23,15 +29,29 @@ export default function Header() {
           {/* Desktop navigation */}
           <nav className="hidden md:flex space-x-8" aria-label="Hovednavigasjon">
             <Link href="/coloring" className="text-gray-600 hover:text-gray-900">Fargelegging Verktøy</Link>
-            <Link href="/account" className="text-gray-600 hover:text-gray-900">Min Konto</Link>
+            {session && (
+              <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard</Link>
+            )}
             <Link href="/blog" className="text-gray-600 hover:text-gray-900">Blogg Artikler</Link>
             <Link href="/about" className="text-gray-600 hover:text-gray-900">Om Oss</Link>
           </nav>
           
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="/login" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
-              Logg inn
-            </Link>
+            {session && session.user ? (
+              <>
+                <span className="text-gray-600">Hei, {session.user.name}</span>
+                <button
+                  onClick={handleSignOut}
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  Logg ut
+                </button>
+              </>
+            ) : (
+              <Link href="/login" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
+                Logg inn
+              </Link>
+            )}
           </div>
           
           {/* Mobile menu button */}
@@ -66,12 +86,27 @@ export default function Header() {
           <div id="mobile-menu" className="md:hidden py-4 border-t">
             <nav className="flex flex-col space-y-4" aria-label="Mobilnavigasjon">
               <Link href="/coloring" className="text-gray-600 hover:text-gray-900">Fargelegging Verktøy</Link>
-              <Link href="/account" className="text-gray-600 hover:text-gray-900">Min Konto</Link>
+              {session && (
+                <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard</Link>
+              )}
               <Link href="/blog" className="text-gray-600 hover:text-gray-900">Blogg Artikler</Link>
               <Link href="/about" className="text-gray-600 hover:text-gray-900">Om Oss</Link>
-              <Link href="/login" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 inline-block w-full text-center">
-                Logg inn
-              </Link>
+              
+              {session && session.user ? (
+                <>
+                  <span className="text-gray-600">Hei, {session.user.name}</span>
+                  <button
+                    onClick={handleSignOut}
+                    className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 w-full text-center"
+                  >
+                    Logg ut
+                  </button>
+                </>
+              ) : (
+                <Link href="/login" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 inline-block w-full text-center">
+                  Logg inn
+                </Link>
+              )}
             </nav>
           </div>
         )}

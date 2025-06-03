@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
 import { hash } from 'bcrypt';
 import clientPromise from '@/lib/db';
-import { toSafeUser, mapToUserModel } from '../../../../../models/user';
+import { ObjectId } from 'mongodb';
 
 export async function POST(request: Request) {
   try {
     const { name, email, password } = await request.json();
 
-    // Validate the data
+    // Valider input
     if (!name || !email || !password) {
       return NextResponse.json(
-        { message: 'Navn, e-post og passord er påkrevd' },
+        { message: 'Manglende påkrevde felt' },
         { status: 400 }
       );
     }
@@ -22,11 +22,14 @@ export async function POST(request: Request) {
       );
     }
 
+    // Koble til databasen
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db('fargeleggingsapp');
+    const usersCollection = db.collection('users');
 
-    // Check if user already exists
-    const existingUser = await db.collection('users').findOne({ email });
+    // Sjekk om e-posten allerede er registrert
+    const existingUser = await usersCollection.findOne({ email });
+
     if (existingUser) {
       return NextResponse.json(
         { message: 'E-postadressen er allerede i bruk' },
@@ -34,31 +37,39 @@ export async function POST(request: Request) {
       );
     }
 
-    // Hash the password
+    // Hash passordet
     const hashedPassword = await hash(password, 12);
 
-    // Create the user
-    const result = await db.collection('users').insertOne({
+    // Opprett bruker
+    const newUser = {
+      _id: new ObjectId(),
       name,
       email,
       password: hashedPassword,
-      role: 'user',
+      role: 'user' as const,
       createdAt: new Date(),
       updatedAt: new Date(),
-    });
+      emailVerified: null,
+      favoriteIds: []
+    };
 
-    // Get the newly created user
-    const newUser = await db.collection('users').findOne({ _id: result.insertedId });
+    // Lagre i databasen
+    await usersCollection.insertOne(newUser);
 
-    // Return the safe user (without password)
+    // Returner suksess, men ikke passordet
+    const { password: _pwd, ...userWithoutPassword } = newUser;
+    
     return NextResponse.json(
-      { user: newUser ? toSafeUser(mapToUserModel(newUser)) : null },
+      { 
+        message: 'Bruker registrert', 
+        user: userWithoutPassword 
+      },
       { status: 201 }
     );
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('Registreringsfeil:', error);
     return NextResponse.json(
-      { message: 'En feil oppstod under registrering' },
+      { message: 'Intern serverfeil' },
       { status: 500 }
     );
   }

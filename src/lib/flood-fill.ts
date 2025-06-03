@@ -10,12 +10,6 @@ export interface PixelChange {
 export interface FillRegion {
   points: number[][];  // Array of x,y coordinates that form the region
   color: string;      // Fill color in hex format
-  bounds?: {         // Dirty rectangle bounds for optimalisert rendering
-    minX: number;
-    minY: number;
-    maxX: number;
-    maxY: number;
-  };
 }
 
 export class FloodFill {

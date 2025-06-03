@@ -1,28 +1,13 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback, Suspense } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import dynamic from 'next/dynamic'
-import Image from 'next/image'
 import { FloodFill, type PixelChange, type FillRegion } from '@/lib/flood-fill'
+import ColorPalette from './ColorPalette'
+import ToolBar from './ToolBar'
+import ImageSelector from './ImageSelector'
 import type { ColoringState, DrawingMode } from '@/types/canvas-coloring'
 import { addPerformanceTestButton } from '@/utils/performance-tester'
-
-// Dynamisk import av komponenter for code splitting
-const ColorPalette = dynamic(() => import('./ColorPalette'), {
-  loading: () => <div className="w-64 bg-gray-100 animate-pulse h-full"></div>,
-  ssr: false
-})
-
-const ToolBar = dynamic(() => import('./ToolBar'), {
-  loading: () => <div className="bg-gray-100 animate-pulse h-12 w-full"></div>,
-  ssr: false
-})
-
-const ImageSelector = dynamic(() => import('./ImageSelector'), {
-  loading: () => <div className="bg-white p-4 rounded animate-pulse">Laster bildevalg...</div>,
-  ssr: false
-})
 
 interface ColoringAppProps {
   imageData: {
@@ -276,17 +261,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Load image and set up canvases
   useEffect(() => {
     console.log('Loading image:', currentImage.webpImageUrl);
-    
-    // Fjernet preloading av optimaliserte bilder som kan forårsake problemer
-    
     const loadImage = async () => {
-      // Bruk createElement i stedet for new Image() for å unngå TypeScript-feil
-      const img = document.createElement('img');
+      const img = new Image()
       img.crossOrigin = 'anonymous'
-      
-      // Bruk den originale URL-en direkte uten optimalisering
-      // Dette sikrer at vi får samme oppførsel som før
-      
       img.onload = () => {
         console.log('Image loaded:', img.width, 'x', img.height);
         const background = backgroundCanvasRef.current
@@ -377,11 +354,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         console.log('Canvas setup complete');
       }
       
-      img.onerror = (event: Event | string) => {
-        console.error('Failed to load image:', event);
+      img.onerror = (err) => {
+        console.error('Failed to load image:', err);
       }
       
-      // Bruk den originale URL-en
       img.src = currentImage.webpImageUrl
     }
     
@@ -679,7 +655,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       return;
     }
     
-    // Gå tilbake til den opprinnelige flood fill-implementasjonen i stedet for Web Worker
     const floodFill = new FloodFill(imageData, state.tolerance, 50);
     const { imageData: newImageData, changes, region } = floodFill.fill(x, y, state.currentColor);
     
@@ -747,12 +722,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           ...prev,
           imageData: newImageData
         }));
-        
-        // Tillat nye fill-operasjoner etter en kort forsinkelse
-        fillThrottleTimeoutRef.current = setTimeout(() => {
-          setIsFilling(false);
-          fillThrottleTimeoutRef.current = null;
-        }, 300); // 300ms throttling for stabilitet
       });
     } else {
       // Fallback to full update if no points (shouldn't happen)
@@ -780,15 +749,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           ...prev,
           imageData: newImageData
         }));
-        
-        // Set a timeout before allowing another fill operation
-        fillThrottleTimeoutRef.current = setTimeout(() => {
-          setIsFilling(false);
-          fillThrottleTimeoutRef.current = null;
-        }, 300);
       });
     }
-  };
+    
+    // Set a timeout before allowing another fill operation (300ms delay)
+    fillThrottleTimeoutRef.current = setTimeout(() => {
+      setIsFilling(false);
+      fillThrottleTimeoutRef.current = null;
+    }, 300);
+  }
 
   function applyChanges(pixels32: Uint32Array, changes: PixelChange[], reverse = false) {
     for (const change of changes) {
