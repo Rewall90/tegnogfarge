@@ -340,4 +340,30 @@ export async function getSubcategoryColoringImages(categorySlug: string, subcate
       }
     } | order(order asc, title asc)
   `, { categorySlug, subcategorySlug })
+}
+
+/**
+ * Genererer URL for optimaliserte bilder for preloading
+ * @param imageUrl URL til originalbilde
+ * @param width Ønsket bredde
+ * @returns Array med URL-er til optimaliserte bilder i forskjellige størrelser
+ */
+export function generateOptimizedImageURLs(imageUrl: string, width = 800) {
+  if (!imageUrl) return [];
+  
+  // For Sanity-bilder kan vi bruke deres innebygde image URL builder
+  if (imageUrl.includes('cdn.sanity.io')) {
+    // Generer forskjellige størrelser for preloading
+    const sizes = [width/2, width, width*1.5];
+    return sizes.map(size => {
+      // Endre URL-en for å spesifisere bredde og webp-format
+      const optimizedUrl = imageUrl
+        .replace(/\?.*$/, '') // Fjern eventuelle eksisterende parametere
+        .concat(`?w=${Math.round(size)}&auto=format&q=85&fit=max`);
+      return optimizedUrl;
+    });
+  }
+  
+  // For andre bilder returnerer vi bare original-URL
+  return [imageUrl];
 } 

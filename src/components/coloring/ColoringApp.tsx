@@ -1,13 +1,30 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
+import Image from 'next/image'
 import { FloodFill, type PixelChange, type FillRegion } from '@/lib/flood-fill'
-import ColorPalette from './ColorPalette'
-import ToolBar from './ToolBar'
-import ImageSelector from './ImageSelector'
 import type { ColoringState, DrawingMode } from '@/types/canvas-coloring'
 import { addPerformanceTestButton } from '@/utils/performance-tester'
+import { generateOptimizedImageURLs } from '@/lib/sanity'
+import useFloodFillWorker from '@/hooks/useFloodFillWorker'
+
+// Dynamisk import av komponenter for code splitting
+const ColorPalette = dynamic(() => import('./ColorPalette'), {
+  loading: () => <div className="w-64 bg-gray-100 animate-pulse h-full"></div>,
+  ssr: false
+})
+
+const ToolBar = dynamic(() => import('./ToolBar'), {
+  loading: () => <div className="bg-gray-100 animate-pulse h-12 w-full"></div>,
+  ssr: false
+})
+
+const ImageSelector = dynamic(() => import('./ImageSelector'), {
+  loading: () => <div className="bg-white p-4 rounded animate-pulse">Laster bildevalg...</div>,
+  ssr: false
+})
 
 interface ColoringAppProps {
   imageData: {
@@ -80,6 +97,9 @@ function forEachPixelOnLine(x0: number, y0: number, x1: number, y1: number, cb: 
 
 export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
   const router = useRouter()
+  
+  // Flood fill worker hook
+  const { performFloodFill } = useFloodFillWorker();
   
   // Create our layered canvas references
   const backgroundCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -261,9 +281,36 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Load image and set up canvases
   useEffect(() => {
     console.log('Loading image:', currentImage.webpImageUrl);
+    
+    // Preload optimaliserte bildevariasjoner
+    const optimizedImageURLs = generateOptimizedImageURLs(currentImage.webpImageUrl);
+    
+    // Preload images for faster loading
+    optimizedImageURLs.forEach(url => {
+      const preloadLink = document.createElement('link');
+      preloadLink.rel = 'preload';
+      preloadLink.as = 'image';
+      preloadLink.href = url;
+      document.head.appendChild(preloadLink);
+      
+      // Fjern preload-lenken etter 5 sekunder for å unngå memory leaks
+      setTimeout(() => {
+        if (document.head.contains(preloadLink)) {
+          document.head.removeChild(preloadLink);
+        }
+      }, 5000);
+    });
+    
     const loadImage = async () => {
-      const img = new Image()
+      // HTMLImageElement er den riktige typen for det globale Image-objektet
+      const img = document.createElement('img') as HTMLImageElement
       img.crossOrigin = 'anonymous'
+      
+      // Velg den optimaliserte URL-en som passer best til vindusstørrelsen
+      const optimizedUrl = optimizedImageURLs.length > 0 ? 
+        optimizedImageURLs[Math.min(1, optimizedImageURLs.length - 1)] : 
+        currentImage.webpImageUrl;
+      
       img.onload = () => {
         console.log('Image loaded:', img.width, 'x', img.height);
         const background = backgroundCanvasRef.current
@@ -354,11 +401,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         console.log('Canvas setup complete');
       }
       
-      img.onerror = (err) => {
+      img.onerror = (err: Event | string) => {
         console.error('Failed to load image:', err);
       }
       
-      img.src = currentImage.webpImageUrl
+      // Bruk den optimaliserte URL-en
+      img.src = optimizedUrl;
     }
     
     loadImage()
@@ -655,109 +703,123 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       return;
     }
     
-    const floodFill = new FloodFill(imageData, state.tolerance, 50);
-    const { imageData: newImageData, changes, region } = floodFill.fill(x, y, state.currentColor);
+    // Lag en kopi av imageData for å bruke med web workeren
+    // (siden vi sender buffer som transferable object, som flytter eierskap til workeren)
+    const imageDataCopy = new ImageData(
+      new Uint8ClampedArray(imageData.data), 
+      imageData.width, 
+      imageData.height
+    );
     
-    console.log(`Flood fill complete. Points collected: ${region.points.length}, Changes: ${changes.length}`);
-    
-    if (changes.length === 0) {
-      console.log('No pixels changed, skipping fill');
-      setIsFilling(false);
-      return;
-    }
-    
-    // Update the cached ImageData for future operations
-    sharedImageDataRef.current = newImageData;
-    
-    // Calculate the dirty rectangle for the flood fill
-    let minX = shadowCanvas.width;
-    let minY = shadowCanvas.height;
-    let maxX = 0;
-    let maxY = 0;
-    
-    // Find the bounds of the changed area
-    if (region.points.length > 0) {
-      region.points.forEach(([x, y]) => {
-        minX = Math.min(minX, x);
-        minY = Math.min(minY, y);
-        maxX = Math.max(maxX, x);
-        maxY = Math.max(maxY, y);
+    // Utfør flood fill operasjonen i web worker
+    performFloodFill({
+      imageData: imageDataCopy,
+      x,
+      y,
+      fillColor: state.currentColor,
+      tolerance: state.tolerance,
+      maxPoints: 1000000
+    })
+      .then(({ region, changes, performance }) => {
+        console.log(`[Worker] Flood fill completed in ${performance.totalTime}ms`);
+        console.log(`[Worker] Processed ${performance.processedPixels} pixels, changed ${performance.changedPixels} pixels`);
+        
+        if (changes.length === 0) {
+          console.log('No pixels changed, skipping fill');
+          setIsFilling(false);
+          return;
+        }
+        
+        // Overfør endringene til shadow canvas
+        const newImageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
+        
+        // Siden worker endringene er i et annet format, må vi konvertere dem
+        changes.forEach(change => {
+          const idx = (change.y * shadowCanvas.width + change.x) * 4;
+          newImageData.data[idx] = change.newColor[0];     // R
+          newImageData.data[idx + 1] = change.newColor[1]; // G
+          newImageData.data[idx + 2] = change.newColor[2]; // B
+          newImageData.data[idx + 3] = change.newColor[3]; // A
+        });
+        
+        // Oppdater cached ImageData
+        sharedImageDataRef.current = newImageData;
+        
+        // Beregn dirty rectangle
+        let minX = shadowCanvas.width;
+        let minY = shadowCanvas.height;
+        let maxX = 0;
+        let maxY = 0;
+        
+        if (region.points.length > 0) {
+          region.points.forEach(([x, y]) => {
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+          });
+          
+          // Add padding
+          const padding = 2;
+          minX = Math.max(0, minX - padding);
+          minY = Math.max(0, minY - padding);
+          maxX = Math.min(shadowCanvas.width - 1, maxX + padding);
+          maxY = Math.min(shadowCanvas.height - 1, maxY + padding);
+          
+          // Calculate dimensions
+          const dirtyWidth = maxX - minX + 1;
+          const dirtyHeight = maxY - minY + 1;
+          
+          console.log(`Shadow dirty rectangle: (${minX},${minY}) - (${maxX},${maxY}), size: ${dirtyWidth}x${dirtyHeight}`);
+          
+          // Only update the changed area of the shadow canvas, using requestAnimationFrame
+          requestAnimationFrame(() => {
+            shadowCtx.putImageData(newImageData, 0, 0, minX, minY, dirtyWidth, dirtyHeight);
+            
+            // Store the new region and redraw
+            const newRegions = [...fillRegions, region];
+            setFillRegions(newRegions);
+            
+            console.log(`Regions after adding new one: ${newRegions.length}, about to redraw`);
+            
+            // Redraw all regions efficiently
+            redrawFillRegions(newRegions);
+            
+            console.log('Regions redrawn');
+            
+            // Update history
+            const newHistory = history.slice(0, historyStep + 1);
+            newHistory.push({ 
+              changes: changes.map(c => ({
+                index: c.y * shadowCanvas.width + c.x,
+                oldColor: 0, // Vi har ikke det riktige formatet her, men vi trenger det ikke
+                newColor: 0
+              })), 
+              region 
+            });
+            setHistory(newHistory.slice(-MAX_HISTORY));
+            setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1));
+            
+            setState(prev => ({
+              ...prev,
+              imageData: newImageData
+            }));
+            
+            // Tillat nye fill-operasjoner etter en kort forsinkelse
+            fillThrottleTimeoutRef.current = setTimeout(() => {
+              setIsFilling(false);
+              fillThrottleTimeoutRef.current = null;
+            }, 100); // 100ms throttling
+          });
+        } else {
+          setIsFilling(false);
+        }
+      })
+      .catch(error => {
+        console.error('Flood fill worker error:', error);
+        setIsFilling(false);
       });
-      
-      // Add padding
-      const padding = 2;
-      minX = Math.max(0, minX - padding);
-      minY = Math.max(0, minY - padding);
-      maxX = Math.min(shadowCanvas.width - 1, maxX + padding);
-      maxY = Math.min(shadowCanvas.height - 1, maxY + padding);
-      
-      // Calculate dimensions
-      const dirtyWidth = maxX - minX + 1;
-      const dirtyHeight = maxY - minY + 1;
-      
-      console.log(`Shadow dirty rectangle: (${minX},${minY}) - (${maxX},${maxY}), size: ${dirtyWidth}x${dirtyHeight}`);
-      
-      // Only update the changed area of the shadow canvas, using requestAnimationFrame
-      requestAnimationFrame(() => {
-        shadowCtx.putImageData(newImageData, 0, 0, minX, minY, dirtyWidth, dirtyHeight);
-        
-        // Store the new region and redraw
-        const newRegions = [...fillRegions, region];
-        setFillRegions(newRegions);
-        
-        console.log(`Regions after adding new one: ${newRegions.length}, about to redraw`);
-        
-        // Redraw all regions efficiently
-        redrawFillRegions(newRegions);
-        
-        console.log('Regions redrawn');
-        
-        // Update history
-        const newHistory = history.slice(0, historyStep + 1);
-        newHistory.push({ changes, region });
-        setHistory(newHistory.slice(-MAX_HISTORY));
-        setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1));
-        
-        setState(prev => ({
-          ...prev,
-          imageData: newImageData
-        }));
-      });
-    } else {
-      // Fallback to full update if no points (shouldn't happen)
-      requestAnimationFrame(() => {
-        shadowCtx.putImageData(newImageData, 0, 0);
-        
-        // Store the new region and redraw
-        const newRegions = [...fillRegions, region];
-        setFillRegions(newRegions);
-        
-        console.log(`Regions after adding new one: ${newRegions.length}, about to redraw`);
-        
-        // Redraw all regions efficiently
-        redrawFillRegions(newRegions);
-        
-        console.log('Regions redrawn');
-        
-        // Update history
-        const newHistory = history.slice(0, historyStep + 1);
-        newHistory.push({ changes, region });
-        setHistory(newHistory.slice(-MAX_HISTORY));
-        setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1));
-        
-        setState(prev => ({
-          ...prev,
-          imageData: newImageData
-        }));
-      });
-    }
-    
-    // Set a timeout before allowing another fill operation (300ms delay)
-    fillThrottleTimeoutRef.current = setTimeout(() => {
-      setIsFilling(false);
-      fillThrottleTimeoutRef.current = null;
-    }, 300);
-  }
+  };
 
   function applyChanges(pixels32: Uint32Array, changes: PixelChange[], reverse = false) {
     for (const change of changes) {
