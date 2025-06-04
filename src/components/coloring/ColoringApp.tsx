@@ -7,7 +7,6 @@ import ColorPalette from './ColorPalette'
 import ToolBar from './ToolBar'
 import ImageSelector from './ImageSelector'
 import type { ColoringState, DrawingMode } from '@/types/canvas-coloring'
-import { addPerformanceTestButton } from '@/utils/performance-tester'
 
 interface ColoringAppProps {
   imageData: {
@@ -111,6 +110,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   
   const [currentImage, setCurrentImage] = useState(initialImageData)
   const [showImageSelector, setShowImageSelector] = useState(false)
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [state, setState] = useState<ColoringState>({
     imageData: null,
     originalImageData: null,
@@ -156,8 +157,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const fillCtx = contextRef.current.fill;
     const fillCanvas = fillCanvasRef.current;
     if (!fillCtx || !fillCanvas) return;
-    
-    console.log(`Redrawing ${regions.length} regions efficiently`);
     
     // Forbered rendering i neste animasjonsramme
     requestAnimationFrame(() => {
@@ -207,7 +206,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       
       // Sikre at vi har gyldig dirtyRectangle
       if (minX > maxX || minY > maxY) {
-        console.log("No valid dirty rectangle calculated");
         return;
       }
       
@@ -222,12 +220,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       const dirtyWidth = maxX - minX + 1;
       const dirtyHeight = maxY - minY + 1;
       
-      console.log(`Dirty rectangle: (${minX},${minY}) - (${maxX},${maxY}), size: ${dirtyWidth}x${dirtyHeight}`);
-      
       // Tegn bare det berørte området (dirty rectangle)
       fillCtx.putImageData(imageData, 0, 0, minX, minY, dirtyWidth, dirtyHeight);
-      
-      console.log(`Redrew ${regions.length} regions with ${totalPoints} total points using dirty rectangle`);
     });
   }, []);
 
@@ -236,8 +230,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const mainCtx = contextRef.current.main;
     const mainCanvas = mainCanvasRef.current;
     if (!mainCtx || !mainCanvas) return;
-    
-    console.log(`Redrawing ${strokes.length} brush strokes from snapshots`);
     
     // Bruk requestAnimationFrame for å synkronisere med skjermoppdateringer
     requestAnimationFrame(() => {
@@ -253,19 +245,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (lastStroke.canvasSnapshot) {
         mainCtx.drawImage(lastStroke.canvasSnapshot, 0, 0);
       }
-      
-      console.log(`Completed drawing brush strokes from snapshots`);
     });
   }, []);
 
   // Load image and set up canvases
   useEffect(() => {
-    console.log('Loading image:', currentImage.webpImageUrl);
     const loadImage = async () => {
       const img = new Image()
       img.crossOrigin = 'anonymous'
       img.onload = () => {
-        console.log('Image loaded:', img.width, 'x', img.height);
         const background = backgroundCanvasRef.current
         const canvas = mainCanvasRef.current
         const fillCanvas = fillCanvasRef.current
@@ -304,9 +292,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         // Make sure fill context has global composite operation set correctly
         fillCtx.globalCompositeOperation = 'source-over';
         
-        // Verifiser at bildet ble lastet riktig
-        console.log(`Drawing image (${img.width}x${img.height}) on canvases (${background.width}x${background.height})`);
-        
         // Draw the image on the background canvas
         bgCtx.clearRect(0, 0, background.width, background.height);
         bgCtx.drawImage(img, 0, 0);
@@ -314,7 +299,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         // Verify image was drawn correctly
         try {
           const testData = bgCtx.getImageData(0, 0, 1, 1);
-          console.log('Background image data available');
         } catch (err) {
           console.error('Failed to get background image data:', err);
         }
@@ -347,72 +331,19 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           historyStep: 0
         }))
         
-        // Reset history
-        setHistory([]);
-        setHistoryStep(-1);
-        
         console.log('Canvas setup complete');
       }
-      
-      img.onerror = (err) => {
-        console.error('Failed to load image:', err);
+      img.onerror = (e) => {
+        console.error('Error loading image:', e)
+        setError('Kunne ikke laste bilde')
+        setIsLoading(false)
       }
-      
-      img.src = currentImage.webpImageUrl
+      img.src = currentImage.webpImageUrl;
     }
     
+    setIsLoading(true);
     loadImage()
-    
-    // Cleanup function to clear cached data when component unmounts
-    return () => {
-      sharedImageDataRef.current = null;
-      contextRef.current = {
-        background: null,
-        main: null,
-        fill: null,
-        shadow: null
-      };
-    };
-  }, [currentImage, initializeContexts, redrawFillRegions]);
-
-  // Add performance testing in development mode
-  useEffect(() => {
-    // Only add the test button in development mode
-    if (process.env.NODE_ENV === 'development' && appContainerRef.current) {
-      // Create a sample fill function that uses a common position
-      const testFillFunction = () => {
-        const shadow = shadowCanvasRef.current;
-        if (!shadow || !state.imageData) return;
-        
-        // Get the center point of the canvas for consistent testing
-        const x = Math.floor(shadow.width / 2);
-        const y = Math.floor(shadow.height / 2);
-        
-        // Perform the flood fill operation
-        const shadowCtx = contextRef.current.shadow;
-        if (!shadowCtx) return;
-        
-        const floodFill = new FloodFill(state.imageData, state.tolerance, 50);
-        const { imageData: newImageData, changes, region } = floodFill.fill(x, y, state.currentColor);
-        
-        if (changes.length === 0) return;
-        
-        // Update shadow canvas
-        shadowCtx.putImageData(newImageData, 0, 0);
-        
-        // Add new region and redraw
-        const newRegions = [...fillRegions, region];
-        setFillRegions(newRegions);
-        redrawFillRegions(newRegions);
-        
-        // Update state and history
-        setState(prev => ({ ...prev, imageData: newImageData }));
-      };
-      
-      // Add the performance test button
-      addPerformanceTestButton(appContainerRef.current, testFillFunction);
-    }
-  }, [state.imageData, state.tolerance, state.currentColor, fillRegions, redrawFillRegions]);
+  }, [currentImage, initializeContexts]);
 
   // Cleanup any throttle timers when component unmounts
   useEffect(() => {
@@ -578,7 +509,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Prevent multiple fill operations from running simultaneously
     if (isFilling) {
-      console.log("Fill operation already in progress, ignoring click");
       return;
     }
     
@@ -597,13 +527,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const fillCanvas = fillCanvasRef.current;
     
     if (!shadowCtx || !fillCtx || !mainCanvas || !shadowCanvas || !fillCanvas) {
-      console.log("Missing canvas or context references");
       setIsFilling(false);
       return;
     }
     
     if (shadowCanvas.width === 0 || shadowCanvas.height === 0) {
-      console.log("Shadow canvas has zero dimensions");
       setIsFilling(false);
       return;
     }
@@ -615,19 +543,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const x = Math.floor((e.clientX - rect.left) * scaleX);
     const y = Math.floor((e.clientY - rect.top) * scaleY);
     
-    console.log(`Flood fill at position: (${x}, ${y}) with color: ${state.currentColor}`);
-    
     // VIKTIG: Verifiser at shadow canvas har riktig innhold
-    // Dette kan være hovedårsaken til problemet
     if (!state.imageData) {
-      console.log('No image data available. Re-fetching from shadow canvas.');
       const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
       sharedImageDataRef.current = imageData;
       setState(prev => ({ ...prev, imageData }));
       setIsFilling(false);
       return;
     } else if (state.imageData.width !== shadowCanvas.width || state.imageData.height !== shadowCanvas.height) {
-      console.log(`Image data dimensions (${state.imageData.width}x${state.imageData.height}) don't match canvas (${shadowCanvas.width}x${shadowCanvas.height}). Updating.`);
       const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
       sharedImageDataRef.current = imageData;
       setState(prev => ({ ...prev, imageData }));
@@ -643,14 +566,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     }
     
     if (!imageData || imageData.width === 0 || imageData.height === 0) {
-      console.log("Invalid image data");
       setIsFilling(false);
       return;
     }
     
     // Sjekk at koordinatene er innenfor canvas
     if (x < 0 || y < 0 || x >= imageData.width || y >= imageData.height) {
-      console.log(`Coordinates (${x}, ${y}) are outside the image data (${imageData.width}x${imageData.height})`);
       setIsFilling(false);
       return;
     }
@@ -658,10 +579,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const floodFill = new FloodFill(imageData, state.tolerance, 50);
     const { imageData: newImageData, changes, region } = floodFill.fill(x, y, state.currentColor);
     
-    console.log(`Flood fill complete. Points collected: ${region.points.length}, Changes: ${changes.length}`);
-    
     if (changes.length === 0) {
-      console.log('No pixels changed, skipping fill');
       setIsFilling(false);
       return;
     }
@@ -695,8 +613,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       const dirtyWidth = maxX - minX + 1;
       const dirtyHeight = maxY - minY + 1;
       
-      console.log(`Shadow dirty rectangle: (${minX},${minY}) - (${maxX},${maxY}), size: ${dirtyWidth}x${dirtyHeight}`);
-      
       // Only update the changed area of the shadow canvas, using requestAnimationFrame
       requestAnimationFrame(() => {
         shadowCtx.putImageData(newImageData, 0, 0, minX, minY, dirtyWidth, dirtyHeight);
@@ -705,12 +621,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         const newRegions = [...fillRegions, region];
         setFillRegions(newRegions);
         
-        console.log(`Regions after adding new one: ${newRegions.length}, about to redraw`);
-        
         // Redraw all regions efficiently
         redrawFillRegions(newRegions);
-        
-        console.log('Regions redrawn');
         
         // Update history
         const newHistory = history.slice(0, historyStep + 1);
@@ -732,12 +644,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         const newRegions = [...fillRegions, region];
         setFillRegions(newRegions);
         
-        console.log(`Regions after adding new one: ${newRegions.length}, about to redraw`);
-        
         // Redraw all regions efficiently
         redrawFillRegions(newRegions);
-        
-        console.log('Regions redrawn');
         
         // Update history
         const newHistory = history.slice(0, historyStep + 1);
@@ -935,8 +843,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   const consolidateBrushStrokes = useCallback(() => {
     // Hvis vi har mer enn 5 penselstrøk, konsolider dem til ett
     if (brushStrokes.length > 5) {
-      console.log(`Consolidating ${brushStrokes.length} brush strokes to save memory`);
-      
       const mainCanvas = mainCanvasRef.current;
       const mainCtx = contextRef.current.main;
       
@@ -999,23 +905,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               <h1 className="text-xl md:text-2xl font-bold">{currentImage.title}</h1>
             </div>
             <div className="flex gap-2">
-              {/* Debug test button */}
-              <button
-                onClick={() => {
-                  // Test direct fill on fill canvas
-                  const fillCtx = contextRef.current.fill;
-                  const fillCanvas = fillCanvasRef.current;
-                  if (!fillCtx || !fillCanvas) return;
-                  
-                  // Draw a test rectangle
-                  fillCtx.fillStyle = state.currentColor;
-                  fillCtx.fillRect(100, 100, 50, 50);
-                  console.log("Drew a test rectangle directly on the fill canvas");
-                }}
-                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Test Fill
-              </button>
               <button
                 onClick={() => setShowImageSelector(true)}
                 className="px-3 py-1 text-blue-600 hover:text-blue-800"

@@ -1,19 +1,22 @@
 import * as React from 'react';
 import { 
-  Body, Button, Container, Head, Heading, Html, 
+  Body, Container, Head, Heading, Html, 
   Link, Preview, Section, Text, Hr
 } from '@react-email/components';
 
 interface VerifyEmailTemplateProps {
   userFirstname?: string;
-  verificationUrl: string;
+  verificationCode: string;
+  verificationUrl?: string; // Keep for backward compatibility but don't use
 }
 
 export default function VerifyEmailTemplate({
   userFirstname = 'der',
-  verificationUrl
+  verificationCode,
+  verificationUrl // Not used anymore
 }: VerifyEmailTemplateProps) {
   const previewText = `Bekreft e-postadressen din for Fargelegging.no`;
+  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 
   return (
     <Html>
@@ -28,21 +31,15 @@ export default function VerifyEmailTemplate({
           <Text style={text}>
             Takk for at du registrerte deg på Fargelegging.no. For å fullføre 
             registreringen og få tilgang til alle funksjoner, må du bekrefte 
-            e-postadressen din ved å klikke på knappen nedenfor.
+            e-postadressen din med koden nedenfor.
           </Text>
           <Section style={buttonContainer}>
-            <Button
-              style={button}
-              href={verificationUrl}
-            >
-              Bekreft e-postadressen min
-            </Button>
+            <div style={codeBox}>
+              {verificationCode}
+            </div>
           </Section>
           <Text style={text}>
-            Eller kopier og lim inn følgende URL i nettleseren din:
-          </Text>
-          <Text style={codeContainer}>
-            {verificationUrl}
+            Gå til <Link href={`${baseUrl}/verify-email`} style={inlineLink}>verifiseringssiden</Link> og skriv inn koden over.
           </Text>
           <Hr style={hr} />
           <Text style={footer}>
@@ -94,16 +91,20 @@ const buttonContainer = {
   textAlign: 'center' as const,
 };
 
-const button = {
-  backgroundColor: '#4f46e5',
+const codeBox = {
+  backgroundColor: '#f5f5f5',
   borderRadius: '5px',
-  color: '#fff',
-  fontSize: '16px',
+  color: '#333',
+  fontSize: '32px',
   fontWeight: 'bold',
-  textDecoration: 'none',
-  textAlign: 'center' as const,
+  letterSpacing: '8px',
+  padding: '20px',
   display: 'inline-block',
-  padding: '12px 20px',
+};
+
+const inlineLink = {
+  color: '#4f46e5',
+  textDecoration: 'underline',
 };
 
 const codeContainer = {

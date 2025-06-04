@@ -5,7 +5,11 @@ import { v4 as uuidv4 } from 'uuid';
 // Brukes kun for testing når MongoDB ikke er tilgjengelig
 export async function POST(request: Request) {
   try {
-    console.log('Bruker fallback registreringsrute (uten MongoDB)');
+    console.log('=======================================');
+    console.log('FALLBACK REGISTRERING BRUKT - INGEN DATABASE TILKOBLING');
+    console.log('=======================================');
+    console.log('Dette betyr at brukeren IKKE blir lagret i MongoDB!');
+    console.log('Tidspunkt:', new Date().toISOString());
     
     // Parse input
     const body = await request.json();
@@ -41,13 +45,17 @@ export async function POST(request: Request) {
     // Generer en falsk verifiseringslink
     const mockVerificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email?token=${uuidv4()}`;
     
+    console.log('FALLBACK: Simulert bruker:', { ...mockUser, password: '[SKJULT]' });
+    console.log('FALLBACK: Simulert verifiseringslenke:', mockVerificationUrl);
+    console.log('=======================================');
+    
     // Returner responsen
     return NextResponse.json({
-      message: 'TEST MODUS: Bruker simulert registrert. Ingen database brukt.',
+      message: '[FALLBACK MODUS] Bruker simulert registrert. Ingen database brukt.',
       user: mockUser,
       requiresVerification: true,
       verificationUrl: mockVerificationUrl,
-      note: 'Dette er en fallback-rute som ikke bruker MongoDB, kun for testing.'
+      warning: 'FALLBACK-MODUS: Denne brukeren er IKKE lagret i databasen! Dette er kun en test.'
     }, { status: 201 });
   } catch (error: any) {
     console.error('Feil i fallback registrering:', error);

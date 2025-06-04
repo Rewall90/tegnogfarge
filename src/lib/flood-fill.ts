@@ -45,10 +45,7 @@ export class FloodFill {
     changes: PixelChange[],
     region: FillRegion  // New return value
   } {
-    console.log(`[FloodFill] Starting fill at (${x},${y}) with color ${fillColor}`);
-    
     if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-      console.log(`[FloodFill] Position out of bounds: (${x},${y}), canvas size: ${this.width}x${this.height}`);
       return {
         imageData: this.imageData,
         changes: [],
@@ -60,12 +57,6 @@ export class FloodFill {
     const startPos = y * this.width + x;
     const startColor = this.pixels32[startPos];
     
-    // Log start pixel color for debugging
-    const sr = startColor & 0xFF;
-    const sg = (startColor >> 8) & 0xFF;
-    const sb = (startColor >> 16) & 0xFF;
-    console.log(`[FloodFill] Start pixel color: RGB(${sr},${sg},${sb})`);
-    
     const changes: PixelChange[] = [];
     const regionPoints: number[][] = [];
 
@@ -74,7 +65,6 @@ export class FloodFill {
 
     // Sjekk om startpunktet er svart eller samme farge som vi fyller med
     if (this.isProtectedColor(startColor)) {
-      console.log(`[FloodFill] Start pixel is protected (black/outline)`);
       return { 
         imageData: this.imageData, 
         changes: [],
@@ -83,7 +73,6 @@ export class FloodFill {
     }
     
     if (this.colorMatches32(startColor, fillRGBA, 0)) {
-      console.log(`[FloodFill] Start pixel already has the fill color`);
       return { 
         imageData: this.imageData, 
         changes: [],
@@ -172,8 +161,6 @@ export class FloodFill {
         }
       }
     }
-
-    console.log(`[FloodFill] Fill complete. Collected ${regionPoints.length} points, made ${changes.length} changes.`);
     
     // Create the fill region
     const region: FillRegion = {

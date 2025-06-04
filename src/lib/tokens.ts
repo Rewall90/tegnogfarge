@@ -8,7 +8,15 @@ interface VerificationToken {
 }
 
 /**
- * Oppretter en verifikasjonstoken for e-postbekreftelse
+ * Genererer en 6-sifret verifiseringskode
+ */
+function generateVerificationCode(): string {
+  // Generer en 6-sifret kode med bare tall
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+/**
+ * Oppretter en verifiseringstoken for e-postbekreftelse
  */
 export async function createVerificationToken({ 
   email,
@@ -18,10 +26,8 @@ export async function createVerificationToken({
   expiresInHours?: number;
 }): Promise<VerificationToken | null> {
   try {
-    console.log(`Oppretter verifikasjonstoken for ${email}`);
-    
-    // Generer en unik token
-    const token = uuidv4();
+    // Generer en 6-sifret kode i stedet for en UUID
+    const token = generateVerificationCode();
     
     // Sett utløpstid
     const expiresAt = new Date();
@@ -31,8 +37,14 @@ export async function createVerificationToken({
     const client = await clientPromise;
     const db = client.db('fargeleggingsapp');
     
+    // Slett eventuelle eksisterende tokens for denne e-posten
+    await db.collection('verification_tokens').deleteMany({
+      email,
+      type: 'user_verification'
+    });
+    
     // Lagre token i databasen
-    await db.collection('verification_tokens').insertOne({
+    const result = await db.collection('verification_tokens').insertOne({
       email,
       token,
       type: 'user_verification',
@@ -41,14 +53,23 @@ export async function createVerificationToken({
       createdAt: new Date()
     });
     
-    console.log(`Verifikasjonstoken opprettet for ${email}, utløper ${expiresAt}`);
+    // Dobbeltsjekk at token er lagret
+    const savedToken = await db.collection('verification_tokens').findOne({ 
+      token, 
+      email, 
+      type: 'user_verification' 
+    });
+    
+    if (!savedToken) {
+      console.warn(`ADVARSEL: Token ikke funnet i databasen etter lagring!`);
+    }
     
     return {
       token,
       expiresAt
     };
   } catch (error) {
-    console.error('Feil ved oppretting av verifikasjonstoken:', error);
+    console.error('Feil ved oppretting av verifiseringskode:', error);
     return null;
   }
 }

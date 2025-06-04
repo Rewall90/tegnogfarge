@@ -121,18 +121,15 @@ export default function ColoringCanvas({
 
   // Laste inn bilde
   useEffect(() => {
-    console.log('[ColoringCanvas] useEffect START', imageUrl)
     let isMounted = true
     const loadImage = async () => {
       try {
         if (!isMounted) return
         setIsLoading(true)
-        console.log('[ColoringCanvas] setIsLoading(true)')
         const img = new window.Image()
         imageRef.current = img // Hold på referansen
         img.crossOrigin = 'anonymous'
         img.onload = () => {
-          console.log('[ColoringCanvas] img.onload', imageUrl, img.width, img.height, img.naturalWidth, img.naturalHeight)
           if (!isMounted) return
           
           // Initialize all canvases
@@ -172,9 +169,6 @@ export default function ColoringCanvas({
           // Make sure fill context has global composite operation set correctly
           fillCtx.globalCompositeOperation = 'source-over';
           
-          // Verifiser at bildet ble lastet riktig
-          console.log(`[ColoringCanvas] Drawing image (${img.width}x${img.height}) on canvases (${background.width}x${background.height})`);
-          
           // Draw the image on the background canvas
           bgCtx.clearRect(0, 0, background.width, background.height);
           bgCtx.drawImage(img, 0, 0)
@@ -182,7 +176,6 @@ export default function ColoringCanvas({
           // Verify image was drawn correctly
           try {
             const testData = bgCtx.getImageData(0, 0, 1, 1);
-            console.log('[ColoringCanvas] Background image data available');
           } catch (err) {
             console.error('[ColoringCanvas] Failed to get background image data:', err);
           }
@@ -203,7 +196,6 @@ export default function ColoringCanvas({
           setFillRegions([])
           
           setState(prev => {
-            console.log('[ColoringCanvas] setState imageData')
             return {
               ...prev,
               imageData,
@@ -218,20 +210,16 @@ export default function ColoringCanvas({
           setHistoryStep(-1)
           
           setIsLoading(false)
-          console.log('[ColoringCanvas] setIsLoading(false)')
         }
         img.onerror = (e) => {
-          console.error('[ColoringCanvas] img.onerror', imageUrl, e, img.width, img.height, img.naturalWidth, img.naturalHeight)
+          console.error('[ColoringCanvas] img.onerror', e)
           if (!isMounted) return
           setError('Kunne ikke laste bilde')
           setIsLoading(false)
         }
-        console.log('[ColoringCanvas] Event-handlere satt')
-        console.log('[ColoringCanvas] Setter img.src til', imageUrl)
         img.src = imageUrl
-        console.log('[ColoringCanvas] img.src er satt')
       } catch (err) {
-        console.error('[ColoringCanvas] Exception ved lasting av bilde', imageUrl, err)
+        console.error('[ColoringCanvas] Exception ved lasting av bilde', err)
         setError('En feil oppstod ved lasting av bildet')
         setIsLoading(false)
       }
@@ -240,7 +228,6 @@ export default function ColoringCanvas({
     return () => {
       isMounted = false
       imageRef.current = null // Rydd opp
-      console.log('[ColoringCanvas] useEffect CLEANUP (unmount eller imageUrl endret)')
     }
   }, [imageUrl, initializeContexts])
 
@@ -327,11 +314,8 @@ export default function ColoringCanvas({
       const x = Math.floor((e.clientX - rect.left) * scaleX);
       const y = Math.floor((e.clientY - rect.top) * scaleY);
       
-      console.log(`[ColoringCanvas] Flood fill at position: (${x}, ${y}) with color: ${state.currentColor}`);
-      
       // Verifiser at canvas data er OK
       if (state.imageData.width !== shadow.width || state.imageData.height !== shadow.height) {
-        console.log(`[ColoringCanvas] Image data dimensions (${state.imageData.width}x${state.imageData.height}) don't match canvas (${shadow.width}x${shadow.height}). Updating.`);
         const imageData = shadowCtx.getImageData(0, 0, shadow.width, shadow.height);
         setState(prev => ({ ...prev, imageData }));
         return; // Venter til neste render
@@ -339,17 +323,13 @@ export default function ColoringCanvas({
       
       // Sjekk at koordinatene er innenfor canvas
       if (x < 0 || y < 0 || x >= state.imageData.width || y >= state.imageData.height) {
-        console.log(`[ColoringCanvas] Coordinates (${x}, ${y}) are outside the image data (${state.imageData.width}x${state.imageData.height})`);
         return;
       }
       
       const floodFill = new FloodFill(state.imageData, state.tolerance, 50);
       const { imageData: newImageData, changes, region } = floodFill.fill(x, y, state.currentColor);
       
-      console.log(`[ColoringCanvas] Flood fill complete. Points collected: ${region.points.length}, Changes: ${changes.length}`);
-      
       if (changes.length === 0) {
-        console.log('[ColoringCanvas] No pixels changed, skipping fill');
         return;
       }
       
@@ -360,12 +340,8 @@ export default function ColoringCanvas({
       const newRegions = [...fillRegions, region];
       setFillRegions(newRegions);
       
-      console.log(`[ColoringCanvas] Regions after adding new one: ${newRegions.length}, about to redraw`);
-      
       // Redraw the regions
       redrawFillRegions(newRegions);
-      
-      console.log('[ColoringCanvas] Regions redrawn');
       
       // Update history
       const newHistory = history.slice(0, historyStep + 1);

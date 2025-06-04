@@ -9,7 +9,7 @@ interface FrontpageCategoriesProps {
 
 export function FrontpageCategories({ categories }: FrontpageCategoriesProps) {
   return (
-    <section className="flex flex-col w-full py-8 px-4 md:px-12 xl:px-32 bg-[#f8fafc] rounded-2xl shadow-md">
+    <section className="flex flex-col w-full py-8 px-4 md:px-12 xl:px-32">
       <h1 className="text-[#101618] text-3xl md:text-4xl font-extrabold leading-tight text-center mb-2">Coloring Fun</h1>
       <h2 className="text-[#101618] tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-6 pt-2">
         Explore Our Coloring Categories

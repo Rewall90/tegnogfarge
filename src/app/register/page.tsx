@@ -19,6 +19,7 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [verificationUrl, setVerificationUrl] = useState('');
   const [isDevMode, setIsDevMode] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<React.ReactNode>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,18 +55,14 @@ export default function RegisterPage() {
       if (!response.ok) {
         setError(data.message || 'Registrering feilet');
       } else {
-        // Check if we're in development mode and got a verification URL
+        // Lagre verifiseringskode i development mode
         if (window.location.hostname === 'localhost' && data.verificationUrl) {
           setIsDevMode(true);
           setVerificationUrl(data.verificationUrl);
-        } else {
-          // Redirect to login with verification message
-          const loginPath = redirectUrl 
-            ? `/login?registered=true&verify=true&redirect=${encodeURIComponent(redirectUrl)}`
-            : '/login?registered=true&verify=true';
-          
-          router.push(loginPath);
         }
+        
+        // Redirect direkte til verifiseringssiden
+        router.push('/verify-email');
       }
     } catch (error) {
       setError('En feil oppstod. Prøv igjen senere.');
@@ -82,16 +79,8 @@ export default function RegisterPage() {
         {verificationUrl && isDevMode && (
           <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 mb-4 rounded">
             <p className="font-bold">Development Mode</p>
-            <p className="mb-2">Registrering vellykket! I produksjon vil en e-post bli sendt til brukeren.</p>
-            <p className="mb-2">For testing, klikk på lenken under for å verifisere kontoen:</p>
-            <a 
-              href={verificationUrl} 
-              className="text-blue-600 underline break-all"
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              {verificationUrl}
-            </a>
+            <p className="mb-2">Registrering vellykket! Du blir omdirigert til verifiseringssiden.</p>
+            <p className="mb-2">For testing, koden for å verifisere kontoen er i e-posten din.</p>
           </div>
         )}
         
@@ -179,6 +168,12 @@ export default function RegisterPage() {
             Logg inn her
           </Link>
         </p>
+
+        {successMessage && (
+          <div className="mt-4">
+            {successMessage}
+          </div>
+        )}
       </div>
     </div>
   );
