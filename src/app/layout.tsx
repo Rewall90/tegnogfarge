@@ -13,6 +13,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Logg miljøvariabler ved oppstart (dette kjører på serveren)
+console.log('App starter opp:');
+console.log('- NODE_ENV:', process.env.NODE_ENV);
+console.log('- MONGODB_URI er satt:', !!process.env.MONGODB_URI);
+console.log('- NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
+
 export const metadata: Metadata = {
   title: "Fargelegg - Din kreative plattform for fargelegging",
   description: "Slipp fantasien løs og fargelegg på din måte. Vår plattform tilbyr hundrevis av morsomme bilder å fargelegge for alle aldersgrupper.",

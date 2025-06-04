@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@portabletext/react": "^3.2.1",
+    "@react-email/components": "^0.0.41",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.90.0",
     "bcrypt": "^6.0.0",
+    "crypto": "^1.0.1",
     "daisyui": "^5.0.35",
     "dotenv": "^16.5.0",
     "mongodb": "^6.16.0",
@@ -22,6 +24,7 @@
     "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-email": "^4.0.16",
     "react-error-boundary": "^6.0.0",
     "react-is": "^19.1.0",
     "resend": "^4.5.1",
@@ -29,7 +32,8 @@
     "sharp": "^0.34.2",
     "sonner": "^2.0.3",
     "stripe": "^18.1.0",
-    "styled-components": "^6.1.18"
+    "styled-components": "^6.1.18",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -39,6 +43,7 @@
     "@types/node": "^20.17.46",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
+    "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",

@@ -17,10 +17,13 @@ export default function RegisterPage() {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [verificationUrl, setVerificationUrl] = useState('');
+  const [isDevMode, setIsDevMode] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setVerificationUrl('');
 
     // Valider passord
     if (formData.password !== formData.confirmPassword) {
@@ -51,12 +54,18 @@ export default function RegisterPage() {
       if (!response.ok) {
         setError(data.message || 'Registrering feilet');
       } else {
-        // Redirect til login med registered parameter og bevar redirect URL
-        const loginPath = redirectUrl 
-          ? `/login?registered=true&redirect=${encodeURIComponent(redirectUrl)}`
-          : '/login?registered=true';
-        
-        router.push(loginPath);
+        // Check if we're in development mode and got a verification URL
+        if (window.location.hostname === 'localhost' && data.verificationUrl) {
+          setIsDevMode(true);
+          setVerificationUrl(data.verificationUrl);
+        } else {
+          // Redirect to login with verification message
+          const loginPath = redirectUrl 
+            ? `/login?registered=true&verify=true&redirect=${encodeURIComponent(redirectUrl)}`
+            : '/login?registered=true&verify=true';
+          
+          router.push(loginPath);
+        }
       }
     } catch (error) {
       setError('En feil oppstod. Prøv igjen senere.');
@@ -69,6 +78,22 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center mb-6">Opprett konto</h1>
+        
+        {verificationUrl && isDevMode && (
+          <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 mb-4 rounded">
+            <p className="font-bold">Development Mode</p>
+            <p className="mb-2">Registrering vellykket! I produksjon vil en e-post bli sendt til brukeren.</p>
+            <p className="mb-2">For testing, klikk på lenken under for å verifisere kontoen:</p>
+            <a 
+              href={verificationUrl} 
+              className="text-blue-600 underline break-all"
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              {verificationUrl}
+            </a>
+          </div>
+        )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

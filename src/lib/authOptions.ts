@@ -34,6 +34,11 @@ const authOptions = {
           return null;
         }
 
+        // Check if email is verified
+        if (!user.emailVerified) {
+          throw new Error('E-post ikke bekreftet. Sjekk innboksen din for bekreftelseslenke.');
+        }
+
         const isPasswordValid = await compare(credentials.password, user.password);
         if (!isPasswordValid) {
           return null;

@@ -11,12 +11,22 @@ export default function LoginPage() {
   const redirectParam = searchParams.get('redirect');
   const redirectUrl = redirectParam ? decodeURIComponent(redirectParam) : '/';
   const registered = searchParams.get('registered');
+  const verify = searchParams.get('verify');
+  const verified = searchParams.get('verified');
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState(registered ? 'Registrering vellykket! Du kan nå logge inn.' : '');
+  const [success, setSuccess] = useState(
+    verified 
+      ? 'E-post bekreftet! Du kan nå logge inn.' 
+      : verify 
+        ? 'Registrering vellykket! Sjekk e-posten din for å bekrefte kontoen før du logger inn.' 
+        : registered 
+          ? 'Registrering vellykket! Du kan nå logge inn.' 
+          : ''
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +41,9 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError('Feil e-post eller passord');
+        setError(result.error === 'E-post ikke bekreftet. Sjekk innboksen din for bekreftelseslenke.' 
+          ? 'E-post ikke bekreftet. Sjekk innboksen din for bekreftelseslenke.' 
+          : 'Feil e-post eller passord');
       } else {
         router.push(redirectUrl);
       }
@@ -48,7 +60,7 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold text-center mb-6">Logg inn</h1>
         
         {success && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 mb-4 rounded">
+          <div className={`${verify ? 'bg-blue-100 border-blue-400 text-blue-700' : 'bg-green-100 border-green-400 text-green-700'} px-4 py-3 mb-4 rounded border`}>
             {success}
           </div>
         )}

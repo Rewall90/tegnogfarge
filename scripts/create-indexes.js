@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-require('dotenv').config();
+require('dotenv').config({ path: '.env.local' });
 
 async function createIndexes() {
   const uri = process.env.MONGODB_URI;
@@ -8,48 +8,41 @@ async function createIndexes() {
     process.exit(1);
   }
 
-  // Konfigurer MongoClient med SSL-alternativer
-  const options = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    ssl: true,
-    tls: true,
-    tlsAllowInvalidCertificates: true  // Kun for feilsøking, ikke bruk i produksjon
-  };
+  console.log('Using MongoDB URI:', uri.substring(0, 15) + '...');
 
-  const client = new MongoClient(uri, options);
+  const client = new MongoClient(uri);
 
   try {
-    console.log('Forsøker å koble til MongoDB...');
+    console.log('Kobler til MongoDB...');
     await client.connect();
     console.log('Koblet til MongoDB');
 
-    const db = client.db();
-    console.log('Databaser tilgjengelig:', await client.db().admin().listDatabases());
-    
-    // Opprett unik indeks på email-feltet i users-collection
-    await db.collection('users').createIndex({ email: 1 }, { unique: true });
-    console.log('Opprettet unik indeks på email i users-collection');
+    // Users collection indexes
+    const usersDb = client.db('fargeleggingsapp');
+    await usersDb.collection('users').createIndex({ email: 1 }, { unique: true });
+    await usersDb.collection('users').createIndex({ emailVerified: 1 });
+    await usersDb.collection('users').createIndex({ createdAt: -1 });
+    console.log('Opprettet indekser for users-collection');
 
-    // Opprett indeks på createdAt for bedre sortering
-    await db.collection('users').createIndex({ createdAt: -1 });
-    console.log('Opprettet indeks på createdAt i users-collection');
+    // Verification tokens indexes
+    await usersDb.collection('verification_tokens').createIndex({ token: 1 }, { unique: true });
+    await usersDb.collection('verification_tokens').createIndex({ email: 1 });
+    await usersDb.collection('verification_tokens').createIndex({ type: 1 });
+    await usersDb.collection('verification_tokens').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+    await usersDb.collection('verification_tokens').createIndex({ createdAt: -1 });
+    console.log('Opprettet indekser for verification_tokens-collection');
 
-    // Andre nyttige indekser kan legges til her
-    // For eksempel:
-    // await db.collection('favorites').createIndex({ userId: 1, drawingId: 1 }, { unique: true });
-    // await db.collection('drawings').createIndex({ categoryId: 1 });
-    // await db.collection('colorings').createIndex({ userId: 1 });
+    // Newsletter subscribers indexes
+    const newsletterDb = client.db('newsletter');
+    await newsletterDb.collection('subscribers').createIndex({ email: 1 }, { unique: true });
+    await newsletterDb.collection('subscribers').createIndex({ isVerified: 1 });
+    await newsletterDb.collection('subscribers').createIndex({ subscribedAt: -1 });
+    await newsletterDb.collection('subscribers').createIndex({ unsubscribeToken: 1 }, { sparse: true });
+    console.log('Opprettet indekser for newsletter subscribers-collection');
 
     console.log('Alle indekser opprettet');
   } catch (error) {
     console.error('Feil ved oppretting av indekser:', error);
-    if (error.code) {
-      console.error('Feilkode:', error.code);
-    }
-    if (error.message) {
-      console.error('Feilmelding:', error.message);
-    }
   } finally {
     await client.close();
     console.log('Databasetilkobling lukket');

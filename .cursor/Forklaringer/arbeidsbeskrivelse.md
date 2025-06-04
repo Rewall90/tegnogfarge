@@ -1,595 +1,1191 @@
-# Implementasjonsguide: Brukerautentisering for Fargeleggingssiden
+# Email Verification Implementation Guide
+## Resend + Next.js + MongoDB
 
-## Oversikt
+### Oversikt
 
-Denne guiden beskriver implementering av brukerautentisering for fargeleggingssiden. Løsningen bygger på eksisterende infrastruktur med NextAuth.js, MongoDB og React Context API.
+Denne guiden implementerer email-verifisering for både brukerregistrering og nyhetsbrev-påmelding i ditt eksisterende Next.js-prosjekt. Løsningen bruker Resend for email-sending, MongoDB for lagring, og følger best practices for sikkerhet.
 
 ## Arkitektur
 
-### Eksisterende komponenter som skal gjenbrukes:
-- **NextAuth.js** - Allerede delvis konfigurert i `/src/lib/authOptions.ts`
-- **MongoDB** - Database-tilkobling eksisterer i `/src/lib/db.ts`
-- **AuthContext** - React Context for autentisering i `/contexts/AuthContext.tsx`
-- **Brukermodeller** - Definert i `/models/user.ts`
-- **Middleware** - Grunnleggende middleware i `/middleware.ts`
-
-### Nye komponenter som må implementeres:
-1. Login-side (`/src/app/login/page.tsx`)
-2. Registreringsside (`/src/app/register/page.tsx`)
-3. Auth-guards for beskyttede ruter
-4. UI-komponenter for login/registrering
-
-## Steg-for-steg implementering
-
-### Steg 1: Konfigurer database-tilkobling
-
-Opprett filen `/src/lib/db.ts` hvis den ikke eksisterer:
-
-```typescript
-import { MongoClient } from 'mongodb';
-
-const uri = process.env.MONGODB_URI!;
-const options = {};
-
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
-
-if (process.env.NODE_ENV === 'development') {
-  // I utvikling, bruk en global variabel for å bevare tilkoblingen
-  let globalWithMongo = global as typeof globalThis & {
-    _mongoClientPromise?: Promise<MongoClient>;
-  };
-
-  if (!globalWithMongo._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    globalWithMongo._mongoClientPromise = client.connect();
-  }
-  clientPromise = globalWithMongo._mongoClientPromise;
-} else {
-  // I produksjon, opprett ny tilkobling
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
-}
-
-export default clientPromise;
+```
+┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Next.js    │    │   MongoDB       │
+│                 │    │   API Routes │    │                 │
+│ • Register Form │───▶│ • /api/auth/ │───▶│ • users         │
+│ • Newsletter    │    │ • /api/news/ │    │ • newsletter    │
+│ • Verify Pages  │    │ • Resend     │    │ • tokens        │
+└─────────────────┘    └──────────────┘    └─────────────────┘
 ```
 
-### Steg 2: Oppdater NextAuth-konfigurasjonen
+## Database Schema
 
-Fullfør implementeringen i `/src/lib/authOptions.ts`:
+### 1. Users Collection (eksisterende: `fargeleggingsapp.users`)
+```javascript
+{
+  _id: ObjectId,
+  name: String,
+  email: String,
+  password: String, // hashed
+  role: String,
+  emailVerified: Boolean, // NY FIELD
+  emailVerificationToken: String, // NY FIELD
+  emailVerificationTokenExpires: Date, // NY FIELD
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+### 2. Newsletter Subscribers (eksisterende: `newsletter.subscribers`)
+```javascript
+{
+  _id: ObjectId,
+  email: String,
+  isVerified: Boolean, // NY FIELD
+  verificationToken: String, // NY FIELD
+  verificationTokenExpires: Date, // NY FIELD
+  subscribedAt: Date,
+  verifiedAt: Date, // NY FIELD
+  unsubscribeToken: String // NY FIELD
+}
+```
+
+### 3. Verification Tokens (ny collection: `fargeleggingsapp.verification_tokens`)
+```javascript
+{
+  _id: ObjectId,
+  email: String,
+  token: String,
+  type: String, // 'user_verification' eller 'newsletter_verification'
+  expiresAt: Date,
+  used: Boolean,
+  createdAt: Date
+}
+```
+
+## 1. Miljøvariabler Setup
+
+Legg til i `.env.local`:
+
+```bash
+# Resend API Key
+RESEND_API_KEY=re_your_api_key_here
+
+# Email settings
+EMAIL_FROM=noreply@yourdomain.com
+EMAIL_FROM_NAME="Fargelegg Nå"
+
+# Base URL for verification links
+NEXTAUTH_URL=http://localhost:3000
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# Token settings
+EMAIL_VERIFICATION_TOKEN_EXPIRES_HOURS=24
+NEWSLETTER_VERIFICATION_TOKEN_EXPIRES_HOURS=72
+```
+
+## 2. Installer Pakker
+
+```bash
+npm install resend uuid crypto
+npm install --save-dev @types/uuid
+```
+
+## 3. Email Templates
+
+Opprett `src/lib/email-templates.ts`:
 
 ```typescript
-// Fjern kommentarer fra de kommenterte linjene
-// Legg til bcrypt for passordhashing
-const user = await db.collection('users').findOne({ email: credentials.email });
-
-if (!user || !user.password) {
-  return null;
+export interface EmailTemplateProps {
+  verificationUrl: string;
+  userName?: string;
+  emailAddress: string;
 }
 
-const isPasswordValid = await compare(credentials.password, user.password);
-if (!isPasswordValid) {
-  return null;
-}
+export const userVerificationTemplate = ({ verificationUrl, userName, emailAddress }: EmailTemplateProps) => {
+  return {
+    subject: 'Bekreft din e-postadresse - Fargelegg Nå',
+    html: `
+      <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+        <h1 style="color: #333;">Velkommen til Fargelegg Nå!</h1>
+        <p>Hei ${userName || 'der'},</p>
+        <p>Takk for at du registrerte deg på Fargelegg Nå! For å fullføre registreringen, vennligst bekreft din e-postadresse ved å klikke på lenken nedenfor:</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${verificationUrl}" style="background-color: #4F46E5; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">
+            Bekreft e-postadresse
+          </a>
+        </div>
+        
+        <p style="color: #666; font-size: 14px;">
+          Hvis du ikke kan klikke på knappen, kopier og lim inn denne lenken i nettleseren din:<br>
+          <a href="${verificationUrl}">${verificationUrl}</a>
+        </p>
+        
+        <p style="color: #666; font-size: 14px;">
+          Denne lenken utløper om 24 timer. Hvis du ikke registrerte deg på Fargelegg Nå, kan du ignorere denne e-posten.
+        </p>
+        
+        <hr style="border: 1px solid #eee; margin: 30px 0;">
+        <p style="color: #999; font-size: 12px;">© 2025 Fargelegg Nå. Alle rettigheter reservert.</p>
+      </div>
+    `
+  };
+};
 
-return {
-  id: user._id.toString(),
-  email: user.email,
-  name: user.name,
-  image: user.image,
-  role: user.role || 'user'
+export const newsletterVerificationTemplate = ({ verificationUrl, emailAddress }: EmailTemplateProps) => {
+  return {
+    subject: 'Bekreft nyhetsbrev-abonnement - Fargelegg Nå',
+    html: `
+      <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+        <h1 style="color: #333;">Bekreft ditt nyhetsbrev-abonnement</h1>
+        <p>Hei!</p>
+        <p>Du har meldt deg på vårt nyhetsbrev med e-postadressen <strong>${emailAddress}</strong>.</p>
+        <p>For å bekrefte abonnementet og begynne å motta våre oppdateringer, klikk på lenken nedenfor:</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${verificationUrl}" style="background-color: #10B981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">
+            Bekreft abonnement
+          </a>
+        </div>
+        
+        <p style="color: #666; font-size: 14px;">
+          Hvis du ikke kan klikke på knappen, kopier og lim inn denne lenken i nettleseren din:<br>
+          <a href="${verificationUrl}">${verificationUrl}</a>
+        </p>
+        
+        <p style="color: #666; font-size: 14px;">
+          Denne lenken utløper om 72 timer. Hvis du ikke meldte deg på vårt nyhetsbrev, kan du ignorere denne e-posten.
+        </p>
+        
+        <hr style="border: 1px solid #eee; margin: 30px 0;">
+        <p style="color: #999; font-size: 12px;">© 2025 Fargelegg Nå. Alle rettigheter reservert.</p>
+      </div>
+    `
+  };
 };
 ```
 
-### Steg 3: Lag login-siden
+## 4. Email Service
 
-Opprett `/src/app/login/page.tsx`:
-
-```typescript
-'use client';
-
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import Input from '@/components/ui/Input';
-import Button from '@/components/ui/Button';
-
-export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setError('Feil e-post eller passord');
-      } else {
-        router.push('/dashboard');
-      }
-    } catch (error) {
-      setError('En feil oppstod. Prøv igjen senere.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Logg inn</h1>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            type="email"
-            label="E-post"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={isLoading}
-          />
-          
-          <Input
-            type="password"
-            label="Passord"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={isLoading}
-          />
-          
-          {error && (
-            <div className="text-red-600 text-sm">{error}</div>
-          )}
-          
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-full"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Logger inn...' : 'Logg inn'}
-          </Button>
-        </form>
-        
-        <p className="text-center mt-4 text-sm text-gray-600">
-          Har du ikke konto?{' '}
-          <Link href="/register" className="text-blue-600 hover:underline">
-            Registrer deg her
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
-}
-```
-
-### Steg 4: Lag registreringssiden
-
-Opprett `/src/app/register/page.tsx`:
+Opprett `src/lib/email-service.ts`:
 
 ```typescript
-'use client';
+import { Resend } from 'resend';
+import { v4 as uuidv4 } from 'uuid';
+import clientPromise from './db';
+import { userVerificationTemplate, newsletterVerificationTemplate } from './email-templates';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import Input from '@/components/ui/Input';
-import Button from '@/components/ui/Button';
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-export default function RegisterPage() {
-  const router = useRouter();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    // Valider passord
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passordene matcher ikke');
-      return;
-    }
-
-    if (formData.password.length < 8) {
-      setError('Passordet må være minst 8 tegn');
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || 'Registrering feilet');
-      } else {
-        // Auto-login etter registrering
-        router.push('/login?registered=true');
-      }
-    } catch (error) {
-      setError('En feil oppstod. Prøv igjen senere.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Opprett konto</h1>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            type="text"
-            label="Navn"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            required
-            disabled={isLoading}
-          />
-          
-          <Input
-            type="email"
-            label="E-post"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            required
-            disabled={isLoading}
-          />
-          
-          <Input
-            type="password"
-            label="Passord"
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            required
-            disabled={isLoading}
-            helperText="Minst 8 tegn"
-          />
-          
-          <Input
-            type="password"
-            label="Bekreft passord"
-            value={formData.confirmPassword}
-            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-            required
-            disabled={isLoading}
-          />
-          
-          {error && (
-            <div className="text-red-600 text-sm">{error}</div>
-          )}
-          
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-full"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Oppretter konto...' : 'Opprett konto'}
-          </Button>
-        </form>
-        
-        <p className="text-center mt-4 text-sm text-gray-600">
-          Har du allerede konto?{' '}
-          <Link href="/login" className="text-blue-600 hover:underline">
-            Logg inn her
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
-}
-```
-
-### Steg 5: Implementer AuthGuard-komponent
-
-Opprett `/src/components/auth/AuthGuard.tsx`:
-
-```typescript
-'use client';
-
-import { useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-
-interface AuthGuardProps {
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
+interface SendVerificationEmailOptions {
+  email: string;
+  type: 'user_verification' | 'newsletter_verification';
+  userName?: string;
 }
 
-export default function AuthGuard({ children, fallback }: AuthGuardProps) {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === 'loading') return;
+export class EmailService {
+  private static async generateVerificationToken(email: string, type: string): Promise<string> {
+    const token = uuidv4();
+    const expiresAt = new Date();
     
-    if (!session) {
-      router.push('/login');
+    if (type === 'user_verification') {
+      expiresAt.setHours(expiresAt.getHours() + parseInt(process.env.EMAIL_VERIFICATION_TOKEN_EXPIRES_HOURS || '24'));
+    } else {
+      expiresAt.setHours(expiresAt.getHours() + parseInt(process.env.NEWSLETTER_VERIFICATION_TOKEN_EXPIRES_HOURS || '72'));
     }
-  }, [session, status, router]);
 
-  if (status === 'loading' || !session) {
-    return fallback || (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
+    const client = await clientPromise;
+    const db = client.db('fargeleggingsapp');
+    
+    await db.collection('verification_tokens').insertOne({
+      email,
+      token,
+      type,
+      expiresAt,
+      used: false,
+      createdAt: new Date()
+    });
+
+    return token;
+  }
+
+  static async sendUserVerificationEmail({ email, userName }: { email: string; userName?: string }) {
+    try {
+      const token = await this.generateVerificationToken(email, 'user_verification');
+      const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email?token=${token}`;
+      
+      const template = userVerificationTemplate({ 
+        verificationUrl, 
+        userName, 
+        emailAddress: email 
+      });
+
+      const result = await resend.emails.send({
+        from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM}>`,
+        to: email,
+        subject: template.subject,
+        html: template.html,
+      });
+
+      return { success: true, messageId: result.data?.id };
+    } catch (error) {
+      console.error('Failed to send user verification email:', error);
+      throw new Error('Failed to send verification email');
+    }
+  }
+
+  static async sendNewsletterVerificationEmail({ email }: { email: string }) {
+    try {
+      const token = await this.generateVerificationToken(email, 'newsletter_verification');
+      const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-newsletter?token=${token}`;
+      
+      const template = newsletterVerificationTemplate({ 
+        verificationUrl, 
+        emailAddress: email 
+      });
+
+      const result = await resend.emails.send({
+        from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM}>`,
+        to: email,
+        subject: template.subject,
+        html: template.html,
+      });
+
+      return { success: true, messageId: result.data?.id };
+    } catch (error) {
+      console.error('Failed to send newsletter verification email:', error);
+      throw new Error('Failed to send verification email');
+    }
+  }
+
+  static async verifyToken(token: string, type: string): Promise<{ valid: boolean; email?: string }> {
+    try {
+      const client = await clientPromise;
+      const db = client.db('fargeleggingsapp');
+      
+      const tokenDoc = await db.collection('verification_tokens').findOne({
+        token,
+        type,
+        used: false,
+        expiresAt: { $gt: new Date() }
+      });
+
+      if (!tokenDoc) {
+        return { valid: false };
+      }
+
+      // Mark token as used
+      await db.collection('verification_tokens').updateOne(
+        { _id: tokenDoc._id },
+        { $set: { used: true, usedAt: new Date() } }
+      );
+
+      return { valid: true, email: tokenDoc.email };
+    } catch (error) {
+      console.error('Failed to verify token:', error);
+      return { valid: false };
+    }
+  }
+}
+```
+
+## 5. Oppdater User Registration API
+
+Modifiser `src/app/api/auth/register/route.ts`:
+
+```typescript
+import { NextResponse } from 'next/server';
+import { hash } from 'bcrypt';
+import clientPromise from '@/lib/db';
+import { ObjectId } from 'mongodb';
+import { EmailService } from '@/lib/email-service';
+
+export async function POST(request: Request) {
+  try {
+    const { name, email, password } = await request.json();
+
+    // Existing validation...
+    if (!name || !email || !password) {
+      return NextResponse.json(
+        { message: 'Manglende påkrevde felt' },
+        { status: 400 }
+      );
+    }
+
+    if (password.length < 8) {
+      return NextResponse.json(
+        { message: 'Passordet må være minst 8 tegn' },
+        { status: 400 }
+      );
+    }
+
+    const client = await clientPromise;
+    const db = client.db('fargeleggingsapp');
+    const usersCollection = db.collection('users');
+
+    // Check if email already exists
+    const existingUser = await usersCollection.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json(
+        { message: 'E-postadressen er allerede i bruk' },
+        { status: 400 }
+      );
+    }
+
+    const hashedPassword = await hash(password, 12);
+
+    // Create user with emailVerified: false
+    const newUser = {
+      _id: new ObjectId(),
+      name,
+      email,
+      password: hashedPassword,
+      role: 'user' as const,
+      emailVerified: false, // NEW FIELD
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      favoriteIds: []
+    };
+
+    await usersCollection.insertOne(newUser);
+
+    // Send verification email
+    try {
+      await EmailService.sendUserVerificationEmail({ email, userName: name });
+    } catch (emailError) {
+      console.error('Failed to send verification email:', emailError);
+      // Don't fail registration if email fails
+    }
+
+    const { password: _pwd, ...userWithoutPassword } = newUser;
+    
+    return NextResponse.json(
+      { 
+        message: 'Bruker registrert. Sjekk e-posten din for bekreftelseslenke.', 
+        user: userWithoutPassword,
+        requiresVerification: true
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Registreringsfeil:', error);
+    return NextResponse.json(
+      { message: 'Intern serverfeil' },
+      { status: 500 }
     );
   }
-
-  return <>{children}</>;
 }
 ```
 
-### Steg 6: Beskytt nedlasting og fargelegging
+## 6. Ny Email Verification API
 
-#### Oppdater DownloadPdfButton (`/src/components/buttons/DownloadPdfButton.tsx`):
+Opprett `src/app/api/verify-email/route.ts`:
 
 ```typescript
-import React from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Button from '../ui/Button';
+import { NextResponse } from 'next/server';
+import { EmailService } from '@/lib/email-service';
+import clientPromise from '@/lib/db';
 
-interface DownloadPdfButtonProps {
-  downloadUrl: string;
-  title?: string;
-  className?: string;
-}
+export async function POST(request: Request) {
+  try {
+    const { token } = await request.json();
 
-export function DownloadPdfButton({ downloadUrl, title = 'Last ned PDF', className }: DownloadPdfButtonProps) {
-  const { data: session } = useSession();
-  const router = useRouter();
-
-  const handleClick = (e: React.MouseEvent) => {
-    if (!session) {
-      e.preventDefault();
-      router.push('/login?redirect=' + encodeURIComponent(window.location.pathname));
+    if (!token) {
+      return NextResponse.json(
+        { message: 'Token er påkrevd' },
+        { status: 400 }
+      );
     }
-  };
 
-  return (
-    <Button
-      href={session ? downloadUrl : '#'}
-      variant="primary"
-      className={className}
-      ariaLabel={title}
-      external={false}
-      onClick={handleClick}
-    >
-      {title}
-    </Button>
-  );
+    const verification = await EmailService.verifyToken(token, 'user_verification');
+
+    if (!verification.valid || !verification.email) {
+      return NextResponse.json(
+        { message: 'Ugyldig eller utløpt token' },
+        { status: 400 }
+      );
+    }
+
+    // Update user as verified
+    const client = await clientPromise;
+    const db = client.db('fargeleggingsapp');
+    
+    const result = await db.collection('users').updateOne(
+      { email: verification.email },
+      { 
+        $set: { 
+          emailVerified: true, 
+          emailVerifiedAt: new Date(),
+          updatedAt: new Date()
+        },
+        $unset: {
+          emailVerificationToken: "",
+          emailVerificationTokenExpires: ""
+        }
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        { message: 'Bruker ikke funnet' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { message: 'E-post bekreftet! Du kan nå logge inn.' },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Email verification error:', error);
+    return NextResponse.json(
+      { message: 'Intern serverfeil' },
+      { status: 500 }
+    );
+  }
 }
 ```
 
-#### Oppdater StartColoringButton (`/src/components/buttons/StartColoringButton.tsx`):
+## 7. Newsletter API
+
+Opprett `src/app/api/newsletter/subscribe/route.ts`:
+
+```typescript
+import { NextResponse } from 'next/server';
+import clientPromise from '@/lib/db';
+import { EmailService } from '@/lib/email-service';
+import { v4 as uuidv4 } from 'uuid';
+
+export async function POST(request: Request) {
+  try {
+    const { email } = await request.json();
+
+    if (!email || !email.includes('@')) {
+      return NextResponse.json(
+        { message: 'Gyldig e-postadresse er påkrevd' },
+        { status: 400 }
+      );
+    }
+
+    const client = await clientPromise;
+    const db = client.db('newsletter');
+    const subscribersCollection = db.collection('subscribers');
+
+    // Check if already subscribed
+    const existingSubscriber = await subscribersCollection.findOne({ email });
+    
+    if (existingSubscriber) {
+      if (existingSubscriber.isVerified) {
+        return NextResponse.json(
+          { message: 'Du er allerede abonnent på vårt nyhetsbrev' },
+          { status: 400 }
+        );
+      } else {
+        // Resend verification email
+        try {
+          await EmailService.sendNewsletterVerificationEmail({ email });
+          return NextResponse.json(
+            { message: 'Bekreftelse e-post sendt på nytt. Sjekk innboksen din.' },
+            { status: 200 }
+          );
+        } catch (emailError) {
+          return NextResponse.json(
+            { message: 'Kunne ikke sende bekreftelse e-post' },
+            { status: 500 }
+          );
+        }
+      }
+    }
+
+    // Create new subscriber
+    const unsubscribeToken = uuidv4();
+    const newSubscriber = {
+      email,
+      isVerified: false,
+      subscribedAt: new Date(),
+      unsubscribeToken
+    };
+
+    await subscribersCollection.insertOne(newSubscriber);
+
+    // Send verification email
+    try {
+      await EmailService.sendNewsletterVerificationEmail({ email });
+      
+      return NextResponse.json(
+        { message: 'Takk for påmeldingen! Sjekk e-posten din for å bekrefte abonnementet.' },
+        { status: 201 }
+      );
+    } catch (emailError) {
+      console.error('Failed to send newsletter verification:', emailError);
+      return NextResponse.json(
+        { message: 'Påmelding registrert, men kunne ikke sende bekreftelse e-post' },
+        { status: 201 }
+      );
+    }
+  } catch (error) {
+    console.error('Newsletter subscription error:', error);
+    return NextResponse.json(
+      { message: 'Intern serverfeil' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+Opprett `src/app/api/newsletter/verify/route.ts`:
+
+```typescript
+import { NextResponse } from 'next/server';
+import { EmailService } from '@/lib/email-service';
+import clientPromise from '@/lib/db';
+
+export async function POST(request: Request) {
+  try {
+    const { token } = await request.json();
+
+    if (!token) {
+      return NextResponse.json(
+        { message: 'Token er påkrevd' },
+        { status: 400 }
+      );
+    }
+
+    const verification = await EmailService.verifyToken(token, 'newsletter_verification');
+
+    if (!verification.valid || !verification.email) {
+      return NextResponse.json(
+        { message: 'Ugyldig eller utløpt token' },
+        { status: 400 }
+      );
+    }
+
+    // Update newsletter subscriber as verified
+    const client = await clientPromise;
+    const db = client.db('newsletter');
+    
+    const result = await db.collection('subscribers').updateOne(
+      { email: verification.email },
+      { 
+        $set: { 
+          isVerified: true, 
+          verifiedAt: new Date()
+        }
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        { message: 'Abonnent ikke funnet' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { message: 'Nyhetsbrev-abonnement bekreftet! Du vil nå motta våre oppdateringer.' },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Newsletter verification error:', error);
+    return NextResponse.json(
+      { message: 'Intern serverfeil' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+## 8. Frontend Pages
+
+### Email Verification Page
+
+Opprett `src/app/verify-email/page.tsx`:
 
 ```typescript
 'use client';
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
-interface StartColoringButtonProps {
-  drawingId: string;
-  title?: string;
-  className?: string;
-}
-
-export function StartColoringButton({ drawingId, title = 'Online Coloring', className }: StartColoringButtonProps) {
+export default function VerifyEmailPage() {
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
+  const [message, setMessage] = useState('');
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const { data: session } = useSession();
+  const token = searchParams.get('token');
 
-  function handleClick() {
-    if (!session) {
-      router.push('/login?redirect=' + encodeURIComponent(window.location.pathname));
+  useEffect(() => {
+    if (!token) {
+      setStatus('error');
+      setMessage('Ugyldig verifikasjonslenke');
       return;
     }
 
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('coloringAppImageId', drawingId);
-      router.push('/coloring-app');
+    const verifyEmail = async () => {
+      try {
+        const response = await fetch('/api/verify-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setStatus('success');
+          setMessage(data.message);
+          // Redirect to login after 3 seconds
+          setTimeout(() => {
+            router.push('/login?verified=true');
+          }, 3000);
+        } else {
+          setStatus('error');
+          setMessage(data.message);
+        }
+      } catch (error) {
+        setStatus('error');
+        setMessage('Noe gikk galt. Prøv igjen senere.');
+      }
+    };
+
+    verifyEmail();
+  }, [token, router]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md text-center">
+        {status === 'loading' && (
+          <>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <h1 className="text-2xl font-bold mb-2">Bekrefter e-post...</h1>
+            <p className="text-gray-600">Vennligst vent</p>
+          </>
+        )}
+
+        {status === 'success' && (
+          <>
+            <div className="text-green-600 text-6xl mb-4">✓</div>
+            <h1 className="text-2xl font-bold text-green-600 mb-2">E-post bekreftet!</h1>
+            <p className="text-gray-600 mb-4">{message}</p>
+            <p className="text-sm text-gray-500">Du blir omdirigert til innloggingssiden...</p>
+          </>
+        )}
+
+        {status === 'error' && (
+          <>
+            <div className="text-red-600 text-6xl mb-4">✗</div>
+            <h1 className="text-2xl font-bold text-red-600 mb-2">Verifisering mislyktes</h1>
+            <p className="text-gray-600 mb-4">{message}</p>
+            <button
+              onClick={() => router.push('/register')}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+            >
+              Tilbake til registrering
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+```
+
+### Newsletter Verification Page
+
+Opprett `src/app/verify-newsletter/page.tsx`:
+
+```typescript
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+
+export default function VerifyNewsletterPage() {
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
+  const [message, setMessage] = useState('');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const token = searchParams.get('token');
+
+  useEffect(() => {
+    if (!token) {
+      setStatus('error');
+      setMessage('Ugyldig verifikasjonslenke');
+      return;
     }
+
+    const verifyNewsletter = async () => {
+      try {
+        const response = await fetch('/api/newsletter/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setStatus('success');
+          setMessage(data.message);
+        } else {
+          setStatus('error');
+          setMessage(data.message);
+        }
+      } catch (error) {
+        setStatus('error');
+        setMessage('Noe gikk galt. Prøv igjen senere.');
+      }
+    };
+
+    verifyNewsletter();
+  }, [token]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md text-center">
+        {status === 'loading' && (
+          <>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+            <h1 className="text-2xl font-bold mb-2">Bekrefter abonnement...</h1>
+            <p className="text-gray-600">Vennligst vent</p>
+          </>
+        )}
+
+        {status === 'success' && (
+          <>
+            <div className="text-green-600 text-6xl mb-4">✓</div>
+            <h1 className="text-2xl font-bold text-green-600 mb-2">Abonnement bekreftet!</h1>
+            <p className="text-gray-600 mb-4">{message}</p>
+            <button
+              onClick={() => router.push('/')}
+              className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
+            >
+              Tilbake til forsiden
+            </button>
+          </>
+        )}
+
+        {status === 'error' && (
+          <>
+            <div className="text-red-600 text-6xl mb-4">✗</div>
+            <h1 className="text-2xl font-bold text-red-600 mb-2">Bekreftelse mislyktes</h1>
+            <p className="text-gray-600 mb-4">{message}</p>
+            <button
+              onClick={() => router.push('/')}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+            >
+              Tilbake til forsiden
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+```
+
+## 9. Oppdater Login Logic
+
+Modifiser `src/lib/authOptions.ts` for å sjekke email-verifisering:
+
+```typescript
+// Legg til i authorize function:
+async authorize(credentials) {
+  if (!credentials?.email || !credentials?.password) {
+    throw new Error('Email og passord er påkrevd');
   }
 
-  return (
-    <button
-      type="button"
-      className={className}
-      aria-label={title}
-      onClick={handleClick}
-    >
-      {title}
-    </button>
-  );
+  const client = await clientPromise;
+  const db = client.db('fargeleggingsapp');
+  const user = await db.collection('users').findOne({ email: credentials.email });
+
+  if (!user || !user.password) {
+    return null;
+  }
+
+  // Check if email is verified
+  if (!user.emailVerified) {
+    throw new Error('E-post ikke bekreftet. Sjekk innboksen din for bekreftelseslenke.');
+  }
+
+  const isPasswordValid = await compare(credentials.password, user.password);
+  if (!isPasswordValid) {
+    return null;
+  }
+
+  return {
+    id: user._id.toString(),
+    email: user.email,
+    name: user.name,
+    image: user.image,
+    role: user.role || 'user'
+  };
 }
 ```
 
-### Steg 7: Oppdater Header med brukerinfo
+## 10. Oppdater Newsletter Components
 
-Oppdater `/src/components/shared/Header.tsx` for å vise innlogget bruker:
-
-```typescript
-// Legg til import
-import { useSession, signOut } from 'next-auth/react';
-
-// I komponenten, legg til:
-const { data: session } = useSession();
-
-// Erstatt login-knappen med:
-<div className="hidden md:flex items-center space-x-4">
-  {session ? (
-    <>
-      <span className="text-gray-600">Hei, {session.user.name}</span>
-      <button
-        onClick={() => signOut()}
-        className="text-gray-600 hover:text-gray-900"
-      >
-        Logg ut
-      </button>
-    </>
-  ) : (
-    <Link href="/login" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
-      Logg inn
-    </Link>
-  )}
-</div>
-```
-
-### Steg 8: Wrap app med SessionProvider
-
-Oppdater `/src/app/layout.tsx`:
+Modifiser eksisterende nyhetsbrev-skjema i `src/components/shared/Footer.tsx`:
 
 ```typescript
-import { SessionProvider } from 'next-auth/react';
+const [email, setEmail] = useState('');
+const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+const [message, setMessage] = useState('');
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="no" className="scroll-smooth">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <SessionProvider>
-          {children}
-        </SessionProvider>
-      </body>
-    </html>
-  );
-}
+const handleNewsletterSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setStatus('loading');
+  
+  try {
+    const response = await fetch('/api/newsletter/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      setStatus('success');
+      setMessage(data.message);
+      setEmail(''); // Clear form
+    } else {
+      setStatus('error');
+      setMessage(data.message);
+    }
+  } catch (error) {
+    setStatus('error');
+    setMessage('Noe gikk galt. Prøv igjen senere.');
+  }
+};
 ```
 
-### Steg 9: Miljøvariabler
+## 11. Database Indexes
 
-Legg til følgende i `.env.local`:
-
-```env
-# MongoDB
-MONGODB_URI=mongodb://localhost:27017/fargelegging
-
-# NextAuth
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=din-hemmelige-nøkkel-her
-
-# Sanity (eksisterende)
-NEXT_PUBLIC_SANITY_PROJECT_ID=fn0kjvlp
-NEXT_PUBLIC_SANITY_DATASET=production
-```
-
-### Steg 10: Database-oppsett
-
-Opprett indexes i MongoDB for bedre ytelse:
+Legg til nødvendige MongoDB-indexes i `scripts/create-indexes.js`:
 
 ```javascript
-// Kjør dette i MongoDB shell eller Compass
-db.users.createIndex({ email: 1 }, { unique: true });
-db.users.createIndex({ createdAt: -1 });
+const { MongoClient } = require('mongodb');
+require('dotenv').config();
+
+async function createIndexes() {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    console.error('MONGODB_URI er ikke definert i miljøvariablene');
+    process.exit(1);
+  }
+
+  const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    ssl: true,
+    tls: true,
+    tlsAllowInvalidCertificates: true
+  };
+
+  const client = new MongoClient(uri, options);
+
+  try {
+    console.log('Kobler til MongoDB...');
+    await client.connect();
+    console.log('Koblet til MongoDB');
+
+    // Users collection indexes
+    const usersDb = client.db('fargeleggingsapp');
+    await usersDb.collection('users').createIndex({ email: 1 }, { unique: true });
+    await usersDb.collection('users').createIndex({ emailVerified: 1 });
+    await usersDb.collection('users').createIndex({ createdAt: -1 });
+    console.log('Opprettet indekser for users-collection');
+
+    // Verification tokens indexes
+    await usersDb.collection('verification_tokens').createIndex({ token: 1 }, { unique: true });
+    await usersDb.collection('verification_tokens').createIndex({ email: 1 });
+    await usersDb.collection('verification_tokens').createIndex({ type: 1 });
+    await usersDb.collection('verification_tokens').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+    await usersDb.collection('verification_tokens').createIndex({ createdAt: -1 });
+    console.log('Opprettet indekser for verification_tokens-collection');
+
+    // Newsletter subscribers indexes
+    const newsletterDb = client.db('newsletter');
+    await newsletterDb.collection('subscribers').createIndex({ email: 1 }, { unique: true });
+    await newsletterDb.collection('subscribers').createIndex({ isVerified: 1 });
+    await newsletterDb.collection('subscribers').createIndex({ subscribedAt: -1 });
+    await newsletterDb.collection('subscribers').createIndex({ unsubscribeToken: 1 }, { unique: true });
+    console.log('Opprettet indekser for newsletter subscribers-collection');
+
+    console.log('Alle indekser opprettet');
+  } catch (error) {
+    console.error('Feil ved oppretting av indekser:', error);
+  } finally {
+    await client.close();
+    console.log('Databasetilkobling lukket');
+  }
+}
+
+createIndexes().catch(error => {
+  console.error('Uventet feil:', error);
+});
 ```
 
-## Brukerflyt
+## 12. Resend Setup
 
-### Registrering:
-1. Bruker går til `/register`
-2. Fyller ut skjema med navn, e-post og passord
-3. Systemet validerer og hasher passordet
-4. Bruker opprettes i MongoDB
-5. Bruker sendes til login-siden
+### Opprett Resend-konto
+1. Gå til [resend.com](https://resend.com)
+2. Registrer konto eller logg inn
+3. Verifiser domenet ditt (eller bruk Resend sitt testdomene for utvikling)
+4. Opprett API-nøkkel under "API Keys"
+5. Legg til API-nøkkelen i `.env.local`
 
-### Innlogging:
-1. Bruker går til `/login`
-2. Fyller inn e-post og passord
-3. NextAuth validerer credentials
-4. Session opprettes
-5. Bruker sendes til dashboard eller forrige side
-
-### Beskyttet tilgang:
-1. Ikke-innlogget bruker prøver å laste ned eller fargelegge
-2. Systemet sjekker session
-3. Bruker sendes til login med redirect-parameter
-4. Etter innlogging sendes bruker tilbake til ønsket side
-
-## Testing
-
-### Test registrering:
+### Domene-verifisering (produksjon)
 ```bash
-# Test API endpoint
+# For produksjon, legg til disse DNS-records:
+# Type: TXT
+# Name: _resend
+# Value: [din resend verifikasjonskode]
+```
+
+## 13. Testing Guide
+
+### 1. Test Brukerregistrering med Email-verifisering
+
+```bash
+# Registrer ny bruker
 curl -X POST http://localhost:3000/api/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"name":"Test User","email":"test@example.com","password":"password123"}'
+  -d '{
+    "name": "Test Bruker",
+    "email": "test@example.com",
+    "password": "testpassord123"
+  }'
+
+# Forventet svar:
+# {
+#   "message": "Bruker registrert. Sjekk e-posten din for bekreftelseslenke.",
+#   "requiresVerification": true
+# }
 ```
 
-### Test innlogging:
-1. Gå til `/login`
-2. Bruk test-credentials
-3. Verifiser at session opprettes
-4. Sjekk at bruker kan laste ned og fargelegge
+### 2. Test Newsletter-påmelding
 
-## Sikkerhetshensyn
+```bash
+# Meld på nyhetsbrev
+curl -X POST http://localhost:3000/api/newsletter/subscribe \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "newsletter@example.com"
+  }'
 
-1. **Passordhashing**: Alle passord hashes med bcrypt
-2. **Session-sikkerhet**: NextAuth håndterer secure cookies
-3. **CSRF-beskyttelse**: Innebygd i NextAuth
-4. **Rate limiting**: Bør implementeres på API-endepunkter
-5. **Input-validering**: Validering på både client og server
+# Forventet svar:
+# {
+#   "message": "Takk for påmeldingen! Sjekk e-posten din for å bekrefte abonnementet."
+# }
+```
 
-## Fremtidige forbedringer
+### 3. Test Database-tilstand
 
-1. **E-postverifisering**: Send velkomst-e-post med Resend
-2. **Glemt passord**: Implementer reset-funksjonalitet
-3. **Sosial innlogging**: Legg til Google/Facebook OAuth
-4. **Brukerprofilside**: La brukere oppdatere info
-5. **Favoritter**: Lagre brukerens favoritt-tegninger
+```javascript
+// Sjekk bruker-status i MongoDB
+db.users.findOne({ email: "test@example.com" })
+// Skal vise emailVerified: false
 
-## Feilsøking
+// Sjekk nyhetsbrev-abonnent
+db.subscribers.findOne({ email: "newsletter@example.com" })
+// Skal vise isVerified: false
 
-### Vanlige problemer:
+// Sjekk verification tokens
+db.verification_tokens.find({ email: "test@example.com" })
+// Skal vise aktive tokens
+```
 
-1. **"Cannot connect to MongoDB"**
-   - Sjekk at MongoDB kjører
-   - Verifiser connection string
+## 14. Sikkerhetstiltak
 
-2. **"Invalid credentials"**
-   - Sjekk at e-post eksisterer
-   - Verifiser passord-hashing
+### Token-sikkerhet
+- Tokens utløper automatisk (TTL indexes)
+- UUID v4 for uforutsigbare tokens
+- Tokens kan kun brukes én gang
+- Separate token-typer for ulike formål
 
-3. **Session ikke opprettet**
-   - Sjekk NEXTAUTH_SECRET
-   - Verifiser cookie-settings
+### Rate Limiting (anbefalt tillegg)
+Opprett `src/lib/rate-limiter.ts`:
 
-4. **Redirect fungerer ikke**
-   - Sjekk at redirect-parameter preserveres
-   - Verifiser at SessionProvider wrapper hele appen
+```typescript
+import { NextRequest } from 'next/server';
+
+const rateLimitMap = new Map();
+
+export function rateLimit(ip: string, limit: number = 5, windowMs: number = 15 * 60 * 1000) {
+  const now = Date.now();
+  const windowStart = now - windowMs;
+  
+  if (!rateLimitMap.has(ip)) {
+    rateLimitMap.set(ip, []);
+  }
+  
+  const requests = rateLimitMap.get(ip);
+  const validRequests = requests.filter((timestamp: number) => timestamp > windowStart);
+  
+  if (validRequests.length >= limit) {
+    return false;
+  }
+  
+  validRequests.push(now);
+  rateLimitMap.set(ip, validRequests);
+  return true;
+}
+
+// Bruk i API-routes:
+export function getRealIP(request: NextRequest): string {
+  return request.headers.get('x-forwarded-for')?.split(',')[0] || 
+         request.headers.get('x-real-ip') || 
+         'unknown';
+}
+```
+
+## 15. Produksjonsconfiguration
+
+### Environment Variables for Production
+```bash
+# Produksjon .env
+RESEND_API_KEY=re_prod_your_actual_key
+EMAIL_FROM=noreply@yourdomain.com
+EMAIL_FROM_NAME="Fargelegg Nå"
+NEXTAUTH_URL=https://yourdomain.com
+NEXT_PUBLIC_BASE_URL=https://yourdomain.com
+EMAIL_VERIFICATION_TOKEN_EXPIRES_HOURS=24
+NEWSLETTER_VERIFICATION_TOKEN_EXPIRES_HOURS=72
+```
+
+### Next.js Build og Deploy
+```bash
+# Test lokalt
+npm run build
+npm run start
+
+# Deploy til Vercel/Netlify/egen server
+# Husk å sette environment variables i deployment-panelet
+```
+
+## 16. Monitoring og Logging
+
+### Email Delivery Tracking
+Legg til i `src/lib/email-service.ts`:
+
+```typescript
+// Legg til logging for email-sending
+static async logEmailActivity(email: string, type: string, status: 'sent' | 'failed', messageId?: string) {
+  try {
+    const client = await clientPromise;
+    const db = client.db('fargeleggingsapp');
+    
+    await db.collection('email_logs').insertOne({
+      email,
+      type,
+      status,
+      messageId,
+      timestamp: new Date(),
+      userAgent: '', // kan hentes fra request headers
+      ip: '' // kan hentes fra request
+    });
+  } catch (error) {
+    console.error('Failed to log email activity:', error);
+  }
+}
+```
+
+### Dashboard for Admin (anbefalt utvidelse)
+```typescript
+// src/app/admin/email-verification/page.tsx
+// Vise statistikk over:
+// - Antall uverifiserte brukere
+// - Email delivery rate
+// - Nyhetsbrev abonnenter status
+// - Failed verification attempts
+```
+
+## 17. Feilsøking
+
+### Vanlige problemer og løsninger
+
+**1. Email kommer ikke frem**
+- Sjekk Resend dashboard for delivery status
+- Kontroller SPAM-mappen
+- Verifiser domene i Resend
+- Sjekk rate limits
+
+**2. Token utløper for raskt**
+- Øk `EMAIL_VERIFICATION_TOKEN_EXPIRES_HOURS`
+- Sjekk TTL index-konfigurasjon
+- Verifiser timezone-settings
+
+**3. Database connection issues**
+- Sjekk MongoDB connection string
+- Verifiser database og collection names
+- Kontroller network connectivity
+
+**4. Frontend validation errors**
+```typescript
+// Legg til bedre error handling i forms
+const validateEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+```
+
+## 18. Utvidelsesmuligheter
+
+### Future Enhancements
+1. **SMS-verifisering** som backup
+2. **Social login** med automatisk verifisering
+3. **Batch email sending** for nyhetsbrev
+4. **Email templates** med rich content
+5. **Unsubscribe functionality** for nyhetsbrev
+6. **Re-send verification** functionality
+7. **Admin dashboard** for user management
+
+### Performance Optimizations
+- Redis cache for rate limiting
+- Bull Queue for email sending
+- CDN for email assets
+- Database query optimization
+
+## 19. Testing Checklist
+
+- [ ] Brukerregistrering sender email
+- [ ] Email-verifisering fungerer
+- [ ] Login blokkerer uverifiserte brukere
+- [ ] Newsletter påmelding sender email
+- [ ] Newsletter verifisering fungerer
+- [ ] Tokens utløper korrekt
+- [ ] Database indexes er opprettet
+- [ ] Rate limiting fungerer
+- [ ] Error handling er robust
+- [ ] Email templates ser bra ut
+- [ ] Mobile-responsivt design
+- [ ] Cross-browser kompatibilitet
+
+## 20. Deployment Sjekkliste
+
+- [ ] Environment variables satt i produksjon
+- [ ] Resend domene verifisert
+- [ ] MongoDB produksjonsdatabase konfigurert
+- [ ] SSL-sertifikat installert
+- [ ] DNS records oppdatert
+- [ ] Backup rutiner på plass
+- [ ] Monitoring og logging aktivert
+- [ ] Performance testing gjennomført
+
+---
+
+## Sammendrag
+
+Denne implementeringen gir deg:
+
+✅ **Sikker email-verifisering** for både brukere og nyhetsbrev  
+✅ **Robust token-system** med automatisk utløp  
+✅ **Profesjonelle email-templates** med Resend  
+✅ **Database-optimaliseringer** med riktige indexes  
+✅ **Error handling** og rate limiting  
+✅ **Mobile-vennlige** verifikasjonssider  
+✅ **Production-ready** konfiguration  
+
+Start med å sette opp Resend-kontoen og environment variables, deretter implementer steg for steg. Test grundig i development før deploy til produksjon.
