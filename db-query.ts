@@ -1,13 +1,21 @@
-const { MongoClient } = require('mongodb');
-require('dotenv').config();
+import { MongoClient, Document } from 'mongodb';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Connection URI from .env file
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGODB_URI as string;
 
 // Create a new MongoClient with standard options
 const client = new MongoClient(uri);
 
-async function run() {
+// Define the error interface for better typing
+interface MongoDBError extends Error {
+  code?: string;
+  statusCode?: number;
+}
+
+async function run(): Promise<void> {
   try {
     // Connect to the MongoDB server
     await client.connect();
@@ -23,8 +31,9 @@ async function run() {
     
     console.log('Found documents:');
     console.log(JSON.stringify(documents, null, 2));
-  } catch (error) {
-    console.error('Error:', error);
+  } catch (error: unknown) {
+    const typedError = error as MongoDBError;
+    console.error('Error:', typedError);
   } finally {
     // Close the connection
     await client.close();

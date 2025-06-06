@@ -27,7 +27,7 @@ export async function generateMetadata() {
   const categoriesId = `${baseUrl}/categories`;
   
   // Create hasPart array for the categories list
-  const hasPart = categories.map(category => ({
+  const hasPart = categories.map((category: CategoryType) => ({
     "@type": "CollectionPage",
     "@id": `${baseUrl}/${category.slug}`
   }));
@@ -46,8 +46,8 @@ export async function generateMetadata() {
     "mainEntity": {
       "@type": "ItemList",
       "name": "Kategorier av fargeleggingsbilder",
-      "description": `Utforsk populære kategorier av fargeleggingsbilder for barn, inkludert ${categories.slice(0, 3).map(cat => cat.title).join(', ')}${categories.length > 3 ? ' og flere' : ''}.`,
-      "itemListElement": categories.map((category, index) => ({
+      "description": `Utforsk populære kategorier av fargeleggingsbilder for barn, inkludert ${categories.slice(0, 3).map((cat: CategoryType) => cat.title).join(', ')}${categories.length > 3 ? ' og flere' : ''}.`,
+      "itemListElement": categories.map((category: CategoryType, index: number) => ({
         "@type": "ListItem",
         "position": index + 1,
         "name": category.seoTitle || category.title,
@@ -80,7 +80,7 @@ export async function generateMetadata() {
   });
   
   // Add category pages
-  categories.forEach(category => {
+  categories.forEach((category: CategoryType) => {
     graphItems.push({
       "@type": "CollectionPage",
       "@id": `${baseUrl}/${category.slug}`,

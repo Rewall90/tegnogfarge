@@ -47,8 +47,9 @@ export async function POST(request: Request) {
       { message: 'Nyhetsbrev-abonnement bekreftet! Du vil nå motta våre oppdateringer.' },
       { status: 200 }
     );
-  } catch (error) {
-    console.error('Newsletter verification error:', error);
+  } catch (error: unknown) {
+    const typedError = error as Error;
+    console.error('Newsletter verification error:', typedError);
     return NextResponse.json(
       { message: 'Intern serverfeil' },
       { status: 500 }

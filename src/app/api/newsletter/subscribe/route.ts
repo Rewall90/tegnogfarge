@@ -35,7 +35,9 @@ export async function POST(request: Request) {
             { message: 'Bekreftelse e-post sendt på nytt. Sjekk innboksen din.' },
             { status: 200 }
           );
-        } catch (emailError) {
+        } catch (emailError: unknown) {
+          const typedError = emailError as Error;
+          console.error('Failed to resend verification email:', typedError);
           return NextResponse.json(
             { message: 'Kunne ikke sende bekreftelse e-post' },
             { status: 500 }
@@ -63,15 +65,17 @@ export async function POST(request: Request) {
         { message: 'Takk for påmeldingen! Sjekk e-posten din for å bekrefte abonnementet.' },
         { status: 201 }
       );
-    } catch (emailError) {
-      console.error('Failed to send newsletter verification:', emailError);
+    } catch (emailError: unknown) {
+      const typedError = emailError as Error;
+      console.error('Failed to send newsletter verification:', typedError);
       return NextResponse.json(
         { message: 'Påmelding registrert, men kunne ikke sende bekreftelse e-post' },
         { status: 201 }
       );
     }
-  } catch (error) {
-    console.error('Newsletter subscription error:', error);
+  } catch (error: unknown) {
+    const typedError = error as Error;
+    console.error('Newsletter subscription error:', typedError);
     return NextResponse.json(
       { message: 'Intern serverfeil' },
       { status: 500 }

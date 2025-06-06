@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/authOptions';
-// import clientPromise from '@/lib/db';
+import clientPromise from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { mapToFavoriteModel } from '../../../../models/favorite';
 
@@ -17,8 +17,8 @@ export async function GET() {
       );
     }
 
-    // const client = await clientPromise;
-    // const db = client.db();
+    const client = await clientPromise;
+    const db = client.db();
     
     // Get user ID from the session
     const userCollection = db.collection('users');
@@ -79,8 +79,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // const client = await clientPromise;
-    // const db = client.db();
+    const client = await clientPromise;
+    const db = client.db();
 
     // Get user ID from the session
     const userCollection = db.collection('users');

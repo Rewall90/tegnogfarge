@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
     const categoryImageUrl = category.image?.url;
     
     // Create hasPart array for the main category
-    const hasPart = category.subcategories?.map(subcategory => ({
+    const hasPart = category.subcategories?.map((subcategory: Subcategory) => ({
       "@type": "CollectionPage",
       "@id": `${baseUrl}/${category.slug}/${subcategory.slug}`
     })) || [];
@@ -52,8 +52,8 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
       "mainEntity": {
         "@type": "ItemList",
         "name": `${category.title} fargeleggingsbilder`,
-        "description": `Utforsk alle ${category.title.toLowerCase()} fargeleggingsbilder for barn, inkludert ${category.subcategories?.map(s => s.title).slice(0, 3).join(', ')}${category.subcategories && category.subcategories.length > 3 ? ' og flere' : ''}.`,
-        "itemListElement": category.subcategories?.map((subcategory, index) => {
+        "description": `Utforsk alle ${category.title.toLowerCase()} fargeleggingsbilder for barn, inkludert ${category.subcategories?.map((s: Subcategory) => s.title).slice(0, 3).join(', ')}${category.subcategories && category.subcategories.length > 3 ? ' og flere' : ''}.`,
+        "itemListElement": category.subcategories?.map((subcategory: Subcategory, index: number) => {
           const subcategoryImageUrl = subcategory.featuredImage?.url;
           return {
             "@type": "ListItem",
@@ -90,7 +90,7 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
     
     // Add subcategory pages
     if (category.subcategories && category.subcategories.length > 0) {
-      category.subcategories.forEach(subcategory => {
+      category.subcategories.forEach((subcategory: Subcategory) => {
         const subcategoryImageUrl = subcategory.featuredImage?.url;
         graphItems.push({
           "@type": "CollectionPage",

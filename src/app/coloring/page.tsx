@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/shared/Header';
@@ -13,7 +13,7 @@ interface ColoringImage {
   imageUrl: string;
 }
 
-export default function ColoringPage() {
+function ColoringContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search');
   const [searchResults, setSearchResults] = useState<ColoringImage[]>([]);
@@ -112,5 +112,28 @@ export default function ColoringPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+function ColoringLoading() {
+  return (
+    <>
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">Laster inn...</h1>
+        <div className="flex justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}
+
+export default function ColoringPage() {
+  return (
+    <Suspense fallback={<ColoringLoading />}>
+      <ColoringContent />
+    </Suspense>
   );
 } 

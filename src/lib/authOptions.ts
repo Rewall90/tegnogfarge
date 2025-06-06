@@ -22,7 +22,7 @@ const authOptions = {
         password: { label: 'Password', type: 'password' },
         isVerified: { label: 'Is Verified', type: 'text' }
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<UserType | null> {
         if (!credentials?.email) {
           throw new Error('Email er påkrevd');
         }

@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-export default function VerifyNewsletterPage() {
+function VerifyNewsletterContent() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
   const searchParams = useSearchParams();
@@ -83,5 +83,26 @@ export default function VerifyNewsletterPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// Loading fallback component
+function NewsletterVerificationLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+        <h1 className="text-2xl font-bold mb-2">Laster inn...</h1>
+        <p className="text-gray-600">Vennligst vent</p>
+      </div>
+    </div>
+  );
+}
+
+export default function VerifyNewsletterPage() {
+  return (
+    <Suspense fallback={<NewsletterVerificationLoading />}>
+      <VerifyNewsletterContent />
+    </Suspense>
   );
 } 

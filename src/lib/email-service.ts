@@ -20,6 +20,15 @@ interface SendVerificationEmailOptions {
   userName?: string;
 }
 
+// Define error interface for better typing
+interface ResendAPIError {
+  statusCode?: number;
+  message: string;
+  code?: string;
+  stack?: string;
+  verificationUrl?: string;
+}
+
 export class EmailService {
   private static async generateVerificationToken(email: string, type: string): Promise<string> {
     const token = uuidv4();
@@ -130,23 +139,24 @@ export class EmailService {
         verificationCode,
         verificationUrl // Inkluder fortsatt for utviklingsformål
       };
-    } catch (error: any) {
-      console.error('Feil ved sending av verifikasjons-e-post:', error);
+    } catch (error: unknown) {
+      const typedError = error as ResendAPIError;
+      console.error('Feil ved sending av verifikasjons-e-post:', typedError);
       // Logg detaljert feilmelding for debugging
       console.error('Feildetaljer:', {
-        message: error.message,
-        stack: error.stack,
-        code: error.code,
-        statusCode: error.statusCode
+        message: typedError.message,
+        stack: typedError.stack,
+        code: typedError.code,
+        statusCode: typedError.statusCode
       });
       
       // Returner et objekt med feilinformasjon
       return { 
         success: false, 
         reason: 'error', 
-        error: error.message,
+        error: typedError.message,
         // Hvis verifikasjonslenke er opprettet, returner den for utviklingsformål
-        verificationUrl: error.verificationUrl
+        verificationUrl: typedError.verificationUrl
       };
     }
   }
@@ -205,8 +215,9 @@ export class EmailService {
       });
       
       return { success: true, messageId: result.data?.id, verificationUrl };
-    } catch (error) {
-      console.error('Failed to send newsletter verification email:', error);
+    } catch (error: unknown) {
+      const typedError = error as ResendAPIError;
+      console.error('Failed to send newsletter verification email:', typedError);
       throw new Error('Failed to send verification email');
     }
   }
@@ -235,7 +246,7 @@ export class EmailService {
       );
       
       return { valid: true, email: tokenDoc.email };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Feil ved validering av token:', error);
       return { valid: false };
     }
