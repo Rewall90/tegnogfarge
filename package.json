@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start -p 3001",
     "lint": "next lint",
-    "postinstall": "node node_modules/typescript/lib/tsc.js",
     "clean": "rm -rf .next",
     "type-check": "tsc --noEmit",
     "test-deploy": "npm run type-check && npm run build && node -e \"console.log('Build test completed successfully!')\""
