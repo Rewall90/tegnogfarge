@@ -1,6 +1,6 @@
 const config = {
   plugins: {
-    tailwindcss: {},
+    // tailwindcss: {}, // Kommentert ut for å unngå feil på serveren
     autoprefixer: {},
   },
 };

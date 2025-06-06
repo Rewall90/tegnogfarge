@@ -28,6 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="no" className="scroll-smooth">
+      <head>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet" />
+      </head>
       <body
         suppressHydrationWarning={true}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
