@@ -5,6 +5,8 @@ import Footer from '@/components/shared/Footer';
 import { getAllCategories } from '@/lib/sanity';
 import { FrontpageHero } from '@/components/frontpage/FrontpageHero';
 import { ColoringCategories } from '@/components/frontpage/ColoringCategories';
+import Image from 'next/image';
+import CategoriesListJsonLd from '@/components/json-ld/CategoriesListJsonLd';
 
 interface Category {
   title: string;
@@ -13,6 +15,16 @@ interface Category {
   isActive: boolean;
   featured?: boolean;
   order?: number;
+}
+
+export const revalidate = 3600; // Revalidate every hour
+
+export async function generateMetadata() {
+  return {
+    title: 'Fargeleggingsbilder Kategorier | Fargelegg Nå',
+    description: 'Utforsk alle våre kategorier av fargeleggingsbilder',
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no'),
+  };
 }
 
 export default async function Home() {

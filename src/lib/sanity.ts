@@ -53,6 +53,8 @@ export async function getAllCategories() {
       title,
       "slug": slug.current,
       description,
+      seoTitle,
+      seoDescription,
       icon,
       order,
       isActive,
@@ -137,13 +139,20 @@ export async function getPostsByCategory(categorySlug: string) {
 // Hent bilde for fargelegging med validering
 export async function getColoringImage(id: string) {
   return client.fetch(`
-    *[_type == "drawingImage" && _id == $id && isActive == true][0] {
+    *[_type == "drawingImage" && (_id == $id || slug.current == $id) && isActive == true][0] {
       _id,
       title,
+      description,
       "slug": slug.current,
-      "imageUrl": coalesce(mainImage.asset->url, image.asset->url),
+      "imageUrl": displayImage.asset->url,
+      "fallbackImageUrl": webpImage.asset->url,
+      "thumbnailUrl": thumbnailImage.asset->url,
       "downloadUrl": downloadFile.asset->url,
       tags,
+      difficulty,
+      hasDigitalColoring,
+      publishedDate,
+      _createdAt,
       order,
       isActive
     }
@@ -157,6 +166,8 @@ export async function getCategoryWithSubcategories(categorySlug: string) {
       _id,
       title,
       description,
+      seoTitle,
+      seoDescription,
       icon,
       order,
       isActive,
@@ -175,11 +186,17 @@ export async function getCategoryWithSubcategories(categorySlug: string) {
         order,
         isActive,
         description,
+        seoTitle,
+        seoDescription,
         featuredImage {
           "url": asset->url,
           alt
         },
-        "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+        "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true]),
+        "sampleImage": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true][0] {
+          "thumbnailUrl": thumbnailImage.asset->url,
+          "imageUrl": webpImage.asset->url
+        }
       }
     }
   `, { categorySlug });
@@ -197,6 +214,8 @@ export async function getSubcategoriesByCategory(categorySlug: string) {
       order,
       isActive,
       description,
+      seoTitle,
+      seoDescription,
       "imageUrl": featuredImage.asset->url,
       "parentCategory": parentCategory->{ title, "slug": slug.current },
       "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
@@ -215,13 +234,18 @@ export async function getSubcategoryWithDrawings(categorySlug: string, subcatego
       "slug": slug.current,
       "imageUrl": featuredImage.asset->url,
       "parentCategory": parentCategory->{ title, "slug": slug.current },
-      "drawings": *[_type == "drawingImage" && subcategory._ref == ^._id] | order(_createdAt desc) {
+      "drawings": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true] | order(order asc, _createdAt desc) {
         _id,
         title,
         description,
-        "imageUrl": coalesce(image.asset->url, mainImage.asset->url),
+        "imageUrl": coalesce(displayImage.asset->url, webpImage.asset->url),
+        "thumbnailUrl": coalesce(thumbnailImage.asset->url, displayImage.asset->url, webpImage.asset->url),
         "downloadUrl": downloadFile.asset->url,
         difficulty,
+        hasDigitalColoring,
+        publishedDate,
+        _createdAt,
+        tags,
         "slug": slug.current
       }
     }
@@ -251,7 +275,7 @@ export async function getDrawingsBySubcategory(subcategorySlug: string) {
       _id,
       title,
       "slug": slug.current,
-      "imageUrl": image.asset->url,
+      "imageUrl": webpImage.asset->url,
       "downloadUrl": downloadFile.asset->url,
       tags,
       order,
@@ -303,7 +327,7 @@ export async function getColoringImageWebP(id: string) {
     *[_type == "drawingImage" && _id == $id][0] {
       _id,
       title,
-      "webpImageUrl": coalesce(webpImage.asset->url, image.asset->url, mainImage.asset->url),
+      "webpImageUrl": coalesce(webpImage.asset->url, mainImage.asset->url),
       suggestedColors,
       "category": subcategory->parentCategory->{ 
         title, 
@@ -340,4 +364,22 @@ export async function getSubcategoryColoringImages(categorySlug: string, subcate
       }
     } | order(order asc, title asc)
   `, { categorySlug, subcategorySlug })
+}
+
+// Hent alle kategorier med underkategorier for statisk generering
+export async function getAllCategoriesWithSubcategories() {
+  return client.fetch(`
+    *[_type == "category" && isActive == true]
+    | order(order asc, title asc) {
+      _id,
+      title,
+      "slug": slug.current,
+      "subcategories": *[_type == "subcategory" && parentCategory._ref == ^._id && isActive == true]
+      | order(order asc, title asc) {
+        _id,
+        title,
+        "slug": slug.current
+      }
+    }
+  `);
 } 

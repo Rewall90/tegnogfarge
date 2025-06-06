@@ -24,7 +24,7 @@ export function ColoringCategories({ categories }: ColoringCategoriesProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
           {categories.map((category) => (
             <div key={category.slug} className="flex flex-col items-center">
-              <Link href={`/categories/${category.slug}`} className="block w-full">
+              <Link href={`/${category.slug}`} className="block w-full">
                 <div className="relative w-full aspect-[4/5] bg-[#2EC4B6] rounded-[32px] shadow-lg flex flex-col items-center justify-center overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-xl">
                   {category.imageUrl && (
                     <Image 

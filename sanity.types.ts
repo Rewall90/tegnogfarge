@@ -82,18 +82,6 @@ export interface DrawingImage {
   _rev: string;
   title?: string;
   slug?: Slug;
-  image?: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
   downloadFile?: {
     asset?: {
       _ref: string;
@@ -107,6 +95,18 @@ export interface DrawingImage {
   tags?: Array<string>;
   order?: number;
   isActive?: boolean;
+  webpImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
 }
 
 export type Subcategory = {
