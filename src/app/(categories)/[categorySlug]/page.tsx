@@ -9,10 +9,16 @@ import Footer from '@/components/shared/Footer';
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
 
+interface PageProps {
+  params: Promise<{
+    categorySlug: string;
+  }>;
+}
+
 // Generer metadata
-export async function generateMetadata({ params }: { params: { categorySlug: string } }) {
+export async function generateMetadata({ params: paramsPromise }: PageProps) {
   try {
-    const { categorySlug } = await Promise.resolve(params);
+    const { categorySlug } = await paramsPromise;
     const category = await getCategoryWithSubcategories(categorySlug);
     
     if (!category) {
@@ -252,8 +258,9 @@ function EmptyState() {
   );
 }
 
-export default async function CategoryPage({ params }: { params: { categorySlug: string } }) {
-  const { categorySlug } = await Promise.resolve(params);
+// Main Category Page Component
+export default async function CategoryPage({ params: paramsPromise }: PageProps) {
+  const { categorySlug } = await paramsPromise;
   const category = await getCategoryWithSubcategories(categorySlug);
   
   if (!category) {

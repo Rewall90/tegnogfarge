@@ -42,10 +42,17 @@ interface Subcategory {
   drawings?: Drawing[];
 }
 
+interface PageProps {
+  params: Promise<{
+    categorySlug: string;
+    subcategorySlug: string;
+    drawingSlug: string;
+  }>;
+}
+
 // Generer metadata
-export async function generateMetadata(props: { params: { categorySlug: string; subcategorySlug: string; drawingSlug: string } }) {
-  const params = await Promise.resolve(props.params);
-  const { categorySlug, subcategorySlug, drawingSlug } = params;
+export async function generateMetadata({ params: paramsPromise }: PageProps) {
+  const { categorySlug, subcategorySlug, drawingSlug } = await paramsPromise;
   
   // Få tak i tegningen (basert på ID eller slug)
   const drawing = await getColoringImage(drawingSlug);
@@ -100,9 +107,8 @@ function formatDate(dateString?: string): string {
 }
 
 // Main component
-export default async function DrawingPage(props: { params: { categorySlug: string; subcategorySlug: string; drawingSlug: string } }) {
-  const params = await Promise.resolve(props.params);
-  const { categorySlug, subcategorySlug, drawingSlug } = params;
+export default async function DrawingPage({ params: paramsPromise }: PageProps) {
+  const { categorySlug, subcategorySlug, drawingSlug } = await paramsPromise;
   
   // Fetch data
   const drawing = await getColoringImage(drawingSlug);

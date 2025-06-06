@@ -56,9 +56,16 @@ interface Drawing {
   };
 }
 
+interface PageProps {
+  params: Promise<{
+    categorySlug: string;
+    subcategorySlug: string;
+  }>;
+}
+
 // Generer metadata
-export async function generateMetadata({ params }: { params: { categorySlug: string; subcategorySlug: string } }) {
-  const { categorySlug, subcategorySlug } = await Promise.resolve(params);
+export async function generateMetadata({ params: paramsPromise }: PageProps) {
+  const { categorySlug, subcategorySlug } = await paramsPromise;
   const subcategory = await getSubcategoryWithDrawings(categorySlug, subcategorySlug);
   
   if (!subcategory) {
@@ -329,8 +336,9 @@ function DrawingCard({
   );
 }
 
-export default async function SubcategoryPage({ params }: { params: { categorySlug: string; subcategorySlug: string } }) {
-  const { categorySlug, subcategorySlug } = await Promise.resolve(params);
+// Main Subcategory Page Component
+export default async function SubcategoryPage({ params: paramsPromise }: PageProps) {
+  const { categorySlug, subcategorySlug } = await paramsPromise;
   const subcategory = await getSubcategoryWithDrawings(categorySlug, subcategorySlug);
   
   if (!subcategory) {

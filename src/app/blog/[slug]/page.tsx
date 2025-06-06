@@ -15,8 +15,14 @@ function formatDate(dateString: string) {
   }).format(date);
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+interface PageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+}
+
+export default async function BlogPostPage({ params: paramsPromise }: PageProps) {
+  const { slug } = await paramsPromise;
   const post = await getPost(slug);
   
   if (!post) {
