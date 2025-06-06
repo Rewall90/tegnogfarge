@@ -1,10 +1,10 @@
 import { defineConfig } from 'sanity';
 import { deskTool } from 'sanity/desk';
 import { visionTool } from '@sanity/vision';
-import { schemaTypes } from './sanity-schema';
+import { schemaTypes } from '@schemas/index';
 
 // Bruker den konkrete prosjekt-ID'en
-const projectId = 'fn0kjvlp';
+export const projectId = 'fn0kjvlp';
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production';
 
 export default defineConfig({
