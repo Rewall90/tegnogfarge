@@ -28,6 +28,8 @@ interface Drawing {
   _id: string;
   title: string;
   slug: string;
+  description?: string;
+  seoTitle?: string;
   thumbnail: {
     url?: string;
     alt?: string;
