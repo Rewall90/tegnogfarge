@@ -4,6 +4,7 @@ import Footer from '@/components/shared/Footer';
 import { searchDrawings } from '@/lib/sanity';
 import { DrawingCard } from '@/components/cards/DrawingCard';
 import { Drawing } from '@/types';
+import { SVG_BLUR_PLACEHOLDER, WEBP_PLACEHOLDER_PATH } from '@/lib/utils';
 
 interface SearchPageProps {
   searchParams: {
@@ -31,15 +32,23 @@ export default async function ColoringPage({ searchParams }: SearchPageProps) {
               Fant {searchResults.length} {searchResults.length === 1 ? 'resultat' : 'resultater'}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {searchResults.map((drawing) => (
-                <DrawingCard 
-                  key={drawing._id}
-                  drawing={drawing}
-                  asLink={true}
-                  showButtons={false}
-                  imageObjectFit="contain"
-                />
-              ))}
+              {searchResults.map((drawing) => {
+                const drawingSlug = drawing.slug || drawing._id;
+                const href = `/${drawing.categorySlug}/${drawing.subcategorySlug}/${drawingSlug}`;
+                const lqip = SVG_BLUR_PLACEHOLDER; // Placeholder until LQIP is added to search query
+
+                return (
+                  <DrawingCard 
+                    key={drawing._id}
+                    title={drawing.title}
+                    href={href}
+                    imageUrl={drawing.thumbnailUrl || drawing.imageUrl || WEBP_PLACEHOLDER_PATH}
+                    imageAlt={drawing.imageAlt || drawing.title}
+                    lqip={lqip}
+                    difficulty={drawing.difficulty}
+                  />
+                );
+              })}
             </div>
           </div>
         ) : (

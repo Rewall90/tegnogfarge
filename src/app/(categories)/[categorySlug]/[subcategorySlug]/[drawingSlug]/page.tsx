@@ -218,6 +218,7 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
                         sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
                         placeholder="blur"
                         blurDataURL={drawing.imageLqip || drawing.fallbackImageLqip || SVG_BLUR_PLACEHOLDER}
+                        quality={85}
                       />
                     </div>
                   </div>

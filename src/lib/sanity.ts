@@ -21,31 +21,6 @@ export const urlFor = (source: SanityImageSource) => {
   return builder.image(source);
 };
 
-// Funksjon for å generere responsive bilde-URL-er
-export const responsiveImageUrl = (source: SanityImageSource, quality = 80) => {
-  if (!source) return null;
-  
-  // Create base image with quality setting and WebP format for best compression
-  const baseImage = builder.image(source)
-    .quality(quality)
-    .format('webp');
-  
-  // Generate responsive image sizes with consistent quality and format
-  return {
-    small: baseImage.width(300).height(400).url(),      // Mobile (300×400)
-    medium: baseImage.width(450).height(600).url(),     // Tablet (450×600)
-    large: baseImage.width(600).height(800).url(),      // Desktop (600×800)
-    original: baseImage.url(),                          // Original
-    srcset: [
-      `${baseImage.width(300).height(400).url()} 300w`,
-      `${baseImage.width(450).height(600).url()} 450w`,
-      `${baseImage.width(600).height(800).url()} 600w`,
-      `${baseImage.width(900).height(1200).url()} 900w`,
-    ].join(', '),
-    sizes: '(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw'
-  };
-};
-
 // Hjelpefunksjon for å hente alle bilder i en kategori
 export async function getImagesInCategory(subcategory: string, page = 1, limit = 30) {
   const start = (page - 1) * limit;

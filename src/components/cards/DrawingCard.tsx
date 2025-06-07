@@ -47,7 +47,7 @@ export function DrawingCard({
           rootMargin="300px 0px"
           placeholder="blur"
           blurDataURL={lqip}
-          quality={85}
+          quality={isPriority ? 85 : 75}
         />
       </div>
       <div className="p-2">

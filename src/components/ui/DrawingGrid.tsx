@@ -5,24 +5,13 @@ import { DrawingCard } from '@/components/cards/DrawingCard';
 import { AboveFoldProvider, useAboveFold } from '@/components/ui/AboveFoldProvider';
 import { GRID_LAYOUTS } from '@/utils/viewportDetection';
 import { Drawing } from '@/types';
+import { SVG_BLUR_PLACEHOLDER, WEBP_PLACEHOLDER_PATH } from '@/lib/utils';
 
 interface DrawingGridProps {
   /**
    * Array of drawings to display in the grid
    */
   drawings: Drawing[];
-  
-  /**
-   * Whether to show buttons on the cards
-   * @default true
-   */
-  showButtons?: boolean;
-  
-  /**
-   * Object fit mode for the images
-   * @default "cover"
-   */
-  imageObjectFit?: "cover" | "contain";
   
   /**
    * Grid layout configuration to use
@@ -40,25 +29,32 @@ interface DrawingGridProps {
 /**
  * Grid to display drawing cards with optimized above-the-fold detection
  */
-function DrawingGridInner({
-  drawings,
-  showButtons = true,
-  imageObjectFit = "cover"
-}: DrawingGridProps) {
+function DrawingGridInner({ drawings }: DrawingGridProps) {
   const { isAboveFold } = useAboveFold();
   
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-      {drawings.map((drawing, index) => (
-        <DrawingCard 
-          key={drawing._id}
-          drawing={drawing}
-          asLink={true}
-          showButtons={showButtons}
-          imageObjectFit={imageObjectFit}
-          isPriority={isAboveFold(index)}
-        />
-      ))}
+      {drawings.map((drawing, index) => {
+        const drawingSlug = drawing.slug || drawing._id;
+        const href = `/${drawing.categorySlug}/${drawing.subcategorySlug}/${drawingSlug}`;
+        
+        // The lqip prop is not available on the global Drawing type, so we use the default
+        // This can be improved later by updating the global type and relevant queries
+        const lqip = SVG_BLUR_PLACEHOLDER; 
+        
+        return (
+          <DrawingCard 
+            key={drawing._id}
+            title={drawing.title}
+            href={href}
+            imageUrl={drawing.thumbnailUrl || drawing.imageUrl || WEBP_PLACEHOLDER_PATH}
+            imageAlt={drawing.thumbnailAlt || drawing.imageAlt || drawing.title}
+            lqip={lqip}
+            difficulty={drawing.difficulty}
+            isPriority={isAboveFold(index)}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -69,8 +65,6 @@ function DrawingGridInner({
  */
 export function DrawingGrid({
   drawings,
-  showButtons = true,
-  imageObjectFit = "cover",
   gridLayout = GRID_LAYOUTS.compact,
   aboveFoldRows = 2
 }: DrawingGridProps) {
@@ -80,11 +74,7 @@ export function DrawingGrid({
       gridLayout={gridLayout}
       defaultCount={8} // Reasonable default for larger grids
     >
-      <DrawingGridInner 
-        drawings={drawings}
-        showButtons={showButtons}
-        imageObjectFit={imageObjectFit}
-      />
+      <DrawingGridInner drawings={drawings} />
     </AboveFoldProvider>
   );
 } 
