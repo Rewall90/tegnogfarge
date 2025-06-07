@@ -48,6 +48,7 @@ export default async function BlogPostPage({ params: paramsPromise }: PageProps)
               alt={post.title}
               className="w-full h-full object-cover"
               fill
+              sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
             />
           </div>
         )}

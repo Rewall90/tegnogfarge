@@ -7,6 +7,8 @@ import { FrontpageHero } from '@/components/frontpage/FrontpageHero';
 import { ColoringCategories } from '@/components/frontpage/ColoringCategories';
 import Image from 'next/image';
 import CategoriesListJsonLd from '@/components/json-ld/CategoriesListJsonLd';
+import FAQAccordion from '@/components/frontpage/FAQAccordion';
+import NewsletterForm from '@/components/frontpage/NewsletterForm';
 
 interface Category {
   title: string;
@@ -20,10 +22,74 @@ interface Category {
 export const revalidate = 3600; // Revalidate every hour
 
 export async function generateMetadata() {
+  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no';
+  
+  // FAQ schema for structured data
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Hvordan registrerer jeg meg?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For å registere deg, klikk på \"Registrer deg\" knappen på hjemmesiden. Fyll ut skjemaet med nødvendig informasjon. Når du har sendt inn, vil du motta en bekreftelse e-post."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Er det gratis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ja, plattformen tilbyr gratis tilgang til grunnleggende funksjoner. Du kan oppgradere til premium for flere verktøy og ressurser. Utforsk alternativene våre for mer informasjon."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hvordan lagrer jeg arbeidet?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ditt arbeid lagres automatisk når du bruker plattformen. Du kan også lagre det manuelt ved å klikke på \"Lagre\" knappen. Bruk Dashboard-siden for å se alle lagrede verk."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Kan jeg dele arbeidet?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ja, du kan enkelt dele arbeidet ditt på sosiale medier. Klikk på \"Del\" knappen for å få tilgang til delingsmuligheter. Vi har også innebygd støtte for å venneliste!"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hva er premium-funksjoner?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Premium-funksjoner inkluderer tilgang til flere avanserte farger, spesialeffekter, ubegrenset lagring av dine prosjekter, og mulighet til å laste ned høyoppløselige versjoner av arbeidet ditt. Du får også prioritert støtte fra vårt team."
+        }
+      }
+    ]
+  };
+  
   return {
     title: 'Fargeleggingsbilder Kategorier | Fargelegg Nå',
     description: 'Utforsk alle våre kategorier av fargeleggingsbilder',
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no'),
+    metadataBase: new URL(base),
+    openGraph: {
+      title: 'Fargeleggingsbilder Kategorier | Fargelegg Nå',
+      description: 'Utforsk alle våre kategorier av fargeleggingsbilder',
+      url: base,
+      siteName: 'Fargelegg Nå',
+      locale: 'nb_NO',
+      type: 'website',
+    },
+    alternates: {
+      canonical: '/',
+    },
+    other: {
+      'application/ld+json': JSON.stringify(faqSchema),
+    }
   };
 }
 
@@ -42,9 +108,8 @@ export default async function Home() {
   return (
     <>
       <Header />
-      <div className="bg-white">
-        <FrontpageHero />
-        <main>
+      <FrontpageHero />
+      <main className="bg-white">
           <ColoringCategories
             categories={mainCategories.map((cat) => ({
               name: cat.title,
@@ -59,111 +124,36 @@ export default async function Home() {
               <h2 id="faq-heading" className="text-3xl font-bold mb-10">Ofte stilte spørsmål</h2>
               <p className="text-gray-600 mb-8">Her finner du svar på vanlige spørsmål om plattformen og hvordan du bruker den.</p>
               
-              <div className="space-y-6">
-                <div className="border-b border-gray-200 pb-4">
-                  <div className="flex justify-between items-center">
-                    <h3 id="faq-1" className="text-lg font-semibold">Hvordan registrerer jeg meg?</h3>
-                    <button 
-                      className="text-gray-500" 
-                      aria-expanded="true" 
-                      aria-controls="faq-1-content"
-                      aria-label="Vis eller skjul svaret på hvordan du registrerer deg"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                  <div id="faq-1-content" className="mt-2">
-                    <p className="text-gray-600">
-                      For å registere deg, klikk på &quot;Registrer deg&quot; knappen på hjemmesiden. Fyll ut skjemaet med nødvendig informasjon. Når du har sendt inn, vil du motta en bekreftelse e-post.
-                    </p>
-                  </div>
-                </div>
+              <div className="space-y-6" role="group" aria-labelledby="faq-heading">
+                <FAQAccordion 
+                  id="faq-1"
+                  question="Hvordan registrerer jeg meg?" 
+                  answer="For å registere deg, klikk på &quot;Registrer deg&quot; knappen på hjemmesiden. Fyll ut skjemaet med nødvendig informasjon. Når du har sendt inn, vil du motta en bekreftelse e-post."
+                />
                 
-                <div className="border-b border-gray-200 pb-4">
-                  <div className="flex justify-between items-center">
-                    <h3 id="faq-2" className="text-lg font-semibold">Er det gratis?</h3>
-                    <button 
-                      className="text-gray-500" 
-                      aria-expanded="true" 
-                      aria-controls="faq-2-content"
-                      aria-label="Vis eller skjul svaret på om det er gratis"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                  <div id="faq-2-content" className="mt-2">
-                    <p className="text-gray-600">
-                      Ja, plattformen tilbyr gratis tilgang til grunnleggende funksjoner. Du kan oppgradere til premium for flere verktøy og ressurser. Utforsk alternativene våre for mer informasjon.
-                    </p>
-                  </div>
-                </div>
+                <FAQAccordion 
+                  id="faq-2"
+                  question="Er det gratis?" 
+                  answer="Ja, plattformen tilbyr gratis tilgang til grunnleggende funksjoner. Du kan oppgradere til premium for flere verktøy og ressurser. Utforsk alternativene våre for mer informasjon."
+                />
                 
-                <div className="border-b border-gray-200 pb-4">
-                  <div className="flex justify-between items-center">
-                    <h3 id="faq-3" className="text-lg font-semibold">Hvordan lagrer jeg arbeidet?</h3>
-                    <button 
-                      className="text-gray-500" 
-                      aria-expanded="true" 
-                      aria-controls="faq-3-content"
-                      aria-label="Vis eller skjul svaret på hvordan du lagrer arbeidet"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                  <div id="faq-3-content" className="mt-2">
-                    <p className="text-gray-600">
-                      Ditt arbeid lagres automatisk når du bruker plattformen. Du kan også lagre det manuelt ved å klikke på &quot;Lagre&quot; knappen. Bruk Dashboard-siden for å se alle lagrede verk.
-                    </p>
-                  </div>
-                </div>
+                <FAQAccordion 
+                  id="faq-3"
+                  question="Hvordan lagrer jeg arbeidet?" 
+                  answer="Ditt arbeid lagres automatisk når du bruker plattformen. Du kan også lagre det manuelt ved å klikke på &quot;Lagre&quot; knappen. Bruk Dashboard-siden for å se alle lagrede verk."
+                />
                 
-                <div className="border-b border-gray-200 pb-4">
-                  <div className="flex justify-between items-center">
-                    <h3 id="faq-4" className="text-lg font-semibold">Kan jeg dele arbeidet?</h3>
-                    <button 
-                      className="text-gray-500" 
-                      aria-expanded="true" 
-                      aria-controls="faq-4-content"
-                      aria-label="Vis eller skjul svaret på om du kan dele arbeidet"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                  <div id="faq-4-content" className="mt-2">
-                    <p className="text-gray-600">
-                      Ja, du kan enkelt dele arbeidet ditt på sosiale medier. Klikk på &quot;Del&quot; knappen for å få tilgang til delingsmuligheter. Vi har også innebygd støtte for å venneliste!
-                    </p>
-                  </div>
-                </div>
+                <FAQAccordion 
+                  id="faq-4"
+                  question="Kan jeg dele arbeidet?" 
+                  answer="Ja, du kan enkelt dele arbeidet ditt på sosiale medier. Klikk på &quot;Del&quot; knappen for å få tilgang til delingsmuligheter. Vi har også innebygd støtte for å venneliste!"
+                />
                 
-                <div className="border-b border-gray-200 pb-4">
-                  <div className="flex justify-between items-center">
-                    <h3 id="faq-5" className="text-lg font-semibold">Hva er premium-funksjoner?</h3>
-                    <button 
-                      className="text-gray-500" 
-                      aria-expanded="true" 
-                      aria-controls="faq-5-content"
-                      aria-label="Vis eller skjul svaret på hva premium-funksjoner er"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                  <div id="faq-5-content" className="mt-2">
-                    <p className="text-gray-600">
-                      Premium-funksjoner inkluderer tilgang til flere avanserte farger, spesialeffekter, ubegrenset lagring av dine prosjekter, og mulighet til å laste ned høyoppløselige versjoner av arbeidet ditt. Du får også prioritert støtte fra vårt team.
-                    </p>
-                  </div>
-                </div>
+                <FAQAccordion 
+                  id="faq-5"
+                  question="Hva er premium-funksjoner?" 
+                  answer="Premium-funksjoner inkluderer tilgang til flere avanserte farger, spesialeffekter, ubegrenset lagring av dine prosjekter, og mulighet til å laste ned høyoppløselige versjoner av arbeidet ditt. Du får også prioritert støtte fra vårt team."
+                />
               </div>
               
               <div className="mt-12 text-center">
@@ -186,27 +176,11 @@ export default async function Home() {
               <h2 id="newsletter-heading" className="text-3xl font-bold mb-6">Hold deg oppdatert med nyheter</h2>
               <p className="mb-8">Meld deg på vårt nyhetsbrev for å få de siste oppdateringene og blogginleggene.</p>
               
-              <form className="flex flex-col md:flex-row justify-center">
-                <input 
-                  type="email" 
-                  placeholder="Skriv inn e-posten din" 
-                  className="px-4 py-3 mb-2 md:mb-0 md:mr-2 rounded-md w-full md:w-auto md:flex-1 text-black focus:outline-none"
-                  aria-label="Din e-postadresse"
-                  required
-                />
-                <button 
-                  type="submit" 
-                  className="bg-black text-white px-6 py-3 rounded-md font-medium hover:bg-gray-800"
-                  aria-label="Meld deg på nyhetsbrevet"
-                >
-                  Meld deg på
-                </button>
-              </form>
+              <NewsletterForm />
               <p className="text-sm mt-4">Ved å klikke på dette, bekrefter du at du har gyldig e-post.</p>
             </div>
           </section>
         </main>
-      </div>
       <Footer />
     </>
   );

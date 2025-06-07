@@ -99,9 +99,9 @@ export default function Footer() {
           {/* Footer Links */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="font-semibold mb-4">Kolonne En</h3>
+              <h3 className="font-semibold mb-4">Om oss</h3>
               <ul className="space-y-2">
-                <li><Link href="#" className="hover:underline">Lenke En</Link></li>
+                <li><Link href="/skribent" className="hover:underline">Om skribenten</Link></li>
                 <li><Link href="#" className="hover:underline">Lenke To</Link></li>
                 <li><Link href="#" className="hover:underline">Lenke Tre</Link></li>
                 <li><Link href="#" className="hover:underline">Lenke Fire</Link></li>
@@ -173,9 +173,10 @@ export default function Footer() {
               &copy; {currentYear} Fargelegg. Alle rettigheter reservert.
             </p>
             <nav aria-label="Juridisk informasjon">
-              <ul className="flex space-x-4 text-sm">
+              <ul className="flex flex-wrap space-x-4 text-sm">
                 <li><Link href="#" className="text-gray-600 hover:underline">Personvernerklæring</Link></li>
-                <li><Link href="#" className="text-gray-600 hover:underline">Vilkår for bruk</Link></li>
+                <li><Link href="/Lisens" className="text-gray-600 hover:underline">Lisensvilkår</Link></li>
+                <li><Link href="/skribent" className="text-gray-600 hover:underline">Om skribenten</Link></li>
                 <li><Link href="#" className="text-gray-600 hover:underline">Innstillinger for informasjonskapsler</Link></li>
               </ul>
             </nav>

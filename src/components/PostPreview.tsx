@@ -24,7 +24,7 @@ export default function PostPreview({ post, className = '' }: PostPreviewProps) 
             alt={post.title}
             fill
             className="object-cover"
-            sizes="100vw"
+            sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
             priority={true}
           />
         </div>

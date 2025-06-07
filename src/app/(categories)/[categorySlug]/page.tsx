@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { getCategoryWithSubcategories, getAllCategories, getAllCategoriesWithSubcategories } from '@/lib/sanity';
+import { getCategoryWithSubcategories, getAllCategoriesWithSubcategories } from '@/lib/sanity';
 import { notFound } from 'next/navigation';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
+import { CategoryGrid, EmptyState } from '@/components/category/CategoryGrid';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -52,9 +52,18 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
       "url": currentUrl,
       "inLanguage": "nb-NO",
       ...(categoryImageUrl && { 
-        "image": categoryImageUrl,
+        "image": {
+          "@type": "ImageObject",
+          "url": categoryImageUrl,
+          "caption": `${category.title} fargeleggingsark`
+        },
         "thumbnailUrl": categoryImageUrl 
       }),
+      "potentialAction": {
+        "@type": "ViewAction",
+        "target": currentUrl,
+        "name": `Utforsk ${category.title} fargeleggingsark`
+      },
       "mainEntity": {
         "@type": "ItemList",
         "name": `${category.title} fargeleggingsbilder`,
@@ -67,10 +76,19 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
             "name": subcategory.seoTitle || subcategory.title,
             "url": `${baseUrl}/${category.slug}/${subcategory.slug}`,
             ...(subcategoryImageUrl && { 
-              "image": subcategoryImageUrl,
+              "image": {
+                "@type": "ImageObject",
+                "url": subcategoryImageUrl,
+                "caption": `${subcategory.title} fargeleggingsark`
+              },
               "thumbnailUrl": subcategoryImageUrl
             }),
-            "description": subcategory.description || `Fargeleggingsark med ${subcategory.title}-tema for barn.`
+            "description": subcategory.description || `Fargeleggingsark med ${subcategory.title}-tema for barn.`,
+            "potentialAction": {
+              "@type": "ViewAction",
+              "target": `${baseUrl}/${category.slug}/${subcategory.slug}`,
+              "name": `Utforsk ${subcategory.title} fargeleggingsark`
+            }
           };
         }) || []
       },
@@ -105,13 +123,29 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
           "url": `${baseUrl}/${category.slug}/${subcategory.slug}`,
           "inLanguage": "nb-NO",
           ...(subcategoryImageUrl && { 
-            "image": subcategoryImageUrl,
+            "image": {
+              "@type": "ImageObject",
+              "url": subcategoryImageUrl,
+              "caption": `${subcategory.title} fargeleggingsark`
+            },
             "thumbnailUrl": subcategoryImageUrl
           }),
           "description": subcategory.description || `Fargeleggingsark med ${subcategory.title}-tema for barn.`,
           "isPartOf": {
             "@id": categoryId
-          }
+          },
+          "potentialAction": [
+            {
+              "@type": "ViewAction",
+              "target": `${baseUrl}/${category.slug}/${subcategory.slug}`,
+              "name": `Se ${subcategory.title} fargeleggingsark`
+            },
+            {
+              "@type": "DownloadAction",
+              "target": `${baseUrl}/${category.slug}/${subcategory.slug}?download=true`,
+              "name": `Last ned ${subcategory.title} fargeleggingsark`
+            }
+          ]
         });
       });
     }
@@ -159,12 +193,17 @@ interface Subcategory {
   seoTitle?: string;
   seoDescription?: string;
   icon?: string;
-  featuredImage?: { url: string; alt?: string };
+  featuredImage?: { 
+    url: string; 
+    alt?: string;
+  };
   difficulty?: number;
   drawingCount?: number;
   sampleImage?: {
     thumbnailUrl?: string;
+    thumbnailAlt?: string;
     imageUrl?: string;
+    imageAlt?: string;
   };
 }
 
@@ -177,6 +216,9 @@ interface Category {
   seoDescription?: string;
   icon?: string;
   subcategories?: Subcategory[];
+  image?: {
+    url?: string;
+  };
 }
 
 // Generer statiske paths
@@ -192,73 +234,7 @@ export async function generateStaticParams() {
   }
 }
 
-// Extract this function outside the component for memoization benefits
-function getDifficultyLabel(difficulty: number | undefined) {
-  if (!difficulty) return 'Ukjent';
-  if (difficulty <= 2) return '🟢 Enkel';
-  if (difficulty === 3) return '🟡 Middels';
-  if (difficulty >= 4) return '🔴 Vanskelig';
-  return 'Ukjent';
-}
-
-// Subcategory card component for better code organization
-function SubcategoryCard({ subcategory, categorySlug }: { subcategory: Subcategory; categorySlug: string }) {
-  return (
-    <Link
-      key={subcategory._id}
-      href={`/${categorySlug}/${subcategory.slug}`}
-      className="bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-    >
-      {(subcategory.featuredImage?.url || subcategory.sampleImage?.thumbnailUrl || subcategory.sampleImage?.imageUrl) && (
-        <div className="relative w-full bg-gray-100" style={{ paddingTop: '133.33%' }}>
-          <Image 
-            src={subcategory.featuredImage?.url || subcategory.sampleImage?.thumbnailUrl || subcategory.sampleImage?.imageUrl || '/placeholder.jpg'}
-            alt={subcategory.featuredImage?.alt || subcategory.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover"
-            loading="lazy"
-            placeholder="blur"
-            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iMTAwIiBmaWxsPSIjZjVmNWY1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmNWY1ZjUiIC8+PC9zdmc+"
-          />
-        </div>
-      )}
-      <div className="p-4">
-        <h2 className="font-bold text-lg mb-2">{subcategory.title}</h2>
-        {subcategory.description && (
-          <p className="text-gray-600 text-sm mb-3">{subcategory.description}</p>
-        )}
-        <div className="flex items-center justify-between text-sm">
-          <span className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-800">
-            {getDifficultyLabel(subcategory.difficulty)}
-          </span>
-          <span className="text-gray-500">
-            {subcategory.drawingCount || 0} tegninger
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-// Empty state component
-function EmptyState() {
-  return (
-    <div className="text-center py-12">
-      <div className="text-gray-400 mb-4">
-        <svg className="h-16 w-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
-      </div>
-      <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen underkategorier ennå</h3>
-      <p className="text-gray-500">
-        Det er ingen underkategorier tilgjengelig i denne kategorien for øyeblikket.
-      </p>
-    </div>
-  );
-}
-
-// Main Category Page Component
+// Server Component
 export default async function CategoryPage({ params: paramsPromise }: PageProps) {
   const { categorySlug } = await paramsPromise;
   const category = await getCategoryWithSubcategories(categorySlug);
@@ -272,19 +248,21 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
       <Header />
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8">
-          <Link 
-            href="/" 
-            className="text-blue-600 hover:underline mb-4 inline-flex items-center gap-2"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Tilbake til forsiden
-          </Link>
+          <nav aria-label="Breadcrumb">
+            <Link 
+              href="/" 
+              className="text-blue-600 hover:underline mb-4 inline-flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Tilbake til forsiden
+            </Link>
+          </nav>
           
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2 flex items-center">
-              {category.icon && <span className="mr-3">{category.icon}</span>}
+          <header className="mb-8" aria-labelledby="category-title">
+            <h1 id="category-title" className="text-3xl font-bold mb-2 flex items-center">
+              {category.icon && <span className="mr-3" aria-hidden="true">{category.icon}</span>}
               {category.title}
             </h1>
             {category.description && (
@@ -293,19 +271,17 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
             <p className="text-sm text-gray-500">
               {category.subcategories?.length || 0} underkategorier tilgjengelig
             </p>
-          </div>
+          </header>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {category.subcategories?.map((subcategory: Subcategory) => (
-              <SubcategoryCard 
-                key={subcategory._id}
-                subcategory={subcategory} 
-                categorySlug={categorySlug} 
+          {category.subcategories && category.subcategories.length > 0 ? (
+            <section className="category-listing" aria-labelledby="subcategories-heading">
+              <h2 id="subcategories-heading" className="sr-only">Underkategorier</h2>
+              <CategoryGrid 
+                subcategories={category.subcategories}
+                categorySlug={categorySlug}
               />
-            ))}
-          </div>
-          
-          {(!category.subcategories || category.subcategories.length === 0) && (
+            </section>
+          ) : (
             <EmptyState />
           )}
         </div>
@@ -313,4 +289,11 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
       <Footer />
     </div>
   );
+}
+
+// Add data fetching to separate the concerns
+export async function getCategory({ params }: { params: { categorySlug: string } }) {
+  const { categorySlug } = params;
+  const category = await getCategoryWithSubcategories(categorySlug);
+  return { category, categorySlug };
 } 

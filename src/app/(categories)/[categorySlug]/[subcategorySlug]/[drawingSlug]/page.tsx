@@ -7,6 +7,8 @@ import { DownloadPdfButton } from '@/components/buttons/DownloadPdfButton';
 import { StartColoringButton } from '@/components/buttons/StartColoringButton';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
+import DrawingJsonLd from '@/components/json-ld/DrawingJsonLd';
+import { SVG_BLUR_PLACEHOLDER, WEBP_PLACEHOLDER_PATH, formatDate } from '@/lib/utils';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -17,8 +19,11 @@ interface Drawing {
   title: string;
   description?: string;
   imageUrl?: string;
+  imageLqip?: string;
   fallbackImageUrl?: string;
+  fallbackImageLqip?: string;
   thumbnailUrl?: string;
+  thumbnailLqip?: string;
   downloadUrl?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
   hasDigitalColoring?: boolean;
@@ -68,10 +73,23 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     return { title: drawing.title || 'Fargeleggingsbilde' };
   }
 
+  // Prepare structured data for metadata
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no';
+  const pathname = `/${categorySlug}/${subcategorySlug}/${drawingSlug}`;
+  const currentUrl = `${baseUrl}${pathname}`;
+  
   return {
     title: `${drawing.title} | ${subcategory.title} | ${subcategory.parentCategory?.title} | Fargelegg Nå`,
     description: drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
+    metadataBase: new URL(baseUrl),
+    alternates: {
+      canonical: pathname,
+    },
     openGraph: {
+      title: `${drawing.title} | ${subcategory.title} | Fargelegg Nå`,
+      description: drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
+      url: pathname,
+      siteName: 'Fargelegg Nå',
       images: [
         {
           url: drawing.thumbnailUrl || drawing.imageUrl || '',
@@ -80,6 +98,14 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
           alt: drawing.title,
         },
       ],
+      locale: 'nb_NO',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: drawing.title,
+      description: drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
+      images: drawing.thumbnailUrl || drawing.imageUrl,
     },
   };
 }
@@ -93,17 +119,6 @@ export async function generateStaticParams() {
 function getDifficultyKey(value: string | undefined): 'easy' | 'medium' | 'hard' {
   if (value === 'easy' || value === 'medium' || value === 'hard') return value;
   return 'medium';
-}
-
-function formatDate(dateString?: string): string {
-  if (!dateString) return new Date().toISOString().split('T')[0].replace(/-/g, '/');
-  
-  try {
-    return new Date(dateString).toISOString().split('T')[0].replace(/-/g, '/');
-  } catch (error) {
-    console.error('Error formatting date:', error);
-    return new Date().toISOString().split('T')[0].replace(/-/g, '/');
-  }
 }
 
 // Main component
@@ -134,9 +149,23 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
     hard: 'Vanskelig'
   };
   
+  // Prepare the path for JSON-LD
+  const pathname = `/${categorySlug}/${subcategorySlug}/${drawingSlug}`;
+  
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header />
+      {/* Add structured data */}
+      <DrawingJsonLd 
+        drawing={drawing} 
+        pathname={pathname} 
+        subcategory={{
+          _id: subcategory._id,
+          slug: subcategory.slug,
+          title: subcategory.title,
+          parentCategory: subcategory.parentCategory
+        }}
+      />
       <main className="flex-grow">
         <div className="w-full bg-white text-black">
           <div className="max-w-screen-lg mx-auto px-4 py-8">
@@ -180,15 +209,16 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
                   <div className="flex justify-center items-center w-full">
                     <div className="relative w-full max-w-[450px] min-h-[600px]">
                       <Image
-                        src={drawing.imageUrl || drawing.fallbackImageUrl || ''}
+                        src={drawing.imageUrl || drawing.fallbackImageUrl || WEBP_PLACEHOLDER_PATH}
                         alt={drawing.title}
                         priority
                         fill
                         style={{ objectFit: 'contain' }}
                         className="rounded-md"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 450px"
+                        sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
                         placeholder="blur"
-                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iMTAwIiBmaWxsPSIjZjVmNWY1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmNWY1ZjUiIC8+PC9zdmc+"
+                        blurDataURL={drawing.imageLqip || drawing.fallbackImageLqip || SVG_BLUR_PLACEHOLDER}
+                        quality={85}
                       />
                     </div>
                   </div>

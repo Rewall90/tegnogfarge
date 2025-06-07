@@ -5,11 +5,11 @@ import { v4 as uuidv4 } from 'uuid';
 // Brukes kun for testing når MongoDB ikke er tilgjengelig
 export async function POST(request: Request) {
   try {
-    console.log('=======================================');
-    console.log('FALLBACK REGISTRERING BRUKT - INGEN DATABASE TILKOBLING');
-    console.log('=======================================');
-    console.log('Dette betyr at brukeren IKKE blir lagret i MongoDB!');
-    console.log('Tidspunkt:', new Date().toISOString());
+    console.error('=======================================');
+    console.error('FALLBACK REGISTRERING BRUKT - INGEN DATABASE TILKOBLING');
+    console.error('=======================================');
+    console.error('Dette betyr at brukeren IKKE blir lagret i MongoDB!');
+    console.error('Tidspunkt:', new Date().toISOString());
     
     // Parse input
     const body = await request.json();
@@ -45,9 +45,9 @@ export async function POST(request: Request) {
     // Generer en falsk verifiseringslink
     const mockVerificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email?token=${uuidv4()}`;
     
-    console.log('FALLBACK: Simulert bruker:', { ...mockUser, password: '[SKJULT]' });
-    console.log('FALLBACK: Simulert verifiseringslenke:', mockVerificationUrl);
-    console.log('=======================================');
+    console.error('FALLBACK: Simulert bruker:', { ...mockUser, password: '[SKJULT]' });
+    console.error('FALLBACK: Simulert verifiseringslenke:', mockVerificationUrl);
+    console.error('=======================================');
     
     // Returner responsen
     return NextResponse.json({

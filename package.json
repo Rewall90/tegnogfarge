@@ -9,8 +9,7 @@
     "lint": "next lint",
     "postinstall": "tsc",
     "clean": "rm -rf .next",
-    "type-check": "tsc --noEmit",
-    "test-deploy": "npm run type-check && npm run build && node -e \"console.log('Build test completed successfully!')\""
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@portabletext/react": "^3.0.0",
@@ -26,8 +25,8 @@
     "next-auth": "^4.24.5",
     "next-sanity": "^9.0.0",
     "node-fetch": "^3.3.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-email": "^2.1.0",
     "react-error-boundary": "^4.0.13",
     "react-is": "^18.2.0",
@@ -41,6 +40,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.0.0",
+    "@stagewise/toolbar": "^0.4.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.11.0",
@@ -51,6 +51,7 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.3",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5.3.0"
+    "typescript": "^5.3.0",
+    "unimported": "^1.31.0"
   }
 }

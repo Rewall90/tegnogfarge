@@ -16,12 +16,12 @@ export function FrontpageHero() {
   };
 
   return (
-    <div className="bg-white">
-      <section className="max-w-6xl mx-auto">
+    <section className="bg-white" aria-labelledby="hero-heading">
+      <div className="max-w-6xl mx-auto">
         <div className="px-6 py-8 md:px-12 md:py-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="max-w-xl">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+              <h1 id="hero-heading" className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
                 Imagination has no limits with our free coloring pages that inspire creativity and endless fun.
               </h1>
               <p className="text-gray-700 mb-6">
@@ -30,15 +30,16 @@ export function FrontpageHero() {
                 endless imagination.
               </p>
               
-              <form onSubmit={handleSearch} className="mt-6 max-w-md">
+              <form onSubmit={handleSearch} className="mt-6 max-w-md" role="search">
+                <label htmlFor="search-input" className="sr-only">Search for coloring pages</label>
                 <div className="relative">
                   <input
-                    type="text"
+                    id="search-input"
+                    type="search"
                     placeholder="Search for coloring pages..."
                     className="w-full py-2 pl-9 pr-4 border border-gray-300 rounded-md focus:outline-none"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    aria-label="Search for coloring pages"
                   />
                   <button 
                     type="submit" 
@@ -51,6 +52,7 @@ export function FrontpageHero() {
                       fill="none" 
                       viewBox="0 0 24 24" 
                       stroke="currentColor"
+                      aria-hidden="true"
                     >
                       <path 
                         strokeLinecap="round" 
@@ -64,7 +66,7 @@ export function FrontpageHero() {
               </form>
             </div>
             
-            <div className="hidden md:block">
+            <figure className="hidden md:block">
               <div className="overflow-hidden">
                 <div className="bg-gray-100 flex items-center justify-center h-64">
                   <div className="text-center">
@@ -74,6 +76,7 @@ export function FrontpageHero() {
                       fill="none" 
                       viewBox="0 0 24 24" 
                       stroke="currentColor"
+                      aria-hidden="true"
                     >
                       <path 
                         strokeLinecap="round" 
@@ -82,14 +85,14 @@ export function FrontpageHero() {
                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
                       />
                     </svg>
-                    <p className="text-gray-500">Children coloring together</p>
+                    <figcaption className="text-gray-500">Children coloring together</figcaption>
                   </div>
                 </div>
               </div>
-            </div>
+            </figure>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 } 
