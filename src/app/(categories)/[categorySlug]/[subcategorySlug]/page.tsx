@@ -257,7 +257,7 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
         <p className="text-lg text-gray-600 mb-8">{subcategory.description}</p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {subcategory.drawings.map((drawing) => (
+          {subcategory.drawings.map((drawing: Drawing) => (
             <DrawingCard
               key={drawing._id}
               title={drawing.title}
