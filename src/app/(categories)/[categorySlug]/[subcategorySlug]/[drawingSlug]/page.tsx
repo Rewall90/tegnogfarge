@@ -19,8 +19,11 @@ interface Drawing {
   title: string;
   description?: string;
   imageUrl?: string;
+  imageLqip?: string;
   fallbackImageUrl?: string;
+  fallbackImageLqip?: string;
   thumbnailUrl?: string;
+  thumbnailLqip?: string;
   downloadUrl?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
   hasDigitalColoring?: boolean;
@@ -214,7 +217,7 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
                         className="rounded-md"
                         sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
                         placeholder="blur"
-                        blurDataURL={SVG_BLUR_PLACEHOLDER}
+                        blurDataURL={drawing.imageLqip || drawing.fallbackImageLqip || SVG_BLUR_PLACEHOLDER}
                       />
                     </div>
                   </div>

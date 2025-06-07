@@ -173,8 +173,11 @@ export async function getColoringImage(id: string) {
       description,
       "slug": slug.current,
       "imageUrl": displayImage.asset->url,
+      "imageLqip": displayImage.asset->metadata.lqip,
       "fallbackImageUrl": webpImage.asset->url,
+      "fallbackImageLqip": webpImage.asset->metadata.lqip,
       "thumbnailUrl": thumbnailImage.asset->url,
+      "thumbnailLqip": thumbnailImage.asset->metadata.lqip,
       "downloadUrl": downloadFile.asset->url,
       tags,
       difficulty,
@@ -218,14 +221,17 @@ export async function getCategoryWithSubcategories(categorySlug: string) {
         seoDescription,
         featuredImage {
           "url": asset->url,
-          alt
+          alt,
+          "lqip": asset->metadata.lqip
         },
         "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true]),
         "sampleImage": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true][0] {
           "thumbnailUrl": thumbnailImage.asset->url,
           "thumbnailAlt": thumbnailImage.alt,
+          "thumbnailLqip": thumbnailImage.asset->metadata.lqip,
           "imageUrl": webpImage.asset->url,
-          "imageAlt": webpImage.alt
+          "imageAlt": webpImage.alt,
+          "imageLqip": webpImage.asset->metadata.lqip
         }
       }
     }
@@ -248,7 +254,8 @@ export async function getSubcategoriesByCategory(categorySlug: string) {
       seoDescription,
       featuredImage {
         "url": asset->url,
-        alt
+        "alt": alt,
+        "lqip": asset->metadata.lqip
       },
       "parentCategory": parentCategory->{ title, "slug": slug.current },
       "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
@@ -270,25 +277,24 @@ export async function getSubcategoryWithDrawings(categorySlug: string, subcatego
         "alt": alt
       },
       "parentCategory": parentCategory->{ title, "slug": slug.current },
-      "drawings": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true] | order(order asc, _createdAt desc) {
+      "drawings": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true]
+      | order(order asc, title asc) {
         _id,
         title,
-        description,
-        image {
-          "url": coalesce(displayImage.asset->url, webpImage.asset->url),
-          "alt": coalesce(displayImage.alt, webpImage.alt, title)
+        "slug": slug.current,
+        "thumbnail": {
+          "url": thumbnailImage.asset->url,
+          "alt": thumbnailImage.alt,
+          "lqip": thumbnailImage.asset->metadata.lqip
         },
-        "imageUrl": coalesce(displayImage.asset->url, webpImage.asset->url),
-        "imageAlt": coalesce(displayImage.alt, webpImage.alt, title),
-        "thumbnailUrl": coalesce(thumbnailImage.asset->url, displayImage.asset->url, webpImage.asset->url),
-        "thumbnailAlt": coalesce(thumbnailImage.alt, displayImage.alt, webpImage.alt, title),
-        "downloadUrl": downloadFile.asset->url,
+        "displayImage": {
+          "url": displayImage.asset->url,
+          "alt": displayImage.alt,
+          "lqip": displayImage.asset->metadata.lqip
+        },
         difficulty,
-        hasDigitalColoring,
-        publishedDate,
-        _createdAt,
-        tags,
-        "slug": slug.current
+        order,
+        isActive
       }
     }
   `, { categorySlug, subcategorySlug });
@@ -329,10 +335,16 @@ export async function getDrawingsBySubcategory(subcategorySlug: string) {
 // Hent alle bilder som kan fargelegges (for static paths)
 export async function getAllColoringImages() {
   return client.fetch(`
-    *[_type == "drawingImage" && isActive == true] {
-      _id
+    *[_type == "drawingImage" && isActive == true]
+    | order(order asc, title asc) {
+      _id,
+      title,
+      "slug": slug.current,
+      "imageUrl": webpImage.asset->url,
+      "lqip": webpImage.asset->metadata.lqip,
+      "alt": webpImage.alt
     }
-  `)
+  `);
 }
 
 // Admin-funksjon: Valider alle fargeleggingsbilder

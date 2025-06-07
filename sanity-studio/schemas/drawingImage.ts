@@ -40,7 +40,8 @@ export default defineType({
       type: 'image',
       description: 'Dette bildet vil bli vist på tegningssiden med maks bredde 450px. Anbefalt størrelse: 750x1000 pixler (3:4 ratio). Bildet vil skaleres automatisk, men behold 3:4 format for best resultat. WebP-format anbefales.',
       options: {
-        hotspot: true
+        hotspot: true,
+        metadata: ['lqip']
       },
       fields: [
         {
@@ -59,7 +60,8 @@ export default defineType({
       description: 'Brukes i oversikter og på kategori-sider. Anbefalt størrelse: 600x800 pixler (3:4 ratio). På mobile enheter vises bildet større (85% av skjermbredden), på mellomstore skjermer 40%, og på store skjermer 25%. WebP-format anbefales.',
       options: {
         hotspot: true,
-        accept: 'image/webp,image/jpeg'
+        accept: 'image/webp,image/jpeg',
+        metadata: ['lqip']
       },
       fields: [
         {
@@ -76,7 +78,8 @@ export default defineType({
       title: 'WebP Bilde for Online Fargelegging',
       type: 'image',
       options: {
-        accept: 'image/webp'
+        accept: 'image/webp',
+        metadata: ['lqip']
       },
       validation: Rule => Rule.required(),
       description: 'Last opp bildet i WebP format for best ytelse ved online fargelegging',
