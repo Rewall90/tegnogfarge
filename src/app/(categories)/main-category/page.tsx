@@ -147,7 +147,7 @@ async function AllCategoriesPage() {
                       src={category.imageUrl}
                       alt={category.title}
                       fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
                       className="object-cover"
                       priority={false}
                     />

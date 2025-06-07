@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { getSubcategoryColoringImages } from '@/lib/sanity'
-import Image from 'next/image'
+import { OptimizedImage } from '@/components/ui/OptimizedImage'
+import { SVG_BLUR_PLACEHOLDER } from '@/lib/utils'
 
 interface ImageSelectorProps {
   currentImageId: string
@@ -53,7 +54,7 @@ export default function ImageSelector({
             <p className="text-center">Laster bilder...</p>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {images.map((image: any) => (
+              {images.map((image: any, index: number) => (
                 <button
                   key={image._id}
                   onClick={() => onSelect(image)}
@@ -62,12 +63,16 @@ export default function ImageSelector({
                   }`}
                 >
                   <div className="relative aspect-[3/4] bg-gray-100">
-                    <Image
+                    <OptimizedImage
                       src={image.thumbnailUrl || image.webpImageUrl}
                       alt={image.title}
                       fill
                       className="object-cover"
-                      sizes="(max-width: 768px) 50vw, 25vw"
+                      sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
+                      rootMargin="200px 0px"
+                      placeholder="blur"
+                      blurDataURL={SVG_BLUR_PLACEHOLDER}
+                      // No priority needed for modal content that's not initially visible
                     />
                   </div>
                   <p className="p-2 text-sm font-medium truncate">{image.title}</p>

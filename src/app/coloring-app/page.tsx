@@ -10,19 +10,19 @@ export default function ColoringAppPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const imageId = typeof window !== 'undefined' ? sessionStorage.getItem('coloringAppImageId') : null
-    console.log('coloringAppImageId fra sessionStorage:', imageId)
-    if (!imageId) {
-      setError('Ingen bilde valgt. Gå tilbake og velg et bilde for å starte fargelegging.')
-      setIsLoading(false)
-      return
-    }
     const loadImage = async () => {
+      const imageId = typeof window !== 'undefined' ? sessionStorage.getItem('coloringAppImageId') : null
+      if (!imageId) {
+        setError('Ingen bilde valgt. Gå tilbake og velg et bilde for å starte fargelegging.')
+        setIsLoading(false)
+        return
+      }
+
       try {
         const data = await getColoringImageWebP(imageId)
-        console.log('Sanity image data:', data)
-        if (!data || !data.webpImageUrl) {
-          setError('Bilde ikke funnet')
+        if (!data) {
+          setError('Kunne ikke hente bildedata.')
+          setIsLoading(false)
           return
         }
         setImageData(data)
@@ -37,27 +37,36 @@ export default function ColoringAppPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <main className="min-h-screen flex items-center justify-center">
+        <section className="text-center" aria-label="Laster inn">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" role="status">
+            <span className="sr-only">Laster inn...</span>
+          </div>
           <p>Laster fargeleggingsapp...</p>
-        </div>
-      </div>
+        </section>
+      </main>
     )
   }
 
   if (error || !imageData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
+      <main className="min-h-screen flex items-center justify-center">
+        <section className="text-center" aria-labelledby="error-heading">
+          <h1 id="error-heading" className="sr-only">Feil ved lasting</h1>
           <p className="text-red-600 mb-4">{error || 'En feil oppstod'}</p>
-          <a href="/categories" className="text-blue-600 hover:underline">
-            Tilbake til kategorier
-          </a>
-        </div>
-      </div>
+          <nav>
+            <a href="/categories" className="text-blue-600 hover:underline">
+              Tilbake til kategorier
+            </a>
+          </nav>
+        </section>
+      </main>
     )
   }
 
-  return <ColoringApp imageData={imageData} />
+  return (
+    <main>
+      <ColoringApp imageData={imageData} />
+    </main>
+  )
 } 

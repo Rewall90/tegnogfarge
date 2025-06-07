@@ -21,6 +21,31 @@ export const urlFor = (source: SanityImageSource) => {
   return builder.image(source);
 };
 
+// Funksjon for å generere responsive bilde-URL-er
+export const responsiveImageUrl = (source: SanityImageSource, quality = 80) => {
+  if (!source) return null;
+  
+  // Create base image with quality setting and WebP format for best compression
+  const baseImage = builder.image(source)
+    .quality(quality)
+    .format('webp');
+  
+  // Generate responsive image sizes with consistent quality and format
+  return {
+    small: baseImage.width(300).height(400).url(),      // Mobile (300×400)
+    medium: baseImage.width(450).height(600).url(),     // Tablet (450×600)
+    large: baseImage.width(600).height(800).url(),      // Desktop (600×800)
+    original: baseImage.url(),                          // Original
+    srcset: [
+      `${baseImage.width(300).height(400).url()} 300w`,
+      `${baseImage.width(450).height(600).url()} 450w`,
+      `${baseImage.width(600).height(800).url()} 600w`,
+      `${baseImage.width(900).height(1200).url()} 900w`,
+    ].join(', '),
+    sizes: '(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw'
+  };
+};
+
 // Hjelpefunksjon for å hente alle bilder i en kategori
 export async function getImagesInCategory(subcategory: string, page = 1, limit = 30) {
   const start = (page - 1) * limit;
@@ -59,7 +84,10 @@ export async function getAllCategories() {
       order,
       isActive,
       featured,
-      "imageUrl": image.asset->url,
+      image {
+        "url": asset->url,
+        alt
+      },
       "subcategoryCount": count(*[_type == "subcategory" && parentCategory._ref == ^._id && isActive == true]),
       "drawingCount": count(*[_type == "drawingImage" && subcategory->parentCategory._ref == ^._id && isActive == true])
     }
@@ -195,7 +223,9 @@ export async function getCategoryWithSubcategories(categorySlug: string) {
         "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true]),
         "sampleImage": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true][0] {
           "thumbnailUrl": thumbnailImage.asset->url,
-          "imageUrl": webpImage.asset->url
+          "thumbnailAlt": thumbnailImage.alt,
+          "imageUrl": webpImage.asset->url,
+          "imageAlt": webpImage.alt
         }
       }
     }
@@ -216,7 +246,10 @@ export async function getSubcategoriesByCategory(categorySlug: string) {
       description,
       seoTitle,
       seoDescription,
-      "imageUrl": featuredImage.asset->url,
+      featuredImage {
+        "url": asset->url,
+        alt
+      },
       "parentCategory": parentCategory->{ title, "slug": slug.current },
       "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
     }
@@ -232,14 +265,23 @@ export async function getSubcategoryWithDrawings(categorySlug: string, subcatego
       description,
       difficulty,
       "slug": slug.current,
-      "imageUrl": featuredImage.asset->url,
+      featuredImage {
+        "url": asset->url,
+        "alt": alt
+      },
       "parentCategory": parentCategory->{ title, "slug": slug.current },
       "drawings": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true] | order(order asc, _createdAt desc) {
         _id,
         title,
         description,
+        image {
+          "url": coalesce(displayImage.asset->url, webpImage.asset->url),
+          "alt": coalesce(displayImage.alt, webpImage.alt, title)
+        },
         "imageUrl": coalesce(displayImage.asset->url, webpImage.asset->url),
+        "imageAlt": coalesce(displayImage.alt, webpImage.alt, title),
         "thumbnailUrl": coalesce(thumbnailImage.asset->url, displayImage.asset->url, webpImage.asset->url),
+        "thumbnailAlt": coalesce(thumbnailImage.alt, displayImage.alt, webpImage.alt, title),
         "downloadUrl": downloadFile.asset->url,
         difficulty,
         hasDigitalColoring,
@@ -382,4 +424,31 @@ export async function getAllCategoriesWithSubcategories() {
       }
     }
   `);
+}
+
+export async function searchDrawings(query: string) {
+  const searchQuery = query ? `*${query}*` : '*';
+  
+  const groqQuery = `
+    *[_type == "drawingImage" && 
+      (title match $searchQuery || 
+       description match $searchQuery ||
+       $searchQuery in tags) && 
+      isActive == true] {
+      _id,
+      title,
+      "slug": slug.current,
+      description,
+      "imageUrl": coalesce(displayImage.asset->url, webpImage.asset->url),
+      "thumbnailUrl": coalesce(thumbnailImage.asset->url, displayImage.asset->url, webpImage.asset->url),
+      "downloadUrl": downloadFile.asset->url,
+      difficulty,
+      hasDigitalColoring,
+      // Få tak i kategori- og underkategori-slugs (robust versjon)
+      "categorySlug": subcategory->parentCategory->slug.current,
+      "subcategorySlug": subcategory->slug.current
+    } | order(title asc)[0...50]
+  `;
+
+  return client.fetch(groqQuery, { searchQuery });
 } 

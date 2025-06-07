@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fargelegg.no';
   const robotsTxt = `
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /dashboard/
 
-# Sitemap
-Sitemap: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://example.com'}/api/sitemap.xml
+# Sitemaps
+Sitemap: ${baseUrl}/api/sitemap.xml
+Sitemap: ${baseUrl}/api/image-sitemap.xml
 `;
 
   return new NextResponse(robotsTxt, {

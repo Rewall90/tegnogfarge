@@ -13,6 +13,8 @@ import { DownloadPdfButton } from '@/components/buttons/DownloadPdfButton';
 import { StartColoringButton } from '@/components/buttons/StartColoringButton';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
+import { DrawingCard } from '@/components/cards/DrawingCard';
+import { WEBP_PLACEHOLDER_PATH, SVG_BLUR_PLACEHOLDER } from '@/lib/utils';
 
 export const revalidate = 3600; // Oppdater siden hver time for bedre caching
 
@@ -20,6 +22,29 @@ export const revalidate = 3600; // Oppdater siden hver time for bedre caching
 interface ParentCategory {
   title: string;
   slug: string;
+}
+
+interface Drawing {
+  _id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  seoTitle?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  thumbnailUrl?: string;
+  thumbnailAlt?: string;
+  downloadUrl?: string;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  hasDigitalColoring?: boolean;
+  publishedDate?: string;
+  tags?: string[];
+  categorySlug?: string;
+  subcategorySlug?: string;
+  image?: {
+    url?: string;
+    alt?: string;
+  };
 }
 
 interface Subcategory {
@@ -33,24 +58,6 @@ interface Subcategory {
   difficulty?: string;
   drawings?: Drawing[];
   featuredImage?: {
-    url?: string;
-    alt?: string;
-  };
-}
-
-interface Drawing {
-  _id: string;
-  title: string;
-  description?: string;
-  seoTitle?: string;
-  seoDescription?: string;
-  imageUrl?: string;
-  thumbnailUrl?: string;
-  difficulty?: 'easy' | 'medium' | 'hard';
-  hasDigitalColoring?: boolean;
-  downloadUrl?: string;
-  slug?: string;
-  image?: {
     url?: string;
     alt?: string;
   };
@@ -115,7 +122,12 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
             "name": drawing.seoTitle || drawing.title,
             "url": `${baseUrl}/${categorySlug}/${subcategorySlug}/${drawing.slug}`,
             ...(drawingImageUrl && { 
-              "image": drawingImageUrl,
+              "image": {
+                "@type": "ImageObject",
+                "url": drawingImageUrl,
+                "caption": drawing.image?.alt || drawing.imageAlt || drawing.title,
+                "description": drawing.description || `${subcategory.title} fargeleggingsark - ${drawing.title}`
+              },
               "thumbnailUrl": drawingImageUrl 
             }),
             "description": drawing.description || `${subcategory.title} fargeleggingsark - ${drawing.title}`
@@ -230,112 +242,6 @@ export async function generateStaticParams() {
   }
 }
 
-// DrawingCard component directly in the page file
-interface DrawingCardProps {
-  drawing: Drawing;
-  asLink?: boolean;
-  categorySlug?: string;
-  subcategorySlug?: string;
-  showButtons?: boolean;
-  imageObjectFit?: "cover" | "contain";
-}
-
-function DrawingCard({ 
-  drawing, 
-  asLink = false, 
-  categorySlug = "", 
-  subcategorySlug = "",
-  showButtons = true,
-  imageObjectFit = "cover"
-}: DrawingCardProps) {
-  const difficultyColors = {
-    easy: "bg-green-100 text-green-800",
-    medium: "bg-yellow-100 text-yellow-800",
-    hard: "bg-red-100 text-red-800",
-  };
-  
-  const difficultyLabels = {
-    easy: "Enkel",
-    medium: "Middels",
-    hard: "Vanskelig",
-  };
-
-  const content = (
-    <>
-      {/* Image Container */}
-      <div className="relative w-full bg-gray-100" style={{ paddingTop: '133.33%' }}> {/* 3:4 ratio (4/3 * 100%) */}
-        <Image
-          src={drawing.thumbnailUrl || drawing.imageUrl || '/placeholder.jpg'}
-          alt={drawing.title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          className={`transition-opacity duration-300 ${imageObjectFit === "contain" ? "object-contain" : "object-cover"}`}
-        />
-      </div>
-      <div className="p-2">
-        <h2 className="font-bold text-sm mb-1">{drawing.title}</h2>
-        {drawing.description && <p className="text-gray-600 text-xs mb-2">{drawing.description}</p>}
-        <div className="flex items-center justify-between text-xs mb-1">
-          {drawing.difficulty && (
-            <span className={`px-1.5 py-0.5 rounded text-xs ${difficultyColors[drawing.difficulty]}`}>
-              {difficultyLabels[drawing.difficulty]}
-            </span>
-          )}
-          {!drawing.difficulty && (
-            <span className="px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-800">
-              {difficultyLabels.medium}
-            </span>
-          )}
-          {drawing.hasDigitalColoring && showButtons && (
-            <span className="bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded text-xs ml-1">Digital</span>
-          )}
-          {!showButtons && (
-            <span className="text-gray-500 text-xs">
-              Fargeleggingsside
-            </span>
-          )}
-        </div>
-        {showButtons && (
-          <div className="flex flex-wrap gap-1">
-            {drawing.downloadUrl && (
-              <DownloadPdfButton
-                downloadUrl={drawing.downloadUrl}
-                title="Last ned PDF"
-                className="bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition text-xs"
-              />
-            )}
-            {drawing.hasDigitalColoring && (
-              <StartColoringButton
-                drawingId={drawing._id}
-                title="Online Fargelegging"
-                className="bg-purple-600 text-white px-2 py-1 rounded-md hover:bg-purple-700 transition text-xs"
-              />
-            )}
-          </div>
-        )}
-      </div>
-    </>
-  );
-
-  if (asLink && categorySlug && subcategorySlug) {
-    const drawingSlug = drawing.slug || drawing._id;
-    return (
-      <Link
-        href={`/${categorySlug}/${subcategorySlug}/${drawingSlug}`}
-        className="bg-white border rounded-md overflow-hidden shadow-xs hover:shadow-sm transition-shadow block"
-      >
-        {content}
-      </Link>
-    );
-  }
-
-  return (
-    <div className="bg-white border rounded-md overflow-hidden shadow-xs hover:shadow-sm transition-shadow">
-      {content}
-    </div>
-  );
-}
-
 // Main Subcategory Page Component
 export default async function SubcategoryPage({ params: paramsPromise }: PageProps) {
   const { categorySlug, subcategorySlug } = await paramsPromise;
@@ -344,23 +250,6 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
   if (!subcategory) {
     notFound();
   }
-  
-  const difficultyColors = {
-    easy: 'bg-green-100 text-green-800',
-    medium: 'bg-yellow-100 text-yellow-800', 
-    hard: 'bg-red-100 text-red-800'
-  };
-  
-  const difficultyLabels = {
-    easy: 'Enkel',
-    medium: 'Middels',
-    hard: 'Vanskelig'
-  };
-  
-  const getDifficultyKey = (value: string | undefined): 'easy' | 'medium' | 'hard' => {
-    if (value === 'easy' || value === 'medium' || value === 'hard') return value;
-    return 'medium';
-  };
   
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -390,26 +279,26 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
             {subcategory.description && (
               <p className="text-gray-600 mb-2">{subcategory.description}</p>
             )}
-            <div className={`inline-block px-3 py-1 rounded text-xs font-medium ${difficultyColors[getDifficultyKey(subcategory.difficulty)]}`}>
-              {difficultyLabels[getDifficultyKey(subcategory.difficulty)]}
-            </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {subcategory.drawings?.map((drawing: Drawing) => (
-              <DrawingCard 
-                key={drawing._id}
-                drawing={drawing}
-                asLink={true}
-                categorySlug={categorySlug}
-                subcategorySlug={subcategorySlug}
-                showButtons={false}
-                imageObjectFit="contain"
-              />
-            ))}
-          </div>
-          
-          {(!subcategory.drawings || subcategory.drawings.length === 0) && (
+          {subcategory.drawings && subcategory.drawings.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {subcategory.drawings.map((drawing: Drawing, index: number) => (
+                <DrawingCard 
+                  key={drawing._id}
+                  drawing={{
+                    ...drawing,
+                    categorySlug,
+                    subcategorySlug,
+                  }}
+                  asLink={true}
+                  showButtons={false}
+                  imageObjectFit="contain"
+                  isPriority={index < 8} // First 8 items are likely above the fold
+                />
+              ))}
+            </div>
+          ) : (
             <div className="text-center py-12">
               <div className="text-gray-400 mb-4">
                 <svg className="h-16 w-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">

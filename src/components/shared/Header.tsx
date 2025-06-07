@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
 
 export default function Header() {
@@ -17,38 +18,45 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-white shadow-sm py-2">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-24">
           <div className="flex items-center">
-            <Link href="/" className="text-2xl font-bold text-gray-800" aria-label="Til forsiden">
-              Logo
+            <Link href="/" className="flex items-center" aria-label="Til forsiden">
+              <Image 
+                src="/images/logo/tegnogfarge-logo.svg" 
+                alt="TegnOgFarge.no Logo" 
+                width={200} 
+                height={90} 
+                priority
+                className="h-20 w-auto"
+              />
             </Link>
           </div>
           
           {/* Desktop navigation */}
           <nav className="hidden md:flex space-x-8" aria-label="Hovednavigasjon">
-            <Link href="/coloring" className="text-gray-600 hover:text-gray-900">Fargelegging Verktøy</Link>
+            <Link href="/coloring" className="text-gray-600 hover:text-gray-900 text-lg">Fargelegging Verktøy</Link>
             {session && (
-              <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard</Link>
+              <Link href="/dashboard" className="text-gray-600 hover:text-gray-900 text-lg">Dashboard</Link>
             )}
-            <Link href="/blog" className="text-gray-600 hover:text-gray-900">Blogg Artikler</Link>
-            <Link href="/about" className="text-gray-600 hover:text-gray-900">Om Oss</Link>
+            <Link href="/blog" className="text-gray-600 hover:text-gray-900 text-lg">Blogg Artikler</Link>
+            <Link href="/about" className="text-gray-600 hover:text-gray-900 text-lg">Om Oss</Link>
           </nav>
           
           <div className="hidden md:flex items-center space-x-4">
             {session && session.user ? (
               <>
-                <span className="text-gray-600">Hei, {session.user.name}</span>
+                <span className="text-gray-600 text-lg">Hei, {session.user.name}</span>
                 <button
                   onClick={handleSignOut}
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 text-lg"
                 >
                   Logg ut
                 </button>
               </>
             ) : (
-              <Link href="/login" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
+              <Link href="/login" className="bg-black text-white px-5 py-2.5 rounded hover:bg-gray-800 text-lg">
                 Logg inn
               </Link>
             )}
@@ -65,7 +73,7 @@ export default function Header() {
               aria-controls="mobile-menu"
             >
               <svg 
-                className="h-6 w-6" 
+                className="h-8 w-8" 
                 fill="none" 
                 viewBox="0 0 24 24" 
                 stroke="currentColor"
@@ -85,25 +93,25 @@ export default function Header() {
         {isMenuOpen && (
           <div id="mobile-menu" className="md:hidden py-4 border-t">
             <nav className="flex flex-col space-y-4" aria-label="Mobilnavigasjon">
-              <Link href="/coloring" className="text-gray-600 hover:text-gray-900">Fargelegging Verktøy</Link>
+              <Link href="/coloring" className="text-gray-600 hover:text-gray-900 text-lg">Fargelegging Verktøy</Link>
               {session && (
-                <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard</Link>
+                <Link href="/dashboard" className="text-gray-600 hover:text-gray-900 text-lg">Dashboard</Link>
               )}
-              <Link href="/blog" className="text-gray-600 hover:text-gray-900">Blogg Artikler</Link>
-              <Link href="/about" className="text-gray-600 hover:text-gray-900">Om Oss</Link>
+              <Link href="/blog" className="text-gray-600 hover:text-gray-900 text-lg">Blogg Artikler</Link>
+              <Link href="/about" className="text-gray-600 hover:text-gray-900 text-lg">Om Oss</Link>
               
               {session && session.user ? (
                 <>
-                  <span className="text-gray-600">Hei, {session.user.name}</span>
+                  <span className="text-gray-600 text-lg">Hei, {session.user.name}</span>
                   <button
                     onClick={handleSignOut}
-                    className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 w-full text-center"
+                    className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 w-full text-center text-lg"
                   >
                     Logg ut
                   </button>
                 </>
               ) : (
-                <Link href="/login" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 inline-block w-full text-center">
+                <Link href="/login" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 inline-block w-full text-center text-lg">
                   Logg inn
                 </Link>
               )}
