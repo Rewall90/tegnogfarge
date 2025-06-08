@@ -1,17 +1,26 @@
-import { createClient } from 'next-sanity';
+import { createClient, type SanityClient } from 'next-sanity';
 import imageUrlBuilder from '@sanity/image-url';
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
+import { draftMode } from 'next/headers';
 
-export const config = {
-  projectId: 'fn0kjvlp', // Direkte bruk av prosjekt-ID
-  dataset: 'production',
-  apiVersion: '2024-06-05', // Dagens dato
-  useCdn: process.env.NODE_ENV === 'production',
-  token: process.env.SANITY_API_TOKEN,
-};
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
+const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION;
+const useCdn = process.env.NODE_ENV === 'production';
 
-// Opprett en klient for å hente data
-export const client = createClient(config);
+// Hent token betinget basert på om vi er i draft mode.
+// Dette sikrer at vi bare bruker tokenet når det er nødvendig.
+const token = draftMode().isEnabled ? process.env.SANITY_API_READ_TOKEN : undefined;
+
+export const client = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn,
+  token,
+  // I draft mode ønsker vi å se upubliserte kladder
+  perspective: draftMode().isEnabled ? 'previewDrafts' : 'published',
+});
 
 // Opprett en builder for å generere bilde-URL-er
 const builder = imageUrlBuilder(client);

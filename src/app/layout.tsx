@@ -4,6 +4,8 @@ import "./globals.css";
 import SessionProviderWrapper from "@/components/auth/SessionProviderWrapper";
 import StagewiseToolbarWrapper from "@/components/dev/StagewiseToolbarWrapper";
 import BaseJsonLd from "@/components/json-ld/BaseJsonLd";
+import { VisualEditing } from "@/components/sanity/VisualEditing";
+import { draftMode } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,6 +44,7 @@ export default function RootLayout({
         <SessionProviderWrapper>{children}</SessionProviderWrapper>
         <StagewiseToolbarWrapper />
         <BaseJsonLd />
+        {draftMode().isEnabled && <VisualEditing />}
       </body>
     </html>
   );
