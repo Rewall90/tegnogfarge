@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { draftMode } from 'next/headers';
 import SessionProviderWrapper from "@/components/auth/SessionProviderWrapper";
 import StagewiseToolbarWrapper from "@/components/dev/StagewiseToolbarWrapper";
 import BaseJsonLd from "@/components/json-ld/BaseJsonLd";
+import dynamic from 'next/dynamic';
+
+// Dynamisk import av VisualEditing
+const VisualEditing = dynamic(
+  () => import('@/components/sanity/VisualEditing').then((mod) => mod.VisualEditing),
+  { ssr: false }
+);
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +37,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Sjekk om vi er i draft mode
+  const { isEnabled: isDraftMode } = draftMode();
+  
   return (
     <html lang="nb">
       <head>
@@ -42,6 +53,8 @@ export default function RootLayout({
         <SessionProviderWrapper>{children}</SessionProviderWrapper>
         <StagewiseToolbarWrapper />
         <BaseJsonLd />
+        {/* Kun last VisualEditing når vi er i draft mode */}
+        {isDraftMode && <VisualEditing />}
       </body>
     </html>
   );
