@@ -37,15 +37,15 @@ export default function Footer() {
   };
   
   return (
-    <footer className="bg-white text-black py-10">
+    <footer className="bg-[#264653] text-white py-10">
       <div className="container mx-auto px-4">
         {/* Logo and Newsletter Signup */}
         <div className="flex flex-col md:flex-row justify-between items-start mb-12">
           <div className="mb-8 md:mb-0">
-            <Link href="/" className="text-2xl font-bold" aria-label="Til forsiden">
+            <Link href="/" className="font-display font-bold text-2xl" aria-label="Til forsiden">
               Logo
             </Link>
-            <p className="mt-4 mb-4 max-w-md">
+            <p className="mt-4 mb-4 max-w-md text-body">
               Bli med på vårt nyhetsbrev for å holde deg oppdatert om funksjoner og nyheter.
             </p>
             
@@ -61,7 +61,7 @@ export default function Footer() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Skriv inn e-posten din" 
-                    className="border border-gray-300 px-4 py-2 rounded-l focus:outline-none w-full max-w-xs"
+                    className="border border-gray-700 px-4 py-2 rounded-l focus:outline-none w-full max-w-xs"
                     aria-label="Din e-postadresse"
                     required
                     disabled={status === 'loading'}
@@ -71,8 +71,8 @@ export default function Footer() {
                     className={`${
                       status === 'loading' 
                         ? 'bg-gray-400' 
-                        : 'bg-black hover:bg-gray-800'
-                    } text-white px-4 py-2 rounded-r flex items-center`}
+                        : 'bg-[#FF6F59] hover:bg-[#E85A45] text-white'
+                    } text-button px-4 py-2 rounded-r flex items-center`}
                     aria-label="Abonner på nyhetsbrevet"
                     disabled={status === 'loading'}
                   >
@@ -99,7 +99,7 @@ export default function Footer() {
           {/* Footer Links */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="font-semibold mb-4">Om oss</h3>
+              <h3 className="font-display font-semibold mb-4">Om oss</h3>
               <ul className="space-y-2">
                 <li><Link href="/skribent" className="hover:underline">Om skribenten</Link></li>
                 <li><Link href="#" className="hover:underline">Lenke To</Link></li>
@@ -109,7 +109,7 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Kolonne To</h3>
+              <h3 className="font-display font-semibold mb-4">Kolonne To</h3>
               <ul className="space-y-2">
                 <li><Link href="#" className="hover:underline">Lenke Seks</Link></li>
                 <li><Link href="#" className="hover:underline">Lenke Syv</Link></li>
@@ -119,7 +119,7 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Følg oss</h3>
+              <h3 className="font-display font-semibold mb-4">Følg oss</h3>
               <ul className="space-y-2">
                 <li className="flex items-center">
                   <span className="w-6">
@@ -167,17 +167,17 @@ export default function Footer() {
         </div>
         
         {/* Copyright and Legal Links */}
-        <div className="border-t border-gray-200 pt-6 mt-6">
+        <div className="border-t border-gray-700 pt-6 mt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-600 mb-4 md:mb-0">
+            <p className="text-sm text-gray-300 mb-4 md:mb-0">
               &copy; {currentYear} Fargelegg. Alle rettigheter reservert.
             </p>
             <nav aria-label="Juridisk informasjon">
               <ul className="flex flex-wrap space-x-4 text-sm">
-                <li><Link href="#" className="text-gray-600 hover:underline">Personvernerklæring</Link></li>
-                <li><Link href="/Lisens" className="text-gray-600 hover:underline">Lisensvilkår</Link></li>
-                <li><Link href="/skribent" className="text-gray-600 hover:underline">Om skribenten</Link></li>
-                <li><Link href="#" className="text-gray-600 hover:underline">Innstillinger for informasjonskapsler</Link></li>
+                <li><Link href="#" className="text-gray-300 hover:underline">Personvernerklæring</Link></li>
+                <li><Link href="/Lisens" className="text-gray-300 hover:underline">Lisensvilkår</Link></li>
+                <li><Link href="/skribent" className="text-gray-300 hover:underline">Om skribenten</Link></li>
+                <li><Link href="#" className="text-gray-300 hover:underline">Innstillinger for informasjonskapsler</Link></li>
               </ul>
             </nav>
           </div>

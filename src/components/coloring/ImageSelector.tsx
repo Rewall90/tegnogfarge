@@ -41,7 +41,7 @@ export default function ImageSelector({
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-hidden">
         <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-xl font-bold">Velg et annet bilde</h2>
+          <h2 className="text-section">Velg et annet bilde</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
@@ -51,7 +51,7 @@ export default function ImageSelector({
         </div>
         <div className="p-4 overflow-y-auto max-h-[60vh]">
           {isLoading ? (
-            <p className="text-center">Laster bilder...</p>
+            <p className="text-body text-center">Laster bilder...</p>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {images.map((image: any, index: number) => (
@@ -75,7 +75,7 @@ export default function ImageSelector({
                       // No priority needed for modal content that's not initially visible
                     />
                   </div>
-                  <p className="p-2 text-sm font-medium truncate">{image.title}</p>
+                  <p className="p-2 text-sm font-display font-medium truncate">{image.title}</p>
                 </button>
               ))}
             </div>

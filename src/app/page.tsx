@@ -12,11 +12,15 @@ import NewsletterForm from '@/components/frontpage/NewsletterForm';
 
 interface Category {
   title: string;
-  imageUrl: string;
+  imageUrl?: string;
   slug: string;
   isActive: boolean;
   featured?: boolean;
   order?: number;
+  image?: {
+    url: string;
+    alt: string;
+  };
 }
 
 export const revalidate = 3600; // Revalidate every hour
@@ -113,7 +117,7 @@ export default async function Home() {
           <ColoringCategories
             categories={mainCategories.map((cat) => ({
               name: cat.title,
-              imageUrl: cat.imageUrl,
+              imageUrl: cat.image?.url || '/images/placeholder-category.png',
               slug: cat.slug,
             }))}
           />
@@ -121,8 +125,8 @@ export default async function Home() {
           {/* FAQ Section */}
           <section className="py-16 bg-gray-50" aria-labelledby="faq-heading">
             <div className="container mx-auto px-4 max-w-3xl">
-              <h2 id="faq-heading" className="text-3xl font-bold mb-10">Ofte stilte spørsmål</h2>
-              <p className="text-gray-600 mb-8">Her finner du svar på vanlige spørsmål om plattformen og hvordan du bruker den.</p>
+              <h2 id="faq-heading" className="text-heading mb-10">Ofte stilte spørsmål</h2>
+              <p className="text-body mb-8 text-gray-600">Her finner du svar på vanlige spørsmål om plattformen og hvordan du bruker den.</p>
               
               <div className="space-y-6" role="group" aria-labelledby="faq-heading">
                 <FAQAccordion 
@@ -157,11 +161,11 @@ export default async function Home() {
               </div>
               
               <div className="mt-12 text-center">
-                <h3 className="text-xl font-bold mb-4">Har du fortsatt spørsmål?</h3>
-                <p className="text-gray-600 mb-6">Ta kontakt med oss, så hjelper vi deg så raskt som mulig.</p>
+                <h3 className="text-section font-bold mb-4">Har du fortsatt spørsmål?</h3>
+                <p className="text-body mb-6 text-gray-600">Ta kontakt med oss, så hjelper vi deg så raskt som mulig.</p>
                 <Link 
                   href="/contact" 
-                  className="border border-black px-6 py-3 rounded inline-block font-medium hover:bg-gray-100"
+                  className="text-button border border-black px-6 py-3 rounded inline-block hover:bg-gray-100"
                   aria-label="Kontakt oss med dine spørsmål"
                 >
                   Kontakt oss
@@ -173,8 +177,8 @@ export default async function Home() {
           {/* Newsletter Section */}
           <section className="py-16 bg-gray-600 text-white" aria-labelledby="newsletter-heading">
             <div className="container mx-auto px-4 max-w-3xl text-center">
-              <h2 id="newsletter-heading" className="text-3xl font-bold mb-6">Hold deg oppdatert med nyheter</h2>
-              <p className="mb-8">Meld deg på vårt nyhetsbrev for å få de siste oppdateringene og blogginleggene.</p>
+              <h2 id="newsletter-heading" className="text-heading mb-6">Hold deg oppdatert med nyheter</h2>
+              <p className="text-body mb-8">Meld deg på vårt nyhetsbrev for å få de siste oppdateringene og blogginleggene.</p>
               
               <NewsletterForm />
               <p className="text-sm mt-4">Ved å klikke på dette, bekrefter du at du har gyldig e-post.</p>

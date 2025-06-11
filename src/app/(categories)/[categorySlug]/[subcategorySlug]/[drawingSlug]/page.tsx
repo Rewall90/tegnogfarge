@@ -153,7 +153,7 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
   const pathname = `/${categorySlug}/${subcategorySlug}/${drawingSlug}`;
   
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-cream">
       <Header />
       {/* Add structured data */}
       <DrawingJsonLd 
@@ -166,8 +166,8 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
           parentCategory: subcategory.parentCategory
         }}
       />
-      <main className="flex-grow">
-        <div className="w-full bg-white text-black">
+      <main className="flex-grow bg-cream">
+        <div className="w-full bg-cream text-black">
           <div className="max-w-screen-lg mx-auto px-4 py-8">
             {/* Breadcrumbs Navigation */}
             <nav className="mb-6 text-sm" aria-label="Breadcrumb">
@@ -214,7 +214,7 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
                         priority
                         fill
                         style={{ objectFit: 'contain' }}
-                        className="rounded-md"
+                        className="rounded-xl"
                         sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
                         placeholder="blur"
                         blurDataURL={drawing.imageLqip || drawing.fallbackImageLqip || SVG_BLUR_PLACEHOLDER}
@@ -227,7 +227,7 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
               
               {/* Right side - Information and buttons */}
               <div className="md:w-1/2 md:pl-12 mt-4 md:mt-0">
-                <h1 className="text-5xl font-bold mb-4">{drawing.title}</h1>
+                <h1 className="text-5xl font-bold mb-4 font-display text-navy">{drawing.title}</h1>
                 
                 <div className="mb-4">
                   <p className="text-lg text-gray-600">
@@ -245,7 +245,7 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
                 
                 {drawing.description && (
                   <div className="mb-8">
-                    <p className="text-lg">{drawing.description}</p>
+                    <p className="text-lg text-navy">{drawing.description}</p>
                   </div>
                 )}
                 
@@ -254,14 +254,14 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
                   {drawing.downloadUrl && (
                     <DownloadPdfButton
                       downloadUrl={drawing.downloadUrl}
-                      title="Last ned PDF"
+                      title="Last ned Bilde"
                       className="border-2 border-black rounded-full px-6 py-2 inline-block hover:bg-gray-100 transition"
                     />
                   )}
                   
                   <StartColoringButton
                     drawingId={drawing._id}
-                    title="Online fargelegging"
+                    title="Start Fargelegging"
                     className="border-2 border-black rounded-full px-6 py-2 inline-block hover:bg-gray-100 transition"
                   />
                 </div>

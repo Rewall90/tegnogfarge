@@ -249,28 +249,63 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
     notFound();
   }
   
+  const sortedDrawings = subcategory.drawings.sort((a: Drawing, b: Drawing) => (a.order || 0) - (b.order || 0));
+  
   return (
-    <>
+    <div className="bg-[#FEFAF6] min-h-screen">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-4">{subcategory.title}</h1>
-        <p className="text-lg text-gray-600 mb-8">{subcategory.description}</p>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {subcategory.drawings.map((drawing: Drawing) => (
-            <DrawingCard
-              key={drawing._id}
-              title={drawing.title}
-              imageUrl={drawing.thumbnail?.url || WEBP_PLACEHOLDER_PATH}
-              imageAlt={drawing.thumbnail?.alt || 'Tegning'}
-              lqip={drawing.thumbnail?.lqip || SVG_BLUR_PLACEHOLDER}
-              href={`/${categorySlug}/${subcategorySlug}/${drawing.slug}`}
-              difficulty={drawing.difficulty}
-            />
-          ))}
+        <div className="max-w-full mx-auto">
+          <nav aria-label="Breadcrumb" className="mb-6">
+            <Link 
+              href={subcategory.parentCategory ? `/${subcategory.parentCategory.slug}` : '/'}
+              className="text-sm text-gray-500 hover:text-gray-700"
+            >
+              {subcategory.parentCategory ? subcategory.parentCategory.title : 'Hjem'}
+            </Link>
+            {subcategory.parentCategory && (
+              <>
+                <span className="mx-2 text-gray-500">/</span>
+                <Link 
+                  href={`/${subcategory.parentCategory.slug}`}
+                  className="text-sm text-gray-500 hover:text-gray-700"
+                >
+                  {subcategory.parentCategory.title}
+                </Link>
+              </>
+            )}
+            {subcategory.parentCategory && (
+              <>
+                <span className="mx-2 text-gray-500">/</span>
+                <Link 
+                  href={`/${categorySlug}/${subcategorySlug}`}
+                  className="text-sm text-gray-500 hover:text-gray-700"
+                >
+                  {subcategory.title}
+                </Link>
+              </>
+            )}
+          </nav>
+          
+          <h1 className="text-4xl font-bold mb-4 font-display text-navy">{subcategory.title}</h1>
+          <p className="w-full text-lg text-gray-600 mb-8">{subcategory.description}</p>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {sortedDrawings.map((drawing: Drawing) => (
+              <DrawingCard 
+                key={drawing._id} 
+                title={drawing.title}
+                imageUrl={drawing.thumbnail?.url || WEBP_PLACEHOLDER_PATH}
+                imageAlt={drawing.thumbnail?.alt || 'Tegning'}
+                lqip={drawing.thumbnail?.lqip || SVG_BLUR_PLACEHOLDER}
+                href={`/${categorySlug}/${subcategorySlug}/${drawing.slug}`}
+                difficulty={drawing.difficulty}
+              />
+            ))}
+          </div>
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 } 

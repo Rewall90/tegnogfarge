@@ -43,16 +43,16 @@ export function DrawingDetail({
       </div>
       {/* Info og knapper */}
       <div className="flex-1 flex flex-col justify-center">
-        <h1 className="text-3xl font-bold mb-2">{title}</h1>
+        <h1 className="text-heading mb-2">{title}</h1>
         <div className="text-xs text-gray-400 mb-2 break-all">ID: {drawingId}</div>
         {date && <div className="text-gray-500 text-sm mb-2">{date} update</div>}
         {badge && <span className="inline-block bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded mb-3">{badge}</span>}
-        {description && <p className="text-gray-700 mb-6 max-w-xl">{description}</p>}
+        {description && <p className="text-body mb-6 max-w-xl text-gray-700">{description}</p>}
         <div className="flex flex-wrap gap-4 mt-2">
           {downloadUrl && (
-            <DownloadPdfButton downloadUrl={downloadUrl} title="Download PDF" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded transition" />
+            <DownloadPdfButton downloadUrl={downloadUrl} title="Download PDF" className="bg-orange-500 hover:bg-orange-600 text-white text-button px-6 py-3 rounded transition" />
           )}
-          <StartColoringButton drawingId={drawingId} title="Online Coloring" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded transition" />
+          <StartColoringButton drawingId={drawingId} title="Online Coloring" className="bg-orange-500 hover:bg-orange-600 text-white text-button px-6 py-3 rounded transition" />
         </div>
       </div>
     </section>

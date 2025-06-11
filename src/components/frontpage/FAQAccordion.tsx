@@ -18,7 +18,7 @@ export default function FAQAccordion({ id, question, answer }: FAQAccordionProps
   return (
     <article className="border-b border-gray-200 pb-4">
       <div className="flex justify-between items-center">
-        <h3 id={id} className="text-lg font-semibold">{question}</h3>
+        <h3 id={id} className="font-display font-semibold text-lg">{question}</h3>
         <button 
           className="text-gray-500" 
           aria-expanded={isOpen}
@@ -45,7 +45,7 @@ export default function FAQAccordion({ id, question, answer }: FAQAccordionProps
         id={`${id}-content`} 
         className={`mt-2 overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
       >
-        <p className="text-gray-600">
+        <p className="text-body text-gray-600">
           {answer}
         </p>
       </div>

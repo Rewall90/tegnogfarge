@@ -547,7 +547,7 @@ export default function ColoringCanvas({
               <Link href={backUrl} className="text-blue-600 hover:text-blue-800">
                 ← Tilbake
               </Link>
-              <h1 className="text-xl md:text-2xl font-bold">{title}</h1>
+              <h1 className="text-section">{title}</h1>
             </div>
           </div>
         </div>

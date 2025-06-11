@@ -10,14 +10,14 @@ function CanvasErrorFallback() {
   return (
     <div className="flex-1 flex items-center justify-center">
       <div className="text-center text-red-600 max-w-md mx-auto p-6">
-        <p className="text-lg font-semibold mb-2">Noe gikk galt</p>
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="font-display font-semibold text-lg mb-2">Noe gikk galt</p>
+        <p className="text-body text-sm text-gray-600 mb-4">
           Det oppstod en feil med fargeleggingsverktøyet. 
           Sjekk at nettleseren din støtter Canvas.
         </p>
         <button
           onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="text-button px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
           Last siden på nytt
         </button>

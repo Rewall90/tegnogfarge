@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import Button from '../ui/Button';
 
 interface StartColoringButtonProps {
   drawingId: string;
@@ -10,7 +11,7 @@ interface StartColoringButtonProps {
   className?: string;
 }
 
-export function StartColoringButton({ drawingId, title = 'Online Coloring', className }: StartColoringButtonProps) {
+export function StartColoringButton({ drawingId, title = 'Start Fargelegging', className }: StartColoringButtonProps) {
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -27,13 +28,13 @@ export function StartColoringButton({ drawingId, title = 'Online Coloring', clas
   }
 
   return (
-    <button
-      type="button"
-      className={className}
-      aria-label={title}
+    <Button
       onClick={handleClick}
+      className={className}
+      ariaLabel={title}
+      variant="outline"
     >
       {title}
-    </button>
+    </Button>
   );
 } 

@@ -57,7 +57,7 @@ function LoginContent() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Logg inn</h1>
+        <h1 className="text-section text-center mb-6">Logg inn</h1>
         
         {success && (
           <div className={`${verify ? 'bg-blue-100 border-blue-400 text-blue-700' : 'bg-green-100 border-green-400 text-green-700'} px-4 py-3 mb-4 rounded border`}>
@@ -103,13 +103,13 @@ function LoginContent() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-button text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
             {isLoading ? 'Logger inn...' : 'Logg inn'}
           </button>
         </form>
         
-        <p className="text-center mt-4 text-sm text-gray-600">
+        <p className="text-center mt-4 text-sm text-body text-gray-600">
           Har du ikke konto?{' '}
           <Link 
             href={redirectParam ? `/register?redirect=${redirectParam}` : "/register"}
@@ -128,9 +128,9 @@ function LoginLoading() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md text-center">
-        <h1 className="text-2xl font-bold mb-6">Laster inn...</h1>
+        <h1 className="text-section mb-6">Laster inn...</h1>
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p className="text-gray-600">Vennligst vent</p>
+        <p className="text-body text-gray-600">Vennligst vent</p>
       </div>
     </div>
   );

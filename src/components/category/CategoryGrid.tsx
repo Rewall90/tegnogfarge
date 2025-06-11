@@ -38,7 +38,7 @@ function CategoryGridInner({ subcategories, categorySlug }: CategoryGridInnerPro
   const { isAboveFold } = useAboveFold();
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       {subcategories.map((subcategory: Subcategory, index: number) => (
         <SubcategoryCard 
           key={subcategory._id}
@@ -80,7 +80,7 @@ export function CategoryGrid({
     <AboveFoldProvider
       rows={2}
       gridLayout={GRID_LAYOUTS.standard}
-      defaultCount={6}
+      defaultCount={8}
     >
       <CategoryGridInner 
         subcategories={subcategories}

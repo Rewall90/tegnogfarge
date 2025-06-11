@@ -10,8 +10,8 @@ interface FrontpageCategoriesProps {
 export function FrontpageCategories({ categories }: FrontpageCategoriesProps) {
   return (
     <section className="flex flex-col w-full py-8 px-4 md:px-12 xl:px-32">
-      <h1 className="text-[#101618] text-3xl md:text-4xl font-extrabold leading-tight text-center mb-2">Coloring Fun</h1>
-      <h2 className="text-[#101618] tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-6 pt-2">
+      <h1 className="text-heading text-[#101618] text-center mb-2">Coloring Fun</h1>
+      <h2 className="text-section text-[#101618] tracking-light leading-tight px-4 text-center pb-6 pt-2">
         Explore Our Coloring Categories
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
@@ -24,7 +24,7 @@ export function FrontpageCategories({ categories }: FrontpageCategoriesProps) {
                   <Image src={cat.imageUrl} alt={cat.name} width={144} height={144} className="w-36 h-36 object-contain mb-4 mt-10" />
                 )}
                 {/* Kategori-navn */}
-                <div className="mt-auto mb-10 text-white text-2xl font-bold text-center w-full drop-shadow-sm">
+                <div className="mt-auto mb-10 text-white text-section text-center w-full drop-shadow-sm">
                   {cat.name}
                 </div>
               </div>

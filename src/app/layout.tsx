@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Quicksand } from "next/font/google";
 import "./globals.css";
 import { draftMode } from 'next/headers';
 import SessionProviderWrapper from "@/components/auth/SessionProviderWrapper";
@@ -13,7 +13,18 @@ const VisualEditing = dynamic(
   { ssr: false }
 );
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: '--font-inter',
+  display: 'swap'
+});
+
+const quicksand = Quicksand({
+  subsets: ["latin"],
+  weight: ['400', '600', '700'],
+  variable: '--font-quicksand',
+  display: 'swap'
+});
 
 export const metadata: Metadata = {
   title: "TegnOgFarge.no - Gratis Fargeleggingssider",
@@ -41,7 +52,7 @@ export default function RootLayout({
   const { isEnabled: isDraftMode } = draftMode();
   
   return (
-    <html lang="nb">
+    <html lang="nb" className={`${inter.variable} ${quicksand.variable}`}>
       <head>
         <link 
           rel="icon" 
@@ -49,7 +60,7 @@ export default function RootLayout({
           type="image/svg+xml"
         />
       </head>
-      <body className={inter.className}>
+      <body className="font-sans">
         <SessionProviderWrapper>{children}</SessionProviderWrapper>
         <StagewiseToolbarWrapper />
         <BaseJsonLd />

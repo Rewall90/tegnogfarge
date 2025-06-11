@@ -51,7 +51,7 @@ export function DrawingCard({
         />
       </div>
       <div className="p-2">
-        <h2 className="font-bold text-sm mb-1 truncate">{title}</h2>
+        <h2 className="font-display font-bold text-lg mb-1 truncate text-navy">{title}</h2>
         <div className="flex items-center justify-between text-xs mb-1">
           {difficulty && (
             <span className={`px-1.5 py-0.5 rounded text-xs ${difficultyColors[difficulty]}`}>

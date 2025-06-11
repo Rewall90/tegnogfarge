@@ -902,7 +902,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               >
                 ← Tilbake
               </button>
-              <h1 className="text-xl md:text-2xl font-bold">{currentImage.title}</h1>
+              <h1 className="text-section">{currentImage.title}</h1>
             </div>
             <div className="flex gap-2">
               <button

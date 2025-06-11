@@ -28,13 +28,21 @@ interface Subcategory {
   };
 }
 
-// Extract this function outside the component for memoization benefits
-function getDifficultyLabel(difficulty: number | undefined) {
-  if (!difficulty) return 'Ukjent';
-  if (difficulty <= 2) return '🟢 Enkel';
-  if (difficulty === 3) return '🟡 Middels';
-  if (difficulty >= 4) return '🔴 Vanskelig';
-  return 'Ukjent';
+// Helper to get difficulty label and className
+function getDifficultyProps(difficulty: number | undefined): { label: string; className: string } {
+  if (difficulty === undefined) {
+    return { label: 'Ukjent', className: 'bg-gray-100 text-gray-800' };
+  }
+  if (difficulty <= 2) {
+    return { label: 'Enkel', className: 'bg-green-100 text-green-800' };
+  }
+  if (difficulty === 3) {
+    return { label: 'Middels', className: 'bg-yellow-100 text-yellow-800' };
+  }
+  if (difficulty >= 4) {
+    return { label: 'Vanskelig', className: 'bg-red-100 text-red-800' };
+  }
+  return { label: 'Ukjent', className: 'bg-gray-100 text-gray-800' };
 }
 
 // Subcategory card component for better code organization
@@ -48,9 +56,10 @@ export function SubcategoryCard({
   isPriority?: boolean;
 }) {
   const imageUrl = subcategory.featuredImage?.url || subcategory.sampleImage?.thumbnailUrl || subcategory.sampleImage?.imageUrl;
+  const difficultyProps = getDifficultyProps(subcategory.difficulty);
 
   return (
-    <article className="bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow w-4/5 mx-auto">
+    <article className="bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <Link 
         href={`/${categorySlug}/${subcategory.slug}`}
         aria-label={`Gå til ${subcategory.title} fargeleggingsark`}
@@ -77,16 +86,16 @@ export function SubcategoryCard({
           href={`/${categorySlug}/${subcategory.slug}`}
           aria-label={`Gå til ${subcategory.title} fargeleggingsark`}
         >
-          <h2 className="font-bold text-lg mb-2">{subcategory.title}</h2>
+          <h2 className="font-display font-bold text-lg mb-2 text-navy">{subcategory.title}</h2>
         </Link>
         {subcategory.description && (
-          <p className="text-gray-600 text-sm mb-3">{subcategory.description}</p>
+          <p className="text-body text-gray-600 text-sm mb-3">{subcategory.description}</p>
         )}
-        <footer className="flex items-center justify-between text-sm">
-          <span className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-800">
-            {getDifficultyLabel(subcategory.difficulty)}
+        <footer className="flex flex-col items-start gap-2 text-sm">
+          <span className={`px-2 py-1 rounded text-xs ${difficultyProps.className}`}>
+            {difficultyProps.label}
           </span>
-          <span className="text-gray-500">
+          <span className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-800">
             {subcategory.drawingCount || 0} tegninger
           </span>
         </footer>

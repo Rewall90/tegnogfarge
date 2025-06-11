@@ -18,7 +18,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm py-2">
+    <header className="bg-[#FEFAF6] shadow-sm py-2">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-24">
           <div className="flex items-center">
@@ -36,28 +36,28 @@ export default function Header() {
           
           {/* Desktop navigation */}
           <nav className="hidden md:flex space-x-8" aria-label="Hovednavigasjon">
-            <Link href="/coloring" className="text-gray-600 hover:text-gray-900 text-lg">Fargelegging Verktøy</Link>
+            <Link href="/coloring" className="text-[#264653] hover:text-[#1E3A40] text-lg">Fargelegging Verktøy</Link>
             {session && (
-              <Link href="/dashboard" className="text-gray-600 hover:text-gray-900 text-lg">Dashboard</Link>
+              <Link href="/dashboard" className="text-[#264653] hover:text-[#1E3A40] text-lg">Dashboard</Link>
             )}
-            <Link href="/blog" className="text-gray-600 hover:text-gray-900 text-lg">Blogg Artikler</Link>
-            <Link href="/about" className="text-gray-600 hover:text-gray-900 text-lg">Om Oss</Link>
+            <Link href="/blog" className="text-[#264653] hover:text-[#1E3A40] text-lg">Blogg Artikler</Link>
+            <Link href="/about" className="text-[#264653] hover:text-[#1E3A40] text-lg">Om Oss</Link>
           </nav>
           
           <div className="hidden md:flex items-center space-x-4">
             {session && session.user ? (
               <>
-                <span className="text-gray-600 text-lg">Hei, {session.user.name}</span>
+                <span className="text-[#264653] text-lg">Hei, {session.user.name}</span>
                 <button
                   onClick={handleSignOut}
-                  className="text-gray-600 hover:text-gray-900 text-lg"
+                  className="text-[#264653] hover:text-[#1E3A40] text-lg"
                 >
                   Logg ut
                 </button>
               </>
             ) : (
-              <Link href="/login" className="bg-black text-white px-5 py-2.5 rounded hover:bg-gray-800 text-lg">
-                Logg inn
+              <Link href="/login" className="bg-[#FF6F59] text-white px-5 py-2.5 rounded hover:bg-[#E85A45] text-lg">
+                Logg inn/Registrer
               </Link>
             )}
           </div>
@@ -93,16 +93,16 @@ export default function Header() {
         {isMenuOpen && (
           <div id="mobile-menu" className="md:hidden py-4 border-t">
             <nav className="flex flex-col space-y-4" aria-label="Mobilnavigasjon">
-              <Link href="/coloring" className="text-gray-600 hover:text-gray-900 text-lg">Fargelegging Verktøy</Link>
+              <Link href="/coloring" className="text-[#264653] hover:text-[#1E3A40] text-lg">Fargelegging Verktøy</Link>
               {session && (
-                <Link href="/dashboard" className="text-gray-600 hover:text-gray-900 text-lg">Dashboard</Link>
+                <Link href="/dashboard" className="text-[#264653] hover:text-[#1E3A40] text-lg">Dashboard</Link>
               )}
-              <Link href="/blog" className="text-gray-600 hover:text-gray-900 text-lg">Blogg Artikler</Link>
-              <Link href="/about" className="text-gray-600 hover:text-gray-900 text-lg">Om Oss</Link>
+              <Link href="/blog" className="text-[#264653] hover:text-[#1E3A40] text-lg">Blogg Artikler</Link>
+              <Link href="/about" className="text-[#264653] hover:text-[#1E3A40] text-lg">Om Oss</Link>
               
               {session && session.user ? (
                 <>
-                  <span className="text-gray-600 text-lg">Hei, {session.user.name}</span>
+                  <span className="text-[#264653] text-lg">Hei, {session.user.name}</span>
                   <button
                     onClick={handleSignOut}
                     className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 w-full text-center text-lg"
@@ -111,8 +111,8 @@ export default function Header() {
                   </button>
                 </>
               ) : (
-                <Link href="/login" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 inline-block w-full text-center text-lg">
-                  Logg inn
+                <Link href="/login" className="bg-[#FF6F59] text-white px-4 py-2 rounded hover:bg-[#E85A45] inline-block w-full text-center text-lg">
+                  Logg inn/Registrer
                 </Link>
               )}
             </nav>

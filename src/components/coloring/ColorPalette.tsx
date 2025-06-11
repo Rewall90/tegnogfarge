@@ -24,12 +24,12 @@ export default function ColorPalette({
   return (
     <div className="w-64 bg-white border-r border-gray-200 h-full overflow-y-auto">
       <div className="p-4">
-        <h3 className="text-lg font-semibold mb-4">Fargepalett</h3>
+        <h3 className="font-display font-semibold text-lg mb-4">Fargepalett</h3>
         
         {/* Foreslåtte farger */}
         {suggestedColors && suggestedColors.length > 0 && (
           <div className="mb-6">
-            <h4 className="text-sm font-medium text-gray-700 mb-3">Foreslåtte farger</h4>
+            <h4 className="font-display text-sm font-medium text-gray-700 mb-3">Foreslåtte farger</h4>
             <div className="grid grid-cols-4 gap-2">
               {suggestedColors.map((color, index) => (
                 <button
@@ -48,7 +48,7 @@ export default function ColorPalette({
 
         {/* Standard farger */}
         <div className="mb-6">
-          <h4 className="text-sm font-medium text-gray-700 mb-3">Standard farger</h4>
+          <h4 className="font-display text-sm font-medium text-gray-700 mb-3">Standard farger</h4>
           <div className="grid grid-cols-4 gap-2">
             {defaultColors.map((color) => (
               <button
@@ -67,7 +67,7 @@ export default function ColorPalette({
         <div>
           <button
             onClick={() => setShowCustomPicker(!showCustomPicker)}
-            className="w-full bg-gray-100 hover:bg-gray-200 py-2 px-4 rounded-lg transition-colors"
+            className="text-button w-full bg-gray-100 hover:bg-gray-200 py-2 px-4 rounded-lg transition-colors"
           >
             Egendefinert farge
           </button>
@@ -86,7 +86,7 @@ export default function ColorPalette({
 
         {/* Valgt farge */}
         <div className="mt-6 pt-6 border-t">
-          <div className="text-sm text-gray-600 mb-2">Valgt farge:</div>
+          <div className="text-body text-sm text-gray-600 mb-2">Valgt farge:</div>
           <div 
             className="w-full h-16 rounded-lg border-2 border-gray-300"
             style={{ backgroundColor: selectedColor }}

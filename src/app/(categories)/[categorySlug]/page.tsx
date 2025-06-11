@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import { CategoryGrid, EmptyState } from '@/components/category/CategoryGrid';
+import { urlFor } from '@/lib/sanity';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -244,46 +245,45 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
   }
   
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-[#FEFAF6]">
       <Header />
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8">
-          <nav aria-label="Breadcrumb">
-            <Link 
-              href="/" 
-              className="text-blue-600 hover:underline mb-4 inline-flex items-center gap-2"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Tilbake til forsiden
-            </Link>
-          </nav>
-          
-          <header className="mb-8" aria-labelledby="category-title">
-            <h1 id="category-title" className="text-3xl font-bold mb-2 flex items-center">
-              {category.icon && <span className="mr-3" aria-hidden="true">{category.icon}</span>}
-              {category.title}
-            </h1>
-            {category.description && (
-              <p className="text-gray-600 mb-2">{category.description}</p>
+          <div className="max-w-8xl mx-auto">
+            <nav aria-label="Breadcrumb">
+              <Link 
+                href="/" 
+                className="text-blue-600 hover:underline mb-4 inline-flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Tilbake til forsiden
+              </Link>
+            </nav>
+            
+            <header className="mb-8">
+              <h1 id="category-title" className="text-3xl font-bold mb-2 flex items-center font-display text-navy">
+                {category.icon && <img src={urlFor(category.icon).width(30).height(30).url()} alt={`${category.title} icon`} className="mr-3"/>}
+                {category.title}
+              </h1>
+              {category.description && (
+                <p className="text-lg text-navy mt-4">{category.description}</p>
+              )}
+            </header>
+            
+            {category.subcategories && category.subcategories.length > 0 ? (
+              <section className="category-listing" aria-labelledby="subcategories-heading">
+                <h2 id="subcategories-heading" className="sr-only">Underkategorier</h2>
+                <CategoryGrid 
+                  subcategories={category.subcategories}
+                  categorySlug={categorySlug}
+                />
+              </section>
+            ) : (
+              <EmptyState />
             )}
-            <p className="text-sm text-gray-500">
-              {category.subcategories?.length || 0} underkategorier tilgjengelig
-            </p>
-          </header>
-          
-          {category.subcategories && category.subcategories.length > 0 ? (
-            <section className="category-listing" aria-labelledby="subcategories-heading">
-              <h2 id="subcategories-heading" className="sr-only">Underkategorier</h2>
-              <CategoryGrid 
-                subcategories={category.subcategories}
-                categorySlug={categorySlug}
-              />
-            </section>
-          ) : (
-            <EmptyState />
-          )}
+          </div>
         </div>
       </main>
       <Footer />

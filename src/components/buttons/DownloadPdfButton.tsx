@@ -40,7 +40,7 @@ export function DownloadPdfButton({ downloadUrl, title = 'Last ned PDF', classNa
   return (
     <Button
       href={downloadUrl}
-      variant="primary"
+      variant="outline"
       className={className}
       ariaLabel={title}
       external={false}

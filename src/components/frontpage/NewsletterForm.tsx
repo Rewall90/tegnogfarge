@@ -64,7 +64,7 @@ export default function NewsletterForm() {
           />
           <button 
             type="submit" 
-            className={`px-6 py-3 rounded-md font-medium ${
+            className={`text-button px-6 py-3 rounded-md ${
               status === 'loading' 
                 ? 'bg-gray-500 cursor-not-allowed' 
                 : 'bg-black hover:bg-gray-800'
