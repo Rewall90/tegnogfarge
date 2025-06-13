@@ -82,6 +82,8 @@ export interface DrawingImage {
   _rev: string;
   title?: string;
   slug?: Slug;
+  description?: string;
+  metaDescription?: string;
   downloadFile?: {
     asset?: {
       _ref: string;
@@ -92,7 +94,8 @@ export interface DrawingImage {
     media?: unknown;
     _type: "file";
   };
-  tags?: Array<string>;
+  recommendedAgeRange?: string;
+  contextContent?: any; // Portable Text blocks
   order?: number;
   isActive?: boolean;
   webpImage?: {

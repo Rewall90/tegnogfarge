@@ -31,6 +31,8 @@ export async function getImagesInCategory(subcategory: string, page = 1, limit =
       _id,
       title,
       description,
+      metaDescription,
+      recommendedAgeRange,
       difficulty,
       order,
       isActive,
@@ -38,8 +40,7 @@ export async function getImagesInCategory(subcategory: string, page = 1, limit =
       "imageUrl": mainImage.asset->url,
       "downloadUrl": downloadFile.asset->url,
       canColorOnline,
-      downloadCount,
-      tags
+      downloadCount
     }[$start...$end]
   `, { subcategory, start, end });
 }
@@ -146,6 +147,8 @@ export async function getColoringImage(id: string) {
       _id,
       title,
       description,
+      metaDescription,
+      recommendedAgeRange,
       "slug": slug.current,
       "imageUrl": displayImage.asset->url,
       "imageLqip": displayImage.asset->metadata.lqip,
@@ -154,7 +157,7 @@ export async function getColoringImage(id: string) {
       "thumbnailUrl": thumbnailImage.asset->url,
       "thumbnailLqip": thumbnailImage.asset->metadata.lqip,
       "downloadUrl": downloadFile.asset->url,
-      tags,
+      contextContent,
       difficulty,
       hasDigitalColoring,
       publishedDate,
@@ -300,7 +303,7 @@ export async function getDrawingsBySubcategory(subcategorySlug: string) {
       "slug": slug.current,
       "imageUrl": webpImage.asset->url,
       "downloadUrl": downloadFile.asset->url,
-      tags,
+      recommendedAgeRange,
       order,
       isActive
     } | order(order asc, title asc)
@@ -420,12 +423,14 @@ export async function searchDrawings(query: string) {
     *[_type == "drawingImage" && 
       (title match $searchQuery || 
        description match $searchQuery ||
-       $searchQuery in tags) && 
+       metaDescription match $searchQuery) && 
       isActive == true] {
       _id,
       title,
       "slug": slug.current,
       description,
+      metaDescription,
+      recommendedAgeRange,
       "imageUrl": coalesce(displayImage.asset->url, webpImage.asset->url),
       "thumbnailUrl": coalesce(thumbnailImage.asset->url, displayImage.asset->url, webpImage.asset->url),
       "downloadUrl": downloadFile.asset->url,

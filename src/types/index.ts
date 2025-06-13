@@ -3,6 +3,8 @@ export interface Drawing {
   title: string;
   slug?: string;
   description?: string;
+  metaDescription?: string;
+  recommendedAgeRange?: string;
   imageUrl?: string;
   imageAlt?: string;
   thumbnailUrl?: string;
@@ -10,7 +12,7 @@ export interface Drawing {
   downloadUrl?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
   hasDigitalColoring?: boolean;
-  tags?: string[];
+  contextContent?: any; // Portable Text format
   categorySlug?: string;
   subcategorySlug?: string;
   image?: {

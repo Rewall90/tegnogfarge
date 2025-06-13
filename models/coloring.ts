@@ -9,7 +9,6 @@ export interface Coloring {
   isPublic: boolean;
   createdAt: Date;
   updatedAt: Date;
-  tags?: string[];
   likes?: number;
 }
 
@@ -31,7 +30,6 @@ export function mapToColoringModel(data: any): Coloring {
     isPublic: data.isPublic ?? false,
     createdAt: new Date(data.createdAt),
     updatedAt: new Date(data.updatedAt),
-    tags: data.tags || [],
     likes: data.likes || 0,
   };
 } 

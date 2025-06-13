@@ -4,10 +4,12 @@ export interface Drawing {
   _id?: ObjectId;
   title: string;
   description: string;
+  metaDescription?: string;
   imageUrl: string;
   categoryId: ObjectId;
   difficulty: 'easy' | 'medium' | 'hard';
-  tags: string[];
+  recommendedAgeRange?: string;
+  contextContent?: any; // Portable Text content
   createdAt: Date;
   updatedAt: Date;
   isPublished: boolean;
@@ -28,10 +30,12 @@ export function mapToDrawingModel(data: any): Drawing {
     _id: data._id,
     title: data.title,
     description: data.description,
+    metaDescription: data.metaDescription,
     imageUrl: data.imageUrl,
     categoryId: data.categoryId,
     difficulty: data.difficulty,
-    tags: data.tags || [],
+    recommendedAgeRange: data.recommendedAgeRange || 'all',
+    contextContent: data.contextContent,
     createdAt: new Date(data.createdAt),
     updatedAt: new Date(data.updatedAt),
     isPublished: data.isPublished ?? true,

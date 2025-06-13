@@ -7,6 +7,7 @@ interface Drawing {
   slug: string;
   title: string;
   description?: string;
+  metaDescription?: string;
   seoTitle?: string;
   seoDescription?: string;
   imageUrl?: string;
@@ -17,7 +18,7 @@ interface Drawing {
   hasDigitalColoring?: boolean;
   publishedDate?: string;
   _createdAt?: string;
-  tags?: string[];
+  recommendedAgeRange?: string;
   image?: {
     url?: string;
     alt?: string;
@@ -87,11 +88,21 @@ export default function DrawingJsonLd({
   if (drawing.difficulty === 'easy') difficultyLevel = "beginner";
   if (drawing.difficulty === 'hard') difficultyLevel = "expert";
   
-  // Try to identify subject for about property based on title or tags
+  // Map age range to intended audience
+  let intendedAudience = "";
+  switch (drawing.recommendedAgeRange) {
+    case '3-5': intendedAudience = "Småbarn 3-5 år"; break;
+    case '6-8': intendedAudience = "Barn 6-8 år"; break;
+    case '9-12': intendedAudience = "Barn 9-12 år"; break;
+    case '12+': intendedAudience = "Barn over 12 år"; break;
+    default: intendedAudience = "Alle aldre"; break;
+  }
+  
+  // Try to identify subject for about property based on title or description
   let aboutObject = null;
   const titleLowercase = drawing.title.toLowerCase();
-  const tags = drawing.tags || [];
-  const allText = [titleLowercase, ...tags.map(t => t.toLowerCase())].join(' ');
+  const descriptionText = drawing.metaDescription || drawing.description || '';
+  const allText = titleLowercase + ' ' + descriptionText.toLowerCase();
   
   // Check for common themes
   if (allText.includes('dinosaur')) {
@@ -200,7 +211,7 @@ export default function DrawingJsonLd({
       "availability": "https://schema.org/InStock",
       "url": currentUrl
     },
-    "keywords": drawing.tags?.join(", ") || drawing.title,
+    "keywords": drawing.title,
     "audience": {
       "@type": "PeopleAudience",
       "suggestedMinAge": "3",

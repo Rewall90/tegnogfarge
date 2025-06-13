@@ -9,6 +9,8 @@ import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import DrawingJsonLd from '@/components/json-ld/DrawingJsonLd';
 import { SVG_BLUR_PLACEHOLDER, WEBP_PLACEHOLDER_PATH, formatDate } from '@/lib/utils';
+import { PortableText, type PortableTextComponents } from '@portabletext/react';
+import type { PortableTextBlock } from '@portabletext/types';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -18,6 +20,7 @@ interface Drawing {
   _id: string;
   title: string;
   description?: string;
+  metaDescription?: string;
   imageUrl?: string;
   imageLqip?: string;
   fallbackImageUrl?: string;
@@ -27,7 +30,8 @@ interface Drawing {
   downloadUrl?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
   hasDigitalColoring?: boolean;
-  tags?: string[];
+  recommendedAgeRange?: string;
+  contextContent?: PortableTextBlock[];
   slug?: string;
   publishedDate?: string;
   _createdAt?: string;
@@ -48,16 +52,16 @@ interface Subcategory {
 }
 
 interface PageProps {
-  params: Promise<{
+  params: {
     categorySlug: string;
     subcategorySlug: string;
     drawingSlug: string;
-  }>;
+  };
 }
 
 // Generer metadata
-export async function generateMetadata({ params: paramsPromise }: PageProps) {
-  const { categorySlug, subcategorySlug, drawingSlug } = await paramsPromise;
+export async function generateMetadata({ params }: PageProps) {
+  const { categorySlug, subcategorySlug, drawingSlug } = params;
   
   // Få tak i tegningen (basert på ID eller slug)
   const drawing = await getColoringImage(drawingSlug);
@@ -121,9 +125,24 @@ function getDifficultyKey(value: string | undefined): 'easy' | 'medium' | 'hard'
   return 'medium';
 }
 
+const customComponents: PortableTextComponents = {
+  block: {
+    h2: ({ children }) => (
+      <h2 className="font-display font-bold text-2xl text-navy mt-8 mb-4">{children}</h2>
+    ),
+    normal: ({ children }) => (
+      <p className="text-lg text-navy mb-4">{children}</p>
+    ),
+  },
+  listItem: {
+    bullet: ({ children }) => <li className="text-lg text-navy list-disc ml-6">{children}</li>,
+    number: ({ children }) => <li className="text-lg text-navy list-decimal ml-6">{children}</li>,
+  },
+};
+
 // Main component
-export default async function DrawingPage({ params: paramsPromise }: PageProps) {
-  const { categorySlug, subcategorySlug, drawingSlug } = await paramsPromise;
+export default async function DrawingPage({ params }: PageProps) {
+  const { categorySlug, subcategorySlug, drawingSlug } = params;
   
   // Fetch data
   const drawing = await getColoringImage(drawingSlug);
@@ -149,6 +168,14 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
     hard: 'Vanskelig'
   };
   
+  const ageRangeLabels: Record<string, string> = {
+    '3-5': '3-5 år',
+    '6-8': '6-8 år',
+    '9-12': '9-12 år',
+    '12+': 'Over 12 år',
+    'all': 'Alle aldre'
+  };
+  
   // Prepare the path for JSON-LD
   const pathname = `/${categorySlug}/${subcategorySlug}/${drawingSlug}`;
   
@@ -168,7 +195,7 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
       />
       <main className="flex-grow bg-cream">
         <div className="w-full bg-cream text-black">
-          <div className="max-w-screen-lg mx-auto px-4 py-8">
+          <div className="max-w-screen-xl mx-auto px-4 py-8">
             {/* Breadcrumbs Navigation */}
             <nav className="mb-6 text-sm" aria-label="Breadcrumb">
               <ol className="flex items-center space-x-2">
@@ -203,54 +230,52 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
             </nav>
             
             <div className="flex flex-col md:flex-row">
-              {/* Left side - Image */}
-              <div className="md:w-1/2 flex justify-center">
+              {/* Left: Image */}
+              <div className="md:w-1/3 flex justify-center items-center">
                 {(drawing.imageUrl || drawing.fallbackImageUrl) && (
-                  <div className="flex justify-center items-center w-full">
-                    <div className="relative w-full max-w-[450px] min-h-[600px]">
-                      <Image
-                        src={drawing.imageUrl || drawing.fallbackImageUrl || WEBP_PLACEHOLDER_PATH}
-                        alt={drawing.title}
-                        priority
-                        fill
-                        style={{ objectFit: 'contain' }}
-                        className="rounded-xl"
-                        sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
-                        placeholder="blur"
-                        blurDataURL={drawing.imageLqip || drawing.fallbackImageLqip || SVG_BLUR_PLACEHOLDER}
-                        quality={85}
-                      />
-                    </div>
+                  <div className="relative w-full max-w-[450px] min-h-[600px]">
+                    <Image
+                      src={drawing.imageUrl || drawing.fallbackImageUrl || WEBP_PLACEHOLDER_PATH}
+                      alt={drawing.title}
+                      priority
+                      fill
+                      style={{ objectFit: 'contain' }}
+                      className="rounded-xl"
+                      sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
+                      placeholder="blur"
+                      blurDataURL={drawing.imageLqip || drawing.fallbackImageLqip || SVG_BLUR_PLACEHOLDER}
+                      quality={85}
+                    />
                   </div>
                 )}
               </div>
-              
-              {/* Right side - Information and buttons */}
-              <div className="md:w-1/2 md:pl-12 mt-4 md:mt-0">
+              {/* Right: Info/Text */}
+              <div className="md:w-2/3 md:pl-12 mt-4 md:mt-0 max-w-2xl">
                 <h1 className="text-5xl font-bold mb-4 font-display text-navy">{drawing.title}</h1>
-                
                 <div className="mb-4">
                   <p className="text-lg text-gray-600">
                     {formatDate(drawing.publishedDate || drawing._createdAt)}
                   </p>
                 </div>
-                
-                {drawing.difficulty && (
-                  <div className="mb-4">
-                    <span className={`inline-block px-3 py-1 rounded text-sm ${difficultyColors[getDifficultyKey(drawing.difficulty)]}`}>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {drawing.difficulty && (
+                    <span className={`inline-block px-3 py-1 rounded text-sm ${difficultyColors[getDifficultyKey(drawing.difficulty)]}`}> 
                       {difficultyLabels[getDifficultyKey(drawing.difficulty)]}
                     </span>
-                  </div>
-                )}
-                
+                  )}
+                  {drawing.recommendedAgeRange && (
+                    <span className="inline-block px-3 py-1 rounded text-sm bg-blue-100 text-blue-800">
+                      {ageRangeLabels[drawing.recommendedAgeRange] || 'Alle aldre'}
+                    </span>
+                  )}
+                </div>
                 {drawing.description && (
                   <div className="mb-8">
                     <p className="text-lg text-navy">{drawing.description}</p>
                   </div>
                 )}
-                
                 {/* Buttons */}
-                <div className="flex gap-4 flex-wrap">
+                <div className="flex gap-4 flex-wrap mb-8">
                   {drawing.downloadUrl && (
                     <DownloadPdfButton
                       downloadUrl={drawing.downloadUrl}
@@ -258,29 +283,20 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
                       className="border-2 border-black rounded-full px-6 py-2 inline-block hover:bg-gray-100 transition"
                     />
                   )}
-                  
                   <StartColoringButton
                     drawingId={drawing._id}
                     title="Start Fargelegging"
                     className="border-2 border-black rounded-full px-6 py-2 inline-block hover:bg-gray-100 transition"
                   />
                 </div>
-                
-                {/* Tags Section */}
-                {drawing.tags && drawing.tags.length > 0 && (
-                  <div className="mt-8">
-                    <h2 className="text-lg font-semibold mb-2">Stikkord</h2>
-                    <div className="flex flex-wrap gap-2">
-                      {drawing.tags.map((tag: string) => (
-                        <span key={tag} className="px-3 py-1 bg-gray-100 rounded-full text-sm">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
+            {/* Context Content Section - moved below the row, in a card container */}
+            {drawing.contextContent && drawing.contextContent.length > 0 && (
+              <div className="mt-10 bg-white/80 rounded-xl shadow p-4 sm:p-6">
+                <PortableText value={drawing.contextContent} components={customComponents} />
+              </div>
+            )}
           </div>
         </div>
       </main>

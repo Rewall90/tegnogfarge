@@ -30,6 +30,71 @@ export default defineType({
       description: 'En kort beskrivelse av tegningen'
     }),
     defineField({
+      name: 'metaDescription',
+      title: 'Meta Beskrivelse',
+      type: 'text',
+      description: 'Beskrivelse for SEO formål. Vises i søkemotorresultater. Ideelt 150-160 tegn.',
+      validation: Rule => Rule.max(160).warning('Meta beskrivelser bør ikke overstige 160 tegn for optimal SEO')
+    }),
+    defineField({
+      name: 'recommendedAgeRange',
+      title: 'Anbefalt Aldersgruppe',
+      type: 'string',
+      options: {
+        list: [
+          { title: '3-5 år', value: '3-5' },
+          { title: '6-8 år', value: '6-8' },
+          { title: '9-12 år', value: '9-12' },
+          { title: 'Over 12 år', value: '12+' },
+          { title: 'Alle aldre', value: 'all' }
+        ]
+      },
+      description: 'Anbefalt aldersgruppe for dette fargeleggingsbildet',
+      initialValue: 'all'
+    }),
+    defineField({
+      name: 'contextContent',
+      title: 'Kontekst og Innhold',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'Overskrift 2', value: 'h2' },
+            { title: 'Overskrift 3', value: 'h3' },
+            { title: 'Overskrift 4', value: 'h4' }
+          ],
+          lists: [
+            { title: 'Punktliste', value: 'bullet' },
+            { title: 'Nummerert liste', value: 'number' }
+          ],
+          marks: {
+            decorators: [
+              { title: 'Fet', value: 'strong' },
+              { title: 'Kursiv', value: 'em' },
+              { title: 'Understrek', value: 'underline' }
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      description: 'Legg til detaljert informasjon, instruksjoner eller fakta relatert til bildet. Bruk overskrifter for å organisere innholdet.'
+    }),
+    defineField({
       name: 'downloadFile',
       title: 'Nedlastningsfil (PDF, valgfritt)',
       type: 'file'
@@ -99,13 +164,6 @@ export default defineType({
       type: 'boolean',
       initialValue: false,
       description: 'Aktivér denne hvis bildet skal kunne fargelegges online'
-    }),
-    defineField({
-      name: 'tags',
-      title: 'Nøkkelord',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'F.eks. romvesen, måne, kikkert'
     }),
     defineField({
       name: 'difficulty',
