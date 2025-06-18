@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import BaseJsonLd from '@/components/json-ld/BaseJsonLd';
+import PageLayout from '@/components/shared/PageLayout';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
 
 export const metadata: Metadata = {
   title: 'Om Skribenten - TegnOgFarge.no',
@@ -10,10 +12,16 @@ export const metadata: Metadata = {
 };
 
 export default function SkribentPage() {
+  const breadcrumbItems = [
+    { label: 'Hjem', href: '/' },
+    { label: 'Om Skribenten', href: '/om-skribenten', active: true }
+  ];
+
   return (
-    <>
+    <PageLayout wrapperClassName="bg-[#FEFAF6]">
       <BaseJsonLd />
-      <div className="container mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto">
+        <Breadcrumbs items={breadcrumbItems} />
         <h1 className="text-3xl font-bold mb-8">Om Skribenten</h1>
         <div className="prose lg:prose-xl max-w-none">
           <p>
@@ -52,6 +60,6 @@ export default function SkribentPage() {
           </p>
         </div>
       </div>
-    </>
+    </PageLayout>
   );
 }

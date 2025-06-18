@@ -15,6 +15,7 @@ import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import { DrawingCard } from '@/components/cards/DrawingCard';
 import { WEBP_PLACEHOLDER_PATH, SVG_BLUR_PLACEHOLDER } from '@/lib/utils';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
 
 export const revalidate = 3600; // Oppdater siden hver time for bedre caching
 
@@ -249,59 +250,43 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
     notFound();
   }
   
-  const sortedDrawings = subcategory.drawings.sort((a: Drawing, b: Drawing) => (a.order || 0) - (b.order || 0));
-  
+  const sortedDrawings = subcategory.drawings.sort((a: Drawing, b: Drawing) => (a.order ?? Infinity) - (b.order ?? Infinity));
+
+  const breadcrumbItems = [
+    { label: 'Hjem', href: '/' },
+    ...(subcategory.parentCategory ? [{ label: subcategory.parentCategory.title, href: `/${subcategory.parentCategory.slug}` }] : []),
+    { label: subcategory.title, href: `/${categorySlug}/${subcategorySlug}`, active: true }
+  ];
+
   return (
-    <div className="bg-[#FEFAF6] min-h-screen">
+    <div className="flex flex-col min-h-screen bg-[#FEFAF6]">
       <Header />
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-full mx-auto">
-          <nav aria-label="Breadcrumb" className="mb-6">
-            <Link 
-              href={subcategory.parentCategory ? `/${subcategory.parentCategory.slug}` : '/'}
-              className="text-sm text-gray-500 hover:text-gray-700"
-            >
-              {subcategory.parentCategory ? subcategory.parentCategory.title : 'Hjem'}
-            </Link>
-            {subcategory.parentCategory && (
-              <>
-                <span className="mx-2 text-gray-500">/</span>
-                <Link 
-                  href={`/${subcategory.parentCategory.slug}`}
-                  className="text-sm text-gray-500 hover:text-gray-700"
-                >
-                  {subcategory.parentCategory.title}
-                </Link>
-              </>
-            )}
-            {subcategory.parentCategory && (
-              <>
-                <span className="mx-2 text-gray-500">/</span>
-                <Link 
-                  href={`/${categorySlug}/${subcategorySlug}`}
-                  className="text-sm text-gray-500 hover:text-gray-700"
-                >
-                  {subcategory.title}
-                </Link>
-              </>
-            )}
-          </nav>
-          
-          <h1 className="text-4xl font-bold mb-4 font-display text-navy">{subcategory.title}</h1>
-          <p className="w-full text-lg text-gray-600 mb-8">{subcategory.description}</p>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {sortedDrawings.map((drawing: Drawing) => (
-              <DrawingCard 
-                key={drawing._id} 
-                title={drawing.title}
-                imageUrl={drawing.thumbnail?.url || WEBP_PLACEHOLDER_PATH}
-                imageAlt={drawing.thumbnail?.alt || 'Tegning'}
-                lqip={drawing.thumbnail?.lqip || SVG_BLUR_PLACEHOLDER}
-                href={`/${categorySlug}/${subcategorySlug}/${drawing.slug}`}
-                difficulty={drawing.difficulty}
-              />
-            ))}
+      <main className="flex-grow">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-full mx-auto">
+            <Breadcrumbs items={breadcrumbItems} />
+            
+            <header className="mb-8">
+              <h1 id="subcategory-title" className="text-3xl font-bold mb-2 flex items-center font-display text-navy">
+                {subcategory.title}
+              </h1>
+            </header>
+            
+            <p className="w-full text-lg text-gray-600 mb-8">{subcategory.description}</p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {sortedDrawings.map((drawing: Drawing) => (
+                <DrawingCard 
+                  key={drawing._id} 
+                  title={drawing.title}
+                  imageUrl={drawing.thumbnail?.url || WEBP_PLACEHOLDER_PATH}
+                  imageAlt={drawing.thumbnail?.alt || 'Tegning'}
+                  lqip={drawing.thumbnail?.lqip || SVG_BLUR_PLACEHOLDER}
+                  href={`/${categorySlug}/${subcategorySlug}/${drawing.slug}`}
+                  difficulty={drawing.difficulty}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </main>

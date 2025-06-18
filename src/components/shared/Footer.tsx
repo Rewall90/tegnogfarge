@@ -1,40 +1,8 @@
-"use client";
-
-import React, { useState } from 'react';
 import Link from 'next/link';
+import NewsletterForm from '../newsletter/NewsletterForm';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [message, setMessage] = useState('');
-  
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('loading');
-    
-    try {
-      const response = await fetch('/api/newsletter/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        setStatus('success');
-        setMessage(data.message);
-        setEmail(''); // Clear form
-      } else {
-        setStatus('error');
-        setMessage(data.message);
-      }
-    } catch (error) {
-      setStatus('error');
-      setMessage('Noe gikk galt. Prøv igjen senere.');
-    }
-  };
   
   return (
     <footer className="bg-[#264653] text-white py-10">
@@ -48,52 +16,7 @@ export default function Footer() {
             <p className="mt-4 mb-4 max-w-md text-body">
               Bli med på vårt nyhetsbrev for å holde deg oppdatert om funksjoner og nyheter.
             </p>
-            
-            {status === 'success' ? (
-              <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded">
-                <p>{message}</p>
-              </div>
-            ) : (
-              <form className="flex flex-col" onSubmit={handleNewsletterSubmit}>
-                <div className="flex mb-2">
-                  <input 
-                    type="email" 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Skriv inn e-posten din" 
-                    className="border border-gray-700 px-4 py-2 rounded-l focus:outline-none w-full max-w-xs"
-                    aria-label="Din e-postadresse"
-                    required
-                    disabled={status === 'loading'}
-                  />
-                  <button 
-                    type="submit"
-                    className={`${
-                      status === 'loading' 
-                        ? 'bg-gray-400' 
-                        : 'bg-[#FF6F59] hover:bg-[#E85A45] text-white'
-                    } text-button px-4 py-2 rounded-r flex items-center`}
-                    aria-label="Abonner på nyhetsbrevet"
-                    disabled={status === 'loading'}
-                  >
-                    {status === 'loading' ? (
-                      <>
-                        <span className="animate-spin h-4 w-4 border-t-2 border-white rounded-full mr-2"></span>
-                        Sender...
-                      </>
-                    ) : 'Abonner'}
-                  </button>
-                </div>
-                
-                {status === 'error' && (
-                  <p className="text-red-600 text-sm">{message}</p>
-                )}
-                
-                <p className="text-xs mt-2">
-                  Ved å klikke på dette, bekrefter du at du er over 16 år.
-                </p>
-              </form>
-            )}
+            <NewsletterForm />
           </div>
           
           {/* Footer Links */}
@@ -115,7 +38,7 @@ export default function Footer() {
                 <li><Link href="/blog" className="hover:underline">Blogg</Link></li>
                 <li><Link href="/coloring-app" className="hover:underline">Fargeleggingsverktøy</Link></li>
                 <li><Link href="/fjerning-av-innhold" className="hover:underline">Fjerning av Innhold</Link></li>
-                <li><Link href="#" className="hover:underline">Kontakt Oss</Link></li>
+                <li><Link href="/kontakt" className="hover:underline">Kontakt Oss</Link></li>
               </ul>
             </div>
             <div>

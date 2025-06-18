@@ -253,11 +253,8 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
             <nav aria-label="Breadcrumb">
               <Link 
                 href="/" 
-                className="text-blue-600 hover:underline mb-4 inline-flex items-center gap-2"
+                className="text-[#FF6F59] hover:underline mb-4 inline-flex items-center gap-2"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
                 Tilbake til forsiden
               </Link>
             </nav>

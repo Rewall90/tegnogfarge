@@ -8,7 +8,7 @@ import { ColoringCategories } from '@/components/frontpage/ColoringCategories';
 import Image from 'next/image';
 import CategoriesListJsonLd from '@/components/json-ld/CategoriesListJsonLd';
 import FAQAccordion from '@/components/frontpage/FAQAccordion';
-import NewsletterForm from '@/components/frontpage/NewsletterForm';
+import NewsletterForm from '@/components/newsletter/NewsletterForm';
 
 interface Category {
   title: string;
