@@ -1,3 +1,16 @@
+/**
+ * Category URL Middleware
+ * 
+ * This middleware handles URL normalization for category-related routes:
+ * - Redirects /categories to /all
+ * - Redirects /categories/[slug] to /[slug] (removing the "categories" prefix)
+ * - Redirects /all-categories to /all
+ * 
+ * NOTE: This project has a second middleware file at the root level (middleware.ts)
+ * that handles authentication and route protection. Both files work independently
+ * and target different routes.
+ */
+
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 

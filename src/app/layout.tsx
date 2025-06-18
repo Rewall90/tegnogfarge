@@ -60,7 +60,7 @@ export default function RootLayout({
           type="image/svg+xml"
         />
       </head>
-      <body className="font-sans">
+      <body className="font-sans bg-white text-gray-900 min-h-screen flex flex-col">
         <SessionProviderWrapper>{children}</SessionProviderWrapper>
         <StagewiseToolbarWrapper />
         <BaseJsonLd />

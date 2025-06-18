@@ -15,6 +15,7 @@ export interface Drawing {
   contextContent?: any; // Portable Text format
   categorySlug?: string;
   subcategorySlug?: string;
+  tags?: string[];
   image?: {
     url?: string;
     alt?: string;

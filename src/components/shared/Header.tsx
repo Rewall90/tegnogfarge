@@ -41,7 +41,7 @@ export default function Header() {
               <Link href="/dashboard" className="text-[#264653] hover:text-[#1E3A40] text-lg">Dashboard</Link>
             )}
             <Link href="/blog" className="text-[#264653] hover:text-[#1E3A40] text-lg">Blogg Artikler</Link>
-            <Link href="/about" className="text-[#264653] hover:text-[#1E3A40] text-lg">Om Oss</Link>
+            <Link href="/om-oss" className="text-[#264653] hover:text-[#1E3A40] text-lg">Om Oss</Link>
           </nav>
           
           <div className="hidden md:flex items-center space-x-4">
@@ -98,7 +98,7 @@ export default function Header() {
                 <Link href="/dashboard" className="text-[#264653] hover:text-[#1E3A40] text-lg">Dashboard</Link>
               )}
               <Link href="/blog" className="text-[#264653] hover:text-[#1E3A40] text-lg">Blogg Artikler</Link>
-              <Link href="/about" className="text-[#264653] hover:text-[#1E3A40] text-lg">Om Oss</Link>
+              <Link href="/om-oss" className="text-[#264653] hover:text-[#1E3A40] text-lg">Om Oss</Link>
               
               {session && session.user ? (
                 <>

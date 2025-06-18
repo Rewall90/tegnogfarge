@@ -99,23 +99,23 @@ export default function Footer() {
           {/* Footer Links */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="font-display font-semibold mb-4">Om oss</h3>
+              <h3 className="font-display font-semibold mb-4">Om Oss</h3>
               <ul className="space-y-2">
-                <li><Link href="/skribent" className="hover:underline">Om skribenten</Link></li>
-                <li><Link href="#" className="hover:underline">Lenke To</Link></li>
-                <li><Link href="#" className="hover:underline">Lenke Tre</Link></li>
-                <li><Link href="#" className="hover:underline">Lenke Fire</Link></li>
-                <li><Link href="#" className="hover:underline">Lenke Fem</Link></li>
+                <li><Link href="/om-oss" className="hover:underline">Om TegnOgFarge.no</Link></li>
+                <li><Link href="/om-skribenten" className="hover:underline">Om Skribenten</Link></li>
+                <li><Link href="/vilkar-og-betingelser" className="hover:underline">Vilkår og Betingelser</Link></li>
+                <li><Link href="/personvernerklaering" className="hover:underline">Personvernerklæring</Link></li>
+                <li><Link href="/lisensieringspolicy" className="hover:underline">Lisensieringspolicy</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-display font-semibold mb-4">Kolonne To</h3>
+              <h3 className="font-display font-semibold mb-4">Innhold</h3>
               <ul className="space-y-2">
-                <li><Link href="#" className="hover:underline">Lenke Seks</Link></li>
-                <li><Link href="#" className="hover:underline">Lenke Syv</Link></li>
-                <li><Link href="#" className="hover:underline">Lenke Åtte</Link></li>
-                <li><Link href="#" className="hover:underline">Lenke Ni</Link></li>
-                <li><Link href="#" className="hover:underline">Lenke Ti</Link></li>
+                <li><Link href="/main-category" className="hover:underline">Kategorier</Link></li>
+                <li><Link href="/blog" className="hover:underline">Blogg</Link></li>
+                <li><Link href="/coloring-app" className="hover:underline">Fargeleggingsverktøy</Link></li>
+                <li><Link href="/fjerning-av-innhold" className="hover:underline">Fjerning av Innhold</Link></li>
+                <li><Link href="#" className="hover:underline">Kontakt Oss</Link></li>
               </ul>
             </div>
             <div>
@@ -170,13 +170,13 @@ export default function Footer() {
         <div className="border-t border-gray-700 pt-6 mt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-300 mb-4 md:mb-0">
-              &copy; {currentYear} Fargelegg. Alle rettigheter reservert.
+              &copy; {currentYear} TegnOgFarge.no. Alle rettigheter reservert.
             </p>
             <nav aria-label="Juridisk informasjon">
               <ul className="flex flex-wrap space-x-4 text-sm">
-                <li><Link href="#" className="text-gray-300 hover:underline">Personvernerklæring</Link></li>
-                <li><Link href="/Lisens" className="text-gray-300 hover:underline">Lisensvilkår</Link></li>
-                <li><Link href="/skribent" className="text-gray-300 hover:underline">Om skribenten</Link></li>
+                <li><Link href="/personvernerklaering" className="text-gray-300 hover:underline">Personvernerklæring</Link></li>
+                <li><Link href="/lisensieringspolicy" className="text-gray-300 hover:underline">Lisensvilkår</Link></li>
+                <li><Link href="/om-skribenten" className="text-gray-300 hover:underline">Om skribenten</Link></li>
                 <li><Link href="#" className="text-gray-300 hover:underline">Innstillinger for informasjonskapsler</Link></li>
               </ul>
             </nav>

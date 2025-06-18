@@ -17,7 +17,7 @@ export default function PageLayout({
   return (
     <>
       <Header />
-      <main className={`container mx-auto px-4 py-8 ${className}`}>
+      <main className={`container mx-auto px-4 py-8 flex-grow ${className}`}>
         {breadcrumbItems && <Breadcrumbs items={breadcrumbItems} />}
         {children}
       </main>

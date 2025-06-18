@@ -38,22 +38,40 @@ export async function GET() {
         <priority>0.8</priority>
       </url>
       <url>
-        <loc>${baseUrl}/about</loc>
+        <loc>${baseUrl}/om-oss</loc>
         <lastmod>${currentDate}</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.5</priority>
+        <priority>0.8</priority>
       </url>
       <url>
-        <loc>${baseUrl}/Lisens</loc>
+        <loc>${baseUrl}/lisensieringspolicy</loc>
         <lastmod>${currentDate}</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.3</priority>
+        <priority>0.7</priority>
       </url>
       <url>
-        <loc>${baseUrl}/skribent</loc>
+        <loc>${baseUrl}/om-skribenten</loc>
         <lastmod>${currentDate}</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.3</priority>
+        <priority>0.7</priority>
+      </url>
+      <url>
+        <loc>${baseUrl}/personvernerklaering</loc>
+        <lastmod>${currentDate}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+      </url>
+      <url>
+        <loc>${baseUrl}/vilkar-og-betingelser</loc>
+        <lastmod>${currentDate}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+      </url>
+      <url>
+        <loc>${baseUrl}/fjerning-av-innhold</loc>
+        <lastmod>${currentDate}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
       </url>
     `;
     
@@ -141,22 +159,40 @@ export async function GET() {
         <priority>0.8</priority>
       </url>
       <url>
-        <loc>${baseUrl}/about</loc>
+        <loc>${baseUrl}/om-oss</loc>
         <lastmod>${currentDate}</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.5</priority>
+        <priority>0.8</priority>
       </url>
       <url>
-        <loc>${baseUrl}/Lisens</loc>
+        <loc>${baseUrl}/lisensieringspolicy</loc>
         <lastmod>${currentDate}</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.3</priority>
+        <priority>0.7</priority>
       </url>
       <url>
-        <loc>${baseUrl}/skribent</loc>
+        <loc>${baseUrl}/om-skribenten</loc>
         <lastmod>${currentDate}</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.3</priority>
+        <priority>0.7</priority>
+      </url>
+      <url>
+        <loc>${baseUrl}/personvernerklaering</loc>
+        <lastmod>${currentDate}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+      </url>
+      <url>
+        <loc>${baseUrl}/vilkar-og-betingelser</loc>
+        <lastmod>${currentDate}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+      </url>
+      <url>
+        <loc>${baseUrl}/fjerning-av-innhold</loc>
+        <lastmod>${currentDate}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
       </url>
     `;
     sitemap += '</urlset>';

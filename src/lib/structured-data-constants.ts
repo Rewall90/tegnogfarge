@@ -14,14 +14,14 @@ export const STRUCTURED_DATA = {
   
   // Legal information
   LEGAL: {
-    LICENSE_URL: `${BASE_URL}/Lisens`,
+    LICENSE_URL: `${BASE_URL}/lisensieringspolicy`,
     COPYRIGHT: "© Tegn og Farge"
   },
   
   // Author information
   AUTHOR: {
     NAME: "Tegn og Farge",
-    URL: `${BASE_URL}/skribent`
+    URL: `${BASE_URL}/om-skribenten`
   },
   
   // Site metadata

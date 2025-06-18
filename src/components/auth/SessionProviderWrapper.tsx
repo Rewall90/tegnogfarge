@@ -8,5 +8,9 @@ export default function SessionProviderWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  return <SessionProvider>{children}</SessionProvider>;
+  return (
+    <SessionProvider>
+      <div className="flex flex-col flex-1">{children}</div>
+    </SessionProvider>
+  );
 } 

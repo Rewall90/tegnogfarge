@@ -1,3 +1,16 @@
+/**
+ * Root Middleware: Authentication & Authorization
+ * 
+ * This middleware handles user authentication and route protection:
+ * - Redirects authenticated users away from login/register pages
+ * - Prevents unauthenticated users from accessing dashboard routes
+ * - Restricts admin routes to users with admin role
+ * 
+ * NOTE: This project has a second middleware file at src/middleware.ts
+ * that handles category-related URL redirects. Both files work independently
+ * and target different routes.
+ */
+
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
