@@ -15,6 +15,7 @@ export interface Drawing {
   isPublished: boolean;
   authorId?: ObjectId;
   downloadCount: number;
+  tags?: string[];
 }
 
 export interface DrawingWithCategory extends Drawing {
@@ -41,5 +42,6 @@ export function mapToDrawingModel(data: any): Drawing {
     isPublished: data.isPublished ?? true,
     authorId: data.authorId,
     downloadCount: data.downloadCount ?? 0,
+    tags: data.tags || [],
   };
 } 
