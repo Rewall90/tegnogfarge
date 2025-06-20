@@ -1,11 +1,12 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import BaseJsonLd from '@/components/json-ld/BaseJsonLd';
 import PageLayout from '@/components/shared/PageLayout';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
 
 export const metadata: Metadata = {
-  title: 'Retningslinjer for fjerning av innhold - TegnOgFarge.no',
-  description: 'Våre retningslinjer for fjerning av innhold. Lær hvordan du kan be om fjerning av innhold fra TegnOgFarge.no.',
+  title: 'Fjerning av innhold - TegnOgFarge.no',
+  description: 'Hos Tegn og Farge er vi opptatt av å gjøre ting riktig. Vi bruker bare bilder og innhold vi har lov til å bruke, og vi håper alle som bruker siden vår gjør det samme.',
   alternates: {
     canonical: 'https://www.tegnogfarge.no/fjerning-av-innhold',
   },
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 export default function ContentRemovalPolicyPage() {
   const breadcrumbItems = [
     { label: 'Hjem', href: '/' },
-    { label: 'Fjerning av Innhold', href: '/fjerning-av-innhold', active: true }
+    { label: 'Fjerning av innhold', href: '/fjerning-av-innhold', active: true }
   ];
 
   return (
@@ -22,25 +23,49 @@ export default function ContentRemovalPolicyPage() {
       <BaseJsonLd />
       <div className="max-w-4xl mx-auto">
         <Breadcrumbs items={breadcrumbItems} />
-        <h1 className="text-3xl font-bold mb-8">Retningslinjer for fjerning av innhold</h1>
-        <div className="prose lg:prose-xl max-w-none">
-          
-          <p>Vi respekterer andres immaterielle rettigheter og forventer at våre brukere gjør det samme. Hvis du mener at innhold på TegnOgFarge.no krenker dine opphavsrettigheter, vennligst følg prosedyren nedenfor.</p>
+        <div>
+            <h1 className="text-heading text-[#264653] font-bold mb-4">Retningslinjer for fjerning av innhold</h1>
+            <p className="text-lg text-gray-600 mb-8">
+                Hos Tegn og Farge er vi opptatt av å gjøre ting riktig. Vi bruker bare bilder og innhold vi har lov til å bruke, og vi håper alle som bruker siden vår gjør det samme.
+            </p>
 
-          <h2 className="text-2xl font-semibold mt-6 mb-4">Hvordan sende en forespørsel om fjerning</h2>
-          <p>For å be om fjerning av innhold, vennligst send en e-post til <a href="mailto:kontakt@tegnogfarge.no">kontakt@tegnogfarge.no</a> med følgende informasjon:</p>
-          <ul>
-            <li>En fysisk eller elektronisk signatur fra eieren av opphavsretten (eller en person autorisert til å handle på vegne av eieren).</li>
-            <li>Identifikasjon av det opphavsrettsbeskyttede verket du mener er blitt krenket.</li>
-            <li>Identifikasjon av materialet du mener er krenkende, inkludert informasjon som er tilstrekkelig for at vi kan lokalisere materialet (f.eks. URL-en til siden).</li>
-            <li>Din kontaktinformasjon, inkludert navn, adresse, telefonnummer og e-postadresse.</li>
-            <li>En erklæring om at du i god tro mener at bruken av materialet ikke er autorisert av opphavsrettseieren, dens agent, eller loven.</li>
-            <li>En erklæring om at informasjonen i varselet er nøyaktig, og, under straff for mened, at du er autorisert til å handle på vegne av eieren av en eksklusiv rett som angivelig er krenket.</li>
-          </ul>
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">1. Hvis du mener vi har brukt noe vi ikke har lov til</h2>
+            <p className="text-lg text-gray-600 mb-4">
+                Dersom du ser noe på nettsiden vår som du mener vi ikke har rett til å bruke – kanskje du selv eier det – kan du <Link href="/kontakt" className="text-link-orange hover:underline">kontakte oss via kontaktskjemaet</Link>. Vennligst inkluder følgende informasjon i meldingen din:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-gray-600 text-lg">
+                <li>Hvilket innhold du mener er feil å bruke (f.eks. bilde eller tekst), og lenke til hvor vi finner det på nettsiden</li>
+                <li>Hvorfor det ikke er greit at vi bruker det</li>
+                <li>Ditt navn, e-post og eventuelt adresse</li>
+                <li>Bevis på at du eier det, eller at du har lov til å si ifra på vegne av den som gjør det</li>
+                <li>En setning hvor du forklarer at du virkelig tror vi har gjort en feil, og at dette ikke er noe vi har fått lov til</li>
+                <li>En setning hvor du sier at alt du skriver er sant</li>
+            </ul>
 
-          <h2 className="text-2xl font-semibold mt-6 mb-4">Behandling av forespørselen</h2>
-          <p>Når vi mottar en gyldig forespørsel, vil vi vurdere den og, hvis det er hensiktsmessig, fjerne eller deaktivere tilgangen til det angivelig krenkende materialet. Vi vil også varsle den berørte brukeren og gi dem mulighet til å sende inn en innsigelse.</p>
-          
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">2. Hva skjer etterpå?</h2>
+            <p className="text-lg text-gray-600 mb-8">
+                Når vi har fått meldingen din, ser vi gjennom alt så fort vi kan. Hvis det ser ut som du har rett, fjerner vi det innholdet du har sagt ifra om. Vi kan også kontakte deg hvis vi trenger mer informasjon.
+            </p>
+
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">3. Hvis vi har fjernet noe ved en feil</h2>
+            <p className="text-lg text-gray-600 mb-4">
+                Hvis du har lagt ut noe på vår nettside, og det har blitt tatt bort – men du mener det var en feil – kan du også sende oss en e-post. Skriv da:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-gray-600 text-lg">
+                <li>Hva som ble tatt bort, og hvor det var</li>
+                <li>At du mener det ble fjernet ved en feil</li>
+                <li>Navn, adresse og e-postadressen din</li>
+            </ul>
+
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">4. Endringer i reglene</h2>
+            <p className="text-lg text-gray-600 mb-8">
+                Vi kan komme til å endre på disse reglene hvis det trengs. Hvis vi gjør det, sier vi fra her på denne siden. Du kan gjerne komme innom og lese dem igjen senere.
+            </p>
+
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">Spørsmål?</h2>
+            <p className="text-lg text-gray-600">
+                Lurer du på noe? <Link href="/kontakt" className="text-link-orange hover:underline">Ta kontakt med oss</Link>, så svarer vi så fort vi kan.
+            </p>
         </div>
       </div>
     </PageLayout>

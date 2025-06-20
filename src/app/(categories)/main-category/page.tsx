@@ -1,172 +1,86 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { Metadata } from 'next';
 import { getAllCategories } from '@/lib/sanity';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
+import { ColoringCategories } from '@/components/frontpage/ColoringCategories';
+import CategoriesListJsonLd from '@/components/json-ld/CategoriesListJsonLd';
 
-export const revalidate = 3600; // Oppdater siden hver time
+export const revalidate = 3600; // Revalidate every hour
 
-// Legg til en lokal type for category:
-type CategoryType = { 
-  _id: string; 
-  slug: string; 
-  imageUrl?: string; 
-  title: string; 
-  description?: string;
-  seoTitle?: string;
-  seoDescription?: string;
+export const metadata: Metadata = {
+  title: 'Alle Kategorier - TegnOgFarge.no',
+  description: 'Utforsk alle våre fargeleggingskategorier for barn og voksne. Velg en kategori for å finne fargeleggingsark.',
+  alternates: {
+    canonical: 'https://www.tegnogfarge.no/main-category',
+  },
 };
 
-export async function generateMetadata() {
-  const categories = await getAllCategories();
-  
-  // Prepare the JSON-LD data for categories list
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no';
-  const currentUrl = `${baseUrl}/all-categories`;
-  const categoriesId = `${baseUrl}/categories`;
-  
-  // Create hasPart array for the categories list
-  const hasPart = categories.map((category: CategoryType) => ({
-    "@type": "CollectionPage",
-    "@id": `${baseUrl}/${category.slug}`
-  }));
-  
-  // Create an array of graph items
-  const graphItems = [];
-  
-  // Add main categories listing page
-  graphItems.push({
-    "@type": "CollectionPage",
-    "@id": categoriesId,
-    "name": "Fargeleggingsbilder Kategorier",
-    "description": "Utforsk alle kategorier av fargeleggingsbilder for barn og voksne.",
-    "url": currentUrl,
-    "inLanguage": "nb-NO",
-    "mainEntity": {
-      "@type": "ItemList",
-      "name": "Kategorier av fargeleggingsbilder",
-      "description": `Utforsk populære kategorier av fargeleggingsbilder for barn, inkludert ${categories.slice(0, 3).map((cat: CategoryType) => cat.title).join(', ')}${categories.length > 3 ? ' og flere' : ''}.`,
-      "itemListElement": categories.map((category: CategoryType, index: number) => ({
-        "@type": "ListItem",
-        "position": index + 1,
-        "name": category.seoTitle || category.title,
-        "url": `${baseUrl}/${category.slug}`,
-        ...(category.imageUrl && { 
-          "image": category.imageUrl,
-          "thumbnailUrl": category.imageUrl 
-        }),
-        "description": category.description || `Utforsk våre fargeleggingsark med ${category.title.toLowerCase()}-tema for barn.`
-      }))
-    },
-    "hasPart": hasPart,
-    "breadcrumb": {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Hjem",
-          "item": baseUrl
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Kategorier",
-          "item": currentUrl
-        }
-      ]
-    }
-  });
-  
-  // Add category pages
-  categories.forEach((category: CategoryType) => {
-    graphItems.push({
-      "@type": "CollectionPage",
-      "@id": `${baseUrl}/${category.slug}`,
-      "name": `${category.seoTitle || category.title} – Fargeleggingsark`,
-      "url": `${baseUrl}/${category.slug}`,
-      "inLanguage": "nb-NO",
-      ...(category.imageUrl && { 
-        "image": category.imageUrl,
-        "thumbnailUrl": category.imageUrl 
-      }),
-      "description": category.description || `Utforsk våre fargeleggingsark med ${category.title.toLowerCase()}-tema for barn.`,
-      "isPartOf": {
-        "@id": categoriesId
-      }
-    });
-  });
-  
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": graphItems
-  };
-
-  return {
-    title: 'Fargeleggingsbilder Kategorier | Fargelegg Nå',
-    description: 'Utforsk alle våre kategorier av fargeleggingsbilder',
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no'),
-    alternates: {
-      canonical: '/all-categories',
-    },
-    openGraph: {
-      title: 'Fargeleggingsbilder Kategorier | Fargelegg Nå',
-      description: 'Utforsk alle våre kategorier av fargeleggingsbilder',
-      url: '/all-categories',
-      siteName: 'Fargelegg Nå',
-      locale: 'nb_NO',
-      type: 'website',
-    },
-    other: {
-      'application/ld+json': JSON.stringify(jsonLd),
-    },
+interface Category {
+  _id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  imageUrl?: string;
+  isActive: boolean;
+  featured?: boolean;
+  order?: number;
+  image?: {
+    url: string;
+    alt: string;
   };
 }
 
-async function AllCategoriesPage() {
+export default async function MainCategoryPage() {
   const categories = await getAllCategories();
+  
+  // Filter active categories and sort them by featured status and order
+  const activeCategories = categories
+    .filter((cat: Category) => cat.isActive)
+    .sort((a: Category, b: Category) => {
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      if ((a.order ?? 0) !== (b.order ?? 0)) return (a.order ?? 0) - (b.order ?? 0);
+      return a.title.localeCompare(b.title);
+    });
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-[#FEFAF6]">
       <Header />
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-8">Alle kategorier</h1>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((category: CategoryType) => (
+          <div className="max-w-8xl mx-auto">
+            <nav aria-label="Breadcrumb">
               <Link 
-                key={category._id} 
-                href={`/${category.slug}`}
-                className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                href="/" 
+                className="text-[#FF6F59] hover:underline mb-4 inline-flex items-center gap-2"
               >
-                {category.imageUrl && (
-                  <div className="relative h-48 w-full">
-                    <Image 
-                      src={category.imageUrl}
-                      alt={category.title}
-                      fill
-                      sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
-                      className="object-cover"
-                      priority={false}
-                    />
-                  </div>
-                )}
-                <div className="p-4">
-                  <h2 className="font-bold text-xl mb-2">{category.title}</h2>
-                  {category.description && (
-                    <p className="text-gray-600 text-sm">{category.description}</p>
-                  )}
-                </div>
+                Tilbake til forsiden
               </Link>
-            ))}
+            </nav>
+            
+            <header className="mb-8">
+              <h1 className="text-3xl font-bold mb-2 flex items-center font-display text-navy">
+                Alle Kategorier
+              </h1>
+              <p className="text-lg text-navy mt-4">
+                Utforsk alle våre fargeleggingskategorier for barn og voksne. Velg en kategori for å finne fargeleggingsark.
+              </p>
+            </header>
+            
+            <ColoringCategories
+              categories={activeCategories.map((cat: Category) => ({
+                name: cat.title,
+                imageUrl: cat.image?.url || cat.imageUrl || '/images/placeholder.svg',
+                slug: cat.slug,
+              }))}
+            />
           </div>
         </div>
       </main>
       <Footer />
+      <CategoriesListJsonLd categories={activeCategories} pathname="/main-category" />
     </div>
   );
-}
-
-export default AllCategoriesPage; 
+} 

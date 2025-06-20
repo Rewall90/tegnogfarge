@@ -8,6 +8,8 @@ export default function MobileMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session } = useSession();
 
+  const mobileLinkClasses = "text-[#264653] hover:text-[#FF6F59] text-lg relative inline-block after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-[2px] after:bg-[#FF6F59] after:opacity-0 after:transition-opacity after:duration-300 hover:after:opacity-100 transition-transform duration-200 hover:-translate-y-[2px]";
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -47,12 +49,13 @@ export default function MobileMenu() {
         <div id="mobile-menu" className="md:hidden absolute top-24 left-0 right-0 bg-[#FEFAF6] shadow-md z-50">
           <div className="container mx-auto px-4 py-4 border-t">
             <nav className="flex flex-col space-y-4" aria-label="Mobilnavigasjon">
-              <Link href="/coloring" className="text-[#264653] hover:text-[#1E3A40] text-lg">Fargelegging Verktøy</Link>
+              <Link href="/all-subcategories" className={mobileLinkClasses}>Fargeleggingsark</Link>
               {session && (
-                <Link href="/dashboard" className="text-[#264653] hover:text-[#1E3A40] text-lg">Dashboard</Link>
+                <Link href="/dashboard" className={mobileLinkClasses}>Dashboard</Link>
               )}
-              <Link href="/blog" className="text-[#264653] hover:text-[#1E3A40] text-lg">Blogg Artikler</Link>
-              <Link href="/om-oss" className="text-[#264653] hover:text-[#1E3A40] text-lg">Om Oss</Link>
+              
+              <Link href="/main-category" className={mobileLinkClasses}>Kategorier</Link>
+              <Link href="/om-oss" className={mobileLinkClasses}>Om Oss</Link>
               
               <div className="border-t my-4"></div>
 

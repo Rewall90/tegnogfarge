@@ -2,9 +2,10 @@ import React from "react";
 import Link from "next/link";
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
-import { getAllCategories } from '@/lib/sanity';
+import { getAllCategories, getPopularSubcategories } from '@/lib/sanity';
 import { FrontpageHero } from '@/components/frontpage/FrontpageHero';
 import { ColoringCategories } from '@/components/frontpage/ColoringCategories';
+import { SubcategoryHighlights } from '@/components/category/SubcategoryHighlights';
 import Image from 'next/image';
 import CategoriesListJsonLd from '@/components/json-ld/CategoriesListJsonLd';
 import FAQAccordion from '@/components/frontpage/FAQAccordion';
@@ -99,6 +100,13 @@ export async function generateMetadata() {
 
 export default async function Home() {
   const categories: Category[] = await getAllCategories();
+  
+  // Fetch popular subcategories directly
+  const featuredSubcategories = await getPopularSubcategories(4);
+  
+  // Debug: Log the fetched subcategories
+  console.log('Featured subcategories:', featuredSubcategories);
+  
   const mainCategories = categories
     .filter((cat) => cat.isActive)
     .sort((a, b) => {
@@ -108,6 +116,64 @@ export default async function Home() {
       return a.title.localeCompare(b.title);
     })
     .slice(0, 12);
+
+  // Use a fallback if no subcategories are found
+  const subcategoriesToDisplay = featuredSubcategories && featuredSubcategories.length > 0 
+    ? featuredSubcategories 
+    : [
+        {
+          _id: 'fallback1',
+          title: 'Dyr',
+          slug: 'dyr',
+          featuredImage: {
+            url: '/images/placeholder.svg',
+            alt: 'Dyr'
+          },
+          parentCategory: {
+            slug: 'dyr',
+            title: 'Dyr'
+          }
+        },
+        {
+          _id: 'fallback2',
+          title: 'Høytider',
+          slug: 'hoytider',
+          featuredImage: {
+            url: '/images/placeholder.svg',
+            alt: 'Høytider'
+          },
+          parentCategory: {
+            slug: 'hoytider',
+            title: 'Høytider'
+          }
+        },
+        {
+          _id: 'fallback3',
+          title: 'Natur',
+          slug: 'natur',
+          featuredImage: {
+            url: '/images/placeholder.svg',
+            alt: 'Natur'
+          },
+          parentCategory: {
+            slug: 'natur',
+            title: 'Natur'
+          }
+        },
+        {
+          _id: 'fallback4',
+          title: 'Tegneserier',
+          slug: 'tegneserier',
+          featuredImage: {
+            url: '/images/placeholder.svg',
+            alt: 'Tegneserier'
+          },
+          parentCategory: {
+            slug: 'tegneserier',
+            title: 'Tegneserier'
+          }
+        }
+      ];
 
   return (
     <>
@@ -120,6 +186,24 @@ export default async function Home() {
               imageUrl: cat.image?.url || '/images/placeholder-category.png',
               slug: cat.slug,
             }))}
+          />
+          
+          {/* Newsletter Section */}
+          <section className="py-16 bg-[#F4D35E] text-navy" aria-labelledby="newsletter-heading">
+            <div className="container mx-auto px-4 max-w-3xl text-center">
+              <h2 id="newsletter-heading" className="text-heading mb-6">Hold deg oppdatert med nyheter</h2>
+              <p className="text-body mb-8">Meld deg på vårt nyhetsbrev for å få de siste oppdateringene og blogginleggene.</p>
+              
+              <NewsletterForm />
+              <p className="text-sm mt-4">Ved å klikke på dette, bekrefter du at du har gyldig e-post.</p>
+            </div>
+          </section>
+          
+          {/* Featured Subcategories Section */}
+          <SubcategoryHighlights 
+            subcategories={subcategoriesToDisplay}
+            title="Utvalgte Fargeleggingsark"
+            subtitle="Våre mest populære samlinger"
           />
           
           {/* FAQ Section */}
@@ -171,17 +255,6 @@ export default async function Home() {
                   Kontakt oss
                 </Link>
               </div>
-            </div>
-          </section>
-          
-          {/* Newsletter Section */}
-          <section className="py-16 bg-gray-600 text-white" aria-labelledby="newsletter-heading">
-            <div className="container mx-auto px-4 max-w-3xl text-center">
-              <h2 id="newsletter-heading" className="text-heading mb-6">Hold deg oppdatert med nyheter</h2>
-              <p className="text-body mb-8">Meld deg på vårt nyhetsbrev for å få de siste oppdateringene og blogginleggene.</p>
-              
-              <NewsletterForm />
-              <p className="text-sm mt-4">Ved å klikke på dette, bekrefter du at du har gyldig e-post.</p>
             </div>
           </section>
         </main>

@@ -443,4 +443,170 @@ export async function searchDrawings(query: string) {
   `;
 
   return client.fetch(groqQuery, { searchQuery });
+}
+
+// Hent alle underkategorier på tvers av alle kategorier
+export async function getAllSubcategories() {
+  return client.fetch(`
+    *[_type == "subcategory" && isActive == true]
+    | order(order asc, title asc) {
+      _id,
+      title,
+      "slug": slug.current,
+      difficulty,
+      order,
+      isActive,
+      description,
+      seoTitle,
+      seoDescription,
+      featuredImage {
+        "url": asset->url,
+        "alt": alt,
+        "lqip": asset->metadata.lqip
+      },
+      "parentCategory": parentCategory->{ 
+        _id,
+        title, 
+        "slug": slug.current 
+      },
+      "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+    }
+  `);
+}
+
+// Hent populære underkategorier basert på antall tegninger
+export async function getPopularSubcategories(limit = 3) {
+  console.log(`Fetching ${limit} popular subcategories`);
+  
+  try {
+    const result = await client.fetch(`
+      *[_type == "subcategory" && isActive == true && defined(featuredImage)] {
+        _id,
+        title,
+        "slug": slug.current,
+        featuredImage {
+          "url": asset->url,
+          "alt": alt,
+          "lqip": asset->metadata.lqip
+        },
+        "parentCategory": parentCategory->{ 
+          title, 
+          "slug": slug.current 
+        },
+        "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+      } | order(drawingCount desc, title asc)[0...${limit}]
+    `);
+    
+    console.log('Found popular subcategories:', result);
+    
+    // If no results, try to get featured subcategories
+    if (!result || result.length === 0) {
+      console.log('No popular subcategories found, trying featured subcategories...');
+      const featuredResult = await client.fetch(`
+        *[_type == "subcategory" && isActive == true && defined(featuredImage) && featured == true] {
+          _id,
+          title,
+          "slug": slug.current,
+          featuredImage {
+            "url": asset->url,
+            "alt": alt,
+            "lqip": asset->metadata.lqip
+          },
+          "parentCategory": parentCategory->{ 
+            title, 
+            "slug": slug.current 
+          },
+          "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+        } | order(order asc, title asc)[0...${limit}]
+      `);
+      
+      console.log('Found featured subcategories:', featuredResult);
+      
+      // If still no results, just get any subcategories
+      if (!featuredResult || featuredResult.length === 0) {
+        console.log('No featured subcategories found, getting any subcategories...');
+        const anyResult = await client.fetch(`
+          *[_type == "subcategory" && isActive == true] {
+            _id,
+            title,
+            "slug": slug.current,
+            featuredImage {
+              "url": asset->url,
+              "alt": alt,
+              "lqip": asset->metadata.lqip
+            },
+            "parentCategory": parentCategory->{ 
+              title, 
+              "slug": slug.current 
+            },
+            "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+          } | order(title asc)[0...${limit}]
+        `);
+        
+        console.log('Found any subcategories:', anyResult);
+        return anyResult;
+      }
+      
+      return featuredResult;
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Error fetching popular subcategories:', error);
+    return [];
+  }
+}
+
+// Hent spesifikke underkategorier basert på slugs
+export async function getSpecificSubcategories(slugs: string[]) {
+  console.log('Fetching subcategories with slugs:', slugs);
+  
+  // Try to fetch by exact slug match first
+  const result = await client.fetch(`
+    *[_type == "subcategory" && slug.current in $slugs && isActive == true] {
+      _id,
+      title,
+      "slug": slug.current,
+      featuredImage {
+        "url": asset->url,
+        "alt": alt,
+        "lqip": asset->metadata.lqip
+      },
+      "parentCategory": parentCategory->{ 
+        title, 
+        "slug": slug.current 
+      },
+      "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+    }
+  `, { slugs });
+  
+  console.log('Found subcategories by slug:', result);
+  
+  // If no results, try to find by title (case insensitive)
+  if (!result || result.length === 0) {
+    console.log('No subcategories found by slug, trying by title...');
+    const titleResult = await client.fetch(`
+      *[_type == "subcategory" && isActive == true && (${slugs.map((slug, i) => `title match "${slug}*"`).join(' || ')})]
+      | order(order asc, title asc)[0...3] {
+        _id,
+        title,
+        "slug": slug.current,
+        featuredImage {
+          "url": asset->url,
+          "alt": alt,
+          "lqip": asset->metadata.lqip
+        },
+        "parentCategory": parentCategory->{ 
+          title, 
+          "slug": slug.current 
+        },
+        "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+      }
+    `);
+    
+    console.log('Found subcategories by title:', titleResult);
+    return titleResult;
+  }
+  
+  return result;
 } 

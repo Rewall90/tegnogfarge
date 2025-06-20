@@ -20,6 +20,7 @@ const config: Config = {
       colors: {
         cream: '#FEFAF6',
         navy: '#264653',
+        'link-orange': '#FF6F59',
       },
     },
   },
