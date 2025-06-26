@@ -4,7 +4,7 @@ import Link from 'next/link';
 interface ButtonProps {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'outline' | 'hero';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
@@ -39,6 +39,7 @@ export default function Button({
     sm: 'py-1 px-3 text-sm',
     md: 'py-2 px-4 text-base',
     lg: 'py-3 px-6 text-lg',
+    xl: 'py-4 px-8 text-xl',
   };
   
   const disabledStyles = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';

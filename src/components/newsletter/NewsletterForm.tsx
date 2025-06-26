@@ -43,14 +43,14 @@ export default function NewsletterForm() {
   }
 
   return (
-    <form className="flex flex-col" onSubmit={handleNewsletterSubmit}>
-      <div className="flex mb-2">
+    <form className="w-full" onSubmit={handleNewsletterSubmit}>
+      <div className="flex justify-center mb-2">
         <input 
           type="email" 
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Skriv inn e-posten din" 
-          className="border border-gray-700 px-4 py-2 rounded-l focus:outline-none w-full max-w-xs text-black"
+          className="border border-gray-700 px-4 py-3 rounded-l focus:outline-none w-full max-w-lg text-black"
           aria-label="Din e-postadresse"
           required
           disabled={status === 'loading'}
@@ -61,7 +61,7 @@ export default function NewsletterForm() {
             status === 'loading' 
               ? 'bg-gray-400' 
               : 'bg-[#FF6F59] hover:bg-[#E85A45] text-white'
-          } text-button px-4 py-2 rounded-r flex items-center`}
+          } text-button px-6 py-3 rounded-r flex items-center`}
           aria-label="Abonner på nyhetsbrevet"
           disabled={status === 'loading'}
         >
@@ -75,12 +75,11 @@ export default function NewsletterForm() {
       </div>
       
       {status === 'error' && (
-        <p className="text-red-500 text-sm">{message}</p>
+        <div className="flex justify-center">
+            <p className="text-red-500 text-sm">{message}</p>
+        </div>
       )}
       
-      <p className="text-xs mt-2 text-gray-300">
-        Ved å klikke på dette, bekrefter du at du er over 16 år.
-      </p>
     </form>
   );
 } 

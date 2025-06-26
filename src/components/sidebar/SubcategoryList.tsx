@@ -37,13 +37,13 @@ export function SubcategoryList({
 
   return (
     <div className="mb-8">
-      <h3 className="font-bold text-lg text-navy mb-3">{title}</h3>
+      <h3 className="font-display font-bold text-xl text-[#264653] mb-2">{title}</h3>
       <ul>
         {visibleSubcategories.map((sub) => (
           <li key={sub._id} className="mb-2">
             <Link
               href={`/${sub.parentCategory.slug}/${sub.slug}`}
-              className="text-body hover:text-blue-600 hover:underline transition-colors"
+              className="text-lg text-[#264653] hover:text-[#2EC4B6] transition-colors"
             >
               {sub.title}
             </Link>
@@ -53,7 +53,7 @@ export function SubcategoryList({
       {canBeExpanded && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-blue-600 font-semibold hover:underline text-sm mt-2"
+          className="text-[#FFA69E] font-semibold hover:underline text-sm mt-2"
         >
           {isExpanded ? 'Vis mindre' : 'Vis mer'}
         </button>

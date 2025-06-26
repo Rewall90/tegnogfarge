@@ -434,17 +434,17 @@ export async function searchDrawings(query: string, limit?: number) {
   }
 
   groqQuery += ` {
-    _id,
-    title,
-    "slug": slug.current,
+      _id,
+      title,
+      "slug": slug.current,
     "imageUrl": thumbnailImage.asset->url,
     "imageAlt": thumbnailImage.alt,
     "lqip": thumbnailImage.asset->metadata.lqip,
-    difficulty,
+      difficulty,
     "subcategorySlug": subcategory->slug.current,
     "categorySlug": subcategory->parentCategory->slug.current
   }`;
-  
+
   return client.fetch(groqQuery, params);
 }
 

@@ -37,10 +37,10 @@ export async function RelatedDrawings({
   }
 
   return (
-    <aside className="py-12 bg-slate-50 border-t" aria-labelledby="related-drawings-title">
+    <aside className="py-12 bg-[#FEFAF6] border-t" aria-labelledby="related-drawings-title">
       <div className="container mx-auto px-4">
-        <h2 id="related-drawings-title" className="text-2xl md:text-3xl font-bold text-center mb-8">
-          Andre tegninger i {subcategoryTitle}
+        <h2 id="related-drawings-title" className="font-display text-2xl md:text-3xl font-bold text-center mb-8">
+          Relaterte tegninger i {subcategoryTitle}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {relatedDrawings.map((drawing) => (
@@ -52,6 +52,7 @@ export async function RelatedDrawings({
               imageAlt={drawing.imageAlt || drawing.title}
               lqip={drawing.lqip}
               difficulty={drawing.difficulty}
+              titleClassName="font-display text-lg"
             />
           ))}
         </div>

@@ -92,7 +92,7 @@ export function SearchForm({ className }: SearchFormProps) {
           <input
             id="search-input"
             type="search"
-            placeholder="Search for coloring pages..."
+            placeholder="Søk etter fargeleggingsark..."
             className="w-full py-2 pl-9 pr-4 border-2 border-[#2EC4B6] rounded-md focus:outline-none placeholder:text-[#264653]/70"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

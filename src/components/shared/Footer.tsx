@@ -1,9 +1,47 @@
 import Link from 'next/link';
 import NewsletterForm from '../newsletter/NewsletterForm';
+import Image from 'next/image';
+
+// Define the Category type
+interface Category {
+  _id: string;
+  title: string;
+  slug: string;
+}
+
+// Define the Subcategory type
+interface Subcategory {
+  _id: string;
+  title: string;
+  slug: string;
+  parentCategory?: {
+    slug: string;
+  };
+}
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  
+
+  const popularCategories: Category[] = [
+    { _id: 'cat-1', title: 'Tegneserier', slug: 'tegneserier' },
+    { _id: 'cat-2', title: 'Superhelter', slug: 'superhelter' },
+    { _id: 'cat-3', title: 'Vitenskap', slug: 'vitenskap' },
+    { _id: 'cat-4', title: 'Kjøretøy', slug: 'kjoretoy' },
+    { _id: 'cat-5', title: 'Dyr', slug: 'dyr' },
+    { _id: 'cat-6', title: 'Natur', slug: 'natur' },
+    { _id: 'cat-7', title: 'Blomster', slug: 'blomster' },
+  ];
+
+  const popularSubcategories: Subcategory[] = [
+    { _id: 'sub-1', title: 'Hello Kitty', slug: 'hello-kitty', parentCategory: { slug: 'tegneserier' } },
+    { _id: 'sub-2', title: 'Enhjørninger', slug: 'enhjorninger', parentCategory: { slug: 'mytiske-skapninger' } },
+    { _id: 'sub-3', title: 'Ninjago', slug: 'ninjago', parentCategory: { slug: 'tegneserier' } },
+    { _id: 'sub-4', title: 'Pokemon', slug: 'pokemon', parentCategory: { slug: 'videospill' } },
+    { _id: 'sub-5', title: 'Prinsesser', slug: 'prinsesser', parentCategory: { slug: 'figurer' } },
+    { _id: 'sub-6', title: 'Spider Man', slug: 'spider-man', parentCategory: { slug: 'superhelter' } },
+    { _id: 'sub-7', title: 'Sonic', slug: 'sonic', parentCategory: { slug: 'videospill' } },
+  ];
+
   return (
     <footer className="bg-[#264653] text-white py-10">
       <div className="container mx-auto px-4">
@@ -17,9 +55,9 @@ export default function Footer() {
           </div>
           
           {/* Footer Links */}
-          <div className="flex flex-wrap justify-between md:flex-nowrap md:gap-8 lg:gap-16 md:w-1/2">
+          <div className="flex flex-wrap justify-start md:flex-nowrap gap-8 lg:gap-16 md:w-1/2">
             <div className="w-1/2 md:w-auto mb-8 md:mb-0">
-              <h3 className="font-display font-bold text-lg mb-4">Informasjon</h3>
+              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">Informasjon</h3>
               <ul className="space-y-2">
                 <li><Link href="/om-oss" className="hover:underline">Om TegnOgFarge.no</Link></li>
                 <li><Link href="/om-skribenten" className="hover:underline">Om Skribenten</Link></li>
@@ -31,27 +69,31 @@ export default function Footer() {
               </ul>
             </div>
             <div className="w-1/2 md:w-auto mb-8 md:mb-0">
-              <h3 className="font-display font-bold text-lg mb-4">Populære Kategorier</h3>
-              <ul className="space-y-2">
-                <li><Link href="/main-category" className="hover:underline">Tegneserier</Link></li>
-                <li><Link href="/main-category" className="hover:underline">Superhelter</Link></li>
-                <li><Link href="/main-category" className="hover:underline">Natur</Link></li>
-                <li><Link href="/main-category" className="hover:underline">Kjøretøy</Link></li>
-                <li><Link href="/main-category" className="hover:underline">Videospill</Link></li>
-                <li><Link href="/main-category" className="hover:underline">Vitenskap</Link></li>
-                <li><Link href="/main-category" className="hover:underline">Blomster</Link></li>
+              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">Populære Kategorier</h3>
+              <ul>
+                {popularCategories.map(category => (
+                  <li key={category._id} className="mb-2">
+                    <Link href={`/${category.slug}`} className="hover:text-gray-300">
+                      {category.title}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="w-1/2 md:w-auto mb-8 md:mb-0">
-              <h3 className="font-display font-bold text-lg mb-4">Populære Sider</h3>
-              <ul className="space-y-2">
-                <li><Link href="/main-category" className="hover:underline">Dyr</Link></li>
-                <li><Link href="/main-category" className="hover:underline">Prinsesser</Link></li>
-                <li><Link href="/main-category" className="hover:underline">Biler</Link></li>
+              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">Populære Sider</h3>
+              <ul>
+                {popularSubcategories.map(subcategory => (
+                  <li key={subcategory._id} className="mb-2">
+                    <Link href={`/${subcategory.parentCategory?.slug}/${subcategory.slug}`} className="hover:text-gray-300">
+                      {subcategory.title}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="w-1/2 md:w-auto">
-              <h3 className="font-display font-bold text-lg mb-4">Følg oss</h3>
+              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">Følg oss</h3>
               <ul className="space-y-2">
                 <li className="flex items-center">
                   <span className="w-6">
@@ -76,6 +118,14 @@ export default function Footer() {
                     </svg>
                   </span>
                   <Link href="#" className="ml-2 hover:underline">YouTube</Link>
+                </li>
+                <li className="flex items-center">
+                  <span className="w-6">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden="true">
+                      <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 .992.371 1.937.823 2.475.09.102.084.183-.02.282-.102.12-.345.42-.459.562-.124.16-.25.223-.42.152-1.023-.335-1.668-1.55-1.668-2.825 0-2.068 1.48-3.875 4.344-3.875 2.253 0 3.967 1.63 3.967 3.998 0 2.407-1.427 4.288-3.383 4.288-1.121 0-2.074-.916-1.808-2.025.263-1.107.663-2.228.663-2.228s.289-1.187.289-2.612c0-2.285-1.34-4.04-4.028-4.04-2.845 0-4.522 2.165-4.522 4.903 0 1.509.702 2.867 1.753 3.447.081.045.165.19.14.335-.084.45-.317 1.33-.377 1.556-.04.168-.16.27-.335.205-1.348-.385-2.24-1.915-2.24-3.483 0-2.784 2.086-5.223 5.943-5.223 3.107 0 5.562 2.242 5.562 5.144C22.744 18.89 20.816 22 17.64 22c-1.284 0-2.545-.486-3.457-1.348l-.133.435.008.004c-.01.03-.027.05-.035.08-.02.05-.04.1-.06.15l-.01.02c-.01.02-.02.04-.03.06-.02.04-.04.08-.06.12-.02.04-.03.08-.05.12-.02.04-.04.07-.05.1-.02.03-.04.06-.06.09-.02.03-.03.06-.05.08l-.01.02c-.02.03-.03.05-.05.07l-.01.02c-.02.03-.03.05-.04.07l-.01.01c-.02.03-.03.05-.04.07l-.01.01c-.02.03-.03.05-.04.07l-.01.01c-.02.03-.03.05-.04.07l-.01.01c-.02.02-.03.04-.04.06l-.01.01c-.02.02-.03.04-.04.06l-.01.01c-.02.02-.03.04-.04.05l-.01.01c-.02.02-.03.04-.04.05l-.01.01c-.02.02-.03.04-.04.05l-.01.01c-.02.02-.03.04-.04.05l-.01.01c-.02.02-.03.03-.04.05-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04l-.01.01c-.02.02-.03.03-.04.04z" />
+                    </svg>
+                  </span>
+                  <Link href="https://no.pinterest.com/TegnOgFarge/" className="ml-2 hover:underline" target="_blank" rel="noopener noreferrer">Pinterest</Link>
                 </li>
               </ul>
             </div>

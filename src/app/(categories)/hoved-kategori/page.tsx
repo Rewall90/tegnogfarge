@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: 'Alle Kategorier - TegnOgFarge.no',
   description: 'Utforsk alle våre fargeleggingskategorier for barn og voksne. Velg en kategori for å finne fargeleggingsark.',
   alternates: {
-    canonical: 'https://www.tegnogfarge.no/main-category',
+    canonical: 'https://www.tegnogfarge.no/hoved-kategori',
   },
 };
 
@@ -80,7 +80,7 @@ export default async function MainCategoryPage() {
         </div>
       </main>
       <Footer />
-      <CategoriesListJsonLd categories={activeCategories} pathname="/main-category" />
+      <CategoriesListJsonLd categories={activeCategories} pathname="/hoved-kategori" />
     </div>
   );
 } 

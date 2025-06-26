@@ -102,7 +102,7 @@ export default async function Home() {
   const categories: Category[] = await getAllCategories();
   
   // Fetch popular subcategories directly
-  const featuredSubcategories = await getPopularSubcategories(4);
+  const featuredSubcategories = await getPopularSubcategories(12);
   
   // Debug: Log the fetched subcategories
   console.log('Featured subcategories:', featuredSubcategories);
@@ -190,12 +190,11 @@ export default async function Home() {
           
           {/* Newsletter Section */}
           <section className="py-16 bg-[#F4D35E] text-navy" aria-labelledby="newsletter-heading">
-            <div className="container mx-auto px-4 max-w-3xl text-center">
-              <h2 id="newsletter-heading" className="text-heading mb-6">Hold deg oppdatert med nyheter</h2>
-              <p className="text-body mb-8">Meld deg på vårt nyhetsbrev for å få de siste oppdateringene og blogginleggene.</p>
+            <div className="container mx-auto px-4 max-w-5xl text-center">
+              <h2 id="newsletter-heading" className="text-heading mb-6">Ikke gå glipp av nye fargeleggingsark</h2>
+              <p className="text-body mb-8">Få de nyeste fargeleggingsarkene før alle andre – meld deg på i dag.</p>
               
               <NewsletterForm />
-              <p className="text-sm mt-4">Ved å klikke på dette, bekrefter du at du har gyldig e-post.</p>
             </div>
           </section>
           

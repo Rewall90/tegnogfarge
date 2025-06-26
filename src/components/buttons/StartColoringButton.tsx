@@ -32,7 +32,8 @@ export function StartColoringButton({ drawingId, title = 'Start Fargelegging', c
       onClick={handleClick}
       className={className}
       ariaLabel={title}
-      variant="outline"
+      variant="hero"
+      size="xl"
     >
       {title}
     </Button>

@@ -28,10 +28,10 @@ export async function RelatedSubcategories({
   }
 
   return (
-    <aside className="py-12 bg-slate-50 border-t" aria-labelledby="related-subcategories-title">
+    <aside className="py-12 bg-[#FEFAF6] border-t" aria-labelledby="related-subcategories-title">
       <div className="container mx-auto px-4">
-        <h2 id="related-subcategories-title" className="text-2xl md:text-3xl font-bold text-center mb-8">
-          Andre underkategorier i {categoryTitle}
+        <h2 id="related-subcategories-title" className="font-display text-2xl md:text-3xl font-bold text-center mb-8">
+          Relaterte underkategorier i {categoryTitle}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {relatedSubcategories.map((subcategory) => (
@@ -39,6 +39,7 @@ export async function RelatedSubcategories({
               key={subcategory._id} 
               subcategory={subcategory} 
               categorySlug={categorySlug}
+              titleClassName="font-display text-lg"
             />
           ))}
         </div>

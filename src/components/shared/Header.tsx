@@ -39,8 +39,8 @@ export default function Header() {
           
           {/* Desktop navigation */}
           <nav className="hidden md:flex space-x-8" aria-label="Hovednavigasjon">
-            <Link href="/all-subcategories" className={navLinkClasses}>Fargeleggingsark</Link>
-            <Link href="/main-category" className={navLinkClasses}>Kategorier</Link>
+            <Link href="/alle-underkategorier" className={navLinkClasses}>Fargeleggingsark</Link>
+            <Link href="/hoved-kategori" className={navLinkClasses}>Kategorier</Link>
             <Link href="/om-oss" className={navLinkClasses}>Om Oss</Link>
           </nav>
           

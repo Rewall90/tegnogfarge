@@ -5,14 +5,12 @@ import { getAllSubcategories } from '@/lib/sanity';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import { SubcategoryCard } from '@/components/cards/SubcategoryCard';
-import { AboveFoldProvider } from '@/components/ui/AboveFoldProvider';
-import { GRID_LAYOUTS } from '@/utils/viewportDetection';
 
 export const metadata: Metadata = {
   title: 'Alle Fargeleggingskategorier - TegnOgFarge.no',
   description: 'Utforsk alle våre fargeleggingskategorier for barn og voksne. Last ned gratis fargeleggingsark eller bruk vårt online fargeleggingsverktøy.',
   alternates: {
-    canonical: 'https://www.tegnogfarge.no/all-subcategories',
+    canonical: 'https://www.tegnogfarge.no/alle-underkategorier',
   },
 };
 
@@ -66,22 +64,16 @@ export default async function AllSubcategoriesPage() {
             
             <section className="category-listing" aria-labelledby="subcategories-heading">
               <h2 id="subcategories-heading" className="sr-only">Underkategorier</h2>
-              <AboveFoldProvider
-                rows={2}
-                gridLayout={GRID_LAYOUTS.standard}
-                defaultCount={8}
-              >
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                  {subcategories.map((subcategory: Subcategory, index: number) => (
-                    <SubcategoryCard 
-                      key={subcategory._id}
-                      subcategory={subcategory} 
-                      categorySlug={subcategory.parentCategory.slug} 
-                      isPriority={index < 8} 
-                    />
-                  ))}
-                </div>
-              </AboveFoldProvider>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {subcategories.map((subcategory: Subcategory, index: number) => (
+                  <SubcategoryCard 
+                    key={subcategory._id}
+                    subcategory={subcategory} 
+                    categorySlug={subcategory.parentCategory.slug} 
+                    isPriority={index < 8} 
+                  />
+                ))}
+              </div>
             </section>
           </div>
         </div>

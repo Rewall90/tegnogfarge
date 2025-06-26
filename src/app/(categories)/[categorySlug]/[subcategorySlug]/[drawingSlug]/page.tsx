@@ -13,45 +13,14 @@ import { PortableText, type PortableTextComponents } from '@portabletext/react';
 import type { PortableTextBlock } from '@portabletext/types';
 import { RelatedDrawings } from '@/components/drawing/RelatedDrawings';
 import { DrawingPageSidebar } from '@/components/sidebar/DrawingPageSidebar';
+import { DrawingDetail } from '@/components/drawing/DrawingDetail';
+import type { Drawing } from '@/types';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
 
 // Types for better type safety
-interface Drawing {
-  _id: string;
-  title: string;
-  description?: string;
-  metaDescription?: string;
-  imageUrl?: string;
-  imageLqip?: string;
-  fallbackImageUrl?: string;
-  fallbackImageLqip?: string;
-  thumbnailUrl?: string;
-  thumbnailLqip?: string;
-  downloadUrl?: string;
-  difficulty?: 'easy' | 'medium' | 'hard';
-  hasDigitalColoring?: boolean;
-  recommendedAgeRange?: string;
-  contextContent?: PortableTextBlock[];
-  slug?: string;
-  publishedDate?: string;
-  _createdAt?: string;
-}
-
-interface ParentCategory {
-  title: string;
-  slug: string;
-}
-
-interface Subcategory {
-  _id: string;
-  title: string;
-  slug: string;
-  description?: string;
-  parentCategory?: ParentCategory;
-  drawings?: Drawing[];
-}
+// The local interfaces are now removed, as they are imported from @/types
 
 interface PageProps {
   params: {
@@ -202,7 +171,7 @@ export default async function DrawingPage({ params }: PageProps) {
             <nav className="mb-6 text-sm" aria-label="Breadcrumb">
               <ol className="flex items-center space-x-2">
                 <li>
-                  <Link href="/" className="text-blue-600 hover:underline">
+                  <Link href="/" className="text-[#FFA69E] hover:underline">
                     Forsiden
                   </Link>
                 </li>
@@ -210,7 +179,7 @@ export default async function DrawingPage({ params }: PageProps) {
                   <span className="mx-2">/</span>
                   <Link 
                     href={`/${categorySlug}`}
-                    className="text-blue-600 hover:underline"
+                    className="text-[#FFA69E] hover:underline"
                   >
                     {subcategory.parentCategory?.title}
                   </Link>
@@ -219,7 +188,7 @@ export default async function DrawingPage({ params }: PageProps) {
                   <span className="mx-2">/</span>
                   <Link 
                     href={`/${categorySlug}/${subcategorySlug}`}
-                    className="text-blue-600 hover:underline"
+                    className="text-[#FFA69E] hover:underline"
                   >
                     {subcategory.title}
                   </Link>
@@ -232,96 +201,25 @@ export default async function DrawingPage({ params }: PageProps) {
             </nav>
             
             <div className="flex flex-col md:flex-row">
-              {/* Main Content Area */}
-              <div className="flex-grow md:w-2/3">
-                <div className="flex flex-col md:flex-row">
-                  {/* Left: Image */}
-                  <div className="md:w-1/2 flex justify-center items-center">
-                    {(drawing.imageUrl || drawing.fallbackImageUrl) && (
-                      <div className="relative w-full max-w-[450px] min-h-[600px]">
-                        <Image
-                          src={drawing.imageUrl || drawing.fallbackImageUrl || WEBP_PLACEHOLDER_PATH}
-                          alt={drawing.title}
-                          priority
-                          fill
-                          style={{ objectFit: 'contain' }}
-                          className="rounded-xl"
-                          sizes="(max-width: 768px) 85vw, (max-width: 1024px) 40vw, 33vw"
-                          placeholder="blur"
-                          blurDataURL={drawing.imageLqip || drawing.fallbackImageLqip || SVG_BLUR_PLACEHOLDER}
-                          quality={85}
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Right: Details */}
-                  <div className="md:w-1/2 md:pl-8 mt-8 md:mt-0">
-                    <h1 className="font-display font-bold text-4xl text-navy mb-4">{drawing.title}</h1>
-                    <div className="mb-4">
-                      <p className="text-lg text-gray-600">
-                        {formatDate(drawing.publishedDate || drawing._createdAt)}
-                      </p>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {drawing.difficulty && (
-                        <span className={`inline-block px-3 py-1 rounded text-sm ${difficultyColors[getDifficultyKey(drawing.difficulty)]}`}> 
-                          {difficultyLabels[getDifficultyKey(drawing.difficulty)]}
-                        </span>
-                      )}
-                      {drawing.recommendedAgeRange && (
-                        <span className="inline-block px-3 py-1 rounded text-sm bg-blue-100 text-blue-800">
-                          {ageRangeLabels[drawing.recommendedAgeRange] || 'Alle aldre'}
-                        </span>
-                      )}
-                    </div>
-                    {drawing.description && (
-                      <div className="mb-8">
-                        <p className="text-lg text-navy">{drawing.description}</p>
-                      </div>
-                    )}
-                    {/* Buttons */}
-                    <div className="flex gap-4 flex-wrap mb-8">
-                      {drawing.downloadUrl && (
-                        <DownloadPdfButton
-                          downloadUrl={drawing.downloadUrl}
-                          title="Last ned Bilde"
-                          className="border-2 border-black rounded-full px-6 py-2 inline-block hover:bg-gray-100 transition"
-                        />
-                      )}
-                      <StartColoringButton
-                        drawingId={drawing._id}
-                        title="Start Fargelegging"
-                        className="border-2 border-black rounded-full px-6 py-2 inline-block hover:bg-gray-100 transition"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom: Context Content */}
-                <div className="w-full mt-8">
-                  {drawing.contextContent && (
-                    <div className="prose max-w-none">
-                      <PortableText value={drawing.contextContent} components={customComponents} />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Sidebar */}
+              <DrawingDetail
+                drawing={drawing}
+                difficultyColors={difficultyColors}
+                difficultyLabels={difficultyLabels}
+                ageRangeLabels={ageRangeLabels}
+                customComponents={customComponents}
+              />
               <DrawingPageSidebar />
             </div>
           </div>
         </div>
+
+        <RelatedDrawings
+          categorySlug={categorySlug}
+          subcategorySlug={subcategorySlug}
+          currentDrawingSlug={drawingSlug}
+          subcategoryTitle={subcategory.title}
+        />
       </main>
-
-      <RelatedDrawings
-        categorySlug={categorySlug}
-        subcategorySlug={subcategorySlug}
-        currentDrawingSlug={drawingSlug}
-        subcategoryTitle={subcategory.title}
-      />
-
       <Footer />
     </div>
   );

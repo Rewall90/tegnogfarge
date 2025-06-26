@@ -49,12 +49,12 @@ export default function MobileMenu() {
         <div id="mobile-menu" className="md:hidden absolute top-24 left-0 right-0 bg-[#FEFAF6] shadow-md z-50">
           <div className="container mx-auto px-4 py-4 border-t">
             <nav className="flex flex-col space-y-4" aria-label="Mobilnavigasjon">
-              <Link href="/all-subcategories" className={mobileLinkClasses}>Fargeleggingsark</Link>
+              <Link href="/alle-underkategorier" className={mobileLinkClasses}>Fargeleggingsark</Link>
               {session && (
                 <Link href="/dashboard" className={mobileLinkClasses}>Dashboard</Link>
               )}
               
-              <Link href="/main-category" className={mobileLinkClasses}>Kategorier</Link>
+              <Link href="/hoved-kategori" className={mobileLinkClasses}>Kategorier</Link>
               <Link href="/om-oss" className={mobileLinkClasses}>Om Oss</Link>
               
               <div className="border-t my-4"></div>

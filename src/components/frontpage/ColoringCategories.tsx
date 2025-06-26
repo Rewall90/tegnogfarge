@@ -26,12 +26,12 @@ export function ColoringCategories({ categories }: ColoringCategoriesProps) {
   };
 
   return (
-    <section className="py-12 bg-cream" aria-labelledby="categories-heading">
+    <section className="py-12 bg-cream" aria-labelledby="coloring-categories-heading">
       <div className="max-w-6xl mx-auto px-4">
         <header className="text-navy">
-          <h2 id="categories-heading" className="text-heading text-center mb-2 text-navy">Coloring Fun</h2>
+          <h2 id="categories-heading" className="text-heading text-center mb-2 text-navy">Fargeleggingsmoro</h2>
           <p className="text-section text-center mb-10 text-navy">
-            Explore Our Coloring Categories
+            Utforsk våre fargeleggingskategorier
           </p>
         </header>
         

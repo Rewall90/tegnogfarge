@@ -49,11 +49,13 @@ function getDifficultyProps(difficulty: number | undefined): { label: string; cl
 export function SubcategoryCard({ 
   subcategory, 
   categorySlug,
-  isPriority = false
+  isPriority = false,
+  titleClassName = ''
 }: { 
   subcategory: Subcategory; 
   categorySlug: string;
   isPriority?: boolean;
+  titleClassName?: string;
 }) {
   const imageUrl = subcategory.featuredImage?.url || subcategory.sampleImage?.thumbnailUrl || subcategory.sampleImage?.imageUrl;
   const difficultyProps = getDifficultyProps(subcategory.difficulty);
@@ -86,7 +88,7 @@ export function SubcategoryCard({
           href={`/${categorySlug}/${subcategory.slug}`}
           aria-label={`Gå til ${subcategory.title} fargeleggingsark`}
         >
-          <h2 className="font-display font-bold text-lg mb-2 text-navy">{subcategory.title}</h2>
+          <h2 className={`font-display font-bold text-lg mb-2 text-navy ${titleClassName}`}>{subcategory.title}</h2>
         </Link>
         {subcategory.description && (
           <p className="text-body text-gray-600 text-sm mb-3">{subcategory.description}</p>
