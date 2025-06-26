@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 import type { CategoryType } from '@/types/coloring';
+import BlogPostJsonLd from '@/components/json-ld/BlogPostJsonLd';
 
 // Funksjon for å formatere dato
 function formatDate(dateString: string) {
@@ -36,6 +37,7 @@ export default async function BlogPostPage({ params: paramsPromise }: PageProps)
 
   return (
     <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <BlogPostJsonLd post={post} />
       <Link href="/blog" className="text-blue-500 hover:underline mb-4 inline-block">
         ← Tilbake til blogg
       </Link>

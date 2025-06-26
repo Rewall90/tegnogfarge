@@ -94,9 +94,15 @@ export async function getPost(slug: string) {
   return await client.fetch(`
     *[_type == "post" && slug.current == $slug][0] {
       _id,
+      _updatedAt,
       title,
       slug,
-      mainImage,
+      mainImage {
+        ...,
+        asset->{
+          ...
+        }
+      },
       publishedAt,
       body,
       excerpt,
