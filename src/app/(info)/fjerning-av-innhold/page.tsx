@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import BaseJsonLd from '@/components/json-ld/BaseJsonLd';
 import PageLayout from '@/components/shared/PageLayout';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import GenericWebPageJsonLd from '@/components/json-ld/GenericWebPageJsonLd';
 
 export const metadata: Metadata = {
   title: 'Fjerning av innhold - TegnOgFarge.no',
@@ -20,7 +20,12 @@ export default function ContentRemovalPolicyPage() {
 
   return (
     <PageLayout wrapperClassName="bg-[#FEFAF6]">
-      <BaseJsonLd />
+      <GenericWebPageJsonLd
+        pageType="WebPage"
+        title="Fjerning av innhold - TegnOgFarge.no"
+        description="Hos Tegn og Farge er vi opptatt av å gjøre ting riktig. Vi bruker bare bilder og innhold vi har lov til å bruke, og vi håper alle som bruker siden vår gjør det samme."
+        pathname="/fjerning-av-innhold"
+      />
       <div className="max-w-4xl mx-auto">
         <Breadcrumbs items={breadcrumbItems} />
         <div>

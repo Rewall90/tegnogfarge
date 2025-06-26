@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import BaseJsonLd from '@/components/json-ld/BaseJsonLd';
 import PageLayout from '@/components/shared/PageLayout';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import GenericWebPageJsonLd from '@/components/json-ld/GenericWebPageJsonLd';
 
 export const metadata: Metadata = {
   title: 'Om Oss - TegnOgFarge.no',
@@ -20,7 +20,12 @@ export default function AboutPage() {
 
   return (
     <PageLayout wrapperClassName="bg-[#FEFAF6]">
-      <BaseJsonLd />
+      <GenericWebPageJsonLd
+        pageType="AboutPage"
+        title="Om Oss - TegnOgFarge.no"
+        description="Lær mer om TegnOgFarge.no, vår misjon, og teamet bak siden. Finn ut hvorfor vi brenner for å tilby gratis fargeleggingsoppgaver for barn."
+        pathname="/om-oss"
+      />
       
       <div className="max-w-4xl mx-auto">
         <Breadcrumbs items={breadcrumbItems} />

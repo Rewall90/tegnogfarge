@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import BaseJsonLd from '@/components/json-ld/BaseJsonLd';
 import PageLayout from '@/components/shared/PageLayout';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import GenericWebPageJsonLd from '@/components/json-ld/GenericWebPageJsonLd';
 
 export const metadata: Metadata = {
   title: 'Vilkår og betingelser - TegnOgFarge.no',
@@ -20,7 +20,12 @@ export default function TermsAndConditionsPage() {
 
   return (
     <PageLayout wrapperClassName="bg-[#FEFAF6]">
-      <BaseJsonLd />
+      <GenericWebPageJsonLd
+        pageType="WebPage"
+        title="Vilkår og betingelser - TegnOgFarge.no"
+        description="Når du besøker eller bruker nettsiden vår, sier du deg enig i reglene som står her. Les dem gjerne nøye."
+        pathname="/vilkar-og-betingelser"
+      />
       <div className="max-w-4xl mx-auto">
         <Breadcrumbs items={breadcrumbItems} />
         <div>

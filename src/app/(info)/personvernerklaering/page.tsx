@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import BaseJsonLd from '@/components/json-ld/BaseJsonLd';
 import PageLayout from '@/components/shared/PageLayout';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import GenericWebPageJsonLd from '@/components/json-ld/GenericWebPageJsonLd';
 
 export const metadata: Metadata = {
   title: 'Personvernerklæring - TegnOgFarge.no',
@@ -20,7 +20,12 @@ export default function PrivacyPolicyPage() {
 
   return (
     <PageLayout wrapperClassName="bg-[#FEFAF6]">
-      <BaseJsonLd />
+      <GenericWebPageJsonLd
+        pageType="PrivacyPolicyPage"
+        title="Personvernerklæring - TegnOgFarge.no"
+        description="Denne personvernerklæringen forklarer hvordan vi i Tegn og Farge samler inn, bruker og beskytter personopplysninger når du bruker nettstedet vårt."
+        pathname="/personvernerklaering"
+      />
       <div className="max-w-4xl mx-auto">
         <Breadcrumbs items={breadcrumbItems} />
         <div>

@@ -38,26 +38,27 @@ export function ColoringCategories({ categories }: ColoringCategoriesProps) {
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 list-none p-0">
           {categories.map((category) => (
             <li key={category.slug} className="flex flex-col items-center">
-              <article className="w-full relative aspect-[4/5] bg-[#2EC4B6] rounded-[32px] shadow-lg flex flex-col items-center justify-center overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-xl">
+              <article className="w-full aspect-[4/5] bg-[#2EC4B6] rounded-[32px] shadow-lg flex flex-col overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-xl">
                 <Link 
                   href={`/${category.slug}`} 
-                  className="flex flex-col items-center justify-center w-full h-full"
+                  className="flex flex-col w-full h-full"
                   aria-label={`Utforsk ${category.name} fargeleggingskategori`}
                 >
-                  <figure className="flex items-center justify-center w-48 h-48 mt-8 mb-2 overflow-visible">
+                  <div className="relative flex-1">
                     <Image 
                       src={failedImages[category.slug] ? '/images/placeholder.svg' : (category.imageUrl || '/images/placeholder.svg')} 
                       alt={category.name} 
-                      width={200} 
-                      height={200} 
+                      fill
                       sizes="(max-width: 640px) 85vw, (max-width: 768px) 45vw, (max-width: 1024px) 30vw, 25vw"
-                      className="object-contain scale-110"
+                      className="object-contain p-4"
                       onError={() => handleImageError(category.slug)}
                     />
-                  </figure>
-                  <h3 className="mt-auto mb-10 text-white text-section text-center w-full drop-shadow-sm">
-                    {category.name}
-                  </h3>
+                  </div>
+                  <div className="flex-shrink-0 h-24 flex items-center justify-center">
+                    <h3 className="text-white text-section text-center drop-shadow-sm">
+                      {category.name}
+                    </h3>
+                  </div>
                 </Link>
               </article>
             </li>

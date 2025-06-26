@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import BaseJsonLd from '@/components/json-ld/BaseJsonLd';
 import PageLayout from '@/components/shared/PageLayout';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import GenericWebPageJsonLd from '@/components/json-ld/GenericWebPageJsonLd';
 
 export const metadata: Metadata = {
   title: 'Lisensieringspolicy - TegnOgFarge.no',
@@ -20,7 +20,12 @@ export default function LicensePage() {
 
   return (
     <PageLayout wrapperClassName="bg-[#FEFAF6]">
-      <BaseJsonLd />
+      <GenericWebPageJsonLd
+        pageType="WebPage"
+        title="Lisensieringspolicy - TegnOgFarge.no"
+        description="Alt innhold på Tegn og Farge er beskyttet av opphavsrett. Les om hva du har lov til å gjøre med innholdet vårt, og hva som ikke er tillatt."
+        pathname="/lisensieringspolicy"
+      />
       <div className="max-w-4xl mx-auto">
         <Breadcrumbs items={breadcrumbItems} />
         <div>
