@@ -194,11 +194,10 @@ export default function SubcategoryPageJsonLd({
         }
       ]
     },
-    ...(categoryId && {
-      "isPartOf": {
-        "@id": categoryId
-      }
-    }),
+    "isPartOf": [
+      { "@id": `${baseUrl}/#website` },
+      ...(categoryId ? [{ "@id": categoryId }] : [])
+    ],
     "publisher": {
       "@id": `${baseUrl}/#organization`
     },

@@ -124,7 +124,7 @@ export default function CategoryPageJsonLd({
       "thumbnailUrl": categoryImageUrl 
     }),
     "isPartOf": {
-      "@id": categoriesListId
+      "@id": `${baseUrl}/#website`
     },
     "audience": {
       "@type": "PeopleAudience",

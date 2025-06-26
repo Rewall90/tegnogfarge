@@ -7,6 +7,7 @@ const PUBLISHER_LOGO_URL = `${SITE_URL}/favicon/tegnogfarge-favicon.svg`;
 export function WebsiteJsonLd() {
   const websiteSchema: WebSite = {
     '@type': 'WebSite',
+    '@id': `${SITE_URL}/#website`,
     url: `${SITE_URL}/`,
     name: SITE_NAME,
     publisher: {

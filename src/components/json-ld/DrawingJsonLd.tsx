@@ -230,11 +230,12 @@ export default function DrawingJsonLd({
     "mainEntityOfPage": {
       "@id": currentUrl
     },
-    ...(subcategory && subcategory.parentCategory && {
-      "isPartOf": {
-        "@id": `${baseUrl}/${subcategory.parentCategory.slug}/${subcategory.slug}#subcategory`
-      }
-    })
+    "isPartOf": [
+      { "@id": `${baseUrl}/#website` },
+      ...(subcategory && subcategory.parentCategory 
+        ? [{ "@id": `${baseUrl}/${subcategory.parentCategory.slug}/${subcategory.slug}#subcategory` }] 
+        : [])
+    ]
   });
   
   // Define actions for the WebPage
