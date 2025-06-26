@@ -1,8 +1,7 @@
 import { Metadata } from 'next';
 import PageLayout from '@/components/shared/PageLayout';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
-import ProfilePageJsonLd from '@/components/json-ld/ProfilePageJsonLd';
-import { STRUCTURED_DATA } from '@/lib/structured-data-constants';
+import GenericWebPageJsonLd from '@/components/json-ld/GenericWebPageJsonLd';
 
 export const metadata: Metadata = {
   title: 'Om Skribenten - TegnOgFarge.no',
@@ -20,7 +19,12 @@ export default function SkribentPage() {
 
   return (
     <PageLayout wrapperClassName="bg-[#FEFAF6]">
-      <ProfilePageJsonLd authorName={STRUCTURED_DATA.AUTHOR.NAME} />
+      <GenericWebPageJsonLd
+        pageType="WebPage"
+        title="Om Skribenten - TegnOgFarge.no"
+        description="Bli kjent med skribenten og illustratøøren bak TegnOgFarge.no. Lær om lidenskapen for kreativitet og tegning som driver nettstedet."
+        pathname="/om-skribenten"
+      />
       <div className="max-w-4xl mx-auto">
         <Breadcrumbs items={breadcrumbItems} />
         <h1 className="text-3xl font-bold mb-8">Om Skribenten</h1>

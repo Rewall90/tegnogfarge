@@ -97,12 +97,7 @@ export async function getPost(slug: string) {
       _updatedAt,
       title,
       slug,
-      mainImage {
-        ...,
-        asset->{
-          ...
-        }
-      },
+      mainImage,
       publishedAt,
       body,
       excerpt,
