@@ -25,9 +25,7 @@ export function BlogPostJsonLd({ post }: BlogPostJsonLdProps) {
     'datePublished': post.publishedAt,
     'dateModified': post._updatedAt,
     'author': {
-      '@type': 'Person',
-      'name': AUTHOR_NAME,
-      'url': `${SITE_URL}/om-skribenten`,
+      '@id': `${SITE_URL}/om-skribenten#person`,
     },
     'publisher': {
       '@type': 'Organization',

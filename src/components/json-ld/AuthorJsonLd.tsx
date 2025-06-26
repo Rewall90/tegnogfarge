@@ -10,6 +10,7 @@ export function AuthorJsonLd() {
     url: `${SITE_URL}/om-skribenten`,
     mainEntity: {
       '@type': 'Person',
+      '@id': `${SITE_URL}/om-skribenten#person`,
       name: AUTHOR_NAME,
       url: `${SITE_URL}/om-skribenten`,
     },
