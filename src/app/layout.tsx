@@ -4,7 +4,7 @@ import "./globals.css";
 import { draftMode } from 'next/headers';
 import SessionProviderWrapper from "@/components/auth/SessionProviderWrapper";
 import StagewiseToolbarWrapper from "@/components/dev/StagewiseToolbarWrapper";
-import BaseJsonLd from "@/components/json-ld/BaseJsonLd";
+import { WebsiteJsonLd } from "@/components/json-ld/WebsiteJsonLd";
 import dynamic from 'next/dynamic';
 
 // Dynamisk import av VisualEditing
@@ -59,11 +59,11 @@ export default function RootLayout({
           href="/favicon/tegnogfarge-favicon.svg" 
           type="image/svg+xml"
         />
+        <WebsiteJsonLd />
       </head>
       <body className="font-sans bg-white text-gray-900 min-h-screen flex flex-col">
         <SessionProviderWrapper>{children}</SessionProviderWrapper>
         <StagewiseToolbarWrapper />
-        <BaseJsonLd />
         {/* Kun last VisualEditing når vi er i draft mode */}
         {isDraftMode && <VisualEditing />}
       </body>
