@@ -12,6 +12,7 @@ export function WebsiteJsonLd() {
     name: SITE_NAME,
     publisher: {
       '@type': 'Organization',
+      '@id': `${SITE_URL}/#organization`,
       name: SITE_NAME,
       logo: {
         '@type': 'ImageObject',

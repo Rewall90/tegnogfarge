@@ -28,12 +28,7 @@ export function BlogPostJsonLd({ post }: BlogPostJsonLdProps) {
       '@id': `${SITE_URL}/om-skribenten#person`,
     },
     'publisher': {
-      '@type': 'Organization',
-      'name': PUBLISHER_NAME,
-      'logo': {
-        '@type': 'ImageObject',
-        'url': PUBLISHER_LOGO_URL,
-      },
+      '@id': `${SITE_URL}/#organization`,
     },
     'description': post.title, // You might want to use an excerpt field here if available
   };
