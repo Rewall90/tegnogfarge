@@ -16,6 +16,7 @@ import Footer from '@/components/shared/Footer';
 import { DrawingCard } from '@/components/cards/DrawingCard';
 import { WEBP_PLACEHOLDER_PATH, SVG_BLUR_PLACEHOLDER } from '@/lib/utils';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import { RelatedSubcategories } from '@/components/category/RelatedSubcategories';
 
 export const revalidate = 3600; // Oppdater siden hver time for bedre caching
 
@@ -290,6 +291,15 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
           </div>
         </div>
       </main>
+      
+      {subcategory.parentCategory && (
+        <RelatedSubcategories
+          categorySlug={categorySlug}
+          currentSubcategorySlug={subcategorySlug}
+          categoryTitle={subcategory.parentCategory.title}
+        />
+      )}
+
       <Footer />
     </div>
   );

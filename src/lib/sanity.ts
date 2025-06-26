@@ -416,33 +416,36 @@ export async function getAllCategoriesWithSubcategories() {
   `);
 }
 
-export async function searchDrawings(query: string) {
-  const searchQuery = query ? `*${query}*` : '*';
+// Funksjon for å søke etter tegninger
+export async function searchDrawings(query: string, limit?: number) {
+  const params: { [key: string]: string | number } = { query: `${query}*` };
   
-  const groqQuery = `
-    *[_type == "drawingImage" && 
-      (title match $searchQuery || 
-       description match $searchQuery ||
-       metaDescription match $searchQuery) && 
-      isActive == true] {
-      _id,
-      title,
-      "slug": slug.current,
-      description,
-      metaDescription,
-      recommendedAgeRange,
-      "imageUrl": coalesce(displayImage.asset->url, webpImage.asset->url),
-      "thumbnailUrl": coalesce(thumbnailImage.asset->url, displayImage.asset->url, webpImage.asset->url),
-      "downloadUrl": downloadFile.asset->url,
-      difficulty,
-      hasDigitalColoring,
-      // Få tak i kategori- og underkategori-slugs (robust versjon)
-      "categorySlug": subcategory->parentCategory->slug.current,
-      "subcategorySlug": subcategory->slug.current
-    } | order(title asc)[0...50]
-  `;
+  let groqQuery = `*[_type == "drawingImage" && (
+    title match $query || 
+    description match $query ||
+    tags[] match $query ||
+    subcategory->title match $query ||
+    subcategory->parentCategory->title match $query
+  ) && isActive == true]`;
 
-  return client.fetch(groqQuery, { searchQuery });
+  if (typeof limit === 'number') {
+    groqQuery += ` | order(_createdAt desc)[0...$limit]`;
+    params.limit = limit;
+  }
+
+  groqQuery += ` {
+    _id,
+    title,
+    "slug": slug.current,
+    "imageUrl": thumbnailImage.asset->url,
+    "imageAlt": thumbnailImage.alt,
+    "lqip": thumbnailImage.asset->metadata.lqip,
+    difficulty,
+    "subcategorySlug": subcategory->slug.current,
+    "categorySlug": subcategory->parentCategory->slug.current
+  }`;
+  
+  return client.fetch(groqQuery, params);
 }
 
 // Hent alle underkategorier på tvers av alle kategorier
@@ -609,4 +612,87 @@ export async function getSpecificSubcategories(slugs: string[]) {
   }
   
   return result;
+}
+
+// Hent relaterte underkategorier
+export async function getRelatedSubcategories(
+  currentSubcategorySlug: string, 
+  categorySlug: string, 
+  limit: number = 4
+) {
+  return client.fetch(
+    `*[_type == "subcategory" 
+      && slug.current != $currentSubcategorySlug 
+      && parentCategory->slug.current == $categorySlug 
+      && isActive == true]
+    | order(order asc, title asc)[0...$limit] {
+      _id,
+      title,
+      "slug": slug.current,
+      difficulty,
+      description,
+      featuredImage {
+        "url": asset->url,
+        "alt": alt,
+      },
+      "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true]),
+      "sampleImage": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true][0] {
+        "thumbnailUrl": thumbnailImage.asset->url,
+        "thumbnailAlt": thumbnailImage.alt,
+        "imageUrl": webpImage.asset->url,
+        "imageAlt": webpImage.alt
+      }
+    }`,
+    { currentSubcategorySlug, categorySlug, limit }
+  );
+}
+
+// Hent relaterte tegninger i samme underkategori
+export async function getRelatedDrawings(
+  currentDrawingSlug: string,
+  subcategorySlug: string,
+  limit: number = 4
+) {
+  return client.fetch(
+    `*[_type == "drawingImage" 
+      && slug.current != $currentDrawingSlug 
+      && subcategory->slug.current == $subcategorySlug 
+      && isActive == true]
+    | order(order asc, title asc)[0...$limit] {
+      _id,
+      title,
+      "slug": slug.current,
+      difficulty,
+      "imageUrl": thumbnailImage.asset->url,
+      "imageAlt": thumbnailImage.alt,
+      "lqip": thumbnailImage.asset->metadata.lqip
+    }`,
+    { currentDrawingSlug, subcategorySlug, limit }
+  );
+}
+
+// Hent trending underkategorier
+export async function getTrendingSubcategories(limit: number = 2) {
+  return client.fetch(
+    `*[_type == "subcategory" && isTrending == true && isActive == true][0...$limit] {
+      _id,
+      title,
+      "slug": slug.current,
+      "parentCategory": parentCategory->{ "slug": slug.current }
+    }`,
+    { limit }
+  );
+}
+
+// Hent nyeste underkategorier
+export async function getNewestSubcategories(limit: number = 7) {
+  return client.fetch(
+    `*[_type == "subcategory" && isActive == true] | order(_createdAt desc)[0...$limit] {
+      _id,
+      title,
+      "slug": slug.current,
+      "parentCategory": parentCategory->{ "slug": slug.current }
+    }`,
+    { limit }
+  );
 } 

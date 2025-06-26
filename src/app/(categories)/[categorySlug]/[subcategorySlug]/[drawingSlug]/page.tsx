@@ -11,6 +11,8 @@ import DrawingJsonLd from '@/components/json-ld/DrawingJsonLd';
 import { SVG_BLUR_PLACEHOLDER, WEBP_PLACEHOLDER_PATH, formatDate } from '@/lib/utils';
 import { PortableText, type PortableTextComponents } from '@portabletext/react';
 import type { PortableTextBlock } from '@portabletext/types';
+import { RelatedDrawings } from '@/components/drawing/RelatedDrawings';
+import { DrawingPageSidebar } from '@/components/sidebar/DrawingPageSidebar';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -230,76 +232,96 @@ export default async function DrawingPage({ params }: PageProps) {
             </nav>
             
             <div className="flex flex-col md:flex-row">
-              {/* Left: Image */}
-              <div className="md:w-1/3 flex justify-center items-center">
-                {(drawing.imageUrl || drawing.fallbackImageUrl) && (
-                  <div className="relative w-full max-w-[450px] min-h-[600px]">
-                    <Image
-                      src={drawing.imageUrl || drawing.fallbackImageUrl || WEBP_PLACEHOLDER_PATH}
-                      alt={drawing.title}
-                      priority
-                      fill
-                      style={{ objectFit: 'contain' }}
-                      className="rounded-xl"
-                      sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
-                      placeholder="blur"
-                      blurDataURL={drawing.imageLqip || drawing.fallbackImageLqip || SVG_BLUR_PLACEHOLDER}
-                      quality={85}
-                    />
+              {/* Main Content Area */}
+              <div className="flex-grow md:w-2/3">
+                <div className="flex flex-col md:flex-row">
+                  {/* Left: Image */}
+                  <div className="md:w-1/2 flex justify-center items-center">
+                    {(drawing.imageUrl || drawing.fallbackImageUrl) && (
+                      <div className="relative w-full max-w-[450px] min-h-[600px]">
+                        <Image
+                          src={drawing.imageUrl || drawing.fallbackImageUrl || WEBP_PLACEHOLDER_PATH}
+                          alt={drawing.title}
+                          priority
+                          fill
+                          style={{ objectFit: 'contain' }}
+                          className="rounded-xl"
+                          sizes="(max-width: 768px) 85vw, (max-width: 1024px) 40vw, 33vw"
+                          placeholder="blur"
+                          blurDataURL={drawing.imageLqip || drawing.fallbackImageLqip || SVG_BLUR_PLACEHOLDER}
+                          quality={85}
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              {/* Right: Info/Text */}
-              <div className="md:w-2/3 md:pl-12 mt-4 md:mt-0 max-w-2xl">
-                <h1 className="text-5xl font-bold mb-4 font-display text-navy">{drawing.title}</h1>
-                <div className="mb-4">
-                  <p className="text-lg text-gray-600">
-                    {formatDate(drawing.publishedDate || drawing._createdAt)}
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {drawing.difficulty && (
-                    <span className={`inline-block px-3 py-1 rounded text-sm ${difficultyColors[getDifficultyKey(drawing.difficulty)]}`}> 
-                      {difficultyLabels[getDifficultyKey(drawing.difficulty)]}
-                    </span>
-                  )}
-                  {drawing.recommendedAgeRange && (
-                    <span className="inline-block px-3 py-1 rounded text-sm bg-blue-100 text-blue-800">
-                      {ageRangeLabels[drawing.recommendedAgeRange] || 'Alle aldre'}
-                    </span>
-                  )}
-                </div>
-                {drawing.description && (
-                  <div className="mb-8">
-                    <p className="text-lg text-navy">{drawing.description}</p>
+
+                  {/* Right: Details */}
+                  <div className="md:w-1/2 md:pl-8 mt-8 md:mt-0">
+                    <h1 className="font-display font-bold text-4xl text-navy mb-4">{drawing.title}</h1>
+                    <div className="mb-4">
+                      <p className="text-lg text-gray-600">
+                        {formatDate(drawing.publishedDate || drawing._createdAt)}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {drawing.difficulty && (
+                        <span className={`inline-block px-3 py-1 rounded text-sm ${difficultyColors[getDifficultyKey(drawing.difficulty)]}`}> 
+                          {difficultyLabels[getDifficultyKey(drawing.difficulty)]}
+                        </span>
+                      )}
+                      {drawing.recommendedAgeRange && (
+                        <span className="inline-block px-3 py-1 rounded text-sm bg-blue-100 text-blue-800">
+                          {ageRangeLabels[drawing.recommendedAgeRange] || 'Alle aldre'}
+                        </span>
+                      )}
+                    </div>
+                    {drawing.description && (
+                      <div className="mb-8">
+                        <p className="text-lg text-navy">{drawing.description}</p>
+                      </div>
+                    )}
+                    {/* Buttons */}
+                    <div className="flex gap-4 flex-wrap mb-8">
+                      {drawing.downloadUrl && (
+                        <DownloadPdfButton
+                          downloadUrl={drawing.downloadUrl}
+                          title="Last ned Bilde"
+                          className="border-2 border-black rounded-full px-6 py-2 inline-block hover:bg-gray-100 transition"
+                        />
+                      )}
+                      <StartColoringButton
+                        drawingId={drawing._id}
+                        title="Start Fargelegging"
+                        className="border-2 border-black rounded-full px-6 py-2 inline-block hover:bg-gray-100 transition"
+                      />
+                    </div>
                   </div>
-                )}
-                {/* Buttons */}
-                <div className="flex gap-4 flex-wrap mb-8">
-                  {drawing.downloadUrl && (
-                    <DownloadPdfButton
-                      downloadUrl={drawing.downloadUrl}
-                      title="Last ned Bilde"
-                      className="border-2 border-black rounded-full px-6 py-2 inline-block hover:bg-gray-100 transition"
-                    />
+                </div>
+
+                {/* Bottom: Context Content */}
+                <div className="w-full mt-8">
+                  {drawing.contextContent && (
+                    <div className="prose max-w-none">
+                      <PortableText value={drawing.contextContent} components={customComponents} />
+                    </div>
                   )}
-                  <StartColoringButton
-                    drawingId={drawing._id}
-                    title="Start Fargelegging"
-                    className="border-2 border-black rounded-full px-6 py-2 inline-block hover:bg-gray-100 transition"
-                  />
                 </div>
               </div>
+
+              {/* Sidebar */}
+              <DrawingPageSidebar />
             </div>
-            {/* Context Content Section - moved below the row, in a card container */}
-            {drawing.contextContent && drawing.contextContent.length > 0 && (
-              <div className="mt-10 bg-white/80 rounded-xl shadow p-4 sm:p-6">
-                <PortableText value={drawing.contextContent} components={customComponents} />
-              </div>
-            )}
           </div>
         </div>
       </main>
+
+      <RelatedDrawings
+        categorySlug={categorySlug}
+        subcategorySlug={subcategorySlug}
+        currentDrawingSlug={drawingSlug}
+        subcategoryTitle={subcategory.title}
+      />
+
       <Footer />
     </div>
   );

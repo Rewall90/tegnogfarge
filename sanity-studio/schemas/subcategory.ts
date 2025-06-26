@@ -66,6 +66,13 @@ export default defineType({
       initialValue: true
     }),
     defineField({
+      name: 'isTrending',
+      title: 'Trending',
+      type: 'boolean',
+      description: 'Fremhev denne underkategorien som "trending". Anbefalt antall: 2.',
+      initialValue: false,
+    }),
+    defineField({
       name: 'featuredImage',
       title: 'Fremhevet bilde',
       type: 'image',
