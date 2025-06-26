@@ -687,20 +687,48 @@ export async function getTrendingSubcategories(limit: number = 2) {
 
 // Hent nyeste underkategorier
 export async function getNewestSubcategories(limit: number = 7) {
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   return client.fetch(
     `*[_type == "subcategory" && isActive == true] | order(_createdAt desc)[0...$limit] {
       _id,
       title,
       "slug": slug.current,
-      "parentCategory": parentCategory->{ "slug": slug.current }
+      "parentCategory": parentCategory->{ "slug": slug.current },
+      "lqip": asset->metadata.lqip
     }`,
-    { limit }
+    { limit, sevenDaysAgo }
   );
+}
+
+export async function getSitemapPageData() {
+  return client.fetch(`
+    {
+      "posts": *[_type == "post" && defined(slug.current) && !(_id in path("drafts.**"))] {
+        "slug": slug.current,
+        _updatedAt
+      },
+      "categories": *[_type == "category" && defined(slug.current) && !(_id in path("drafts.**"))] {
+        "slug": slug.current,
+        _updatedAt
+      },
+      "subcategories": *[_type == "subcategory" && defined(slug.current) && defined(parentCategory->slug.current) && !(_id in path("drafts.**"))] {
+        "slug": slug.current,
+        "parentCategorySlug": parentCategory->slug.current,
+        _updatedAt
+      },
+      "drawings": *[_type == "drawingImage" && defined(slug.current) && defined(subcategory->slug.current) && defined(subcategory->parentCategory->slug.current) && !(_id in path("drafts.**"))] {
+        "slug": slug.current,
+        "subcategorySlug": subcategory->slug.current,
+        "parentCategorySlug": subcategory->parentCategory->slug.current,
+        _updatedAt
+      }
+    }
+  `);
 }
 
 export async function getSitemapImageData() {
   return client.fetch(`
-    *[_type == "drawingImage" && isActive == true] {
+    *[_type == "drawingImage" && defined(slug.current) && defined(mainImage.asset) && !(_id in path("drafts.**"))] {
       "drawingSlug": slug.current,
       "subcategorySlug": subcategory->slug.current,
       "categorySlug": subcategory->parentCategory->slug.current,

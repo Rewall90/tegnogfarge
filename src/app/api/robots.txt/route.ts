@@ -1,19 +1,18 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fargelegg.no';
-  const robotsTxt = `
-User-agent: *
-Allow: /
-Disallow: /api/
-Disallow: /dashboard/
+const { NEXT_PUBLIC_BASE_URL } = process.env;
 
-# Sitemaps
-Sitemap: ${baseUrl}/api/sitemap.xml
-Sitemap: ${baseUrl}/api/image-sitemap.xml
+export async function GET() {
+  const robotsTxt = `User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /studio/
+
+Sitemap: ${NEXT_PUBLIC_BASE_URL}/sitemap.xml
 `;
 
-  return new NextResponse(robotsTxt, {
+  return new NextResponse(robotsTxt.trim(), {
     headers: {
       'Content-Type': 'text/plain',
     },

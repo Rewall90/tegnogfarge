@@ -38,4 +38,34 @@ export interface Subcategory {
   drawings?: Drawing[];
 }
 
+export interface SitemapPost {
+  slug: string;
+  _updatedAt: string;
+}
+
+export interface SitemapCategory {
+  slug: string;
+  _updatedAt: string;
+}
+
+export interface SitemapSubcategory {
+  slug: string;
+  parentCategorySlug: string;
+  _updatedAt: string;
+}
+
+export interface SitemapDrawing {
+  slug: string;
+  subcategorySlug: string;
+  parentCategorySlug: string;
+  _updatedAt: string;
+}
+
+export interface SitemapPageData {
+  posts: SitemapPost[];
+  categories: SitemapCategory[];
+  subcategories: SitemapSubcategory[];
+  drawings: SitemapDrawing[];
+}
+
 // You can add other shared types below if needed 
