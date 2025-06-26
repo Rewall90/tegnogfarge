@@ -696,4 +696,18 @@ export async function getNewestSubcategories(limit: number = 7) {
     }`,
     { limit }
   );
+}
+
+export async function getSitemapImageData() {
+  return client.fetch(`
+    *[_type == "drawingImage" && isActive == true] {
+      "drawingSlug": slug.current,
+      "subcategorySlug": subcategory->slug.current,
+      "categorySlug": subcategory->parentCategory->slug.current,
+      "imageUrl": mainImage.asset->url,
+      title,
+      description,
+      _updatedAt
+    }
+  `);
 } 
