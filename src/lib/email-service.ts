@@ -1,10 +1,7 @@
 import { Resend } from 'resend';
 import { v4 as uuidv4 } from 'uuid';
 import clientPromise from './db';
-import { userVerificationTemplate, newsletterVerificationTemplate } from './email-templates';
 import { createVerificationToken } from '../lib/tokens';
-import VerifyEmailTemplate from "@/emails/VerifyEmailTemplate";
-import { render } from "@react-email/render";
 
 // Initier Resend med API-nøkkel
 const resend = new Resend(process.env.RESEND_API_KEY);
