@@ -3,12 +3,38 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
+// Set page metadata
+function setPageMetadata() {
+  if (typeof document !== 'undefined') {
+    document.title = 'Bekreft nyhetsbrev | Tegn og Farge';
+    
+    // Set or update meta tags
+    const setMetaTag = (name: string, content: string) => {
+      let meta = document.querySelector(`meta[name="${name}"]`);
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute('name', name);
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', content);
+    };
+    
+    setMetaTag('robots', 'noindex, nofollow, nocache, noarchive, nosnippet');
+    setMetaTag('description', 'Bekreft ditt nyhetsbrevabonnement');
+  }
+}
+
 function VerifyNewsletterContent() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get('token');
+  
+  // Set metadata when component mounts
+  useEffect(() => {
+    setPageMetadata();
+  }, []);
 
   useEffect(() => {
     if (!token) {

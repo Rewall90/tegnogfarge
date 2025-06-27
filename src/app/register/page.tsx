@@ -1,13 +1,39 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+
+// Set page metadata
+function setPageMetadata() {
+  if (typeof document !== 'undefined') {
+    document.title = 'Registrer deg | Tegn og Farge';
+    
+    // Set or update meta tags
+    const setMetaTag = (name: string, content: string) => {
+      let meta = document.querySelector(`meta[name="${name}"]`);
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute('name', name);
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', content);
+    };
+    
+    setMetaTag('robots', 'noindex, nofollow, nocache, noarchive, nosnippet');
+    setMetaTag('description', 'Opprett en ny konto hos Tegn og Farge');
+  }
+}
 
 function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect');
+  
+  // Set metadata when component mounts
+  useEffect(() => {
+    setPageMetadata();
+  }, []);
   
   const [formData, setFormData] = useState({
     name: '',

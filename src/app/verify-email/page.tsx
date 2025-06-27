@@ -5,6 +5,27 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 
+// Set page metadata
+function setPageMetadata() {
+  if (typeof document !== 'undefined') {
+    document.title = 'Bekreft e-post | Tegn og Farge';
+    
+    // Set or update meta tags
+    const setMetaTag = (name: string, content: string) => {
+      let meta = document.querySelector(`meta[name="${name}"]`);
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute('name', name);
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', content);
+    };
+    
+    setMetaTag('robots', 'noindex, nofollow, nocache, noarchive, nosnippet');
+    setMetaTag('description', 'Bekreft din e-postadresse for å aktivere kontoen');
+  }
+}
+
 function VerifyEmailContent() {
   const [verificationCode, setVerificationCode] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
@@ -17,6 +38,11 @@ function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams?.get('token') || '';
+  
+  // Set metadata when component mounts
+  useEffect(() => {
+    setPageMetadata();
+  }, []);
   
   // Auto-populate token from URL if present
   useEffect(() => {

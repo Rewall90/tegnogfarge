@@ -1,9 +1,30 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+
+// Set page metadata
+function setPageMetadata() {
+  if (typeof document !== 'undefined') {
+    document.title = 'Logg inn | Tegn og Farge';
+    
+    // Set or update meta tags
+    const setMetaTag = (name: string, content: string) => {
+      let meta = document.querySelector(`meta[name="${name}"]`);
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute('name', name);
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', content);
+    };
+    
+    setMetaTag('robots', 'noindex, nofollow, nocache, noarchive, nosnippet');
+    setMetaTag('description', 'Logg inn på din Tegn og Farge konto');
+  }
+}
 
 function LoginContent() {
   const router = useRouter();
@@ -13,6 +34,11 @@ function LoginContent() {
   const registered = searchParams.get('registered');
   const verify = searchParams.get('verify');
   const verified = searchParams.get('verified');
+  
+  // Set metadata when component mounts
+  useEffect(() => {
+    setPageMetadata();
+  }, []);
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
