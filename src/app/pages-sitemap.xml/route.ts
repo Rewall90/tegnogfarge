@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSitemapPageData } from "@/lib/sanity";
+import { STRUCTURED_DATA } from "@/lib/structured-data-constants";
 import type {
   SitemapPageData,
   SitemapPost,
@@ -7,8 +8,6 @@ import type {
   SitemapSubcategory,
   SitemapDrawing,
 } from "@/types";
-
-const { NEXT_PUBLIC_BASE_URL } = process.env;
 
 // Helper to format date
 function formatDate(dateString: string) {
@@ -33,66 +32,84 @@ function generateUrlEntry(
 
 export async function GET() {
   try {
+    const baseUrl = STRUCTURED_DATA.ORGANIZATION.URL;
     const sitemapData: SitemapPageData = await getSitemapPageData();
     const currentDate = formatDate(new Date().toISOString());
 
+    const mostRecentUpdate =
+      sitemapData.posts?.[0]?._updatedAt ||
+      sitemapData.drawings?.[0]?._updatedAt ||
+      new Date().toISOString();
+
     const staticPages = [
       {
-        loc: `${NEXT_PUBLIC_BASE_URL}/`,
-        lastmod: currentDate,
+        loc: `${baseUrl}/`,
+        lastmod: formatDate(mostRecentUpdate),
         changefreq: "daily",
         priority: 1.0,
       },
       {
-        loc: `${NEXT_PUBLIC_BASE_URL}/hoved-kategori`,
+        loc: `${baseUrl}/hoved-kategori`,
+        lastmod: formatDate(mostRecentUpdate),
+        changefreq: "weekly",
+        priority: 0.8,
+      },
+      {
+        loc: `${baseUrl}/alle-underkategorier`,
+        lastmod: formatDate(mostRecentUpdate),
+        changefreq: "weekly",
+        priority: 0.8,
+      },
+      {
+        loc: `${baseUrl}/coloring-app`,
+        lastmod: currentDate,
+        changefreq: "monthly",
+        priority: 0.8,
+      },
+      {
+        loc: `${baseUrl}/blog`,
         lastmod: currentDate,
         changefreq: "weekly",
         priority: 0.8,
       },
       {
-        loc: `${NEXT_PUBLIC_BASE_URL}/blog`,
-        lastmod: currentDate,
-        changefreq: "weekly",
-        priority: 0.8,
-      },
-      {
-        loc: `${NEXT_PUBLIC_BASE_URL}/om-oss`,
+        loc: `${baseUrl}/om-oss`,
         lastmod: "2024-05-20",
         changefreq: "monthly",
         priority: 0.7,
       },
       {
-        loc: `${NEXT_PUBLIC_BASE_URL}/kontakt`,
+        loc: `${baseUrl}/kontakt`,
         lastmod: "2024-05-20",
         changefreq: "monthly",
         priority: 0.7,
       },
       {
-        loc: `${NEXT_PUBLIC_BASE_URL}/om-skribenten`,
+        loc: `${baseUrl}/om-skribenten`,
         lastmod: "2024-05-20",
         changefreq: "monthly",
         priority: 0.7,
       },
       {
-        loc: `${NEXT_PUBLIC_BASE_URL}/personvernerklaering`,
+        loc: `${baseUrl}/personvernerklaering`,
         lastmod: "2024-05-20",
         changefreq: "yearly",
         priority: 0.5,
       },
       {
-        loc: `${NEXT_PUBLIC_BASE_URL}/vilkar-og-betingelser`,
+        loc: `${baseUrl}/vilkar-og-betingelser`,
         lastmod: "2024-05-20",
         changefreq: "yearly",
         priority: 0.5,
       },
       {
-        loc: `${NEXT_PUBLIC_BASE_URL}/lisensieringspolicy`,
+        loc: `${baseUrl}/lisensieringspolicy`,
         lastmod: "2024-05-20",
         changefreq: "yearly",
         priority: 0.5,
       },
       {
-        loc: `${NEXT_PUBLIC_BASE_URL}/fjerning-av-innhold`,
+        loc: `${baseUrl}/fjerning-av-innhold`,
         lastmod: "2024-05-20",
         changefreq: "yearly",
         priority: 0.5,
@@ -115,7 +132,7 @@ export async function GET() {
     // Add blog posts
     sitemapData.posts?.forEach((post: SitemapPost) => {
       xml += generateUrlEntry(
-        `${NEXT_PUBLIC_BASE_URL}/blog/${post.slug}`,
+        `${baseUrl}/blog/${post.slug}`,
         formatDate(post._updatedAt),
         "monthly",
         0.7,
@@ -125,7 +142,7 @@ export async function GET() {
     // Add categories
     sitemapData.categories?.forEach((category: SitemapCategory) => {
       xml += generateUrlEntry(
-        `${NEXT_PUBLIC_BASE_URL}/${category.slug}`,
+        `${baseUrl}/${category.slug}`,
         formatDate(category._updatedAt),
         "weekly",
         0.8,
@@ -135,7 +152,7 @@ export async function GET() {
     // Add subcategories
     sitemapData.subcategories?.forEach((subcategory: SitemapSubcategory) => {
       xml += generateUrlEntry(
-        `${NEXT_PUBLIC_BASE_URL}/${subcategory.parentCategorySlug}/${subcategory.slug}`,
+        `${baseUrl}/${subcategory.parentCategorySlug}/${subcategory.slug}`,
         formatDate(subcategory._updatedAt),
         "weekly",
         0.7,
@@ -145,7 +162,7 @@ export async function GET() {
     // Add drawings
     sitemapData.drawings?.forEach((drawing: SitemapDrawing) => {
       xml += generateUrlEntry(
-        `${NEXT_PUBLIC_BASE_URL}/${drawing.parentCategorySlug}/${drawing.subcategorySlug}/${drawing.slug}`,
+        `${baseUrl}/${drawing.parentCategorySlug}/${drawing.subcategorySlug}/${drawing.slug}`,
         formatDate(drawing._updatedAt),
         "monthly",
         0.6,

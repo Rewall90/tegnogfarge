@@ -19,7 +19,16 @@ export default defineType({
       type: 'slug',
       options: {
         source: 'title',
-        maxLength: 96
+        maxLength: 96,
+        slugify: input => input
+          .toLowerCase()
+          .replace(/\s+/g, '-')           // Replace spaces with hyphens
+          .replace(/[æ]/g, 'ae')          // Replace æ with ae
+          .replace(/[ø]/g, 'o')           // Replace ø with o
+          .replace(/[å]/g, 'a')           // Replace å with a
+          .replace(/[^a-z0-9-]/g, '')     // Remove all non-alphanumeric characters except hyphens
+          .replace(/-+/g, '-')            // Replace multiple hyphens with single hyphen
+          .replace(/^-|-$/g, '')          // Remove hyphens from start and end
       },
       validation: Rule => Rule.required()
     }),

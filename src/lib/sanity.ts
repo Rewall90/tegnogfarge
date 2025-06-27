@@ -728,11 +728,11 @@ export async function getSitemapPageData() {
 
 export async function getSitemapImageData() {
   return client.fetch(`
-    *[_type == "drawingImage" && defined(slug.current) && defined(mainImage.asset) && !(_id in path("drafts.**"))] {
+    *[_type == "drawingImage" && defined(slug.current) && defined(displayImage.asset) && !(_id in path("drafts.**"))] {
       "drawingSlug": slug.current,
       "subcategorySlug": subcategory->slug.current,
       "categorySlug": subcategory->parentCategory->slug.current,
-      "imageUrl": mainImage.asset->url,
+      "imageUrl": displayImage.asset->url,
       title,
       description,
       _updatedAt

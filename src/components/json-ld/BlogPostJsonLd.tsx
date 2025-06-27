@@ -1,18 +1,15 @@
 import { BlogPosting } from 'schema-dts';
 import { SanityPost } from '@/types/sanity'; 
-import { urlFor } from '@/lib/sanity'; 
-
-const SITE_URL = 'https://www.tegnogfarge.no';
-const AUTHOR_NAME = 'Petter';
-const PUBLISHER_LOGO_URL = `${SITE_URL}/public/favicon/tegnogfarge-favicon.svg`; 
-const PUBLISHER_NAME = 'Tegn og Farge';
+import { urlFor } from '@/lib/sanity';
+import { STRUCTURED_DATA } from '@/lib/structured-data-constants';
 
 interface BlogPostJsonLdProps {
   post: SanityPost;
 }
 
 export function BlogPostJsonLd({ post }: BlogPostJsonLdProps) {
-  const postUrl = `${SITE_URL}/blog/${post.slug.current}`;
+  const baseUrl = STRUCTURED_DATA.ORGANIZATION.URL;
+  const postUrl = `${baseUrl}/blog/${post.slug.current}`;
   
   const blogPostSchema: BlogPosting = {
     '@type': 'BlogPosting',
@@ -25,10 +22,10 @@ export function BlogPostJsonLd({ post }: BlogPostJsonLdProps) {
     'datePublished': post.publishedAt,
     'dateModified': post._updatedAt,
     'author': {
-      '@id': `${SITE_URL}/om-skribenten#person`,
+      '@id': `${baseUrl}/om-skribenten#person`,
     },
     'publisher': {
-      '@id': `${SITE_URL}/#organization`,
+      '@id': `${baseUrl}/#organization`,
     },
     'description': post.title, // You might want to use an excerpt field here if available
   };

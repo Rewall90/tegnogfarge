@@ -1,15 +1,20 @@
 import { NextResponse } from 'next/server';
-
-const { NEXT_PUBLIC_BASE_URL } = process.env;
+import { STRUCTURED_DATA } from '@/lib/structured-data-constants';
 
 export async function GET() {
+  const baseUrl = STRUCTURED_DATA.ORGANIZATION.URL;
+  
   const robotsTxt = `User-agent: *
 Allow: /
 
 Disallow: /api/
 Disallow: /studio/
+Disallow: /verify-email*
+Disallow: /verify-newsletter*
+Disallow: /register*
+Disallow: /login*
 
-Sitemap: ${NEXT_PUBLIC_BASE_URL}/sitemap.xml
+Sitemap: ${baseUrl}/sitemap.xml
 `;
 
   return new NextResponse(robotsTxt.trim(), {

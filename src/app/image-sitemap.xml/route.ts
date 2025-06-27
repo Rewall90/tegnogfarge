@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSitemapImageData } from '@/lib/sanity';
+import { STRUCTURED_DATA } from '@/lib/structured-data-constants';
 
 function encodeXmlEntities(text: string): string {
   if (!text) return '';
@@ -12,11 +13,7 @@ function encodeXmlEntities(text: string): string {
 }
 
 export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-  if (!baseUrl) {
-    return new NextResponse('Internal Server Error: NEXT_PUBLIC_BASE_URL is not defined', { status: 500 });
-  }
+  const baseUrl = STRUCTURED_DATA.ORGANIZATION.URL;
   
   try {
     const drawings = await getSitemapImageData();
@@ -29,7 +26,7 @@ export async function GET() {
         continue;
       }
       
-      const pageUrl = `${baseUrl}/hoved-kategori/${drawing.categorySlug}/${drawing.subcategorySlug}/${drawing.drawingSlug}`;
+      const pageUrl = `${baseUrl}/${drawing.categorySlug}/${drawing.subcategorySlug}/${drawing.drawingSlug}`;
       const safeTitle = encodeXmlEntities(drawing.title);
       const safeCaption = encodeXmlEntities(drawing.description || `${drawing.title} fargeleggingsark`);
       

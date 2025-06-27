@@ -2,7 +2,7 @@ import { STRUCTURED_DATA } from '@/lib/structured-data-constants';
 
 export default function ColoringAppJsonLd() {
   const baseUrl = STRUCTURED_DATA.ORGANIZATION.URL;
-  const appUrl = `${baseUrl}/fargelegg-online`;
+  const appUrl = `${baseUrl}/coloring-app`;
   const appId = `${appUrl}#coloringapp`;
   
   const jsonLd = {

@@ -1,29 +1,28 @@
 import { WebSite } from 'schema-dts';
-
-const SITE_URL = 'https://www.tegnogfarge.no';
-const SITE_NAME = 'Tegn og Farge';
-const PUBLISHER_LOGO_URL = `${SITE_URL}/favicon/tegnogfarge-favicon.svg`;
+import { STRUCTURED_DATA } from '@/lib/structured-data-constants';
 
 export function WebsiteJsonLd() {
+  const baseUrl = STRUCTURED_DATA.ORGANIZATION.URL;
+  
   const websiteSchema: WebSite = {
     '@type': 'WebSite',
-    '@id': `${SITE_URL}/#website`,
-    url: `${SITE_URL}/`,
-    name: SITE_NAME,
+    '@id': `${baseUrl}/#website`,
+    url: `${baseUrl}/`,
+    name: STRUCTURED_DATA.ORGANIZATION.NAME,
     publisher: {
       '@type': 'Organization',
-      '@id': `${SITE_URL}/#organization`,
-      name: SITE_NAME,
+      '@id': `${baseUrl}/#organization`,
+      name: STRUCTURED_DATA.ORGANIZATION.NAME,
       logo: {
         '@type': 'ImageObject',
-        url: PUBLISHER_LOGO_URL,
+        url: STRUCTURED_DATA.ORGANIZATION.LOGO,
       },
     },
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/search?q={search_term_string}`
+        urlTemplate: `${baseUrl}/search?q={search_term_string}`
       },
       query: 'search_term_string',
     },

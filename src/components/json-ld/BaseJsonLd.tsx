@@ -18,8 +18,8 @@ export default function BaseJsonLd() {
         },
         "potentialAction": {
           "@type": "SearchAction",
-          "target": `${baseUrl}/sok?q={search_term_string}`,
-          "query-input": "required name=search_term_string"
+          "target": STRUCTURED_DATA.SEARCH.ENDPOINT,
+          "query-input": `required name=${STRUCTURED_DATA.SEARCH.QUERY_PARAM}`
         },
         "copyrightYear": new Date().getFullYear(),
         "copyrightHolder": {

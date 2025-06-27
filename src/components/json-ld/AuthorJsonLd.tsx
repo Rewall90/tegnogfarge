@@ -1,18 +1,18 @@
 import { ProfilePage } from 'schema-dts';
-
-const SITE_URL = 'https://www.tegnogfarge.no';
-const AUTHOR_NAME = 'Petter'; 
+import { STRUCTURED_DATA } from '@/lib/structured-data-constants';
 
 export function AuthorJsonLd() {
+  const baseUrl = STRUCTURED_DATA.ORGANIZATION.URL;
+  
   const profilePageSchema: ProfilePage = {
     '@type': 'ProfilePage',
-    name: `Om ${AUTHOR_NAME}`,
-    url: `${SITE_URL}/om-skribenten`,
+    name: `Om ${STRUCTURED_DATA.AUTHOR.NAME}`,
+    url: `${baseUrl}/om-skribenten`,
     mainEntity: {
       '@type': 'Person',
-      '@id': `${SITE_URL}/om-skribenten#person`,
-      name: AUTHOR_NAME,
-      url: `${SITE_URL}/om-skribenten`,
+      '@id': `${baseUrl}/om-skribenten#person`,
+      name: STRUCTURED_DATA.AUTHOR.NAME,
+      url: `${baseUrl}/om-skribenten`,
     },
   };
 

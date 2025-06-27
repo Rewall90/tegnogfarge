@@ -9,7 +9,7 @@ export const STRUCTURED_DATA = {
   ORGANIZATION: {
     NAME: "Tegn og Farge",
     URL: BASE_URL,
-    LOGO: `${BASE_URL}/logo.svg`
+    LOGO: `${BASE_URL}/favicon/tegnogfarge-favicon.svg`
   },
   
   // Legal information
@@ -29,6 +29,12 @@ export const STRUCTURED_DATA = {
     NAME: "Fargelegg Nå",
     DESCRIPTION: "Fargeleggingsark for barn og voksne",
     LANGUAGE: "nb-NO"
+  },
+  
+  // Search configuration
+  SEARCH: {
+    ENDPOINT: `${BASE_URL}/search?q={search_term_string}`,
+    QUERY_PARAM: "search_term_string"
   },
   
   // Page types
