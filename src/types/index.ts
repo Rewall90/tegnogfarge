@@ -8,16 +8,20 @@ export interface Drawing {
   metaDescription?: string;
   imageUrl?: string;
   imageLqip?: string;
+  imageAlt?: string;
   fallbackImageUrl?: string;
   fallbackImageLqip?: string;
   thumbnailUrl?: string;
   thumbnailLqip?: string;
+  thumbnailAlt?: string;
   downloadUrl?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
   hasDigitalColoring?: boolean;
   recommendedAgeRange?: string;
   contextContent?: PortableTextBlock[];
   slug?: string;
+  categorySlug?: string;
+  subcategorySlug?: string;
   publishedDate?: string;
   _createdAt?: string;
 }

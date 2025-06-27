@@ -48,6 +48,7 @@ export const STRUCTURED_DATA = {
   // Schema types
   SCHEMA_TYPES: {
     BREADCRUMB: "BreadcrumbList",
+    LIST_ITEM: "ListItem",
     ORGANIZATION: "Organization",
     WEBSITE: "WebSite"
   }
