@@ -12,9 +12,9 @@ const TEST_DRAWING = {
   slug: 'test-drawing',
   title: 'Test Drawing',
   description: 'A test drawing for verification',
-  imageUrl: 'https://fargelegg.no/images/test-drawing.jpg',
+      imageUrl: 'https://tegnogfarge.no/images/test-drawing.jpg',
   image: {
-    url: 'https://fargelegg.no/images/test-drawing.jpg',
+          url: 'https://tegnogfarge.no/images/test-drawing.jpg',
     alt: 'Test Drawing Alt Text',
     metadata: {
       dimensions: {

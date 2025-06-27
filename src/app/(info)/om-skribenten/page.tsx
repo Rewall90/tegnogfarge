@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Om Skribenten - TegnOgFarge.no',
   description: 'Bli kjent med skribenten og illustratøren bak TegnOgFarge.no. Lær om lidenskapen for kreativitet og tegning som driver nettstedet.',
   alternates: {
-    canonical: 'https://www.tegnogfarge.no/om-skribenten',
+    canonical: 'https://tegnogfarge.no/om-skribenten',
   },
 };
 

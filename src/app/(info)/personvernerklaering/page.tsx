@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Personvernerklæring - TegnOgFarge.no',
   description: 'Denne personvernerklæringen forklarer hvordan vi i Tegn og Farge samler inn, bruker og beskytter personopplysninger når du bruker nettstedet vårt.',
   alternates: {
-    canonical: 'https://www.tegnogfarge.no/personvernerklaering',
+    canonical: 'https://tegnogfarge.no/personvernerklaering',
   },
 };
 
@@ -38,7 +38,7 @@ export default function PrivacyPolicyPage() {
           <ul className="list-disc list-inside space-y-2 text-gray-600 text-lg">
             <li><strong>Konto:</strong> En konto du eventuelt oppretter hos oss for å bruke bestemte funksjoner.</li>
             <li><strong>Vi / Oss / Vår:</strong> Betyr Tegn og Farge.</li>
-            <li><strong>Tjeneste:</strong> Nettsiden vår, www.tegnogfarge.no.</li>
+            <li><strong>Tjeneste:</strong> Nettsiden vår, tegnogfarge.no.</li>
             <li><strong>Enhet:</strong> Dingsen du bruker – f.eks. mobil, nettbrett eller datamaskin.</li>
             <li><strong>Personopplysninger:</strong> Informasjon som kan brukes til å kjenne deg igjen, som navn og e-post.</li>
             <li><strong>Bruksdata:</strong> Tekniske data om hvordan du bruker siden, f.eks. hvilke sider du besøker og hvor lenge.</li>

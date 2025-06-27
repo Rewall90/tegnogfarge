@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Kontakt Oss - TegnOgFarge.no',
   description: 'Har du spørsmål eller forslag? Kontakt oss via vårt kontaktskjema. Vi ser frem til å høre fra deg!',
   alternates: {
-    canonical: 'https://www.tegnogfarge.no/kontakt',
+    canonical: 'https://tegnogfarge.no/kontakt',
   },
 };
 

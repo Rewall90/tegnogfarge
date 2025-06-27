@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: 'Alle Fargeleggingskategorier - TegnOgFarge.no',
   description: 'Utforsk alle våre fargeleggingskategorier for barn og voksne. Last ned gratis fargeleggingsark eller bruk vårt online fargeleggingsverktøy.',
   alternates: {
-    canonical: 'https://www.tegnogfarge.no/alle-underkategorier',
+    canonical: 'https://tegnogfarge.no/alle-underkategorier',
   },
 };
 

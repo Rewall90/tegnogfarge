@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Om Oss - TegnOgFarge.no',
   description: 'Lær mer om TegnOgFarge.no, vår misjon, og teamet bak siden. Finn ut hvorfor vi brenner for å tilby gratis fargeleggingsoppgaver for barn.',
   alternates: {
-    canonical: 'https://www.tegnogfarge.no/om-oss',
+    canonical: 'https://tegnogfarge.no/om-oss',
   },
 };
 

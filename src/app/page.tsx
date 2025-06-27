@@ -27,7 +27,7 @@ interface Category {
 export const revalidate = 3600; // Revalidate every hour
 
 export async function generateMetadata() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no';
+  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
   
   // FAQ schema for structured data
   const faqSchema = {

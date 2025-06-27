@@ -12,9 +12,9 @@ const MOCK_DRAWING = {
   _id: 'drawing123',
   title: 'Testbilde for fargelegging',
   description: 'Et testbilde for strukturerte data',
-  imageUrl: 'https://fargelegg.no/images/test-drawing.jpg',
+      imageUrl: 'https://tegnogfarge.no/images/test-drawing.jpg',
   image: {
-    url: 'https://fargelegg.no/images/test-drawing.jpg',
+          url: 'https://tegnogfarge.no/images/test-drawing.jpg',
     alt: 'Test fargeleggingsark',
     metadata: {
       dimensions: {
@@ -67,7 +67,7 @@ async function testImageSitemap() {
       }
       
       sitemap += `  <url>\n`;
-      sitemap += `    <loc>https://fargelegg.no/coloring/${drawing._id}</loc>\n`;
+      sitemap += `    <loc>https://tegnogfarge.no/coloring/${drawing._id}</loc>\n`;
       sitemap += `    <image:image>\n`;
       sitemap += `      <image:loc>${imageUrl}</image:loc>\n`;
       sitemap += `      <image:title>${safeTitle}</image:title>\n`;

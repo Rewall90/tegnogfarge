@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Lisensieringspolicy - TegnOgFarge.no',
   description: 'Alt innhold på Tegn og Farge er beskyttet av opphavsrett. Les om hva du har lov til å gjøre med innholdet vårt, og hva som ikke er tillatt.',
   alternates: {
-    canonical: 'https://www.tegnogfarge.no/lisensieringspolicy',
+    canonical: 'https://tegnogfarge.no/lisensieringspolicy',
   },
 };
 

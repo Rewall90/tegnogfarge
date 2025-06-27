@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   // Prepare structured data for metadata
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
   const pathname = `/${categorySlug}/${subcategorySlug}/${drawingSlug}`;
   const currentUrl = `${baseUrl}${pathname}`;
   

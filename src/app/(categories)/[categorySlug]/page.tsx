@@ -30,7 +30,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     const description = category.seoDescription || category.description || `Utforsk ${category.title} fargeleggingsbilder`;
     
     // Prepare the JSON-LD data for this category
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
     const categoryId = `${baseUrl}/${category.slug}`;
     const currentUrl = `${baseUrl}/${categorySlug}`;
     const categoryImageUrl = category.image?.url;
@@ -159,7 +159,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     return {
       title: `${title} Fargeleggingsbilder | Fargelegg Nå`,
       description,
-      metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no'),
+      metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no'),
       alternates: {
         canonical: `/${categorySlug}`,
       },

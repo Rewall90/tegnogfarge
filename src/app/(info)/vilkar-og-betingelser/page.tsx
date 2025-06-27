@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Vilkår og betingelser - TegnOgFarge.no',
   description: 'Når du besøker eller bruker nettsiden vår, sier du deg enig i reglene som står her. Les dem gjerne nøye.',
   alternates: {
-    canonical: 'https://www.tegnogfarge.no/vilkar-og-betingelser',
+    canonical: 'https://tegnogfarge.no/vilkar-og-betingelser',
   },
 };
 
@@ -31,7 +31,7 @@ export default function TermsAndConditionsPage() {
         <div>
             <h1 className="text-heading text-[#264653] font-bold mb-4">Vilkår og betingelser</h1>
             <p className="text-lg text-gray-600 mb-8">
-                Velkommen til Tegn og Farge! Når du besøker eller bruker nettsiden vår på https://www.tegnogfarge.no, sier du deg enig i reglene som står her. Les dem gjerne nøye – de forklarer hva du har lov til, og hva du ikke har lov til, når du bruker siden vår.
+                Velkommen til Tegn og Farge! Når du besøker eller bruker nettsiden vår på https://tegnogfarge.no, sier du deg enig i reglene som står her. Les dem gjerne nøye – de forklarer hva du har lov til, og hva du ikke har lov til, når du bruker siden vår.
             </p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">1. Bruk av innholdet vårt</h2>

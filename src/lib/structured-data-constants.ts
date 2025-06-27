@@ -2,7 +2,7 @@
  * Constants for structured data (JSON-LD)
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
 
 export const STRUCTURED_DATA = {
   // Organization details
@@ -45,14 +45,10 @@ export const STRUCTURED_DATA = {
     SUBCATEGORY: "CollectionPage"
   },
   
-  // Additional schema types
+  // Schema types
   SCHEMA_TYPES: {
-    WEBSITE: "WebSite",
-    WEB_PAGE: "WebPage",
-    ITEM_LIST: "ItemList",
-    LIST_ITEM: "ListItem",
-    PERSON: "Person",
-    IMAGE: "ImageObject",
-    BREADCRUMB: "BreadcrumbList"
+    BREADCRUMB: "BreadcrumbList",
+    ORGANIZATION: "Organization",
+    WEBSITE: "WebSite"
   }
 }; 

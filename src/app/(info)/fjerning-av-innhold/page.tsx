@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Fjerning av innhold - TegnOgFarge.no',
   description: 'Hos Tegn og Farge er vi opptatt av å gjøre ting riktig. Vi bruker bare bilder og innhold vi har lov til å bruke, og vi håper alle som bruker siden vår gjør det samme.',
   alternates: {
-    canonical: 'https://www.tegnogfarge.no/fjerning-av-innhold',
+    canonical: 'https://tegnogfarge.no/fjerning-av-innhold',
   },
 };
 

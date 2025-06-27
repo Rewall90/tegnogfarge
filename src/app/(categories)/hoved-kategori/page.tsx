@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: 'Alle Kategorier - TegnOgFarge.no',
   description: 'Utforsk alle våre fargeleggingskategorier for barn og voksne. Velg en kategori for å finne fargeleggingsark.',
   alternates: {
-    canonical: 'https://www.tegnogfarge.no/hoved-kategori',
+    canonical: 'https://tegnogfarge.no/hoved-kategori',
   },
 };
 

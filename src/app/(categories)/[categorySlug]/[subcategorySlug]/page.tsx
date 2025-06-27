@@ -80,7 +80,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
   }
 
   // Prepare the JSON-LD data for this subcategory
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
   const currentUrl = `${baseUrl}/${categorySlug}/${subcategorySlug}`;
   const subcategoryId = currentUrl;
   const categoryId = subcategory.parentCategory 
@@ -198,7 +198,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
   return {
     title: `${subcategory.seoTitle || subcategory.title} Fargeleggingsbilder | ${subcategory.parentCategory?.title || 'Fargelegg Nå'}`,
     description: subcategory.seoDescription || subcategory.description || `Utforsk ${subcategory.title} tegninger i kategorien ${subcategory.parentCategory?.title}`,
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://fargelegg.no'),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no'),
     alternates: {
       canonical: `/${categorySlug}/${subcategorySlug}`,
     },
