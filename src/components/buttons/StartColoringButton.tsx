@@ -12,8 +12,10 @@ interface StartColoringButtonProps {
 }
 
 export function StartColoringButton({ drawingId, title = 'Start Fargelegging', className }: StartColoringButtonProps) {
-  const router = useRouter();
   const { data: session } = useSession();
+  const router = useRouter();
+
+
 
   function handleClick() {
     if (!session) {
