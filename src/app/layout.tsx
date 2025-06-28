@@ -27,8 +27,8 @@ const quicksand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  title: "TegnOgFarge.no - Gratis Fargeleggingssider",
-  description: "Last ned og print gratis fargeleggingssider for barn og voksne. Finn kreative tegninger og motiverende aktiviteter for alle aldre.",
+  title: "TegnOgFarge.no – Last ned & fargelegg gratis fargeleggingssider",
+  description: "Fargelegg gratis – last ned eller tegn i nettleseren. Motiver for barn og voksne i PNG/PDF – print og kos deg nå!",
   icons: {
     icon: [
       {
