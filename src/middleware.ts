@@ -15,13 +15,22 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const { pathname, host, protocol } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
+
+  // Bruk Vercel-spesifikke headers i produksjon, med fallback for lokal utvikling
+  const protocol = request.headers.get('x-forwarded-proto') ?? 'http';
+  const host = request.headers.get('x-forwarded-host') ?? request.nextUrl.host;
+
   const canonicalHost = 'tegnogfarge.no';
 
-  // Enforce canonical domain: https://tegnogfarge.no
-  if (protocol !== 'https:' || host !== canonicalHost) {
+  // Omdiriger kun hvis domenet eller protokollen ikke er den kanoniske
+  if (
+    process.env.NODE_ENV === 'production' &&
+    (protocol !== 'https' || host !== canonicalHost)
+  ) {
     const newUrl = new URL(pathname, `https://${canonicalHost}`);
-    return NextResponse.redirect(newUrl.toString(), 301); // 301 for permanent redirect
+    newUrl.search = search; // Bevar query-parametre
+    return NextResponse.redirect(newUrl.toString(), 301); // 301 for permanent omdirigering
   }
 
   // Existing category redirects
