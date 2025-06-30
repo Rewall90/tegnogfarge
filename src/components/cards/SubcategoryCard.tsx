@@ -90,9 +90,6 @@ export function SubcategoryCard({
         >
           <h2 className={`font-display font-bold text-lg mb-2 text-navy ${titleClassName}`}>{subcategory.title}</h2>
         </Link>
-        {subcategory.description && (
-          <p className="text-body text-gray-600 text-sm mb-3">{subcategory.description}</p>
-        )}
         <footer className="flex flex-col items-start gap-2 text-sm">
           <span className={`px-2 py-1 rounded text-xs ${difficultyProps.className}`}>
             {difficultyProps.label}
