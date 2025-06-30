@@ -1,9 +1,1 @@
-{
-  "redirects": [
-    {
-      "source": "https://www.tegnogfarge.no/:path*",
-      "destination": "https://tegnogfarge.no/:path*",
-      "permanent": true
-    }
-  ]
-} 
+{} 
