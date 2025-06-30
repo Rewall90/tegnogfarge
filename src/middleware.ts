@@ -13,46 +13,71 @@
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  // --- KANONISK DOMENE-OMDIRIGERING ---
   const { pathname, search } = request.nextUrl;
-
-  // Bruk Vercel-spesifikke headers i produksjon, med fallback for lokal utvikling
   const protocol = request.headers.get('x-forwarded-proto') ?? 'http';
   const host = request.headers.get('x-forwarded-host') ?? request.nextUrl.host;
-
   const canonicalHost = 'tegnogfarge.no';
 
-  // Omdiriger kun hvis domenet eller protokollen ikke er den kanoniske
   if (
     process.env.NODE_ENV === 'production' &&
     (protocol !== 'https' || host !== canonicalHost)
   ) {
     const newUrl = new URL(pathname, `https://${canonicalHost}`);
-    newUrl.search = search; // Bevar query-parametre
-    return NextResponse.redirect(newUrl.toString(), 301); // 301 for permanent omdirigering
+    newUrl.search = search;
+    return NextResponse.redirect(newUrl.toString(), 301);
   }
 
-  // Existing category redirects
+  // --- KATEGORI-OMDIRIGERINGER ---
   if (pathname === '/categories') {
     return NextResponse.redirect(new URL('/all', request.url));
   }
-  
-  // Redirect from /categories/[slug] to /[slug]
   if (pathname.startsWith('/categories/')) {
     const newPathname = pathname.replace('/categories', '');
     return NextResponse.redirect(new URL(newPathname, request.url));
   }
-  
-  // Redirect from /all-categories to /all
   if (pathname === '/all-categories') {
     return NextResponse.redirect(new URL('/all', request.url));
   }
-  
+
+  // --- AUTENTISERINGSLOGIKK ---
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
+  const isAuth = !!token;
+  const isAuthPage =
+    pathname.startsWith('/login') || pathname.startsWith('/register');
+  const isProtectedPage = pathname.startsWith('/dashboard');
+  const isAdminPage = pathname.startsWith('/dashboard/admin');
+
+  if (isAuthPage) {
+    if (isAuth) {
+      const redirectParam = request.nextUrl.searchParams.get('redirect');
+      if (redirectParam) {
+        return NextResponse.redirect(new URL(redirectParam, request.url));
+      }
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+    return NextResponse.next();
+  }
+
+  if (isProtectedPage && !isAuth) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  if (isAdminPage && token?.role !== 'admin') {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
   return NextResponse.next();
 }
 
-// This matcher ensures the middleware runs on all paths.
+// Kombinert matcher for alle ruter
 export const config = {
   matcher: [
     /*
@@ -61,7 +86,12 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * This ensures the canonical redirect runs on all pages.
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    // Legg til de beskyttede rutene for autentisering
+    '/login',
+    '/register',
+    '/dashboard/:path*',
   ],
 }; 
