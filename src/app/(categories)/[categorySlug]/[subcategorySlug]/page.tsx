@@ -273,6 +273,8 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
               </h1>
             </header>
             
+            <p className="w-full text-lg text-gray-600 mb-8">{subcategory.description}</p>
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {sortedDrawings.map((drawing: Drawing) => (
                 <DrawingCard 
