@@ -15,9 +15,16 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  
-  // Redirect from /categories to /all
+  const { pathname, host, protocol } = request.nextUrl;
+  const canonicalHost = 'tegnogfarge.no';
+
+  // Enforce canonical domain: https://tegnogfarge.no
+  if (protocol !== 'https:' || host !== canonicalHost) {
+    const newUrl = new URL(pathname, `https://${canonicalHost}`);
+    return NextResponse.redirect(newUrl.toString(), 301); // 301 for permanent redirect
+  }
+
+  // Existing category redirects
   if (pathname === '/categories') {
     return NextResponse.redirect(new URL('/all', request.url));
   }
@@ -36,7 +43,16 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Match paths for redirection
+// This matcher ensures the middleware runs on all paths.
 export const config = {
-  matcher: ['/categories', '/categories/:path*', '/all-categories'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
 }; 
