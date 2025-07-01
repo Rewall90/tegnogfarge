@@ -210,6 +210,131 @@ export default defineType({
       initialValue: true
     }),
     defineField({
+      name: 'isPublishedToPinterest',
+      title: 'Publisert til Pinterest?',
+      type: 'boolean',
+      description: 'Markerer om dette bildet er publisert til Pinterest. Kan endres manuelt eller automatisk av skriptet.',
+      initialValue: false
+    }),
+    defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Legg til tags for bedre søk og kategorisering',
+      options: {
+        layout: 'tags'
+      }
+    }),
+    defineField({
+      name: 'entity',
+      title: 'Entity Metadata',
+      type: 'object',
+      description: 'Strukturert metadata for AI og søkeoptimalisering',
+      fields: [
+        {
+          name: 'attributes',
+          title: 'Attributter',
+          type: 'array',
+          of: [{ type: 'string' }],
+          description: 'Beskrivende attributter for bildet',
+          options: {
+            layout: 'tags'
+          }
+        },
+        {
+          name: 'main',
+          title: 'Hovedbeskrivelse',
+          type: 'string',
+          description: 'Hovedbeskrivelse av bildet'
+        },
+        {
+          name: 'related',
+          title: 'Relaterte emner',
+          type: 'object',
+          fields: [
+            {
+              name: 'contextual',
+              title: 'Kontekstuell informasjon',
+              type: 'array',
+              of: [{ type: 'string' }],
+              options: { layout: 'tags' }
+            },
+            {
+              name: 'techniques',
+              title: 'Teknikker',
+              type: 'array',
+              of: [{ type: 'string' }],
+              options: { layout: 'tags' }
+            },
+            {
+              name: 'themes',
+              title: 'Temaer',
+              type: 'array',
+              of: [{ type: 'string' }],
+              options: { layout: 'tags' }
+            }
+          ]
+        }
+      ]
+    }),
+    defineField({
+      name: 'seo',
+      title: 'SEO Metadata',
+      type: 'object',
+      description: 'SEO-optimalisering for søkemotorer',
+      fields: [
+        {
+          name: 'metaTitle',
+          title: 'Meta Tittel',
+          type: 'string',
+          description: 'Tittel som vises i søkemotorresultater'
+        },
+        {
+          name: 'metaDescription',
+          title: 'Meta Beskrivelse',
+          type: 'text',
+          description: 'Beskrivelse som vises i søkemotorresultater'
+        }
+      ]
+    }),
+    defineField({
+      name: 'instagramImage',
+      title: 'Instagram bilde',
+      type: 'image',
+      description: 'Optimalisert for Instagram (kvadratisk format)',
+      options: {
+        hotspot: true,
+        metadata: ['lqip']
+      },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alt tekst',
+          description: 'Alt tekst for Instagram bildet'
+        }
+      ]
+    }),
+    defineField({
+      name: 'pinterestImage',
+      title: 'Pinterest bilde',
+      type: 'image',
+      description: 'Optimalisert for Pinterest (høyt format)',
+      options: {
+        hotspot: true,
+        metadata: ['lqip']
+      },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alt tekst',
+          description: 'Alt tekst for Pinterest bildet'
+        }
+      ]
+    }),
+    defineField({
       name: 'subcategory',
       title: 'Underkategori',
       type: 'reference',

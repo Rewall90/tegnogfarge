@@ -31,6 +31,7 @@ export type Post = {
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
+    alt?: string;
     _type: "image";
   };
   categories?: Array<{
@@ -68,13 +69,14 @@ export type Post = {
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
+    alt?: string;
     _type: "image";
     _key: string;
   }>;
   excerpt?: string;
 };
 
-export interface DrawingImage {
+export type DrawingImage = {
   _id: string;
   _type: "drawingImage";
   _createdAt: string;
@@ -84,6 +86,25 @@ export interface DrawingImage {
   slug?: Slug;
   description?: string;
   metaDescription?: string;
+  recommendedAgeRange?: "3-5" | "6-8" | "9-12" | "12+" | "all";
+  contextContent?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h2" | "h3" | "h4";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
   downloadFile?: {
     asset?: {
       _ref: string;
@@ -94,10 +115,32 @@ export interface DrawingImage {
     media?: unknown;
     _type: "file";
   };
-  recommendedAgeRange?: string;
-  contextContent?: any; // Portable Text blocks
-  order?: number;
-  isActive?: boolean;
+  displayImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  thumbnailImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
   webpImage?: {
     asset?: {
       _ref: string;
@@ -108,9 +151,22 @@ export interface DrawingImage {
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
+    alt?: string;
     _type: "image";
   };
-}
+  hasDigitalColoring?: boolean;
+  difficulty?: "easy" | "medium" | "hard";
+  order?: number;
+  publishedDate?: string;
+  isActive?: boolean;
+  isPublishedToPinterest?: boolean;
+  subcategory?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "subcategory";
+  };
+};
 
 export type Subcategory = {
   _id: string;
@@ -121,15 +177,17 @@ export type Subcategory = {
   title?: string;
   slug?: Slug;
   description?: string;
+  seoTitle?: string;
+  seoDescription?: string;
   parentCategory?: {
     _ref: string;
     _type: "reference";
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "category";
   };
-  difficulty?: number;
   order?: number;
   isActive?: boolean;
+  isTrending?: boolean;
   featuredImage?: {
     asset?: {
       _ref: string;
@@ -140,6 +198,7 @@ export type Subcategory = {
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
+    alt?: string;
     _type: "image";
   };
 };
@@ -153,6 +212,8 @@ export type Category = {
   title?: string;
   slug?: Slug;
   description?: string;
+  seoTitle?: string;
+  seoDescription?: string;
   image?: {
     asset?: {
       _ref: string;
@@ -163,8 +224,13 @@ export type Category = {
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
+    alt?: string;
     _type: "image";
   };
+  icon?: string;
+  order?: number;
+  isActive?: boolean;
+  featured?: boolean;
 };
 
 export type SanityImagePaletteSwatch = {

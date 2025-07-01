@@ -34,18 +34,6 @@ export const metadata: Metadata = {
   },
   title: "TegnOgFarge.no – Last ned & fargelegg gratis fargeleggingssider",
   description: "Fargelegg gratis – last ned eller tegn i nettleseren. Motiver for barn og voksne i PNG/PDF – print og kos deg nå!",
-  icons: {
-    icon: [
-      {
-        url: '/favicon/tegnogfarge-favicon.svg',
-        type: 'image/svg+xml',
-      }
-    ],
-    apple: {
-      url: '/favicon/favicon.min.svg',
-      type: 'image/svg+xml',
-    },
-  },
 };
 
 export default function RootLayout({
