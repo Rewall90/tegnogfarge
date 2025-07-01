@@ -13,6 +13,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@next/third-parties": "^15.3.4",
     "@portabletext/react": "^3.0.0",
     "@react-email/components": "^0.0.25",
     "@react-email/render": "^0.0.15",

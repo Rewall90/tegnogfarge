@@ -6,6 +6,7 @@ import SessionProviderWrapper from "@/components/auth/SessionProviderWrapper";
 import StagewiseToolbarWrapper from "@/components/dev/StagewiseToolbarWrapper";
 import BaseJsonLd from "@/components/json-ld/BaseJsonLd";
 import dynamic from 'next/dynamic';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 // Dynamisk import av VisualEditing
 const VisualEditing = dynamic(
@@ -65,6 +66,10 @@ export default function RootLayout({
         <StagewiseToolbarWrapper />
         {/* Kun last VisualEditing når vi er i draft mode */}
         {isDraftMode && <VisualEditing />}
+        {/* Google Analytics - kun i produksjon */}
+        {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        )}
       </body>
     </html>
   );
