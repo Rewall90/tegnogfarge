@@ -58,11 +58,6 @@ export default function RootLayout({
   return (
     <html lang="nb" className={`${inter.variable} ${quicksand.variable}`}>
       <head>
-        <link 
-          rel="icon" 
-          href="/favicon/tegnogfarge-favicon.svg" 
-          type="image/svg+xml"
-        />
         <BaseJsonLd />
       </head>
       <body className="font-sans bg-white text-gray-900 min-h-screen flex flex-col">
