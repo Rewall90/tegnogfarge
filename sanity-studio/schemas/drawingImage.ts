@@ -217,6 +217,20 @@ export default defineType({
       initialValue: false
     }),
     defineField({
+      name: 'isPublishedToInstagram',
+      title: 'Publisert til Instagram?',
+      type: 'boolean',
+      description: 'Markerer om dette bildet er publisert til Instagram. Kan endres manuelt eller automatisk av skriptet.',
+      initialValue: false
+    }),
+    defineField({
+      name: 'isPublishedToFacebook',
+      title: 'Publisert til Facebook?',
+      type: 'boolean',
+      description: 'Markerer om dette bildet er publisert til Facebook. Kan endres manuelt eller automatisk av skriptet.',
+      initialValue: false
+    }),
+    defineField({
       name: 'tags',
       title: 'Tags',
       type: 'array',

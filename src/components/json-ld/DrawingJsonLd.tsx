@@ -330,10 +330,7 @@ export default function DrawingJsonLd({
   
   // Add primary image entity if there is an image
   if (mainImage && mainImageUrl) {
-    // Extract properties from mainImage excluding @type to avoid duplication
-    const { url, contentUrl, width, height, caption, name, alternateName, license, author, 
-            copyrightNotice, acquireLicensePage, encodingFormat } = mainImage;
-    
+    const { url, contentUrl, width, height, caption, name, alternateName, license, creator, creditText, copyrightNotice, acquireLicensePage, encodingFormat } = mainImage;
     graphItems.push({
       "@type": "ImageObject",
       "@id": primaryImageId,
@@ -343,9 +340,10 @@ export default function DrawingJsonLd({
       "height": height,
       "caption": caption,
       "name": name,
-      ...(alternateName && { "alternateName": alternateName }),
+      "alternateName": alternateName,
       "license": license,
-      "author": author,
+      "creator": creator,
+      "creditText": creditText,
       "copyrightNotice": copyrightNotice,
       "acquireLicensePage": acquireLicensePage,
       "encodingFormat": encodingFormat

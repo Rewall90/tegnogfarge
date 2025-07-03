@@ -183,7 +183,7 @@ export default function CategoryPageJsonLd({
           "@type": "ListItem",
           "position": 2,
           "name": "Kategorier",
-          "item": `${baseUrl}/kategorier`
+          "item": `${baseUrl}/hoved-kategori`
         },
         {
           "@type": "ListItem",

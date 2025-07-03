@@ -1,3 +1,4 @@
+import { createImageObject } from '@/lib/json-ld-utils';
 import { STRUCTURED_DATA } from '@/lib/structured-data-constants';
 
 export default function ColoringAppJsonLd() {
@@ -53,13 +54,12 @@ export default function ColoringAppJsonLd() {
             "priceCurrency": "NOK"
           }
         },
-        "screenshot": {
-          "@type": "ImageObject",
-          "url": `${baseUrl}/images/coloring-app-screenshot.jpg`,
-          "width": 1200,
-          "height": 800,
-          "caption": "Skjermbilde av Tegn og Farge digital fargeleggingsapp"
-        },
+        "screenshot": createImageObject(
+          `${baseUrl}/images/coloring-app-screenshot.jpg`,
+          "Skjermbilde av Tegn og Farge digital fargeleggingsapp",
+          { width: 1200, height: 800 },
+          "Skjermbilde av Tegn og Farge digital fargeleggingsapp"
+        ),
         "featureList": "Fargevalg, penselstørrelser, lagre funksjon, dele funksjon",
         "keywords": "fargelegging, fargeleggingsark, tegning, kreativ, aktivitet for barn, online fargelegging"
       },

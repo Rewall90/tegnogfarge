@@ -48,7 +48,7 @@ function verifyImageObject() {
   // Verify all required properties are present
   const requiredProperties = [
     '@type', 'url', 'contentUrl', 'width', 'height', 'caption', 
-    'name', 'license', 'author', 'copyrightNotice', 'encodingFormat'
+    'name', 'license', 'creator', 'creditText', 'copyrightNotice', 'encodingFormat'
   ];
   
   const missingProperties = requiredProperties.filter(prop => 
@@ -62,13 +62,20 @@ function verifyImageObject() {
   }
   
   // Verify author information is correctly included
-  if (imageObject.author && 
-      imageObject.author['@type'] === 'Person' && 
-      imageObject.author.name === STRUCTURED_DATA.AUTHOR.NAME &&
-      imageObject.author.url === STRUCTURED_DATA.AUTHOR.URL) {
-    console.log('✅ Author information is correctly included');
+  if (imageObject.creator &&
+      imageObject.creator['@type'] === 'Person' &&
+      imageObject.creator.name === STRUCTURED_DATA.AUTHOR.NAME &&
+      imageObject.creator.url === STRUCTURED_DATA.AUTHOR.URL) {
+    console.log('✅ Creator information is correctly included');
   } else {
-    console.error('❌ Author information is incorrect');
+    console.error('❌ Creator information is incorrect');
+  }
+  
+  // Verify credit text
+  if (imageObject.creditText === STRUCTURED_DATA.AUTHOR.NAME) {
+    console.log('✅ Credit text is correctly included');
+  } else {
+    console.error('❌ Credit text is incorrect');
   }
   
   // Verify license URL is correctly included

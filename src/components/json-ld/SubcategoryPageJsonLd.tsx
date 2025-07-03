@@ -247,11 +247,6 @@ export default function SubcategoryPageJsonLd({
           }
         ],
         "license": STRUCTURED_DATA.LEGAL.LICENSE_URL,
-        "author": {
-          "@type": "Person",
-          "name": STRUCTURED_DATA.AUTHOR.NAME,
-          "url": STRUCTURED_DATA.AUTHOR.URL
-        },
         "publisher": {
           "@id": `${baseUrl}/#organization`
         },

@@ -160,6 +160,8 @@ export type DrawingImage = {
   publishedDate?: string;
   isActive?: boolean;
   isPublishedToPinterest?: boolean;
+  isPublishedToInstagram?: boolean;
+  isPublishedToFacebook?: boolean;
   subcategory?: {
     _ref: string;
     _type: "reference";
