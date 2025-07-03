@@ -104,11 +104,12 @@ export function createImageObject(
     "name": alt || caption || "",
     ...(alt && { "alternateName": alt }),
     "license": STRUCTURED_DATA.LEGAL.LICENSE_URL,
-    "author": {
+    "creator": {
       "@type": "Person",
       "name": STRUCTURED_DATA.AUTHOR.NAME,
       "url": STRUCTURED_DATA.AUTHOR.URL
     },
+    "creditText": STRUCTURED_DATA.AUTHOR.NAME,
     "copyrightNotice": STRUCTURED_DATA.LEGAL.COPYRIGHT,
     "acquireLicensePage": STRUCTURED_DATA.LEGAL.LICENSE_URL,
     "encodingFormat": imageUrl.endsWith('.png') ? "image/png" : 
