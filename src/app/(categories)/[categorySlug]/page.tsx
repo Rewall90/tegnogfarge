@@ -159,9 +159,9 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     return {
       title: `${title} Fargeleggingsbilder | Fargelegg Nå`,
       description,
-      metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no'),
+      metadataBase: new URL(baseUrl),
       alternates: {
-        canonical: `/${categorySlug}`,
+        canonical: `${baseUrl}/${categorySlug}`,
       },
       openGraph: {
         title: `${title} Fargeleggingsbilder | Fargelegg Nå`,

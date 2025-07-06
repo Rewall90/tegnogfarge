@@ -30,7 +30,7 @@ const quicksand = Quicksand({
 export const metadata: Metadata = {
   metadataBase: new URL('https://tegnogfarge.no'),
   alternates: {
-    canonical: '/',
+    canonical: 'https://tegnogfarge.no/',
   },
   title: "TegnOgFarge.no – Last ned & fargelegg gratis fargeleggingssider",
   description: "Fargelegg gratis – last ned eller tegn i nettleseren. Motiver for barn og voksne i PNG/PDF – print og kos deg nå!",

@@ -90,7 +90,7 @@ export async function generateMetadata() {
       type: 'website',
     },
     alternates: {
-      canonical: '/',
+      canonical: base,
     },
     other: {
       'application/ld+json': JSON.stringify(faqSchema),

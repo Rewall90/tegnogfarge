@@ -198,9 +198,9 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
   return {
     title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder | ${subcategory.parentCategory?.title || 'Fargelegg Nå'}`,
     description: subcategory.seoDescription || subcategory.description || `Utforsk ${subcategory.title} tegninger i kategorien ${subcategory.parentCategory?.title}`,
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no'),
+    metadataBase: new URL(baseUrl),
     alternates: {
-      canonical: `/${categorySlug}/${subcategorySlug}`,
+      canonical: `${baseUrl}/${categorySlug}/${subcategorySlug}`,
     },
     openGraph: {
       title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder | ${subcategory.parentCategory?.title || 'Fargelegg Nå'}`,

@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: PageProps) {
     description: drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
     metadataBase: new URL(baseUrl),
     alternates: {
-      canonical: pathname,
+      canonical: `${baseUrl}${pathname}`,
     },
     openGraph: {
       title: `${drawing.title} | ${subcategory.title} | Fargelegg Nå`,
