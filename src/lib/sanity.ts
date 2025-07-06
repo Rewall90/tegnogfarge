@@ -249,6 +249,8 @@ export async function getSubcategoryWithDrawings(categorySlug: string, subcatego
       _id,
       title,
       description,
+      seoTitle,
+      seoDescription,
       difficulty,
       "slug": slug.current,
       featuredImage {

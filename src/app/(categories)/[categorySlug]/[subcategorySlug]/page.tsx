@@ -196,14 +196,14 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
   };
 
   return {
-    title: `${subcategory.seoTitle || subcategory.title} Fargeleggingsbilder | ${subcategory.parentCategory?.title || 'Fargelegg Nå'}`,
+    title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder | ${subcategory.parentCategory?.title || 'Fargelegg Nå'}`,
     description: subcategory.seoDescription || subcategory.description || `Utforsk ${subcategory.title} tegninger i kategorien ${subcategory.parentCategory?.title}`,
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no'),
     alternates: {
       canonical: `/${categorySlug}/${subcategorySlug}`,
     },
     openGraph: {
-      title: `${subcategory.seoTitle || subcategory.title} Fargeleggingsbilder | ${subcategory.parentCategory?.title || 'Fargelegg Nå'}`,
+      title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder | ${subcategory.parentCategory?.title || 'Fargelegg Nå'}`,
       description: subcategory.seoDescription || subcategory.description || `Utforsk ${subcategory.title} tegninger i kategorien ${subcategory.parentCategory?.title}`,
       url: `/${categorySlug}/${subcategorySlug}`,
       siteName: 'Fargelegg Nå',
