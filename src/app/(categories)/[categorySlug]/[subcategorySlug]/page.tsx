@@ -205,7 +205,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     openGraph: {
       title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder | ${subcategory.parentCategory?.title || 'Fargelegg Nå'}`,
       description: subcategory.seoDescription || subcategory.description || `Utforsk ${subcategory.title} tegninger i kategorien ${subcategory.parentCategory?.title}`,
-      url: `/${categorySlug}/${subcategorySlug}`,
+      url: `${baseUrl}/${categorySlug}/${subcategorySlug}`,
       siteName: 'Fargelegg Nå',
       images: subcategoryImageUrl ? [{ url: subcategoryImageUrl }] : [],
       locale: 'nb_NO',

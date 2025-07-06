@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: PageProps) {
     openGraph: {
       title: `${drawing.title} | ${subcategory.title} | Fargelegg Nå`,
       description: drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
-      url: pathname,
+      url: currentUrl,
       siteName: 'Fargelegg Nå',
       images: [
         {

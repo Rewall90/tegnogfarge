@@ -166,7 +166,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
       openGraph: {
         title: `${title} Fargeleggingsbilder | Fargelegg Nå`,
         description,
-        url: `/${categorySlug}`,
+        url: `${baseUrl}/${categorySlug}`,
         siteName: 'Fargelegg Nå',
         images: categoryImageUrl ? [{ url: categoryImageUrl }] : [],
         locale: 'nb_NO',
