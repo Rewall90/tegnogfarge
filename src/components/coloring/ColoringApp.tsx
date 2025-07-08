@@ -6,6 +6,8 @@ import { FloodFill, type PixelChange, type FillRegion } from '@/lib/flood-fill'
 import ColorPalette from './ColorPalette'
 import ToolBar from './ToolBar'
 import ImageSelector from './ImageSelector'
+import { MobileColorPalette } from './MobileColorPalette'
+import { DEFAULT_THEME_ID, getThemeById } from './colorConstants'
 import type { ColoringState, DrawingMode } from '@/types/canvas-coloring'
 
 interface ColoringAppProps {
@@ -89,6 +91,20 @@ function getScaledCoordinates(e: React.MouseEvent<HTMLCanvasElement>, canvas: HT
   };
 }
 
+function getScaledCoordinatesFromTouch(e: React.TouchEvent<HTMLCanvasElement>, canvas: HTMLCanvasElement) {
+  const touch = e.touches[0] || e.changedTouches[0];
+  if (!touch) return null;
+  
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  
+  return {
+    x: Math.floor((touch.clientX - rect.left) * scaleX),
+    y: Math.floor((touch.clientY - rect.top) * scaleY)
+  };
+}
+
 export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
   const router = useRouter()
   
@@ -120,6 +136,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   const [isFilling, setIsFilling] = useState(false);
   const fillThrottleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
+  // Touch handling for mobile brush drawing
+  const touchMoveThrottleRef = useRef<number | null>(null);
+  
   const [currentImage, setCurrentImage] = useState(initialImageData)
   const [showImageSelector, setShowImageSelector] = useState(false)
   const [isLoading, setIsLoading] = useState(true);
@@ -139,6 +158,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   })
   const [history, setHistory] = useState<HistoryStep[]>([]);
   const [historyStep, setHistoryStep] = useState(-1);
+  const [showMobileTools, setShowMobileTools] = useState(false);
+  const [activeThemeId, setActiveThemeId] = useState(DEFAULT_THEME_ID);
 
   // Reference to the app container for performance testing
   const appContainerRef = useRef<HTMLDivElement>(null);
@@ -372,16 +393,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     setShowImageSelector(false)
   }
 
-  const handleStartDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (state.drawingMode !== 'brush') return;
+  // Shared drawing logic for both mouse and touch
+  const startDrawingAtCoordinates = useCallback((x: number, y: number) => {
+    if (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser') return;
     
     // Use cached context
     const ctx = contextRef.current.main;
     const canvas = mainCanvasRef.current;
     
     if (!ctx || !canvas) return;
-    
-    const { x, y } = getScaledCoordinates(e, canvas);
     
     // Opprett et nytt penselstrøk (uten snapshot ennå)
     currentStrokeRef.current = {
@@ -390,8 +410,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       size: state.brushSize
     };
     
-    // Sett opp penselstil
-    ctx.fillStyle = state.currentColor;
+    // Sett opp penselstil basert på modus
+    if (state.drawingMode === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = '#000000'; // Color doesn't matter for erasing
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = state.currentColor;
+    }
     
     // Tegn det første punktet
     const radius = Math.max(1, Math.floor(state.brushSize / 2));
@@ -403,24 +429,25 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       ctx.fill();
     }
     
+    // Reset canvas mode back to normal
+    ctx.globalCompositeOperation = 'source-over';
+    
     setState(prev => ({
       ...prev,
       isDrawing: true,
       lastX: x,
       lastY: y
     }));
-  };
+  }, [state.drawingMode, state.currentColor, state.brushSize, state.originalImageData]);
 
-  const handleDraw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!state.isDrawing || state.drawingMode !== 'brush') return;
+  const continueDrawingAtCoordinates = useCallback((x: number, y: number) => {
+    if (!state.isDrawing || (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser')) return;
     
     // Use cached context
     const canvas = mainCanvasRef.current;
     const ctx = contextRef.current.main;
     
     if (!canvas || !ctx) return;
-    
-    const { x, y } = getScaledCoordinates(e, canvas);
     
     if (state.lastX === null || state.lastY === null) return;
     
@@ -443,8 +470,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     // Tegn alle punkter i én animasjonsramme for bedre ytelse
     if (pointsToDraw.length > 0) {
       requestAnimationFrame(() => {
-        // Sett opp penselstil
-        ctx.fillStyle = state.currentColor;
+        // Sett opp penselstil basert på modus
+        if (state.drawingMode === 'eraser') {
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.fillStyle = '#000000'; // Color doesn't matter for erasing
+        } else {
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.fillStyle = state.currentColor;
+        }
         
         // Tegn alle punkter i én batch
         pointsToDraw.forEach(({px, py}) => {
@@ -452,6 +485,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           ctx.arc(px, py, radius, 0, 2 * Math.PI);
           ctx.fill();
         });
+        
+        // Reset canvas mode back to normal
+        ctx.globalCompositeOperation = 'source-over';
       });
     }
     
@@ -460,6 +496,22 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       lastX: x,
       lastY: y
     }));
+  }, [state.isDrawing, state.drawingMode, state.lastX, state.lastY, state.originalImageData, state.brushSize, state.currentColor]);
+
+  const handleStartDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = mainCanvasRef.current;
+    if (!canvas) return;
+    
+    const { x, y } = getScaledCoordinates(e, canvas);
+    startDrawingAtCoordinates(x, y);
+  };
+
+  const handleDraw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = mainCanvasRef.current;
+    if (!canvas) return;
+    
+    const { x, y } = getScaledCoordinates(e, canvas);
+    continueDrawingAtCoordinates(x, y);
   };
 
   const handleStopDrawing = () => {
@@ -508,7 +560,84 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     }));
   };
 
-  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  // Touch event handlers for mobile brush drawing
+  // Touch handler for fill (single tap)
+  const handleFillTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (state.drawingMode !== 'fill') return;
+    
+    // Prevent default to avoid triggering click events
+    e.preventDefault();
+    
+    const mainCanvas = mainCanvasRef.current;
+    if (!mainCanvas) return;
+    
+    const coordinates = getScaledCoordinatesFromTouch(e, mainCanvas);
+    if (!coordinates) return;
+    
+    const { x, y } = coordinates;
+    performFillAtCoordinates(x, y);
+  }
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault(); // Prevent scrolling and zooming
+    
+    // Only handle single touch
+    if (e.touches.length > 1) return;
+    
+    // Handle fill mode with single tap
+    if (state.drawingMode === 'fill') {
+      handleFillTouch(e);
+      return;
+    }
+    
+    // Handle brush and eraser modes
+    const canvas = mainCanvasRef.current;
+    if (!canvas) return;
+    
+    const coords = getScaledCoordinatesFromTouch(e, canvas);
+    if (!coords) return;
+    
+    startDrawingAtCoordinates(coords.x, coords.y);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault(); // Critical: prevent page scroll
+    
+    // Only handle single touch
+    if (e.touches.length > 1) return;
+    
+    if (!state.isDrawing || (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser')) return;
+    
+    const canvas = mainCanvasRef.current;
+    if (!canvas) return;
+    
+    // Extract coordinates immediately before async operation
+    const coords = getScaledCoordinatesFromTouch(e, canvas);
+    if (!coords) return;
+    
+    // Throttle touch move events for performance
+    if (touchMoveThrottleRef.current) return;
+    
+    touchMoveThrottleRef.current = requestAnimationFrame(() => {
+      continueDrawingAtCoordinates(coords.x, coords.y);
+      touchMoveThrottleRef.current = null;
+    });
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    
+    // Clean up throttled operations
+    if (touchMoveThrottleRef.current) {
+      cancelAnimationFrame(touchMoveThrottleRef.current);
+      touchMoveThrottleRef.current = null;
+    }
+    
+    handleStopDrawing();
+  };
+
+  // Shared fill logic for both mouse and touch
+  const performFillAtCoordinates = (x: number, y: number) => {
     if (state.drawingMode !== 'fill') return;
     
     // Prevent multiple fill operations from running simultaneously
@@ -539,9 +668,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       setIsFilling(false);
       return;
     }
-    
-    // VIKTIG: Bruk koordinater fra main canvas (den synlige), ikke shadow canvas
-    const { x, y } = getScaledCoordinates(e, mainCanvas);
     
     // VIKTIG: Verifiser at shadow canvas har riktig innhold
     if (!state.imageData) {
@@ -666,6 +792,17 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       fillThrottleTimeoutRef.current = null;
     }, 300);
   }
+
+  // Mouse click handler for fill
+  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const mainCanvas = mainCanvasRef.current;
+    if (!mainCanvas) return;
+    
+    const { x, y } = getScaledCoordinates(e, mainCanvas);
+    performFillAtCoordinates(x, y);
+  }
+
+
 
   function applyChanges(pixels32: Uint32Array, changes: PixelChange[], reverse = false) {
     for (const change of changes) {
@@ -916,12 +1053,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
       <div className="flex-1 flex overflow-hidden">
         <ColorPalette
+          className="hidden md:block"
           selectedColor={state.currentColor}
           onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}
           suggestedColors={currentImage.suggestedColors}
         />
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           <ToolBar
+            className="hidden md:block"
             tolerance={state.tolerance}
             onToleranceChange={(t) => setState(prev => ({ ...prev, tolerance: t }))}
             canUndo={historyStep > 0}
@@ -935,7 +1074,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             brushSize={state.brushSize}
             onBrushSizeChange={(size: number) => setState(prev => ({ ...prev, brushSize: size }))}
           />
-          <div className="flex-1 overflow-hidden bg-gray-50 p-4 flex items-center justify-center">
+          <div className="flex-1 overflow-hidden bg-gray-50 p-1 flex items-center justify-center">
             <div className="relative flex items-center justify-center">
               {/* Background canvas (contour lines) */}
                               <canvas 
@@ -966,10 +1105,17 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                   onMouseMove={handleDraw}
                   onMouseUp={handleStopDrawing}
                   onMouseLeave={handleStopDrawing}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  onTouchCancel={handleTouchEnd}
                   className="relative max-w-full max-h-full bg-transparent shadow-lg cursor-crosshair z-20"
                   style={{ 
                     imageRendering: 'pixelated',
-                    backgroundColor: 'rgba(255, 255, 255, 0)' // transparent
+                    backgroundColor: 'rgba(255, 255, 255, 0)', // transparent
+                    touchAction: 'none', // Disable all default touch behaviors
+                    userSelect: 'none', // Prevent text selection
+                    WebkitUserSelect: 'none' // Prevent text selection on iOS
                   }}
                 />
               
@@ -982,6 +1128,21 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           </div>
         </div>
       </div>
+      
+      {/* Mobile Color Palette */}
+      <MobileColorPalette
+        selectedColor={state.currentColor}
+        onColorChange={(color) => setState(prev => ({ ...prev, currentColor: color }))}
+        onUndo={handleUndo}
+        canUndo={historyStep > 0}
+        onToolsClick={() => setShowMobileTools(!showMobileTools)}
+        showTools={showMobileTools}
+        drawingMode={state.drawingMode}
+        onDrawingModeChange={(mode) => setState(prev => ({ ...prev, drawingMode: mode }))}
+        activeThemeId={activeThemeId}
+        onThemeChange={setActiveThemeId}
+      />
+
     </div>
   )
 } 

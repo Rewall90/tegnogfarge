@@ -22,10 +22,32 @@ const config: Config = {
         navy: '#264653',
         'link-orange': '#FF6F59',
       },
+      animation: {
+        'slide-up': 'slideUp 0.3s ease-out',
+      },
+      keyframes: {
+        slideUp: {
+          '0%': { transform: 'translateY(100%)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+      },
     },
   },
   plugins: [
     require('@tailwindcss/aspect-ratio'),
+    function({ addUtilities }: any) {
+      addUtilities({
+        '.scrollbar-hide': {
+          /* Hide scrollbar for Chrome, Safari and Opera */
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+          /* Hide scrollbar for IE, Edge and Firefox */
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none',
+        },
+      })
+    },
   ],
 }
 

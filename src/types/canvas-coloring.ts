@@ -1,4 +1,4 @@
-export type DrawingMode = 'fill' | 'brush';
+export type DrawingMode = 'fill' | 'brush' | 'eraser';
 
 export interface ColoringCanvasProps {
   drawingId: string

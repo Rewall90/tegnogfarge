@@ -15,6 +15,7 @@ export interface ToolBarProps {
   onDrawingModeChange: (mode: DrawingMode) => void
   brushSize: number
   onBrushSizeChange: (size: number) => void
+  className?: string
 }
 
 export default function ToolBar({
@@ -29,10 +30,11 @@ export default function ToolBar({
   drawingMode,
   onDrawingModeChange,
   brushSize,
-  onBrushSizeChange
+  onBrushSizeChange,
+  className = ""
 }: ToolBarProps) {
   return (
-    <div className="bg-white border-b px-4 py-2 h-12 flex-shrink-0 flex items-center gap-4">
+    <div className={`bg-white border-b px-4 py-2 h-12 flex-shrink-0 flex items-center gap-4 ${className}`}>
       {/* Drawing Mode */}
       <div className="flex items-center gap-2">
         <button

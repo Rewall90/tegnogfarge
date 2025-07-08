@@ -5,12 +5,14 @@ interface ColorPaletteProps {
   selectedColor: string
   onColorSelect: (color: string) => void
   suggestedColors?: Array<{ name: string; hex: string }>
+  className?: string
 }
 
 export default function ColorPalette({
   selectedColor,
   onColorSelect,
-  suggestedColors
+  suggestedColors,
+  className = ""
 }: ColorPaletteProps) {
   const [showCustomPicker, setShowCustomPicker] = useState(false)
 
@@ -22,7 +24,7 @@ export default function ColorPalette({
   ]
 
   return (
-    <div className="w-64 lg:w-64 md:w-48 sm:w-40 flex-shrink-0 bg-white border-r border-gray-200 overflow-y-auto">
+    <div className={`w-64 lg:w-64 md:w-48 sm:w-40 flex-shrink-0 bg-white border-r border-gray-200 overflow-y-auto ${className}`}>
       <div className="p-4">
         <h3 className="font-display font-semibold text-lg mb-4">Fargepalett</h3>
         
