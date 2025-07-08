@@ -55,14 +55,14 @@ export async function generateMetadata({ params }: PageProps) {
   
   return {
     title: `${drawing.title} | ${subcategory.title} | ${subcategory.parentCategory?.title} | Fargelegg Nå`,
-    description: drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
+    description: drawing.metaDescription || drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
     metadataBase: new URL(baseUrl),
     alternates: {
       canonical: `${baseUrl}${pathname}`,
     },
     openGraph: {
       title: `${drawing.title} | ${subcategory.title} | Fargelegg Nå`,
-      description: drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
+      description: drawing.metaDescription || drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
       url: currentUrl,
       siteName: 'Fargelegg Nå',
       images: [
@@ -79,7 +79,7 @@ export async function generateMetadata({ params }: PageProps) {
     twitter: {
       card: 'summary_large_image',
       title: drawing.title,
-      description: drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
+      description: drawing.metaDescription || drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
       images: drawing.thumbnailUrl || drawing.imageUrl,
     },
   };

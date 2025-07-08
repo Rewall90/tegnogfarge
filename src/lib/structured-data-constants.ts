@@ -9,7 +9,7 @@ export const STRUCTURED_DATA = {
   ORGANIZATION: {
     NAME: "Tegn og Farge",
     URL: BASE_URL,
-    LOGO: `${BASE_URL}/favicon/tegnogfarge-favicon.svg`
+    LOGO: `${BASE_URL}/icon.svg`
   },
   
   // Legal information

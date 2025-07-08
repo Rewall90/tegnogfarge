@@ -32,7 +32,7 @@ export default function ToolBar({
   onBrushSizeChange
 }: ToolBarProps) {
   return (
-    <div className="bg-white border-b px-4 py-2 flex items-center gap-4">
+    <div className="bg-white border-b px-4 py-2 h-12 flex-shrink-0 flex items-center gap-4">
       {/* Drawing Mode */}
       <div className="flex items-center gap-2">
         <button

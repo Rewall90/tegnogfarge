@@ -13,6 +13,7 @@ Disallow: /verify-email*
 Disallow: /verify-newsletter*
 Disallow: /register*
 Disallow: /login*
+Disallow: /coloring-app?*
 
 Sitemap: ${baseUrl}/sitemap.xml
 `;

@@ -260,7 +260,7 @@ export default function DrawingJsonLd({
   if (drawing.hasDigitalColoring) {
     webPageActions.push({
       "@type": "InteractAction",
-      "target": `${baseUrl}/coloring-app?id=${drawing._id}`,
+      "target": `${baseUrl}/coloring-app`,
       "name": `Fargelegg ${drawing.title} online`
     });
   }
@@ -305,7 +305,7 @@ export default function DrawingJsonLd({
   if (drawing.hasDigitalColoring) {
     graphItems.push({
       "@type": "SoftwareApplication",
-      "@id": `${baseUrl}/coloring-app?id=${drawing._id}#coloringapp`,
+      "@id": `${baseUrl}/coloring-app#coloringapp`,
       "name": "Tegn og Farge Digital Fargeleggingsapp",
       "applicationCategory": "EducationalApplication",
       "operatingSystem": "All",

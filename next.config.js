@@ -48,16 +48,6 @@ const nextConfig = {
           },
         ],
       },
-      // Add cache rules for favicon
-      {
-        source: '/favicon/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
       // Add specific cache rules for common image formats
       {
         source: '/:path*.(jpg|jpeg|png|webp|svg|ico)',
@@ -68,7 +58,64 @@ const nextConfig = {
           },
         ],
       },
+
     ]
+  },
+  async redirects() {
+    return [
+      // Vitenskap category redirects - adding "fargelegg-" prefix to subcategories
+      {
+        source: '/vitenskap/stjernetegn/:path*',
+        destination: '/vitenskap/fargelegg-stjernetegn/:path*',
+        permanent: true,
+      },
+      {
+        source: '/vitenskap/verdensrommet/:path*',
+        destination: '/vitenskap/fargelegg-verdensrommet/:path*',
+        permanent: true,
+      },
+      {
+        source: '/vitenskap/solsystemet/:path*',
+        destination: '/vitenskap/fargelegg-solsystemet/:path*',
+        permanent: true,
+      },
+      // Individual page redirects
+      {
+        source: '/videospill/pokemon',
+        destination: '/tegneserier/fargelegging-pokemon',
+        permanent: true,
+      },
+      {
+        source: '/mytiske-skapninger/enhjorninger',
+        destination: '/tegneserier/fargelegg-enhjorninger',
+        permanent: true,
+      },
+      {
+        source: '/videospill/sonic',
+        destination: '/superhelter/fargelegg-sonic',
+        permanent: true,
+      },
+      {
+        source: '/superhelter/spider-man',
+        destination: '/superhelter/fargelegg-spiderman',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/ninjago',
+        destination: '/tegneserier/fargelegg-ninjago',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/hello-kitty',
+        destination: '/tegneserier/fargelegg-hello-kitty',
+        permanent: true,
+      },
+      {
+        source: '/categories',
+        destination: '/hoved-kategori',
+        permanent: true,
+      },
+    ];
   },
   // Disable linting during build for now
   eslint: {

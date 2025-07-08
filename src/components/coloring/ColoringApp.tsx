@@ -77,6 +77,18 @@ function forEachPixelOnLine(x0: number, y0: number, x1: number, y1: number, cb: 
   }
 }
 
+// Helper function to get scaled coordinates from mouse events
+function getScaledCoordinates(e: React.MouseEvent<HTMLCanvasElement>, canvas: HTMLCanvasElement) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  
+  return {
+    x: Math.floor((e.clientX - rect.left) * scaleX),
+    y: Math.floor((e.clientY - rect.top) * scaleY)
+  };
+}
+
 export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
   const router = useRouter()
   
@@ -369,11 +381,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     if (!ctx || !canvas) return;
     
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const x = Math.floor((e.clientX - rect.left) * scaleX);
-    const y = Math.floor((e.clientY - rect.top) * scaleY);
+    const { x, y } = getScaledCoordinates(e, canvas);
     
     // Opprett et nytt penselstrøk (uten snapshot ennå)
     currentStrokeRef.current = {
@@ -412,11 +420,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     if (!canvas || !ctx) return;
     
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const x = Math.floor((e.clientX - rect.left) * scaleX);
-    const y = Math.floor((e.clientY - rect.top) * scaleY);
+    const { x, y } = getScaledCoordinates(e, canvas);
     
     if (state.lastX === null || state.lastY === null) return;
     
@@ -537,11 +541,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     }
     
     // VIKTIG: Bruk koordinater fra main canvas (den synlige), ikke shadow canvas
-    const rect = mainCanvas.getBoundingClientRect();
-    const scaleX = mainCanvas.width / rect.width;
-    const scaleY = mainCanvas.height / rect.height;
-    const x = Math.floor((e.clientX - rect.left) * scaleX);
-    const y = Math.floor((e.clientY - rect.top) * scaleY);
+    const { x, y } = getScaledCoordinates(e, mainCanvas);
     
     // VIKTIG: Verifiser at shadow canvas har riktig innhold
     if (!state.imageData) {
@@ -882,7 +882,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   }, [brushStrokes.length, consolidateBrushStrokes]);
 
   return (
-    <div className="min-h-screen bg-gray-100" ref={appContainerRef}>
+    <div className="h-screen overflow-hidden bg-gray-100 flex flex-col" ref={appContainerRef}>
       {showImageSelector && (
         <ImageSelector
           currentImageId={currentImage._id}
@@ -892,9 +892,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           onClose={() => setShowImageSelector(false)}
         />
       )}
-      <header className="bg-white shadow-sm border-b sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+      <header className="bg-white shadow-sm border-b flex-shrink-0 h-12 z-40">
+        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between w-full">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => router.push(`/categories/${currentImage.category.slug}/${currentImage.subcategory.slug}`)}
@@ -912,17 +911,16 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                 Bytt bilde
               </button>
             </div>
-          </div>
         </div>
       </header>
 
-      <div className="flex h-[calc(100vh-73px)]">
+      <div className="flex-1 flex overflow-hidden">
         <ColorPalette
           selectedColor={state.currentColor}
           onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}
           suggestedColors={currentImage.suggestedColors}
         />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           <ToolBar
             tolerance={state.tolerance}
             onToleranceChange={(t) => setState(prev => ({ ...prev, tolerance: t }))}
@@ -937,43 +935,43 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             brushSize={state.brushSize}
             onBrushSizeChange={(size: number) => setState(prev => ({ ...prev, brushSize: size }))}
           />
-          <div className="flex-1 overflow-auto bg-gray-50 p-4">
-            <div className="max-w-4xl mx-auto relative">
+          <div className="flex-1 overflow-hidden bg-gray-50 p-4 flex items-center justify-center">
+            <div className="relative flex items-center justify-center">
               {/* Background canvas (contour lines) */}
-              <canvas 
-                ref={backgroundCanvasRef} 
-                className="absolute top-0 left-0 max-w-full w-full h-auto z-0"
-                style={{ 
-                  imageRendering: 'pixelated',
-                  backgroundColor: 'rgba(255, 255, 255, 1)' // white background
-                }}
-              />
+                              <canvas 
+                  ref={backgroundCanvasRef} 
+                  className="absolute top-0 left-0 max-w-full max-h-full z-0"
+                  style={{ 
+                    imageRendering: 'pixelated',
+                    backgroundColor: 'rgba(255, 255, 255, 1)' // white background
+                  }}
+                />
               
               {/* Fill canvas (colored areas only) */}
-              <canvas
-                ref={fillCanvasRef}
-                className="absolute top-0 left-0 max-w-full w-full h-auto z-10"
-                style={{ 
-                  imageRendering: 'pixelated',
-                  pointerEvents: 'none', // Make sure it doesn't block clicks
-                  backgroundColor: 'rgba(255, 255, 255, 0)' // transparent
-                }}
-              />
+                              <canvas
+                  ref={fillCanvasRef}
+                  className="absolute top-0 left-0 max-w-full max-h-full z-10"
+                  style={{ 
+                    imageRendering: 'pixelated',
+                    pointerEvents: 'none', // Make sure it doesn't block clicks
+                    backgroundColor: 'rgba(255, 255, 255, 0)' // transparent
+                  }}
+                />
               
               {/* Main canvas for user interaction */}
-              <canvas
-                ref={mainCanvasRef}
-                onClick={handleCanvasClick}
-                onMouseDown={handleStartDrawing}
-                onMouseMove={handleDraw}
-                onMouseUp={handleStopDrawing}
-                onMouseLeave={handleStopDrawing}
-                className="relative max-w-full w-full h-auto bg-transparent shadow-lg cursor-crosshair z-20"
-                style={{ 
-                  imageRendering: 'pixelated',
-                  backgroundColor: 'rgba(255, 255, 255, 0)' // transparent
-                }}
-              />
+                              <canvas
+                  ref={mainCanvasRef}
+                  onClick={handleCanvasClick}
+                  onMouseDown={handleStartDrawing}
+                  onMouseMove={handleDraw}
+                  onMouseUp={handleStopDrawing}
+                  onMouseLeave={handleStopDrawing}
+                  className="relative max-w-full max-h-full bg-transparent shadow-lg cursor-crosshair z-20"
+                  style={{ 
+                    imageRendering: 'pixelated',
+                    backgroundColor: 'rgba(255, 255, 255, 0)' // transparent
+                  }}
+                />
               
               {/* Shadow canvas for processing (hidden) */}
               <canvas 

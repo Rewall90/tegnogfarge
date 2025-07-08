@@ -1,14 +1,10 @@
 /**
- * Category URL Middleware
+ * Simplified Middleware
  * 
- * This middleware handles URL normalization for category-related routes:
- * - Redirects /categories to /all
- * - Redirects /categories/[slug] to /[slug] (removing the "categories" prefix)
- * - Redirects /all-categories to /all
- * 
- * NOTE: This project has a second middleware file at the root level (middleware.ts)
- * that handles authentication and route protection. Both files work independently
- * and target different routes.
+ * This middleware handles:
+ * - Category URL redirects
+ * - Authentication and route protection
+ * - Canonical domain redirects
  */
 
 import { NextResponse } from 'next/server';
@@ -16,7 +12,7 @@ import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
 export async function middleware(request: NextRequest) {
-  // --- KANONISK DOMENE-OMDIRIGERING ---
+  // --- CANONICAL DOMAIN REDIRECT ---
   const { pathname, search } = request.nextUrl;
   const protocol = request.headers.get('x-forwarded-proto') ?? 'http';
   const host = request.headers.get('x-forwarded-host') ?? request.nextUrl.host;
@@ -31,7 +27,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(newUrl.toString(), 301);
   }
 
-  // --- KATEGORI-OMDIRIGERINGER ---
+  // --- CATEGORY REDIRECTS ---
   if (pathname === '/categories') {
     return NextResponse.redirect(new URL('/all', request.url));
   }
@@ -43,10 +39,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/all', request.url));
   }
 
-  // --- AUTENTISERINGSLOGIKK ---
+  // --- AUTHENTICATION LOGIC ---
   const token = await getToken({
     req: request,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET || 'fallback-secret',
   });
 
   const isAuth = !!token;
@@ -77,19 +73,11 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Kombinert matcher for alle ruter
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * This ensures the canonical redirect runs on all pages.
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-    // Legg til de beskyttede rutene for autentisering
+    // Match all paths except static files and API routes
+    '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)',
+    // Authentication routes
     '/login',
     '/register',
     '/dashboard/:path*',

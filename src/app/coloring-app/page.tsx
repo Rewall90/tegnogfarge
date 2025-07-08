@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import ColoringApp from '@/components/coloring/ColoringApp'
 import { getColoringImageWebP } from '@/lib/sanity'
+import Head from 'next/head'
 
 export default function ColoringAppPage() {
   const [imageData, setImageData] = useState<any>(null)
@@ -38,6 +39,10 @@ export default function ColoringAppPage() {
   if (isLoading) {
     return (
       <main className="min-h-screen flex items-center justify-center">
+        <Head>
+          <meta name="robots" content="noindex, nofollow" />
+          <title>Laster fargeleggingsapp...</title>
+        </Head>
         <section className="text-center" aria-label="Laster inn">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" role="status">
             <span className="sr-only">Laster inn...</span>
@@ -51,6 +56,10 @@ export default function ColoringAppPage() {
   if (error || !imageData) {
     return (
       <main className="min-h-screen flex items-center justify-center">
+        <Head>
+          <meta name="robots" content="noindex, nofollow" />
+          <title>Feil ved lasting av fargeleggingsapp</title>
+        </Head>
         <section className="text-center" aria-labelledby="error-heading">
           <h1 id="error-heading" className="sr-only">Feil ved lasting</h1>
           <p className="text-red-600 mb-4">{error || 'En feil oppstod'}</p>
@@ -66,6 +75,10 @@ export default function ColoringAppPage() {
 
   return (
     <main>
+      <Head>
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Fargeleggingsapp - {imageData.title}</title>
+      </Head>
       <ColoringApp imageData={imageData} />
     </main>
   )
