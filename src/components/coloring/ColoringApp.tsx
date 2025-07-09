@@ -92,7 +92,16 @@ function getScaledCoordinates(e: React.MouseEvent<HTMLCanvasElement>, canvas: HT
   };
 }
 
-function getScaledCoordinatesFromTouch(e: React.TouchEvent<HTMLCanvasElement>, canvas: HTMLCanvasElement) {
+function getTouchDistance(e: TouchEvent): number {
+  if (e.touches.length < 2) return 0;
+  const touch1 = e.touches[0];
+  const touch2 = e.touches[1];
+  const dx = touch1.clientX - touch2.clientX;
+  const dy = touch1.clientY - touch2.clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function getScaledCoordinatesFromTouch(e: TouchEvent, canvas: HTMLCanvasElement, zoomScale: number = 1) {
   const touch = e.touches[0] || e.changedTouches[0];
   if (!touch) return null;
   
@@ -101,8 +110,8 @@ function getScaledCoordinatesFromTouch(e: React.TouchEvent<HTMLCanvasElement>, c
   const scaleY = canvas.height / rect.height;
   
   return {
-    x: Math.floor((touch.clientX - rect.left) * scaleX),
-    y: Math.floor((touch.clientY - rect.top) * scaleY)
+    x: Math.floor((touch.clientX - rect.left) * scaleX / zoomScale),
+    y: Math.floor((touch.clientY - rect.top) * scaleY / zoomScale)
   };
 }
 
@@ -161,6 +170,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   const [historyStep, setHistoryStep] = useState(-1);
   const [showMobileTools, setShowMobileTools] = useState(false);
   const [activeThemeId, setActiveThemeId] = useState(DEFAULT_THEME_ID);
+
+  // Zoom state for mobile pinch-to-zoom
+  const [zoomScale, setZoomScale] = useState(1.0);
+  const [isZooming, setIsZooming] = useState(false);
+  const initialDistanceRef = useRef(0);
 
   // Reference to the app container for performance testing
   const appContainerRef = useRef<HTMLDivElement>(null);
@@ -563,7 +577,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
   // Touch event handlers for mobile brush drawing
   // Touch handler for fill (single tap)
-  const handleFillTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handleFillTouch = useCallback((e: TouchEvent) => {
     if (state.drawingMode !== 'fill') return;
     
     // Prevent default to avoid triggering click events
@@ -572,17 +586,24 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const mainCanvas = mainCanvasRef.current;
     if (!mainCanvas) return;
     
-    const coordinates = getScaledCoordinatesFromTouch(e, mainCanvas);
+    const coordinates = getScaledCoordinatesFromTouch(e, mainCanvas, zoomScale);
     if (!coordinates) return;
     
     const { x, y } = coordinates;
     performFillAtCoordinates(x, y);
-  }
+  }, [state.drawingMode, zoomScale]);
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handleTouchStart = useCallback((e: TouchEvent) => {
     e.preventDefault(); // Prevent scrolling and zooming
     
-    // Only handle single touch
+    // Two fingers = zoom mode
+    if (e.touches.length === 2) {
+      setIsZooming(true);
+      initialDistanceRef.current = getTouchDistance(e);
+      return;
+    }
+    
+    // Only handle single touch for drawing
     if (e.touches.length > 1) return;
     
     // Handle fill mode with single tap
@@ -595,16 +616,25 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const canvas = mainCanvasRef.current;
     if (!canvas) return;
     
-    const coords = getScaledCoordinatesFromTouch(e, canvas);
+    const coords = getScaledCoordinatesFromTouch(e, canvas, zoomScale);
     if (!coords) return;
     
     startDrawingAtCoordinates(coords.x, coords.y);
-  };
+  }, [state.drawingMode, zoomScale, handleFillTouch]);
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handleTouchMove = useCallback((e: TouchEvent) => {
     e.preventDefault(); // Critical: prevent page scroll
     
-    // Only handle single touch
+    // Handle zoom gesture
+    if (e.touches.length === 2 && isZooming) {
+      const currentDistance = getTouchDistance(e);
+      const newScale = zoomScale * (currentDistance / initialDistanceRef.current);
+      setZoomScale(Math.min(Math.max(newScale, 0.5), 3.0));
+      initialDistanceRef.current = currentDistance;
+      return;
+    }
+    
+    // Only handle single touch for drawing
     if (e.touches.length > 1) return;
     
     if (!state.isDrawing || (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser')) return;
@@ -613,7 +643,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (!canvas) return;
     
     // Extract coordinates immediately before async operation
-    const coords = getScaledCoordinatesFromTouch(e, canvas);
+    const coords = getScaledCoordinatesFromTouch(e, canvas, zoomScale);
     if (!coords) return;
     
     // Throttle touch move events for performance
@@ -623,10 +653,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       continueDrawingAtCoordinates(coords.x, coords.y);
       touchMoveThrottleRef.current = null;
     });
-  };
+  }, [isZooming, zoomScale, state.isDrawing, state.drawingMode]);
 
-  const handleTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handleTouchEnd = useCallback((e: TouchEvent) => {
     e.preventDefault();
+    
+    // Exit zoom mode if less than 2 fingers
+    if (e.touches.length < 2) {
+      setIsZooming(false);
+    }
     
     // Clean up throttled operations
     if (touchMoveThrottleRef.current) {
@@ -635,7 +670,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     }
     
     handleStopDrawing();
-  };
+  }, []);
 
   // Shared fill logic for both mouse and touch
   const performFillAtCoordinates = (x: number, y: number) => {
@@ -742,56 +777,65 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       
       // Only update the changed area of the shadow canvas, using requestAnimationFrame
       requestAnimationFrame(() => {
-        shadowCtx.putImageData(newImageData, 0, 0, minX, minY, dirtyWidth, dirtyHeight);
-        
-        // Store the new region and redraw
-        const newRegions = [...fillRegions, region];
-        setFillRegions(newRegions);
-        
-        // Redraw all regions efficiently
-        redrawFillRegions(newRegions);
-        
-        // Update history
-        const newHistory = history.slice(0, historyStep + 1);
-        newHistory.push({ changes, region });
-        setHistory(newHistory.slice(-MAX_HISTORY));
-        setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1));
-        
-        setState(prev => ({
-          ...prev,
-          imageData: newImageData
-        }));
+        try {
+          shadowCtx.putImageData(newImageData, 0, 0, minX, minY, dirtyWidth, dirtyHeight);
+          
+          // Store the new region and redraw
+          const newRegions = [...fillRegions, region];
+          setFillRegions(newRegions);
+          
+          // Redraw all regions efficiently
+          redrawFillRegions(newRegions);
+          
+          // Update history
+          const newHistory = history.slice(0, historyStep + 1);
+          newHistory.push({ changes, region });
+          setHistory(newHistory.slice(-MAX_HISTORY));
+          setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1));
+          
+          setState(prev => ({
+            ...prev,
+            imageData: newImageData
+          }));
+        } catch (error) {
+          console.error('Fill operation failed:', error);
+        } finally {
+          // Reset filling state after history update completes
+          setIsFilling(false);
+        }
       });
     } else {
       // Fallback to full update if no points (shouldn't happen)
       requestAnimationFrame(() => {
-        shadowCtx.putImageData(newImageData, 0, 0);
-        
-        // Store the new region and redraw
-        const newRegions = [...fillRegions, region];
-        setFillRegions(newRegions);
-        
-        // Redraw all regions efficiently
-        redrawFillRegions(newRegions);
-        
-        // Update history
-        const newHistory = history.slice(0, historyStep + 1);
-        newHistory.push({ changes, region });
-        setHistory(newHistory.slice(-MAX_HISTORY));
-        setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1));
-        
-        setState(prev => ({
-          ...prev,
-          imageData: newImageData
-        }));
+        try {
+          shadowCtx.putImageData(newImageData, 0, 0);
+          
+          // Store the new region and redraw
+          const newRegions = [...fillRegions, region];
+          setFillRegions(newRegions);
+          
+          // Redraw all regions efficiently
+          redrawFillRegions(newRegions);
+          
+          // Update history
+          const newHistory = history.slice(0, historyStep + 1);
+          newHistory.push({ changes, region });
+          setHistory(newHistory.slice(-MAX_HISTORY));
+          setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1));
+          
+          setState(prev => ({
+            ...prev,
+            imageData: newImageData
+          }));
+        } catch (error) {
+          console.error('Fill operation failed:', error);
+        } finally {
+          // Reset filling state after history update completes
+          setIsFilling(false);
+        }
       });
     }
-    
-    // Set a timeout before allowing another fill operation (300ms delay)
-    fillThrottleTimeoutRef.current = setTimeout(() => {
-      setIsFilling(false);
-      fillThrottleTimeoutRef.current = null;
-    }, 300);
+
   }
 
   // Mouse click handler for fill
@@ -1019,6 +1063,26 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     }
   }, [brushStrokes.length, consolidateBrushStrokes]);
 
+  // Add non-passive touch event listeners for mobile zoom
+  useEffect(() => {
+    const canvas = mainCanvasRef.current;
+    if (!canvas) return;
+
+    // Add non-passive touch event listeners
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+    canvas.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+
+    return () => {
+      // Cleanup event listeners
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchend', handleTouchEnd);
+      canvas.removeEventListener('touchcancel', handleTouchEnd);
+    };
+  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
+
   return (
     <div className="h-screen overflow-hidden bg-gray-100 flex flex-col" ref={appContainerRef}>
       {showImageSelector && (
@@ -1078,7 +1142,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           
           {/* Canvas Section */}
           <div className="flex-1 overflow-hidden bg-gray-50 p-1 flex items-center justify-center">
-            <div className="relative flex items-center justify-center">
+            <div 
+              className="relative flex items-center justify-center"
+              style={{ transform: `scale(${zoomScale})` }}
+            >
               {/* Background canvas (contour lines) */}
                               <canvas 
                   ref={backgroundCanvasRef} 
@@ -1108,10 +1175,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                   onMouseMove={handleDraw}
                   onMouseUp={handleStopDrawing}
                   onMouseLeave={handleStopDrawing}
-                  onTouchStart={handleTouchStart}
-                  onTouchMove={handleTouchMove}
-                  onTouchEnd={handleTouchEnd}
-                  onTouchCancel={handleTouchEnd}
+
                   className="relative max-w-full max-h-full bg-transparent shadow-lg cursor-crosshair z-20"
                   style={{ 
                     imageRendering: 'pixelated',
