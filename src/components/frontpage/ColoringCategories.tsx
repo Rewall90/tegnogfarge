@@ -7,6 +7,7 @@ import Image from 'next/image';
 interface CategoryItem {
   name: string;
   imageUrl: string;
+  imageAlt: string;
   slug: string;
 }
 
@@ -47,7 +48,7 @@ export function ColoringCategories({ categories }: ColoringCategoriesProps) {
                   <div className="relative flex-1">
                     <Image 
                       src={failedImages[category.slug] ? '/images/placeholder.svg' : (category.imageUrl || '/images/placeholder.svg')} 
-                      alt={category.name} 
+                      alt={category.imageAlt} 
                       fill
                       sizes="(max-width: 640px) 85vw, (max-width: 768px) 45vw, (max-width: 1024px) 30vw, 25vw"
                       className="object-contain p-4"

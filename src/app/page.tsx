@@ -184,6 +184,7 @@ export default async function Home() {
             categories={mainCategories.map((cat) => ({
               name: cat.title,
               imageUrl: cat.image?.url || '/images/placeholder-category.png',
+              imageAlt: cat.image?.alt || cat.title,
               slug: cat.slug,
             }))}
           />
