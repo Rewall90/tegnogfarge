@@ -6,7 +6,8 @@ import { FloodFill, type PixelChange, type FillRegion } from '@/lib/flood-fill'
 import ColorPalette from './ColorPalette'
 import ToolBar from './ToolBar'
 import ImageSelector from './ImageSelector'
-import { MobileColorPalette } from './MobileColorPalette'
+import { MobileColorGrid } from './MobileColorGrid'
+import { MobileThemeSelector } from './MobileThemeSelector'
 import { DEFAULT_THEME_ID, getThemeById } from './colorConstants'
 import type { ColoringState, DrawingMode } from '@/types/canvas-coloring'
 
@@ -1074,6 +1075,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             brushSize={state.brushSize}
             onBrushSizeChange={(size: number) => setState(prev => ({ ...prev, brushSize: size }))}
           />
+          
+          {/* Canvas Section */}
           <div className="flex-1 overflow-hidden bg-gray-50 p-1 flex items-center justify-center">
             <div className="relative flex items-center justify-center">
               {/* Background canvas (contour lines) */}
@@ -1126,23 +1129,27 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               />
             </div>
           </div>
+          
+          {/* Mobile Controls Section */}
+          <div className="md:hidden space-y-3 p-4">
+            <MobileColorGrid
+              selectedColor={state.currentColor}
+              onColorChange={(color: string) => setState(prev => ({ ...prev, currentColor: color }))}
+              activeThemeId={activeThemeId}
+              onUndo={handleUndo}
+              canUndo={historyStep > 0}
+              onToolsClick={() => setShowMobileTools(!showMobileTools)}
+              showTools={showMobileTools}
+              drawingMode={state.drawingMode}
+              onDrawingModeChange={(mode: DrawingMode) => setState(prev => ({ ...prev, drawingMode: mode }))}
+            />
+            <MobileThemeSelector
+              activeThemeId={activeThemeId}
+              onThemeChange={setActiveThemeId}
+            />
+          </div>
         </div>
       </div>
-      
-      {/* Mobile Color Palette */}
-      <MobileColorPalette
-        selectedColor={state.currentColor}
-        onColorChange={(color) => setState(prev => ({ ...prev, currentColor: color }))}
-        onUndo={handleUndo}
-        canUndo={historyStep > 0}
-        onToolsClick={() => setShowMobileTools(!showMobileTools)}
-        showTools={showMobileTools}
-        drawingMode={state.drawingMode}
-        onDrawingModeChange={(mode) => setState(prev => ({ ...prev, drawingMode: mode }))}
-        activeThemeId={activeThemeId}
-        onThemeChange={setActiveThemeId}
-      />
-
     </div>
   )
 } 

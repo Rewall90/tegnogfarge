@@ -1,36 +1,34 @@
-import { COLOR_THEMES, DEFAULT_THEME_ID, getThemeById, ColorTheme } from './colorConstants';
+import { getThemeById } from './colorConstants';
+import { type DrawingMode } from '@/types/canvas-coloring'
 
-interface MobileColorPaletteProps {
+interface MobileColorGridProps {
   selectedColor: string;
   onColorChange: (color: string) => void;
+  activeThemeId: string;
   onUndo: () => void;
   canUndo: boolean;
   onToolsClick: () => void;
   showTools: boolean;
-  drawingMode: 'brush' | 'fill' | 'eraser';
-  onDrawingModeChange: (mode: 'brush' | 'fill' | 'eraser') => void;
-  activeThemeId: string;
-  onThemeChange: (themeId: string) => void;
+  drawingMode: DrawingMode;
+  onDrawingModeChange: (mode: DrawingMode) => void;
 }
 
-export function MobileColorPalette({ 
+export function MobileColorGrid({ 
   selectedColor, 
   onColorChange, 
-  onUndo, 
+  activeThemeId,
+  onUndo,
   canUndo,
   onToolsClick,
   showTools,
   drawingMode,
-  onDrawingModeChange,
-  activeThemeId,
-  onThemeChange
-}: MobileColorPaletteProps) {
+  onDrawingModeChange
+}: MobileColorGridProps) {
   const currentTheme = getThemeById(activeThemeId);
+  
   return (
-    <div className={`md:hidden fixed bottom-4 left-4 right-4 bg-white rounded-2xl shadow-lg z-50 transition-all duration-300 ${
-      showTools ? 'p-4 pb-6' : 'p-4'
-    }`}>
-      {/* Tools Section - appears above when expanded */}
+    <div className="bg-white rounded-2xl shadow-lg p-4">
+      {/* Tools Section - appears when expanded */}
       <div className={`overflow-hidden transition-all duration-300 ${
         showTools ? 'max-h-20 opacity-100 mb-4' : 'max-h-0 opacity-0'
       }`}>
@@ -66,13 +64,13 @@ export function MobileColorPalette({
           </button>
         </div>
       </div>
-      
-      {/* Main Controls Row */}
+
+      {/* Main Row: Tools Button + Colors + Undo Button */}
       <div className="flex items-center gap-4">
         {/* Tool Button */}
         <button
           onClick={onToolsClick}
-          className={`w-12 h-12 rounded-full flex items-center justify-center transition-all hover:bg-gray-200 ${
+          className={`w-12 h-12 rounded-full flex items-center justify-center transition-all hover:bg-gray-200 flex-shrink-0 ${
             showTools ? 'bg-blue-100 text-blue-600' : 'bg-gray-100'
           }`}
           aria-label="Toggle tools menu"
@@ -101,33 +99,11 @@ export function MobileColorPalette({
         <button
           onClick={onUndo}
           disabled={!canUndo}
-          className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center disabled:opacity-50 transition-all hover:bg-gray-200 disabled:hover:bg-gray-100"
+          className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center disabled:opacity-50 transition-all hover:bg-gray-200 disabled:hover:bg-gray-100 flex-shrink-0"
           aria-label="Undo last action"
         >
           <span className="text-lg">↩️</span>
         </button>
-      </div>
-
-      {/* Theme Selector Bar */}
-      <div className="mt-3 pt-3 border-t border-gray-200">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-          {COLOR_THEMES.map((theme) => (
-            <button
-              key={theme.id}
-              onClick={() => onThemeChange(theme.id)}
-              className={`flex-shrink-0 w-10 h-10 rounded-full border-2 transition-all hover:scale-105 ${
-                activeThemeId === theme.id 
-                  ? 'border-gray-800 scale-110 shadow-md' 
-                  : 'border-gray-300 hover:border-gray-500'
-              }`}
-              style={{ backgroundColor: theme.displayColor }}
-              aria-label={`Select ${theme.name} theme`}
-              title={theme.name}
-            >
-              <span className="text-xs">{theme.icon}</span>
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );
