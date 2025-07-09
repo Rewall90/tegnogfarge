@@ -7,7 +7,8 @@ const nextConfig = {
   // CSS Optimization for better performance
   experimental: {
     optimizeCss: true,
-    cssChunking: 'strict'
+    cssChunking: 'strict',
+    optimizeServerReact: true, // Enables CSS preloading
   },
   images: {
     remotePatterns: [
