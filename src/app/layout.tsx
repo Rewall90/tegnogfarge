@@ -53,6 +53,11 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* CSS Preloading for better performance */}
+        <link rel="preload" href="/_next/static/css/app/layout.css" as="style" />
+        <link rel="dns-prefetch" href="https://tegnogfarge.no" />
+        
         <BaseJsonLd />
       </head>
       <body className="font-sans bg-white text-gray-900 min-h-screen flex flex-col">

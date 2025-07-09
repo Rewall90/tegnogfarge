@@ -101,7 +101,7 @@ export async function generateMetadata() {
 export default async function Home() {
   const categories: Category[] = await getAllCategories();
   
-  // Fetch popular subcategories directly
+  // Fetch popular subcategories - 12 for desktop, but we'll show only 4 on mobile
   const featuredSubcategories = await getPopularSubcategories(12);
   
   // Debug: Log the fetched subcategories

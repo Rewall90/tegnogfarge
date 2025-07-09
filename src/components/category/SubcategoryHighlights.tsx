@@ -73,15 +73,18 @@ export function SubcategoryHighlights({
         </header>
         
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 list-none p-0">
-          {subcategories.map((subcategory) => {
+          {subcategories.map((subcategory, index) => {
             // Ensure we have valid category and subcategory slugs
             const categorySlug = subcategory.parentCategory?.slug || 'category';
             const subcategorySlug = subcategory.slug || '';
             const href = `/${categorySlug}/${subcategorySlug}`;
             const title = subcategory.title || '';
             
+            // Hide items beyond 4th on mobile for performance
+            const isHiddenOnMobile = index >= 4 ? 'hidden md:flex' : 'flex';
+            
             return (
-              <li key={subcategory._id} className="flex flex-col items-center">
+              <li key={subcategory._id} className={`${isHiddenOnMobile} flex-col items-center`}>
                 <article className="w-full relative aspect-[4/5] bg-[#2EC4B6] rounded-[32px] shadow-lg flex flex-col items-center justify-center overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-xl">
                   <Link 
                     href={href}

@@ -28,7 +28,7 @@ export function FrontpageHero() {
             
             <div className="hidden md:block md:-mr-12 md:ml-4 md:h-[535px] relative">
               <Image 
-                src="/images/hero section/test bildet.png"
+                src="/images/hero section/test bildet (1).webp"
                 alt="Children coloring together"
                 fill
                 className="object-cover rounded-l-lg"
