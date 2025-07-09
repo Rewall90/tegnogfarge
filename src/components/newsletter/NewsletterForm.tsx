@@ -60,7 +60,7 @@ export default function NewsletterForm() {
           className={`${
             status === 'loading' 
               ? 'bg-gray-400' 
-              : 'bg-[#FF6F59] hover:bg-[#E85A45] text-white'
+              : 'bg-[#EB7060] hover:bg-[#EB7060]/90 text-black'
           } text-button px-6 py-3 rounded-r flex items-center`}
           aria-label="Abonner på nyhetsbrevet"
           disabled={status === 'loading'}

@@ -32,7 +32,7 @@ export default function Button({
     primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
     secondary: 'bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500',
     outline: 'border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50 focus:ring-gray-500',
-    hero: 'bg-[#FF6F59] text-white hover:bg-[#F4D35E] border-none',
+    hero: 'bg-[#EB7060] text-black hover:bg-[#EB7060]/90 border-none',
   };
   
   const sizeStyles = {

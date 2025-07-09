@@ -53,7 +53,7 @@ export function SubcategoryList({
       {canBeExpanded && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-[#FFA69E] font-semibold hover:underline text-sm mt-2"
+          className="text-[#264653] font-semibold underline text-lg mt-2"
         >
           {isExpanded ? 'Vis mindre' : 'Vis mer'}
         </button>

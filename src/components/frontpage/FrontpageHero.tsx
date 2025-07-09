@@ -28,9 +28,10 @@ export function FrontpageHero() {
             
             <div className="hidden md:block md:-mr-12 md:ml-4 md:h-[535px] relative">
               <Image 
-                src="/images/hero section/test bildet (1).webp"
-                alt="Children coloring together"
+                src="/images/hero section/fargelegging-barn-voksne-gratis-motiver.webp"
+                alt="Fargelegg og last ned motiver for barn og voksne – helt gratis!"
                 fill
+                sizes="(max-width: 768px) 0vw, 50vw"
                 className="object-cover rounded-l-lg"
                 priority
               />

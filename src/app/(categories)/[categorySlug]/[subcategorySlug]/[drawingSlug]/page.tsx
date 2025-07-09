@@ -171,7 +171,7 @@ export default async function DrawingPage({ params }: PageProps) {
             <nav className="mb-6 text-sm" aria-label="Breadcrumb">
               <ol className="flex items-center space-x-2">
                 <li>
-                  <Link href="/" className="text-[#FFA69E] hover:underline">
+                  <Link href="/" className="text-[#264653] hover:underline">
                     Forsiden
                   </Link>
                 </li>
@@ -179,7 +179,7 @@ export default async function DrawingPage({ params }: PageProps) {
                   <span className="mx-2">/</span>
                   <Link 
                     href={`/${categorySlug}`}
-                    className="text-[#FFA69E] hover:underline"
+                    className="text-[#264653] hover:underline"
                   >
                     {subcategory.parentCategory?.title}
                   </Link>
@@ -188,14 +188,14 @@ export default async function DrawingPage({ params }: PageProps) {
                   <span className="mx-2">/</span>
                   <Link 
                     href={`/${categorySlug}/${subcategorySlug}`}
-                    className="text-[#FFA69E] hover:underline"
+                    className="text-[#264653] hover:underline"
                   >
                     {subcategory.title}
                   </Link>
                 </li>
                 <li className="flex items-center">
                   <span className="mx-2">/</span>
-                  <span className="text-gray-500">{drawing.title}</span>
+                  <span className="text-[#264653]/60">{drawing.title}</span>
                 </li>
               </ol>
             </nav>
