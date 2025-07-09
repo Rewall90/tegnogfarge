@@ -55,7 +55,7 @@ export function ColoringCategories({ categories }: ColoringCategoriesProps) {
                     />
                   </div>
                   <div className="flex-shrink-0 h-24 flex items-center justify-center">
-                    <h3 className="text-white text-section text-center drop-shadow-sm">
+                    <h3 className="text-section text-center drop-shadow-sm" style={{ color: '#15262E' }}>
                       {category.name}
                     </h3>
                   </div>

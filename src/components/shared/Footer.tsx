@@ -140,10 +140,6 @@ export default function Footer() {
             </p>
             <nav aria-label="Juridisk informasjon" className="md:w-1/2">
               <ul className="flex flex-wrap justify-center space-x-4 text-sm">
-                <li><Link href="/personvernerklaering" className="text-gray-300 hover:underline">Personvernerklæring</Link></li>
-                <li><Link href="/lisensieringspolicy" className="text-gray-300 hover:underline">Lisensvilkår</Link></li>
-                <li><Link href="/om-skribenten" className="text-gray-300 hover:underline">Om skribenten</Link></li>
-                <li><Link href="#" className="text-gray-300 hover:underline">Innstillinger for informasjonskapsler</Link></li>
               </ul>
             </nav>
           </div>

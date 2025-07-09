@@ -102,7 +102,7 @@ export function SubcategoryHighlights({
                         onError={() => handleImageError(subcategory.slug)}
                       />
                     </figure>
-                    <h3 className="mt-auto mb-10 text-white text-section text-center w-full drop-shadow-sm">
+                    <h3 className="mt-auto mb-10 text-white text-section text-center w-full drop-shadow-sm" style={{ color: '#ffffff' }}>
                       {title}
                     </h3>
                   </Link>
