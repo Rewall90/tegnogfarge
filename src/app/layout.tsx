@@ -56,6 +56,14 @@ export default function RootLayout({
         
         <link rel="dns-prefetch" href="https://tegnogfarge.no" />
         
+        {/* Preload critical hero image for LCP optimization */}
+        <link 
+          rel="preload" 
+          as="image" 
+          href="/images/hero section/fargelegging-barn-voksne-gratis-motiver.webp"
+          media="(min-width: 768px)"
+        />
+        
         <BaseJsonLd />
       </head>
       <body className="font-sans bg-white text-gray-900 min-h-screen flex flex-col">

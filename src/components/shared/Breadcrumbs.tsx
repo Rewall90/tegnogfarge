@@ -24,7 +24,7 @@ export default function Breadcrumbs({ items, className = '' }: BreadcrumbsProps)
         
         // Render item as a link or a span based on if it's the last item or has href
         const element = !isLast && item.href ? (
-          <Link href={item.href} className="text-[#FF6F59] hover:underline">
+          <Link href={item.href} className="text-[#264653] hover:underline">
             {item.label}
           </Link>
         ) : (

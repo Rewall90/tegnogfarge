@@ -2,11 +2,28 @@
 
 import Link from "next/link";
 import React from "react";
-import Image from "next/image";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { ButtonHeroSection } from "../buttons/ButtonHeroSection";
 import { SearchForm } from "../shared/SearchForm";
+import { trackImagePerformance } from "@/utils/imageLoadingMetrics";
 
 export function FrontpageHero() {
+  // Set up performance tracking for hero image (critical for LCP)
+  React.useEffect(() => {
+    const cleanup = trackImagePerformance({
+      debug: true,
+      trackAllImages: false, // Only track LCP for hero
+      onMetricsCollected: (metrics) => {
+        if (metrics.isLCP) {
+          console.log('[Hero LCP] Performance metrics:', metrics);
+          // In production, send to analytics service
+        }
+      }
+    });
+    
+    return cleanup;
+  }, []);
+
   return (
     <section className="bg-[#FEFAF6]" aria-labelledby="hero-heading">
       <div className="max-w-6xl mx-auto">
@@ -27,13 +44,14 @@ export function FrontpageHero() {
             </div>
             
             <div className="hidden md:block md:-mr-12 md:ml-4 md:h-[535px] relative">
-              <Image 
+              <OptimizedImage 
                 src="/images/hero section/fargelegging-barn-voksne-gratis-motiver.webp"
                 alt="Fargelegg og last ned motiver for barn og voksne – helt gratis!"
                 fill
                 sizes="(max-width: 768px) 0vw, 50vw"
                 className="object-cover rounded-l-lg"
-                priority
+                isPriority={true}
+                fadeIn={false} // No fade for LCP element
               />
             </div>
           </div>

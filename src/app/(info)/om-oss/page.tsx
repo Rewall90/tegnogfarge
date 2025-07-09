@@ -46,7 +46,7 @@ export default function AboutPage() {
         <h2 className="text-2xl font-semibold mb-4">Kontakt Oss</h2>
         <p>
           Har du spørsmål eller ønsker å komme i kontakt? Besøk vår{' '}
-          <Link href="/kontakt" className="text-[#FF6F59] hover:underline">
+                      <Link href="/kontakt" className="text-[#264653] hover:underline">
             kontaktside
           </Link>
           .

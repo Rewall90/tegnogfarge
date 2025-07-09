@@ -253,7 +253,7 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
             <nav aria-label="Breadcrumb">
               <Link 
                 href="/" 
-                className="text-[#FF6F59] hover:underline mb-4 inline-flex items-center gap-2"
+                className="text-[#264653] hover:underline mb-4 inline-flex items-center gap-2"
               >
                 Tilbake til forsiden
               </Link>
