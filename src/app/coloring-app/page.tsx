@@ -1,9 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import ColoringApp from '@/components/coloring/ColoringApp'
+import dynamic from 'next/dynamic'
 import { getColoringImageWebP } from '@/lib/sanity'
 import Head from 'next/head'
+
+const ColoringApp = dynamic(() => import('@/components/coloring/ColoringApp'), {
+  ssr: false
+})
 
 export default function ColoringAppPage() {
   const [imageData, setImageData] = useState<any>(null)
