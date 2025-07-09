@@ -4,6 +4,11 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 
 const nextConfig = {
+  // CSS Optimization for better performance
+  experimental: {
+    optimizeCss: true,
+    cssChunking: 'strict'
+  },
   images: {
     remotePatterns: [
       {
