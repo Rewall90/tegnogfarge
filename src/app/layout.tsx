@@ -14,17 +14,21 @@ const VisualEditing = dynamic(
   { ssr: false }
 );
 
+// Inter as variable font (no specific weights needed)
 const inter = Inter({ 
   subsets: ["latin"],
   variable: '--font-inter',
-  display: 'swap'
+  display: 'swap',
+  preload: true
 });
 
+// Quicksand with specific weights (non-variable font)
 const quicksand = Quicksand({
   subsets: ["latin"],
   weight: ['400', '600', '700'],
   variable: '--font-quicksand',
-  display: 'swap'
+  display: 'swap',
+  preload: true
 });
 
 export const metadata: Metadata = {
@@ -47,6 +51,8 @@ export default function RootLayout({
   return (
     <html lang="nb" className={`${inter.variable} ${quicksand.variable}`}>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <BaseJsonLd />
       </head>
       <body className="font-sans bg-white text-gray-900 min-h-screen flex flex-col">
