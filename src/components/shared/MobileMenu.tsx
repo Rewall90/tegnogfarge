@@ -70,7 +70,7 @@ export default function MobileMenu() {
                   </button>
                 </div>
               ) : (
-                <Link href="/login" className="bg-[#FF6F59] text-white px-4 py-2 rounded hover:bg-[#E85A45] inline-block w-full text-center text-lg">
+                <Link href="/login" className="bg-[#EB7060] text-black px-4 py-2 rounded hover:bg-[#EB7060]/90 inline-block w-full text-center text-lg">
                   Logg inn/Registrer
                 </Link>
               )}

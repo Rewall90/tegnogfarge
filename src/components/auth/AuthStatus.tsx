@@ -25,7 +25,7 @@ export default function AuthStatus() {
   }
 
   return (
-    <Link href="/login" className="bg-[#FF6F59] text-white px-5 py-2.5 rounded hover:bg-[#E85A45] text-lg">
+    <Link href="/login" className="bg-[#EB7060] text-black px-5 py-2.5 rounded hover:bg-[#EB7060]/90 text-lg">
       Logg inn/Registrer
     </Link>
   );
