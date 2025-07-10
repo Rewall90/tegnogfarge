@@ -591,7 +591,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     const { x, y } = coordinates;
     performFillAtCoordinates(x, y);
-  }, [state.drawingMode, zoomScale]);
+  }, [state.drawingMode, zoomScale, state.currentColor]);
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     e.preventDefault(); // Prevent scrolling and zooming
@@ -628,6 +628,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     // Handle zoom gesture
     if (e.touches.length === 2 && isZooming) {
       const currentDistance = getTouchDistance(e);
+      // Step 2: Prevent division by zero in zoom calculation
+      if (initialDistanceRef.current === 0) return;
       const newScale = zoomScale * (currentDistance / initialDistanceRef.current);
       setZoomScale(Math.min(Math.max(newScale, 0.5), 3.0));
       initialDistanceRef.current = currentDistance;
@@ -675,6 +677,13 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Shared fill logic for both mouse and touch
   const performFillAtCoordinates = (x: number, y: number) => {
     if (state.drawingMode !== 'fill') return;
+    
+    // Step 1 & 3: Defensive check for finite coordinates and logging
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      console.error('Invalid fill coordinates:', { x, y, zoomScale });
+      setIsFilling(false);
+      return;
+    }
     
     // Prevent multiple fill operations from running simultaneously
     if (isFilling) {
@@ -781,11 +790,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           shadowCtx.putImageData(newImageData, 0, 0, minX, minY, dirtyWidth, dirtyHeight);
           
           // Store the new region and redraw
-          const newRegions = [...fillRegions, region];
-          setFillRegions(newRegions);
-          
-          // Redraw all regions efficiently
-          redrawFillRegions(newRegions);
+          setFillRegions(prev => {
+            const newRegions = [...prev, region];
+            redrawFillRegions(newRegions);
+            return newRegions;
+          });
           
           // Update history
           const newHistory = history.slice(0, historyStep + 1);
@@ -811,11 +820,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           shadowCtx.putImageData(newImageData, 0, 0);
           
           // Store the new region and redraw
-          const newRegions = [...fillRegions, region];
-          setFillRegions(newRegions);
-          
-          // Redraw all regions efficiently
-          redrawFillRegions(newRegions);
+          setFillRegions(prev => {
+            const newRegions = [...prev, region];
+            redrawFillRegions(newRegions);
+            return newRegions;
+          });
           
           // Update history
           const newHistory = history.slice(0, historyStep + 1);
