@@ -15,8 +15,8 @@ export const COLOR_THEMES: ColorTheme[] = [
     displayColor: '#F4A688',
     icon: '🟤',
     colors: [
-      '#FDB5A6', '#F4A688', '#E8956A', '#DEB887', '#CD853F',
-      '#D2691E', '#A0522D', '#8B4513', '#654321', '#3C2414'
+      '#FFEEDD', '#FFE4CC', '#FFDAB9', '#FFD0A6', '#FFC193',
+      '#FFB380', '#F4A460', '#E89654', '#D2691E', '#A0522D'
     ]
   },
   {
@@ -25,8 +25,8 @@ export const COLOR_THEMES: ColorTheme[] = [
     displayColor: '#FF0000',
     icon: '🔴',
     colors: [
-      '#FF69B4', '#FF1493', '#DC143C', '#B22222', '#8B0000',
-      '#FF4500', '#FF6347', '#FA8072', '#E9967A', '#FFA07A'
+      '#FFE5E5', '#FFCCCC', '#FFB3B3', '#FF9999', '#FF8080',
+      '#FF6666', '#FF4D4D', '#FF3333', '#FF1A1A', '#CC0000'
     ]
   },
   {
@@ -35,8 +35,8 @@ export const COLOR_THEMES: ColorTheme[] = [
     displayColor: '#FFD700',
     icon: '🟡',
     colors: [
-      '#FFFF00', '#FFD700', '#FFEB3B', '#FFF59D', '#FFF176',
-      '#FFEE58', '#FFEB3B', '#FDD835', '#F9A825', '#F57F17'
+      '#FFFEF0', '#FFFDE0', '#FFFACD', '#FFF8DC', '#FFFF99',
+      '#FFFF66', '#FFFF33', '#FFD700', '#FFC700', '#FFB300'
     ]
   },
   {
@@ -45,8 +45,8 @@ export const COLOR_THEMES: ColorTheme[] = [
     displayColor: '#0000FF',
     icon: '🔵',
     colors: [
-      '#87CEEB', '#4169E1', '#0000FF', '#0000CD', '#191970',
-      '#1E90FF', '#00BFFF', '#87CEFA', '#B0C4DE', '#4682B4'
+      '#E6F2FF', '#CCDFFF', '#B3D1FF', '#99C2FF', '#80B3FF',
+      '#66A3FF', '#4D94FF', '#3385FF', '#1A75FF', '#0066CC'
     ]
   },
   {
@@ -55,8 +55,8 @@ export const COLOR_THEMES: ColorTheme[] = [
     displayColor: '#00FF00',
     icon: '🟢',
     colors: [
-      '#90EE90', '#00FF00', '#32CD32', '#228B22', '#006400',
-      '#ADFF2F', '#7FFF00', '#7CFC00', '#00FF7F', '#00FA9A'
+      '#E6FFE6', '#CCFFCC', '#B3FFB3', '#99FF99', '#80FF80',
+      '#66FF66', '#4DFF4D', '#33FF33', '#1AFF1A', '#00CC00'
     ]
   },
   {
@@ -65,8 +65,8 @@ export const COLOR_THEMES: ColorTheme[] = [
     displayColor: '#800080',
     icon: '🟣',
     colors: [
-      '#DDA0DD', '#DA70D6', '#BA55D3', '#9370DB', '#8A2BE2',
-      '#9400D3', '#8B008B', '#800080', '#663399', '#4B0082'
+      '#F3E6F3', '#E6CCE6', '#D9B3D9', '#CC99CC', '#BF80BF',
+      '#B366B3', '#A64DA6', '#993399', '#8C1A8C', '#800080'
     ]
   },
   {
@@ -75,8 +75,8 @@ export const COLOR_THEMES: ColorTheme[] = [
     displayColor: '#808080',
     icon: '⚫',
     colors: [
-      '#FFFFFF', '#F5F5F5', '#DCDCDC', '#C0C0C0', '#A9A9A9',
-      '#808080', '#696969', '#2F4F4F', '#000000', '#8B4513'
+      '#FFFFFF', '#F2F2F2', '#E6E6E6', '#D9D9D9', '#CCCCCC',
+      '#B3B3B3', '#999999', '#808080', '#666666', '#333333'
     ]
   },
   {
@@ -85,8 +85,8 @@ export const COLOR_THEMES: ColorTheme[] = [
     displayColor: '#FF00FF',
     icon: '🌈',
     colors: [
-      '#FF00FF', '#00FFFF', '#FF4500', '#FF69B4', '#32CD32',
-      '#FFD700', '#FF1493', '#00FF7F', '#1E90FF', '#FF6347'
+      '#FF00FF', '#FF1493', '#FF69B4', '#FFB6C1', '#FFC0CB',
+      '#87CEEB', '#00BFFF', '#1E90FF', '#0000FF', '#4B0082'
     ]
   }
 ];

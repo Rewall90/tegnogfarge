@@ -6,8 +6,8 @@ import { FloodFill, type PixelChange, type FillRegion } from '@/lib/flood-fill'
 import ColorPalette from './ColorPalette'
 import ToolBar from './ToolBar'
 import ImageSelector from './ImageSelector'
-import { MobileColorGrid } from './MobileColorGrid'
-import { MobileThemeSelector } from './MobileThemeSelector'
+import { MobileColorPicker } from './MobileColorPicker'
+import { MobileToolbar } from './MobileToolbar'
 import { DEFAULT_THEME_ID, getThemeById } from './colorConstants'
 import type { ColoringState, DrawingMode } from '@/types/canvas-coloring'
 
@@ -138,6 +138,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Track filled regions for optimized rendering
   const [fillRegions, setFillRegions] = useState<FillRegion[]>([]);
   
+  // Track opacity for fade-in animation
+  const fillOpacityRef = useRef<Map<number, number>>(new Map());
+  const fadeAnimationRef = useRef<number | null>(null);
+  
   // Track brush strokes for optimized rendering
   const [brushStrokes, setBrushStrokes] = useState<BrushStroke[]>([]);
   const currentStrokeRef = useRef<BrushStroke | null>(null);
@@ -168,7 +172,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   })
   const [history, setHistory] = useState<HistoryStep[]>([]);
   const [historyStep, setHistoryStep] = useState(-1);
-  const [showMobileTools, setShowMobileTools] = useState(false);
   const [activeThemeId, setActiveThemeId] = useState(DEFAULT_THEME_ID);
 
   // Zoom state for mobile pinch-to-zoom
@@ -200,13 +203,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     return false;
   }, []);
 
-  // Redraw all fill regions efficiently
+  // Redraw all fill regions efficiently with fade-in support
   const redrawFillRegions = useCallback((regions: FillRegion[]) => {
     const fillCtx = contextRef.current.fill;
     const fillCanvas = fillCanvasRef.current;
     if (!fillCtx || !fillCanvas) return;
     
-    // Forbered rendering i neste animasjonsramme
     requestAnimationFrame(() => {
       // Clear the fill canvas
       fillCtx.clearRect(0, 0, fillCanvas.width, fillCanvas.height);
@@ -214,62 +216,35 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       // Skip if no regions to draw
       if (regions.length === 0) return;
       
-      // Gå tilbake til ImageData for bedre ytelse, men med sikringsmekanismer
+      // Create single imageData for all regions
       const imageData = fillCtx.createImageData(fillCanvas.width, fillCanvas.height);
       const pixels32 = new Uint32Array(imageData.data.buffer);
       
-      // Beregn "dirty rectangle" - området som faktisk endres
-      let minX = fillCanvas.width;
-      let minY = fillCanvas.height;
-      let maxX = 0;
-      let maxY = 0;
-      
-      // Fyll hver region med sin farge og spor bounds
-      let totalPoints = 0;
-      regions.forEach(region => {
+      // Draw each region
+      regions.forEach((region, index) => {
         if (region.points.length === 0) return;
         
-        // Konverter hex-farge til RGBA32
-        const r = parseInt(region.color.substr(1, 2), 16);
-        const g = parseInt(region.color.substr(3, 2), 16);
-        const b = parseInt(region.color.substr(5, 2), 16);
-        const color32 = (255 << 24) | (b << 16) | (g << 8) | r;
+        // Get opacity for this region (default to 1 if not animating)
+        const opacity = fillOpacityRef.current.get(index) ?? 1;
+        const alpha = Math.floor(255 * opacity);
         
-        // Sett alle punkter i regionen
+        // Parse color
+        const r = parseInt(region.color.substring(1, 3), 16);
+        const g = parseInt(region.color.substring(3, 5), 16);
+        const b = parseInt(region.color.substring(5, 7), 16);
+        const color32 = (alpha << 24) | (b << 16) | (g << 8) | r;
+        
+        // Fill pixels
         region.points.forEach(([x, y]) => {
           const idx = y * fillCanvas.width + x;
           if (idx >= 0 && idx < pixels32.length) {
             pixels32[idx] = color32;
-            
-            // Oppdater bounds
-            minX = Math.min(minX, x);
-            minY = Math.min(minY, y);
-            maxX = Math.max(maxX, x);
-            maxY = Math.max(maxY, y);
           }
         });
-        
-        totalPoints += region.points.length;
       });
       
-      // Sikre at vi har gyldig dirtyRectangle
-      if (minX > maxX || minY > maxY) {
-        return;
-      }
-      
-      // Legg til litt padding rundt det berørte området
-      const padding = 2;
-      minX = Math.max(0, minX - padding);
-      minY = Math.max(0, minY - padding);
-      maxX = Math.min(fillCanvas.width - 1, maxX + padding);
-      maxY = Math.min(fillCanvas.height - 1, maxY + padding);
-      
-      // Beregn bredde og høyde på dirty rectangle
-      const dirtyWidth = maxX - minX + 1;
-      const dirtyHeight = maxY - minY + 1;
-      
-      // Tegn bare det berørte området (dirty rectangle)
-      fillCtx.putImageData(imageData, 0, 0, minX, minY, dirtyWidth, dirtyHeight);
+      // Draw all regions at once
+      fillCtx.putImageData(imageData, 0, 0);
     });
   }, []);
 
@@ -346,7 +321,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         
         // Verify image was drawn correctly
         try {
-          const testData = bgCtx.getImageData(0, 0, 1, 1);
+          bgCtx.getImageData(0, 0, 1, 1);
         } catch (err) {
           console.error('Failed to get background image data:', err);
         }
@@ -399,6 +374,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (fillThrottleTimeoutRef.current) {
         clearTimeout(fillThrottleTimeoutRef.current);
         fillThrottleTimeoutRef.current = null;
+      }
+      if (fadeAnimationRef.current) {
+        cancelAnimationFrame(fadeAnimationRef.current);
+        fadeAnimationRef.current = null;
       }
     };
   }, []);
@@ -789,10 +768,43 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         try {
           shadowCtx.putImageData(newImageData, 0, 0, minX, minY, dirtyWidth, dirtyHeight);
           
-          // Store the new region and redraw
+          // Store the new region and start fade animation
           setFillRegions(prev => {
             const newRegions = [...prev, region];
-            redrawFillRegions(newRegions);
+            const regionIndex = prev.length;
+            
+            // Start fade-in animation for this region
+            fillOpacityRef.current.set(regionIndex, 0);
+            
+            const startTime = Date.now();
+            const duration = 300; // 300ms fade-in
+            
+            const animateFade = () => {
+              const elapsed = Date.now() - startTime;
+              const progress = Math.min(elapsed / duration, 1);
+              
+              // Ease-out opacity
+              const opacity = 1 - Math.pow(1 - progress, 2);
+              fillOpacityRef.current.set(regionIndex, opacity);
+              
+              // Redraw with new opacity
+              redrawFillRegions(newRegions);
+              
+              if (progress < 1) {
+                fadeAnimationRef.current = requestAnimationFrame(animateFade);
+              } else {
+                // Clean up
+                fillOpacityRef.current.set(regionIndex, 1);
+                fadeAnimationRef.current = null;
+              }
+            };
+            
+            // Start animation
+            if (fadeAnimationRef.current) {
+              cancelAnimationFrame(fadeAnimationRef.current);
+            }
+            fadeAnimationRef.current = requestAnimationFrame(animateFade);
+            
             return newRegions;
           });
           
@@ -819,10 +831,43 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         try {
           shadowCtx.putImageData(newImageData, 0, 0);
           
-          // Store the new region and redraw
+          // Store the new region and start fade animation
           setFillRegions(prev => {
             const newRegions = [...prev, region];
-            redrawFillRegions(newRegions);
+            const regionIndex = prev.length;
+            
+            // Start fade-in animation for this region
+            fillOpacityRef.current.set(regionIndex, 0);
+            
+            const startTime = Date.now();
+            const duration = 300; // 300ms fade-in
+            
+            const animateFade = () => {
+              const elapsed = Date.now() - startTime;
+              const progress = Math.min(elapsed / duration, 1);
+              
+              // Ease-out opacity
+              const opacity = 1 - Math.pow(1 - progress, 2);
+              fillOpacityRef.current.set(regionIndex, opacity);
+              
+              // Redraw with new opacity
+              redrawFillRegions(newRegions);
+              
+              if (progress < 1) {
+                fadeAnimationRef.current = requestAnimationFrame(animateFade);
+              } else {
+                // Clean up
+                fillOpacityRef.current.set(regionIndex, 1);
+                fadeAnimationRef.current = null;
+              }
+            };
+            
+            // Start animation
+            if (fadeAnimationRef.current) {
+              cancelAnimationFrame(fadeAnimationRef.current);
+            }
+            fadeAnimationRef.current = requestAnimationFrame(animateFade);
+            
             return newRegions;
           });
           
@@ -1205,18 +1250,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           
           {/* Mobile Controls Section */}
           <div className="md:hidden space-y-3 p-4">
-            <MobileColorGrid
-              selectedColor={state.currentColor}
-              onColorChange={(color: string) => setState(prev => ({ ...prev, currentColor: color }))}
-              activeThemeId={activeThemeId}
-              onUndo={handleUndo}
-              canUndo={historyStep > 0}
-              onToolsClick={() => setShowMobileTools(!showMobileTools)}
-              showTools={showMobileTools}
+            <MobileToolbar
               drawingMode={state.drawingMode}
               onDrawingModeChange={(mode: DrawingMode) => setState(prev => ({ ...prev, drawingMode: mode }))}
+              onUndo={handleUndo}
+              canUndo={historyStep > 0}
             />
-            <MobileThemeSelector
+            <MobileColorPicker
+              selectedColor={state.currentColor}
+              onColorChange={(color: string) => setState(prev => ({ ...prev, currentColor: color }))}
               activeThemeId={activeThemeId}
               onThemeChange={setActiveThemeId}
             />
