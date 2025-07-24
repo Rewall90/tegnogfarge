@@ -10,6 +10,9 @@ import { MobileColorPicker } from './MobileColorPicker'
 import { MobileToolbar } from './MobileToolbar'
 import { DEFAULT_THEME_ID, getThemeById } from './colorConstants'
 import type { ColoringState, DrawingMode } from '@/types/canvas-coloring'
+import { ViewportManager } from '@/core/viewport/ViewportManager'
+import { ToggleMode } from '@/core/viewport/ToggleMode'
+import type { ViewportState, ViewportMode } from '@/core/viewport/types'
 
 interface ColoringAppProps {
   imageData: {
@@ -80,32 +83,20 @@ function forEachPixelOnLine(x0: number, y0: number, x1: number, y1: number, cb: 
   }
 }
 
-// Helper function to get scaled coordinates from mouse events
-function getScaledCoordinates(e: React.MouseEvent<HTMLCanvasElement>, canvas: HTMLCanvasElement, zoom: number = 1, pan: { x: number, y: number } = { x: 0, y: 0 }) {
-  return getCanvasCoordinates(e.clientX, e.clientY, canvas, zoom, pan);
-}
 
-function getTouchDistance(e: TouchEvent): number {
-  if (e.touches.length < 2) return 0;
-  const touch1 = e.touches[0];
-  const touch2 = e.touches[1];
-  const dx = touch1.clientX - touch2.clientX;
-  const dy = touch1.clientY - touch2.clientY;
-  return Math.sqrt(dx * dx + dy * dy);
-}
 
-function getCanvasCoordinates(clientX: number, clientY: number, canvas: HTMLCanvasElement, zoom: number = 1, pan: { x: number, y: number } = { x: 0, y: 0 }) {
+function getCanvasCoordinates(clientX: number, clientY: number, canvas: HTMLCanvasElement) {
   const rect = canvas.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
   const scaleY = canvas.height / rect.height;
   
-  // Convert client coordinates to canvas coordinates, accounting for zoom and pan
-  const x = ((clientX - rect.left) * scaleX - pan.x) / zoom;
-  const y = ((clientY - rect.top) * scaleY - pan.y) / zoom;
+  // Convert client coordinates to canvas coordinates
+  const x = (clientX - rect.left) * scaleX;
+  const y = (clientY - rect.top) * scaleY;
   
   return {
-    x: Math.floor(x),
-    y: Math.floor(y)
+    x: Math.round(x),
+    y: Math.round(y)
   };
 }
 
@@ -142,7 +133,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   
   // Throttling for flood fill operations
   const [isFilling, setIsFilling] = useState(false);
-  const fillThrottleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fillThrottleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   // Touch handling for mobile brush drawing
   const touchMoveThrottleRef = useRef<number | null>(null);
@@ -168,21 +159,139 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   const [historyStep, setHistoryStep] = useState(-1);
   const [activeThemeId, setActiveThemeId] = useState(DEFAULT_THEME_ID);
 
-  // Simple zoom and pan state
-  const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
-  
-  // Gesture tracking
-  const gestureRef = useRef({
-    isPanning: false,
-    isZooming: false,
-    lastDistance: 0,
-    lastX: 0,
-    lastY: 0
+  // Viewport management
+  const viewportManagerRef = useRef<ViewportManager | null>(null);
+  const toggleModeRef = useRef<ToggleMode | null>(null);
+  const [viewportState, setViewportState] = useState<ViewportState>({
+    scale: 1,
+    panX: 0,
+    panY: 0,
+    mode: 'draw'
   });
+  const [currentMode, setCurrentMode] = useState<ViewportMode>('draw');
+
 
   // Reference to the app container for performance testing
   const appContainerRef = useRef<HTMLDivElement>(null);
+
+  // Initialize viewport system
+  useEffect(() => {
+    if (!viewportManagerRef.current) {
+      viewportManagerRef.current = new ViewportManager();
+      toggleModeRef.current = new ToggleMode();
+    }
+
+    // Subscribe to viewport state changes
+    const unsubscribeViewport = viewportManagerRef.current.addStateChangeListener((state) => {
+      setViewportState(state);
+    });
+
+    // Subscribe to mode changes
+    const unsubscribeMode = toggleModeRef.current.addModeChangeCallback((mode) => {
+      setCurrentMode(mode);
+      // Update viewport manager mode
+      if (viewportManagerRef.current) {
+        viewportManagerRef.current.setMode(mode);
+      }
+    });
+
+    // Initial state
+    setViewportState(viewportManagerRef.current.getState());
+    setCurrentMode(toggleModeRef.current.getCurrentMode());
+
+    // Cleanup
+    return () => {
+      unsubscribeViewport();
+      unsubscribeMode();
+    };
+  }, []);
+
+  // Toggle zoom mode handler
+  const handleToggleZoom = useCallback(() => {
+    if (toggleModeRef.current) {
+      toggleModeRef.current.toggle();
+    }
+  }, []);
+
+  // Mouse wheel zoom handler
+  const handleWheel = useCallback((e: WheelEvent) => {
+    if (currentMode !== 'zoom') return;
+    
+    e.preventDefault();
+    
+    const viewportManager = viewportManagerRef.current;
+    if (!viewportManager) return;
+
+    const canvas = mainCanvasRef.current;
+    if (!canvas) return;
+
+    // Get mouse position relative to canvas
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // Calculate zoom factor (negative deltaY = zoom in)
+    const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+    const currentState = viewportManager.getState();
+    const newScale = Math.max(0.25, Math.min(4.0, currentState.scale * zoomFactor));
+
+    // Calculate new pan to keep mouse position fixed
+    const scaleChange = newScale / currentState.scale;
+    const newPanX = mouseX - (mouseX - currentState.panX) * scaleChange;
+    const newPanY = mouseY - (mouseY - currentState.panY) * scaleChange;
+
+    viewportManager.setState({
+      scale: newScale,
+      panX: newPanX,
+      panY: newPanY
+    });
+  }, [currentMode]);
+
+  // Mouse pan handlers
+  const [isPanning, setIsPanning] = useState(false);
+  const lastPanPosition = useRef<{ x: number; y: number } | null>(null);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (currentMode === 'zoom') {
+      setIsPanning(true);
+      lastPanPosition.current = { x: e.clientX, y: e.clientY };
+      e.preventDefault();
+    } else {
+      // Existing drawing logic
+      handleStartDrawing(e);
+    }
+  }, [currentMode]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (currentMode === 'zoom' && isPanning && lastPanPosition.current) {
+      const viewportManager = viewportManagerRef.current;
+      if (!viewportManager) return;
+
+      const deltaX = e.clientX - lastPanPosition.current.x;
+      const deltaY = e.clientY - lastPanPosition.current.y;
+
+      const currentState = viewportManager.getState();
+      viewportManager.setState({
+        panX: currentState.panX + deltaX,
+        panY: currentState.panY + deltaY
+      });
+
+      lastPanPosition.current = { x: e.clientX, y: e.clientY };
+    } else {
+      // Existing drawing logic
+      handleDraw(e);
+    }
+  }, [currentMode, isPanning]);
+
+  const handleMouseUp = useCallback(() => {
+    if (currentMode === 'zoom') {
+      setIsPanning(false);
+      lastPanPosition.current = null;
+    } else {
+      // Existing drawing logic
+      handleStopDrawing();
+    }
+  }, [currentMode]);
 
   // Initialize and cache canvas contexts
   const initializeContexts = useCallback(() => {
@@ -205,17 +314,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     return false;
   }, []);
 
-  // Apply zoom and pan transforms to a canvas context
-  const applyTransform = useCallback((ctx: CanvasRenderingContext2D | null) => {
-    if (!ctx) return;
-    ctx.setTransform(zoom, 0, 0, zoom, pan.x, pan.y);
-  }, [zoom, pan]);
-
-  // Reset transform on a canvas context
-  const resetTransform = useCallback((ctx: CanvasRenderingContext2D | null) => {
-    if (!ctx) return;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-  }, []);
 
   // Redraw all fill regions efficiently with fade-in support
   const redrawFillRegions = useCallback((regions: FillRegion[]) => {
@@ -224,19 +322,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (!fillCtx || !fillCanvas) return;
     
     requestAnimationFrame(() => {
-      // Save context state
-      fillCtx.save();
-      
-      // Clear the entire canvas (including transformed areas)
-      resetTransform(fillCtx);
+      // Clear the entire canvas
       fillCtx.clearRect(0, 0, fillCanvas.width, fillCanvas.height);
-      
-      // Apply transform for drawing
-      applyTransform(fillCtx);
       
       // Skip if no regions to draw
       if (regions.length === 0) {
-        fillCtx.restore();
         return;
       }
       
@@ -269,35 +359,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       
       // Draw all regions at once
       fillCtx.putImageData(imageData, 0, 0);
-      
-      // Restore context state
-      fillCtx.restore();
     });
-  }, [applyTransform, resetTransform]);
+  }, []);
 
-  // Watch for zoom/pan changes and redraw
-  useEffect(() => {
-    // Redraw background with transforms
-    const bgCtx = contextRef.current.background;
-    const bgCanvas = backgroundCanvasRef.current;
-    
-    if (bgCtx && bgCanvas && currentImage?.webpImageUrl) {
-      const img = document.createElement('img');
-      img.onload = () => {
-        bgCtx.save();
-        resetTransform(bgCtx);
-        bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-        applyTransform(bgCtx);
-        bgCtx.drawImage(img, 0, 0);
-        bgCtx.restore();
-      };
-      img.src = currentImage.webpImageUrl;
-    }
-    
-    // Redraw other layers
-    redrawFillRegions(fillRegions);
-    redrawBrushStrokes(brushStrokes);
-  }, [zoom, pan, currentImage, applyTransform, resetTransform]);
 
   // Tegn penselstrøk fra snapshots - mye mer minneeffektivt
   const redrawBrushStrokes = useCallback((strokes: BrushStroke[]) => {
@@ -307,19 +371,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Bruk requestAnimationFrame for å synkronisere med skjermoppdateringer
     requestAnimationFrame(() => {
-      // Save context state
-      mainCtx.save();
-      
       // Clear the entire canvas
-      resetTransform(mainCtx);
       mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-      
-      // Apply transform for drawing
-      applyTransform(mainCtx);
       
       // Skip if no strokes to draw
       if (strokes.length === 0) {
-        mainCtx.restore();
         return;
       }
       
@@ -329,11 +385,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (lastStroke.canvasSnapshot) {
         mainCtx.drawImage(lastStroke.canvasSnapshot, 0, 0);
       }
-      
-      // Restore context state
-      mainCtx.restore();
     });
-  }, [applyTransform, resetTransform]);
+  }, []);
 
   // Load image and set up canvases
   useEffect(() => {
@@ -454,6 +507,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Shared drawing logic for both mouse and touch
   const startDrawingAtCoordinates = useCallback((x: number, y: number) => {
     if (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser') return;
+    if (currentMode === 'zoom') return; // Disable drawing in zoom mode
     
     // Use cached context
     const ctx = contextRef.current.main;
@@ -496,10 +550,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       lastX: x,
       lastY: y
     }));
-  }, [state.drawingMode, state.currentColor, state.brushSize, state.originalImageData]);
+  }, [state.drawingMode, state.currentColor, state.brushSize, state.originalImageData, currentMode]);
 
   const continueDrawingAtCoordinates = useCallback((x: number, y: number) => {
     if (!state.isDrawing || (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser')) return;
+    if (currentMode === 'zoom') return; // Disable drawing in zoom mode
     
     // Use cached context
     const canvas = mainCanvasRef.current;
@@ -554,13 +609,13 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       lastX: x,
       lastY: y
     }));
-  }, [state.isDrawing, state.drawingMode, state.lastX, state.lastY, state.originalImageData, state.brushSize, state.currentColor]);
+  }, [state.isDrawing, state.drawingMode, state.lastX, state.lastY, state.originalImageData, state.brushSize, state.currentColor, currentMode]);
 
   const handleStartDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = mainCanvasRef.current;
     if (!canvas) return;
     
-    const coords = getScaledCoordinates(e, canvas, zoom, pan);
+    const coords = getCanvasCoordinates(e.clientX, e.clientY, canvas);
     if (!coords) return;
     
     startDrawingAtCoordinates(coords.x, coords.y);
@@ -570,7 +625,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const canvas = mainCanvasRef.current;
     if (!canvas) return;
     
-    const coords = getScaledCoordinates(e, canvas, zoom, pan);
+    const coords = getCanvasCoordinates(e.clientX, e.clientY, canvas);
     if (!coords) return;
     
     continueDrawingAtCoordinates(coords.x, coords.y);
@@ -636,20 +691,49 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const touch = e.touches[0] || e.changedTouches[0];
     if (!touch) return;
     
-    const coordinates = getCanvasCoordinates(touch.clientX, touch.clientY, mainCanvas, zoom, pan);
+    const coordinates = getCanvasCoordinates(touch.clientX, touch.clientY, mainCanvas);
     if (!coordinates) return;
     
     const { x, y } = coordinates;
     performFillAtCoordinates(x, y);
-  }, [state.drawingMode, zoom, pan, state.currentColor]);
+  }, [state.drawingMode, state.currentColor, currentMode]);
+
+  // Touch gesture state for zoom/pan
+  const touchRef = useRef<{
+    initialDistance?: number;
+    initialScale?: number;
+    initialPanX?: number;
+    initialPanY?: number;
+    lastTouchCenter?: { x: number; y: number };
+  }>({});
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     e.preventDefault(); // Prevent scrolling and zooming
     
-    // Two fingers = zoom mode
-    if (e.touches.length === 2) {
-      gestureRef.current.isZooming = true;
-      gestureRef.current.lastDistance = getTouchDistance(e);
+    if (currentMode === 'zoom' && e.touches.length === 2) {
+      // Two-finger zoom gesture
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      
+      const distance = Math.sqrt(
+        Math.pow(touch2.clientX - touch1.clientX, 2) + 
+        Math.pow(touch2.clientY - touch1.clientY, 2)
+      );
+      
+      const centerX = (touch1.clientX + touch2.clientX) / 2;
+      const centerY = (touch1.clientY + touch2.clientY) / 2;
+      
+      const viewportManager = viewportManagerRef.current;
+      if (viewportManager) {
+        const currentState = viewportManager.getState();
+        touchRef.current = {
+          initialDistance: distance,
+          initialScale: currentState.scale,
+          initialPanX: currentState.panX,
+          initialPanY: currentState.panY,
+          lastTouchCenter: { x: centerX, y: centerY }
+        };
+      }
       return;
     }
     
@@ -657,18 +741,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (e.touches.length > 1) return;
     
     const touch = e.touches[0];
-    
-    // Check if we should pan when zoomed in
-    if (zoom > 1.1) {
-      gestureRef.current.isPanning = true;
-      gestureRef.current.lastX = touch.clientX;
-      gestureRef.current.lastY = touch.clientY;
-      // Still allow fill on tap
-      if (state.drawingMode === 'fill') {
-        handleFillTouch(e);
-      }
-      return;
-    }
     
     // Handle fill mode with single tap
     if (state.drawingMode === 'fill') {
@@ -680,58 +752,46 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const canvas = mainCanvasRef.current;
     if (!canvas) return;
     
-    const coords = getCanvasCoordinates(touch.clientX, touch.clientY, canvas, zoom, pan);
+    const coords = getCanvasCoordinates(touch.clientX, touch.clientY, canvas);
     if (!coords) return;
     
     startDrawingAtCoordinates(coords.x, coords.y);
-  }, [state.drawingMode, zoom, pan, handleFillTouch]);
+  }, [state.drawingMode, handleFillTouch, currentMode]);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
     e.preventDefault(); // Critical: prevent page scroll
     
-    // Handle zoom gesture
-    if (e.touches.length === 2 && gestureRef.current.isZooming) {
-      const currentDistance = getTouchDistance(e);
-      if (gestureRef.current.lastDistance === 0) return;
-      
-      // Calculate zoom centered on pinch point
+    if (currentMode === 'zoom' && e.touches.length === 2) {
+      // Two-finger zoom and pan gesture
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
+      
+      const distance = Math.sqrt(
+        Math.pow(touch2.clientX - touch1.clientX, 2) + 
+        Math.pow(touch2.clientY - touch1.clientY, 2)
+      );
+      
       const centerX = (touch1.clientX + touch2.clientX) / 2;
       const centerY = (touch1.clientY + touch2.clientY) / 2;
       
-      const scale = zoom * (currentDistance / gestureRef.current.lastDistance);
-      const newZoom = Math.min(Math.max(scale, 0.5), 3.0);
+      const viewportManager = viewportManagerRef.current;
+      const touchState = touchRef.current;
       
-      // Adjust pan to keep pinch center stationary
-      const rect = mainCanvasRef.current?.getBoundingClientRect();
-      if (rect) {
-        const dx = (centerX - rect.left) * (1 - newZoom / zoom);
-        const dy = (centerY - rect.top) * (1 - newZoom / zoom);
-        setPan(prev => ({
-          x: prev.x + dx,
-          y: prev.y + dy
-        }));
+      if (viewportManager && touchState.initialDistance && touchState.lastTouchCenter) {
+        // Calculate zoom
+        const scaleChange = distance / touchState.initialDistance;
+        const newScale = Math.max(0.25, Math.min(4.0, touchState.initialScale! * scaleChange));
+        
+        // Calculate pan (both from zoom and finger movement)
+        const panDeltaX = centerX - touchState.lastTouchCenter.x;
+        const panDeltaY = centerY - touchState.lastTouchCenter.y;
+        
+        viewportManager.setState({
+          scale: newScale,
+          panX: touchState.initialPanX! + panDeltaX,
+          panY: touchState.initialPanY! + panDeltaY
+        });
       }
-      
-      setZoom(newZoom);
-      gestureRef.current.lastDistance = currentDistance;
-      return;
-    }
-    
-    // Handle pan gesture when zoomed in
-    if (e.touches.length === 1 && gestureRef.current.isPanning && zoom > 1.1) {
-      const touch = e.touches[0];
-      const deltaX = touch.clientX - gestureRef.current.lastX;
-      const deltaY = touch.clientY - gestureRef.current.lastY;
-      
-      setPan(prev => ({
-        x: prev.x + deltaX,
-        y: prev.y + deltaY
-      }));
-      
-      gestureRef.current.lastX = touch.clientX;
-      gestureRef.current.lastY = touch.clientY;
       return;
     }
     
@@ -744,7 +804,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (!canvas) return;
     
     const touch = e.touches[0];
-    const coords = getCanvasCoordinates(touch.clientX, touch.clientY, canvas, zoom, pan);
+    const coords = getCanvasCoordinates(touch.clientX, touch.clientY, canvas);
     if (!coords) return;
     
     // Throttle touch move events for performance
@@ -754,17 +814,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       continueDrawingAtCoordinates(coords.x, coords.y);
       touchMoveThrottleRef.current = null;
     });
-  }, [zoom, pan, state.isDrawing, state.drawingMode]);
+  }, [state.isDrawing, state.drawingMode, currentMode]);
 
   const handleTouchEnd = useCallback((e: TouchEvent) => {
     e.preventDefault();
     
-    // Reset gesture states
-    if (e.touches.length < 2) {
-      gestureRef.current.isZooming = false;
-    }
+    // Clean up touch gesture state if no more touches
     if (e.touches.length === 0) {
-      gestureRef.current.isPanning = false;
+      touchRef.current = {};
     }
     
     // Clean up throttled operations
@@ -779,10 +836,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Shared fill logic for both mouse and touch
   const performFillAtCoordinates = (x: number, y: number) => {
     if (state.drawingMode !== 'fill') return;
+    if (currentMode === 'zoom') return; // Disable fill in zoom mode
     
     // Step 1 & 3: Defensive check for finite coordinates and logging
     if (!Number.isFinite(x) || !Number.isFinite(y)) {
-      console.error('Invalid fill coordinates:', { x, y, zoomScale });
+      console.error('Invalid fill coordinates:', { x, y });
       setIsFilling(false);
       return;
     }
@@ -1020,7 +1078,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const mainCanvas = mainCanvasRef.current;
     if (!mainCanvas) return;
     
-    const coords = getScaledCoordinates(e, mainCanvas, zoom, pan);
+    const coords = getCanvasCoordinates(e.clientX, e.clientY, mainCanvas);
     if (!coords) return;
     
     performFillAtCoordinates(coords.x, coords.y);
@@ -1242,10 +1300,13 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     }
   }, [brushStrokes.length, consolidateBrushStrokes]);
 
-  // Add non-passive touch event listeners for mobile zoom
+  // Add event listeners for zoom/pan and drawing
   useEffect(() => {
     const canvas = mainCanvasRef.current;
     if (!canvas) return;
+
+    // Add wheel event listener for zoom
+    canvas.addEventListener('wheel', handleWheel, { passive: false });
 
     // Add non-passive touch event listeners
     canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
@@ -1255,12 +1316,13 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
     return () => {
       // Cleanup event listeners
+      canvas.removeEventListener('wheel', handleWheel);
       canvas.removeEventListener('touchstart', handleTouchStart);
       canvas.removeEventListener('touchmove', handleTouchMove);
       canvas.removeEventListener('touchend', handleTouchEnd);
       canvas.removeEventListener('touchcancel', handleTouchEnd);
     };
-  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [handleWheel, handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
     <div className="h-screen overflow-hidden bg-gray-100 flex flex-col" ref={appContainerRef}>
@@ -1296,6 +1358,26 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       </header>
 
       <div className="flex-1 flex overflow-hidden">
+        {/* Left Sidebar with Zoom Toggle */}
+        <div className="flex-shrink-0 bg-white border-r border-gray-200 p-2 flex flex-col items-center">
+          <button
+            onClick={handleToggleZoom}
+            className={`
+              w-12 h-12 rounded-lg border-2 flex items-center justify-center text-lg font-semibold transition-all duration-200
+              ${currentMode === 'zoom' 
+                ? 'bg-blue-500 text-white border-blue-500 shadow-lg' 
+                : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50'
+              }
+            `}
+            title={currentMode === 'zoom' ? 'Switch to Draw Mode' : 'Switch to Zoom Mode'}
+          >
+            {currentMode === 'zoom' ? '✏️' : '🔍'}
+          </button>
+          <span className="text-xs text-gray-500 mt-1">
+            {currentMode === 'zoom' ? 'Draw' : 'Zoom'}
+          </span>
+        </div>
+        
         <ColorPalette
           className="hidden md:block"
           selectedColor={state.currentColor}
@@ -1323,6 +1405,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           <div className="flex-1 overflow-hidden bg-gray-50 p-1 flex items-center justify-center">
             <div 
               className="relative flex items-center justify-center"
+              style={{
+                transform: `translate(${viewportState.panX}px, ${viewportState.panY}px) scale(${viewportState.scale})`,
+                transformOrigin: 'center center',
+                willChange: 'transform'
+              }}
             >
               {/* Background canvas (contour lines) */}
                               <canvas 
@@ -1348,11 +1435,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               {/* Main canvas for user interaction */}
                               <canvas
                   ref={mainCanvasRef}
-                  onClick={handleCanvasClick}
-                  onMouseDown={handleStartDrawing}
-                  onMouseMove={handleDraw}
-                  onMouseUp={handleStopDrawing}
-                  onMouseLeave={handleStopDrawing}
+                  onClick={currentMode === 'draw' ? handleCanvasClick : undefined}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
 
                   className="relative max-w-full max-h-full bg-transparent shadow-lg cursor-crosshair z-20"
                   style={{ 
