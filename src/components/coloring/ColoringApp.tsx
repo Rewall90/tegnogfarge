@@ -13,6 +13,7 @@ import type { ColoringState, DrawingMode } from '@/types/canvas-coloring'
 import { ViewportManager } from '@/core/viewport/ViewportManager'
 import { ToggleMode } from '@/core/viewport/ToggleMode'
 import type { ViewportState, ViewportMode } from '@/core/viewport/types'
+import { calculateZoom } from '@/core/viewport/ZoomUtils'
 
 interface ColoringAppProps {
   imageData: {
@@ -213,6 +214,27 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     }
   }, []);
 
+  // Helper function to get mouse coordinates relative to container center (for transform-origin: center center)
+  const getBrowserMouseCoordinates = useCallback((clientX: number, clientY: number) => {
+    const canvas = mainCanvasRef.current;
+    if (!canvas) return { mouseX: clientX, mouseY: clientY };
+
+    const container = canvas.parentElement;
+    if (!container) return { mouseX: clientX, mouseY: clientY };
+
+    // Get container bounds to convert browser coordinates to container-relative coordinates
+    const containerRect = container.getBoundingClientRect();
+
+    // Since transform-origin is 'center center', we need coordinates relative to the center
+    const centerX = containerRect.left + containerRect.width / 2;
+    const centerY = containerRect.top + containerRect.height / 2;
+    
+    const mouseX = clientX - centerX;
+    const mouseY = clientY - centerY;
+    
+    return { mouseX, mouseY };
+  }, []);
+
   // Mouse wheel zoom handler
   const handleWheel = useCallback((e: WheelEvent) => {
     if (currentMode !== 'zoom') return;
@@ -225,26 +247,22 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const canvas = mainCanvasRef.current;
     if (!canvas) return;
 
-    // Get mouse position relative to canvas
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+    // Get mouse coordinates using helper function
+    const { mouseX, mouseY } = getBrowserMouseCoordinates(e.clientX, e.clientY);
 
     // Calculate zoom factor (negative deltaY = zoom in)
     const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
     const currentState = viewportManager.getState();
-    const newScale = Math.max(0.25, Math.min(4.0, currentState.scale * zoomFactor));
-
-    // Calculate new pan to keep mouse position fixed
-    const scaleChange = newScale / currentState.scale;
-    const newPanX = mouseX - (mouseX - currentState.panX) * scaleChange;
-    const newPanY = mouseY - (mouseY - currentState.panY) * scaleChange;
-
-    viewportManager.setState({
-      scale: newScale,
-      panX: newPanX,
-      panY: newPanY
+    
+    // Use ZoomUtils to calculate new zoom state
+    const result = calculateZoom({
+      centerX: mouseX,
+      centerY: mouseY,
+      zoomFactor,
+      currentState
     });
+    
+    viewportManager.setState(result);
   }, [currentMode]);
 
   // Mouse pan handlers
@@ -720,8 +738,23 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         Math.pow(touch2.clientY - touch1.clientY, 2)
       );
       
-      const centerX = (touch1.clientX + touch2.clientX) / 2;
-      const centerY = (touch1.clientY + touch2.clientY) / 2;
+      // Get touch center relative to container center (for transform-origin: center center)
+      const canvas = mainCanvasRef.current;
+      if (!canvas) return;
+      
+      const container = canvas.parentElement;
+      if (!container) return;
+      
+      const containerRect = container.getBoundingClientRect();
+      const containerCenterX = containerRect.left + containerRect.width / 2;
+      const containerCenterY = containerRect.top + containerRect.height / 2;
+      
+      const touchCenterX = (touch1.clientX + touch2.clientX) / 2;
+      const touchCenterY = (touch1.clientY + touch2.clientY) / 2;
+      
+      // Coordinates relative to container center
+      const centerX = touchCenterX - containerCenterX;
+      const centerY = touchCenterY - containerCenterY;
       
       const viewportManager = viewportManagerRef.current;
       if (viewportManager) {
@@ -771,18 +804,33 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         Math.pow(touch2.clientY - touch1.clientY, 2)
       );
       
-      const centerX = (touch1.clientX + touch2.clientX) / 2;
-      const centerY = (touch1.clientY + touch2.clientY) / 2;
+      // Get touch center relative to container center (for transform-origin: center center)
+      const canvas = mainCanvasRef.current;
+      if (!canvas) return;
+      
+      const container = canvas.parentElement;
+      if (!container) return;
+      
+      const containerRect = container.getBoundingClientRect();
+      const containerCenterX = containerRect.left + containerRect.width / 2;
+      const containerCenterY = containerRect.top + containerRect.height / 2;
+      
+      const touchCenterX = (touch1.clientX + touch2.clientX) / 2;
+      const touchCenterY = (touch1.clientY + touch2.clientY) / 2;
+      
+      // Coordinates relative to container center
+      const centerX = touchCenterX - containerCenterX;
+      const centerY = touchCenterY - containerCenterY;
       
       const viewportManager = viewportManagerRef.current;
       const touchState = touchRef.current;
       
       if (viewportManager && touchState.initialDistance && touchState.lastTouchCenter) {
-        // Calculate zoom
+        // Calculate zoom with center-relative coordinates
         const scaleChange = distance / touchState.initialDistance;
         const newScale = Math.max(0.25, Math.min(4.0, touchState.initialScale! * scaleChange));
         
-        // Calculate pan (both from zoom and finger movement)
+        // Calculate pan using center-relative coordinates  
         const panDeltaX = centerX - touchState.lastTouchCenter.x;
         const panDeltaY = centerY - touchState.lastTouchCenter.y;
         
