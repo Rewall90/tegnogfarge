@@ -107,26 +107,25 @@ export class ViewportManager {
     const scaledWidth = VIEWPORT_CONFIG.CANVAS_WIDTH * clampedScale;
     const scaledHeight = VIEWPORT_CONFIG.CANVAS_HEIGHT * clampedScale;
     
-    let minOffsetX = this.containerSize.width - scaledWidth;
-    let maxOffsetX = 0;
-    let minOffsetY = this.containerSize.height - scaledHeight;
-    let maxOffsetY = 0;
-    
-    // Center canvas if smaller than container
-    if (scaledWidth < this.containerSize.width) {
+    // Only apply boundaries when canvas fits in container (zoomed out)
+    if (scaledWidth <= this.containerSize.width && scaledHeight <= this.containerSize.height) {
+      // Center canvas when smaller than container
       const centerX = (this.containerSize.width - scaledWidth) / 2;
-      minOffsetX = maxOffsetX = centerX;
-    }
-    
-    if (scaledHeight < this.containerSize.height) {
       const centerY = (this.containerSize.height - scaledHeight) / 2;
-      minOffsetY = maxOffsetY = centerY;
+      
+      return {
+        scale: clampedScale,
+        panX: centerX,
+        panY: centerY,
+        mode: ['zoom', 'draw'].includes(state.mode) ? state.mode : 'draw'
+      };
     }
     
+    // When zoomed in (canvas larger than container), allow free panning
     return {
       scale: clampedScale,
-      panX: Math.max(minOffsetX, Math.min(maxOffsetX, state.panX)),
-      panY: Math.max(minOffsetY, Math.min(maxOffsetY, state.panY)),
+      panX: state.panX,
+      panY: state.panY,
       mode: ['zoom', 'draw'].includes(state.mode) ? state.mode : 'draw'
     };
   }
