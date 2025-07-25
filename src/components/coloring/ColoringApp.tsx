@@ -14,6 +14,7 @@ import { ViewportManager } from '@/core/viewport/ViewportManager'
 import { ToggleMode } from '@/core/viewport/ToggleMode'
 import type { ViewportState, ViewportMode } from '@/core/viewport/types'
 import { calculateZoom } from '@/core/viewport/ZoomUtils'
+import { InputHandler } from '@/core/viewport/InputHandler'
 import { COLORING_APP_CONFIG } from '@/config/coloringApp'
 import { getColoringImageUrl, preloadImage, validateImageDimensions } from '@/lib/imageUtils'
 
@@ -166,6 +167,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Viewport management
   const viewportManagerRef = useRef<ViewportManager | null>(null);
   const toggleModeRef = useRef<ToggleMode | null>(null);
+  const inputHandlerRef = useRef<InputHandler | null>(null);
   const [viewportState, setViewportState] = useState<ViewportState>({
     scale: 1,
     panX: 0,
@@ -183,6 +185,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (!viewportManagerRef.current) {
       viewportManagerRef.current = new ViewportManager();
       toggleModeRef.current = new ToggleMode();
+      inputHandlerRef.current = new InputHandler();
     }
 
     // Subscribe to viewport state changes
@@ -1416,6 +1419,47 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const canvas = mainCanvasRef.current;
     if (!canvas) return;
 
+    // Set up InputHandler for unified touch/pointer handling
+    const inputHandler = inputHandlerRef.current;
+    const viewportManager = viewportManagerRef.current;
+    
+    if (inputHandler && viewportManager) {
+      inputHandler.setCanvas(canvas);
+      inputHandler.setMode(currentMode);
+
+      // Set up zoom callback for two-finger pinch
+      inputHandler.onZoom((scaleFactor: number, centerX: number, centerY: number) => {
+        const currentState = viewportManager.getState();
+        const zoomResult = calculateZoom({
+          currentScale: currentState.scale,
+          currentPanX: currentState.panX,
+          currentPanY: currentState.panY,
+          scaleFactor,
+          centerX,
+          centerY,
+          canvasWidth: canvas.width,
+          canvasHeight: canvas.height,
+          containerWidth: canvas.offsetWidth,
+          containerHeight: canvas.offsetHeight
+        });
+        
+        viewportManager.setState({
+          scale: zoomResult.newScale,
+          panX: zoomResult.newPanX,
+          panY: zoomResult.newPanY
+        });
+      });
+
+      // Set up pan callback for single-finger pan in zoom mode
+      inputHandler.onPan((deltaX: number, deltaY: number) => {
+        const currentState = viewportManager.getState();
+        viewportManager.setState({
+          panX: currentState.panX + deltaX,
+          panY: currentState.panY + deltaY
+        });
+      });
+    }
+
     // Add wheel event listener for zoom
     canvas.addEventListener('wheel', handleWheel, { passive: false });
 
@@ -1432,8 +1476,13 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       canvas.removeEventListener('touchmove', handleTouchMove);
       canvas.removeEventListener('touchend', handleTouchEnd);
       canvas.removeEventListener('touchcancel', handleTouchEnd);
+      
+      // Cleanup InputHandler
+      if (inputHandler) {
+        inputHandler.cleanup();
+      }
     };
-  }, [handleWheel, handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [handleWheel, handleTouchStart, handleTouchMove, handleTouchEnd, currentMode]);
 
   return (
     <div className="h-screen overflow-hidden bg-gray-100 flex flex-col" ref={appContainerRef}>
