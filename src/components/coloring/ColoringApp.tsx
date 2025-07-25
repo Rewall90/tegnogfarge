@@ -63,13 +63,38 @@ function isBlackPixel(imageData: ImageData, x: number, y: number, threshold = 80
 }
 
 function isAnyBlackInBrush(imageData: ImageData, cx: number, cy: number, radius: number, threshold = 80) {
+  console.log('🔍 Checking black pixels in brush area:', { cx, cy, radius, threshold });
+  
+  let blackPixelsFound = [];
+  let totalPixelsChecked = 0;
+  
   // Sjekk et rutenett av punkter i penselens sirkel
   for (let dx = -radius; dx <= radius; dx++) {
     for (let dy = -radius; dy <= radius; dy++) {
       if (dx * dx + dy * dy > radius * radius) continue;
-      if (isBlackPixel(imageData, cx + dx, cy + dy, threshold)) return true;
+      
+      const x = cx + dx;
+      const y = cy + dy;
+      totalPixelsChecked++;
+      
+      if (isBlackPixel(imageData, x, y, threshold)) {
+        // Get the actual pixel color for debugging
+        const idx = (y * imageData.width + x) * 4;
+        const r = imageData.data[idx];
+        const g = imageData.data[idx + 1];
+        const b = imageData.data[idx + 2];
+        
+        blackPixelsFound.push({ x, y, r, g, b });
+        
+        // Return true immediately when first black pixel is found
+        console.log(`❌ Black pixel found at (${x}, ${y}): RGB(${r}, ${g}, ${b}) - threshold: ${threshold}`);
+        console.log(`📊 Checked ${totalPixelsChecked} pixels, found black pixels:`, blackPixelsFound.slice(0, 5)); // Show first 5
+        return true;
+      }
     }
   }
+  
+  console.log(`✅ No black pixels found in brush area. Checked ${totalPixelsChecked} pixels.`);
   return false;
 }
 
@@ -105,6 +130,7 @@ function getCanvasCoordinates(clientX: number, clientY: number, canvas: HTMLCanv
 }
 
 export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
+  console.log('🎨 ColoringApp component loaded/rendered');
   const router = useRouter()
   
   
@@ -283,15 +309,18 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   const lastPanPosition = useRef<{ x: number; y: number } | null>(null);
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    console.log('🖱️ handleMouseDown FUNCTION called', { currentMode, drawingMode: state.drawingMode });
     if (currentMode === 'zoom') {
+      console.log('🔍 Zoom mode - setting up panning');
       setIsPanning(true);
       lastPanPosition.current = { x: e.clientX, y: e.clientY };
       e.preventDefault();
     } else {
-      // Existing drawing logic
+      console.log('✏️ Draw mode - calling handleStartDrawing');
+      // Drawing logic (will be filtered by drawing mode inside handleStartDrawing)
       handleStartDrawing(e);
     }
-  }, [currentMode]);
+  }, [currentMode, state.drawingMode]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (currentMode === 'zoom' && isPanning && lastPanPosition.current) {
@@ -309,7 +338,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
       lastPanPosition.current = { x: e.clientX, y: e.clientY };
     } else {
-      // Existing drawing logic
+      // Drawing logic (will be filtered by drawing mode inside handleDraw)
       handleDraw(e);
     }
   }, [currentMode, isPanning]);
@@ -319,7 +348,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       setIsPanning(false);
       lastPanPosition.current = null;
     } else {
-      // Existing drawing logic
+      // Drawing logic (will be filtered by drawing mode inside handleStopDrawing)
       handleStopDrawing();
     }
   }, [currentMode]);
@@ -597,14 +626,27 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
   // Shared drawing logic for both mouse and touch
   const startDrawingAtCoordinates = useCallback((x: number, y: number) => {
-    if (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser') return;
-    if (currentMode === 'zoom') return; // Disable drawing in zoom mode
+    console.log('🖌️ startDrawingAtCoordinates called:', { x, y, drawingMode: state.drawingMode, currentMode });
+    
+    if (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser') {
+      console.log('❌ Drawing blocked: wrong mode', state.drawingMode);
+      return;
+    }
+    if (currentMode === 'zoom') {
+      console.log('❌ Drawing blocked: zoom mode');
+      return; // Disable drawing in zoom mode
+    }
     
     // Use cached context
     const ctx = contextRef.current.main;
     const canvas = mainCanvasRef.current;
     
-    if (!ctx || !canvas) return;
+    if (!ctx || !canvas) {
+      console.log('❌ Drawing blocked: no context or canvas');
+      return;
+    }
+    
+    console.log('✅ Context and canvas OK');
     
     // Opprett et nytt penselstrøk (uten snapshot ennå)
     currentStrokeRef.current = {
@@ -626,11 +668,44 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const radius = Math.max(1, Math.floor(state.brushSize / 2));
     const original = state.originalImageData;
     
-    if (original && !isAnyBlackInBrush(original, x, y, radius, 80)) {
-      ctx.beginPath();
-      ctx.arc(x, y, radius, 0, 2 * Math.PI);
-      ctx.fill();
-    }
+    console.log('🎯 Drawing params:', { radius, color: state.currentColor, brushSize: state.brushSize });
+    console.log('📷 Original image data:', { exists: !!original, width: original?.width, height: original?.height });
+    
+    // TEMPORARY TEST: Disable black pixel detection completely
+    console.log('🧪 BLACK PIXEL DETECTION DISABLED - Drawing everywhere allowed');
+    
+    console.log('✅ Drawing brush stroke at', { x, y, radius });
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.fill();
+    console.log('✅ Brush stroke drawn (black detection disabled)');
+    
+    // TEST: Verify the canvas actually has content after drawing
+    setTimeout(() => {
+      const canvas = mainCanvasRef.current;
+      if (canvas) {
+        const testCtx = canvas.getContext('2d');
+        if (testCtx) {
+          const imageData = testCtx.getImageData(0, 0, canvas.width, canvas.height);
+          let hasNonTransparentPixels = false;
+          for (let i = 3; i < imageData.data.length; i += 4) {
+            if (imageData.data[i] > 0) { // Check alpha channel
+              hasNonTransparentPixels = true;
+              break;
+            }
+          }
+          console.log('🔍 Canvas content check:', { 
+            hasContent: hasNonTransparentPixels,
+            canvasSize: { width: canvas.width, height: canvas.height },
+            canvasStyle: { 
+              zIndex: window.getComputedStyle(canvas).zIndex,
+              display: window.getComputedStyle(canvas).display,
+              visibility: window.getComputedStyle(canvas).visibility
+            }
+          });
+        }
+      }
+    }, 100);
     
     // Reset canvas mode back to normal
     ctx.globalCompositeOperation = 'source-over';
@@ -641,6 +716,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       lastX: x,
       lastY: y
     }));
+    
+    console.log('🏁 startDrawingAtCoordinates completed');
   }, [state.drawingMode, state.currentColor, state.brushSize, state.originalImageData, currentMode]);
 
   const continueDrawingAtCoordinates = useCallback((x: number, y: number) => {
@@ -703,11 +780,19 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   }, [state.isDrawing, state.drawingMode, state.lastX, state.lastY, state.originalImageData, state.brushSize, state.currentColor, currentMode]);
 
   const handleStartDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    console.log('🖱️ handleStartDrawing called');
     const canvas = mainCanvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      console.log('❌ No canvas in handleStartDrawing');
+      return;
+    }
     
     const coords = getCanvasCoordinates(e.clientX, e.clientY, canvas);
-    if (!coords) return;
+    console.log('📍 Canvas coordinates:', coords);
+    if (!coords) {
+      console.log('❌ No coordinates from getCanvasCoordinates');
+      return;
+    }
     
     startDrawingAtCoordinates(coords.x, coords.y);
   };
@@ -1548,11 +1633,49 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               {/* Main canvas for user interaction */}
                               <canvas
                   ref={mainCanvasRef}
-                  onClick={currentMode === 'draw' ? handleCanvasClick : undefined}
-                  onMouseDown={handleMouseDown}
-                  onMouseMove={handleMouseMove}
-                  onMouseUp={handleMouseUp}
-                  onMouseLeave={handleMouseUp}
+                  onClick={(e) => {
+                    console.log('🖱️ CANVAS CLICK EVENT', { currentMode, drawingMode: state.drawingMode });
+                    
+                    // Test what element is at the click position
+                    const elementAtPoint = document.elementFromPoint(e.clientX, e.clientY);
+                    console.log('🎯 Element at click point:', {
+                      element: elementAtPoint,
+                      tagName: elementAtPoint?.tagName,
+                      className: elementAtPoint?.className,
+                      isCanvas: elementAtPoint === e.currentTarget
+                    });
+                    
+                    if (currentMode === 'draw' && state.drawingMode === 'fill') {
+                      handleCanvasClick(e);
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    console.log('🖱️ CANVAS MOUSE DOWN EVENT', { 
+                      currentMode, 
+                      drawingMode: state.drawingMode,
+                      button: e.button,
+                      buttons: e.buttons,
+                      target: e.target,
+                      currentTarget: e.currentTarget
+                    });
+                    e.stopPropagation(); // Prevent event bubbling
+                    handleMouseDown(e);
+                  }}
+                  onMouseMove={(e) => {
+                    // Don't log every move event, just when drawing
+                    if (state.isDrawing) {
+                      console.log('🖱️ CANVAS MOUSE MOVE (while drawing)');
+                    }
+                    handleMouseMove(e);
+                  }}
+                  onMouseUp={(e) => {
+                    console.log('🖱️ CANVAS MOUSE UP EVENT');
+                    handleMouseUp();
+                  }}
+                  onMouseLeave={(e) => {
+                    console.log('🖱️ CANVAS MOUSE LEAVE EVENT');
+                    handleMouseUp();
+                  }}
 
                   className="relative w-full h-full bg-transparent shadow-lg cursor-crosshair z-20"
                   style={{ 
@@ -1560,7 +1683,71 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                     backgroundColor: 'rgba(255, 255, 255, 0)', // transparent
                     touchAction: 'none', // Disable all default touch behaviors
                     userSelect: 'none', // Prevent text selection
-                    WebkitUserSelect: 'none' // Prevent text selection on iOS
+                    WebkitUserSelect: 'none', // Prevent text selection on iOS
+                    pointerEvents: 'all' // Ensure pointer events are enabled
+                  }}
+                  onPointerDown={(e) => {
+                    console.log('👆 POINTER DOWN event (working solution)', { 
+                      pointerId: e.pointerId, 
+                      pointerType: e.pointerType,
+                      button: e.button,
+                      currentMode,
+                      drawingMode: state.drawingMode
+                    });
+                    
+                    // Use pointer events instead of mouse events for brush drawing
+                    if (currentMode === 'zoom') {
+                      console.log('🔍 Zoom mode - setting up panning');
+                      setIsPanning(true);
+                      lastPanPosition.current = { x: e.clientX, y: e.clientY };
+                      e.preventDefault();
+                    } else {
+                      console.log('✏️ Draw mode - calling handleStartDrawing via pointer');
+                      // Convert pointer event to mouse event format
+                      const mouseEvent = {
+                        clientX: e.clientX,
+                        clientY: e.clientY,
+                        preventDefault: () => e.preventDefault(),
+                        stopPropagation: () => e.stopPropagation()
+                      } as React.MouseEvent<HTMLCanvasElement>;
+                      handleStartDrawing(mouseEvent);
+                    }
+                  }}
+                  onPointerMove={(e) => {
+                    if (currentMode === 'zoom' && isPanning && lastPanPosition.current) {
+                      const viewportManager = viewportManagerRef.current;
+                      if (!viewportManager) return;
+
+                      const deltaX = e.clientX - lastPanPosition.current.x;
+                      const deltaY = e.clientY - lastPanPosition.current.y;
+
+                      const currentState = viewportManager.getState();
+                      viewportManager.setState({
+                        panX: currentState.panX + deltaX,
+                        panY: currentState.panY + deltaY
+                      });
+
+                      lastPanPosition.current = { x: e.clientX, y: e.clientY };
+                    } else if (state.isDrawing) {
+                      console.log('👆 POINTER MOVE (while drawing)');
+                      // Convert pointer event to mouse event format
+                      const mouseEvent = {
+                        clientX: e.clientX,
+                        clientY: e.clientY,
+                        preventDefault: () => e.preventDefault(),
+                        stopPropagation: () => e.stopPropagation()
+                      } as React.MouseEvent<HTMLCanvasElement>;
+                      handleDraw(mouseEvent);
+                    }
+                  }}
+                  onPointerUp={(e) => {
+                    console.log('👆 POINTER UP event');
+                    if (currentMode === 'zoom') {
+                      setIsPanning(false);
+                      lastPanPosition.current = null;
+                    } else {
+                      handleStopDrawing();
+                    }
                   }}
                 />
               
