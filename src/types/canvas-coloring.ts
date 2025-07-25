@@ -1,4 +1,4 @@
-export type DrawingMode = 'fill' | 'brush' | 'eraser';
+export type DrawingMode = 'pencil' | 'fill' | 'eraser';
 
 export interface ColoringCanvasProps {
   drawingId: string
@@ -19,8 +19,9 @@ export interface ColoringState {
   imageData: ImageData | null
   originalImageData: ImageData | null
   currentColor: string
-  brushSize: number
-  tolerance: number
+  pencilSize: number // Size for pencil tool
+  eraserSize: number // Separate size for eraser tool
+  // REMOVED: tolerance - flood fill always uses 100%
   isDrawing: boolean
   history: ImageData[]
   historyStep: number

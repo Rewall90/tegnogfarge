@@ -1,8 +1,8 @@
-import { type DrawingMode } from '@/types/canvas-coloring';
+'use client'
 
 interface ToolModeSelectorProps {
-  drawingMode: DrawingMode;
-  onDrawingModeChange: (mode: DrawingMode) => void;
+  drawingMode: 'pencil' | 'fill' | 'eraser'; // THREE TOOLS
+  onDrawingModeChange: (mode: 'pencil' | 'fill' | 'eraser') => void;
 }
 
 export function ToolModeSelector({
@@ -10,35 +10,36 @@ export function ToolModeSelector({
   onDrawingModeChange
 }: ToolModeSelectorProps) {
   return (
-    <div className="flex justify-center gap-6">
+    <div className="flex gap-1 justify-center">
       <button
-        onClick={() => onDrawingModeChange('brush')}
-        className={`flex flex-col items-center gap-1 p-3 rounded-lg transition-all ${
-          drawingMode === 'brush' ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100'
+        onClick={() => onDrawingModeChange('pencil')}
+        className={`flex-1 py-2 px-2 rounded-lg font-medium transition-all text-sm ${
+          drawingMode === 'pencil'
+            ? 'bg-blue-600 text-white shadow-md'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
         }`}
       >
-        <span className="text-xl">✏️</span>
-        <span className="text-xs">Pensel</span>
+        ✏️ Tegn
       </button>
-      
       <button
         onClick={() => onDrawingModeChange('fill')}
-        className={`flex flex-col items-center gap-1 p-3 rounded-lg transition-all ${
-          drawingMode === 'fill' ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100'
+        className={`flex-1 py-2 px-2 rounded-lg font-medium transition-all text-sm ${
+          drawingMode === 'fill'
+            ? 'bg-green-600 text-white shadow-md'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
         }`}
       >
-        <span className="text-xl">🪣</span>
-        <span className="text-xs">Fyll</span>
+        🎨 Fyll
       </button>
-      
       <button
         onClick={() => onDrawingModeChange('eraser')}
-        className={`flex flex-col items-center gap-1 p-3 rounded-lg transition-all ${
-          drawingMode === 'eraser' ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100'
+        className={`flex-1 py-2 px-2 rounded-lg font-medium transition-all text-sm ${
+          drawingMode === 'eraser'
+            ? 'bg-red-600 text-white shadow-md'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
         }`}
       >
-        <span className="text-xl">🧽</span>
-        <span className="text-xs">Viskelær</span>
+        🧹 Visk
       </button>
     </div>
   );

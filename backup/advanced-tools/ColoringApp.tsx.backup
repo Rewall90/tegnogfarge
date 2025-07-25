@@ -66,6 +66,7 @@ function isBlackPixel(imageData: ImageData, x: number, y: number, threshold = 80
 }
 
 function isAnyBlackInBrush(imageData: ImageData, cx: number, cy: number, radius: number, threshold = 80) {
+  console.log('🔍 Checking black pixels in brush area:', { cx, cy, radius, threshold });
   
   let blackPixelsFound = [];
   let totalPixelsChecked = 0;
@@ -89,11 +90,14 @@ function isAnyBlackInBrush(imageData: ImageData, cx: number, cy: number, radius:
         blackPixelsFound.push({ x, y, r, g, b });
         
         // Return true immediately when first black pixel is found
+        console.log(`❌ Black pixel found at (${x}, ${y}): RGB(${r}, ${g}, ${b}) - threshold: ${threshold}`);
+        console.log(`📊 Checked ${totalPixelsChecked} pixels, found black pixels:`, blackPixelsFound.slice(0, 5)); // Show first 5
         return true;
       }
     }
   }
   
+  console.log(`✅ No black pixels found in brush area. Checked ${totalPixelsChecked} pixels.`);
   return false;
 }
 
@@ -129,6 +133,7 @@ function getCanvasCoordinates(clientX: number, clientY: number, canvas: HTMLCanv
 }
 
 export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
+  console.log('🎨 ColoringApp component loaded/rendered');
   const router = useRouter()
   
   
@@ -175,13 +180,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     imageData: null,
     originalImageData: null,
     currentColor: '#FF0000',
-    pencilSize: 3, // Size for pencil tool
-    eraserSize: 10, // Separate size for eraser tool
-    // REMOVED: tolerance - flood fill always uses 100%
+    brushSize: 10,
+    tolerance: COLORING_APP_CONFIG.DEFAULT_TOLERANCE,
     isDrawing: false,
     history: [],
     historyStep: -1,
-    drawingMode: 'fill', // Default to fill mode
+    drawingMode: 'fill',
     lastX: null,
     lastY: null
   })
@@ -205,10 +209,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Reference to the app container for performance testing
   const appContainerRef = useRef<HTMLDivElement>(null);
 
-  // Refs for specialized tools
+  // Add refs for specialized tools
   const pencilToolRef = useRef<PencilTool | null>(null);
   const floodFillToolRef = useRef<FloodFillTool | null>(null);
   const eraserToolRef = useRef<EraserTool | null>(null);
+  const [useNewTools, setUseNewTools] = useState(false); // Toggle for testing
+  const [newToolMode, setNewToolMode] = useState<'pencil' | 'fill' | 'eraser'>('pencil');
 
   // Initialize viewport system
   useEffect(() => {
@@ -269,21 +275,23 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
   // Sync settings for all tools
   useEffect(() => {
-    // Sync pencil tool
-    const pencilTool = pencilToolRef.current;
-    if (pencilTool) {
-      pencilTool.setColor(state.currentColor);
-      pencilTool.setSize(state.pencilSize);
+    if (useNewTools) {
+      // Sync pencil tool
+      const pencilTool = pencilToolRef.current;
+      if (pencilTool) {
+        pencilTool.setColor(state.currentColor);
+        pencilTool.setSize(state.brushSize);
+      }
+      
+      // Sync eraser tool (only size)
+      const eraserTool = eraserToolRef.current;
+      if (eraserTool) {
+        eraserTool.setSize(state.brushSize);
+      }
+      
+      // Flood fill tool doesn't need syncing (uses color directly on click)
     }
-    
-    // Sync eraser tool (only size)
-    const eraserTool = eraserToolRef.current;
-    if (eraserTool) {
-      eraserTool.setSize(state.eraserSize);
-    }
-    
-    // Flood fill tool doesn't need syncing (uses color directly on click)
-  }, [state.currentColor, state.pencilSize, state.eraserSize, state.imageData]); // Added state.imageData to trigger sync after tools are created
+  }, [state.currentColor, state.brushSize, useNewTools]);
 
   // Toggle zoom mode handler
   const handleToggleZoom = useCallback(() => {
@@ -348,34 +356,41 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   const lastPanPosition = useRef<{ x: number; y: number } | null>(null);
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    console.log('🖱️ handleMouseDown FUNCTION called', { currentMode, drawingMode: state.drawingMode });
     if (currentMode === 'zoom') {
+      console.log('🔍 Zoom mode - setting up panning');
       setIsPanning(true);
       lastPanPosition.current = { x: e.clientX, y: e.clientY };
       e.preventDefault();
     } else {
-      // Route to appropriate specialized tool
-      const pointerEvent = new PointerEvent('pointerdown', {
-        clientX: e.clientX,
-        clientY: e.clientY,
-        button: e.button,
-        buttons: e.buttons,
-        pressure: 0.5,
-        pointerId: 1,
-        pointerType: 'mouse'
-      });
+      // NEW: Route to specialized tools if enabled
+      if (useNewTools) {
+        const pointerEvent = new PointerEvent('pointerdown', {
+          clientX: e.clientX,
+          clientY: e.clientY,
+          button: e.button,
+          buttons: e.buttons,
+          pressure: 0.5,
+          pointerId: 1,
+          pointerType: 'mouse'
+        });
 
-      if (state.drawingMode === 'pencil') {
-        pencilToolRef.current?.handlePointerDown(pointerEvent);
+        if (newToolMode === 'pencil') {
+          pencilToolRef.current?.handlePointerDown(pointerEvent);
+        } else if (newToolMode === 'fill') {
+          floodFillToolRef.current?.handleClick(pointerEvent, state.currentColor);
+        } else if (newToolMode === 'eraser') {
+          eraserToolRef.current?.handlePointerDown(pointerEvent);
+        }
         e.preventDefault();
-      } else if (state.drawingMode === 'fill') {
-        floodFillToolRef.current?.handleClick(pointerEvent, state.currentColor);
-        e.preventDefault();
-      } else if (state.drawingMode === 'eraser') {
-        eraserToolRef.current?.handlePointerDown(pointerEvent);
-        e.preventDefault();
+        return;
       }
+      
+      console.log('✏️ Draw mode - calling handleStartDrawing');
+      // Drawing logic (will be filtered by drawing mode inside handleStartDrawing)
+      handleStartDrawing(e);
     }
-  }, [currentMode, state.drawingMode, state.currentColor]);
+  }, [currentMode, state.drawingMode, useNewTools, newToolMode, state.currentColor]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (currentMode === 'zoom' && isPanning && lastPanPosition.current) {
@@ -392,7 +407,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       });
 
       lastPanPosition.current = { x: e.clientX, y: e.clientY };
-    } else {
+    } else if (useNewTools) {
       const pointerEvent = new PointerEvent('pointermove', {
         clientX: e.clientX,
         clientY: e.clientY,
@@ -403,20 +418,22 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         pointerType: 'mouse'
       });
 
-      if (state.drawingMode === 'pencil') {
+      if (newToolMode === 'pencil') {
         pencilToolRef.current?.handlePointerMove(pointerEvent);
-      } else if (state.drawingMode === 'eraser') {
+      } else if (newToolMode === 'eraser') {
         eraserToolRef.current?.handlePointerMove(pointerEvent);
       }
-      // Fill tool doesn't need move events
+    } else {
+      // Drawing logic (will be filtered by drawing mode inside handleDraw)
+      handleDraw(e);
     }
-  }, [currentMode, isPanning, state.drawingMode]);
+  }, [currentMode, isPanning, useNewTools, newToolMode]);
 
   const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (currentMode === 'zoom') {
       setIsPanning(false);
       lastPanPosition.current = null;
-    } else {
+    } else if (useNewTools) {
       const pointerEvent = new PointerEvent('pointerup', {
         clientX: e.clientX,
         clientY: e.clientY,
@@ -427,14 +444,16 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         pointerType: 'mouse'
       });
 
-      if (state.drawingMode === 'pencil') {
+      if (newToolMode === 'pencil') {
         pencilToolRef.current?.handlePointerUp(pointerEvent);
-      } else if (state.drawingMode === 'eraser') {
+      } else if (newToolMode === 'eraser') {
         eraserToolRef.current?.handlePointerUp(pointerEvent);
       }
-      // Fill tool doesn't need up events
+    } else {
+      // Drawing logic (will be filtered by drawing mode inside handleStopDrawing)
+      handleStopDrawing();
     }
-  }, [currentMode, state.drawingMode]);
+  }, [currentMode, useNewTools, newToolMode]);
 
   // Initialize and cache canvas contexts
   const initializeContexts = useCallback(() => {
@@ -623,6 +642,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           historyStep: 0
         }))
         
+        console.log('Canvas setup complete');
         
         // Calculate the CSS scale and sync with ViewportManager
         setTimeout(() => {
@@ -634,6 +654,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             
             if (cssWidth > 0 && actualWidth > 0) {
               const currentScale = cssWidth / actualWidth;
+              console.log('Initial CSS scale:', currentScale);
               
               // Set minimum scale for all devices to make canvas more usable
               const minScale = 1.0; // Minimum 100% scale for all devices
@@ -664,6 +685,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       }
       
       // Log the image URL for debugging
+      console.log('[ColoringApp] Loading image from:', currentImage.webpImageUrl)
       
       try {
         // Use utility to get the proper image URL with fallbacks
@@ -671,6 +693,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           currentImage.webpImageUrl, 
           currentImage.displayImageUrl || currentImage.fallbackImageUrl
         );
+        console.log('[ColoringApp] Final URL:', finalImageUrl)
         img.src = finalImageUrl;
       } catch (urlError) {
         console.error('Invalid image URL:', urlError)
@@ -703,10 +726,234 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     setShowImageSelector(false)
   }
 
+  // Shared drawing logic for both mouse and touch
+  const startDrawingAtCoordinates = useCallback((x: number, y: number) => {
+    console.log('🖌️ startDrawingAtCoordinates called:', { x, y, drawingMode: state.drawingMode, currentMode });
+    
+    if (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser') {
+      console.log('❌ Drawing blocked: wrong mode', state.drawingMode);
+      return;
+    }
+    if (currentMode === 'zoom') {
+      console.log('❌ Drawing blocked: zoom mode');
+      return; // Disable drawing in zoom mode
+    }
+    
+    // Use cached context
+    const ctx = contextRef.current.main;
+    const canvas = mainCanvasRef.current;
+    
+    if (!ctx || !canvas) {
+      console.log('❌ Drawing blocked: no context or canvas');
+      return;
+    }
+    
+    console.log('✅ Context and canvas OK');
+    
+    // Opprett et nytt penselstrøk (uten snapshot ennå)
+    currentStrokeRef.current = {
+      canvasSnapshot: null,
+      color: state.currentColor,
+      size: state.brushSize
+    };
+    
+    // Sett opp penselstil basert på modus
+    if (state.drawingMode === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = '#000000'; // Color doesn't matter for erasing
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = state.currentColor;
+    }
+    
+    // Tegn det første punktet
+    const radius = Math.max(1, Math.floor(state.brushSize / 2));
+    const original = state.originalImageData;
+    
+    console.log('🎯 Drawing params:', { radius, color: state.currentColor, brushSize: state.brushSize });
+    console.log('📷 Original image data:', { exists: !!original, width: original?.width, height: original?.height });
+    
+    // TEMPORARY TEST: Disable black pixel detection completely
+    console.log('🧪 BLACK PIXEL DETECTION DISABLED - Drawing everywhere allowed');
+    
+    console.log('✅ Drawing brush stroke at', { x, y, radius });
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.fill();
+    console.log('✅ Brush stroke drawn (black detection disabled)');
+    
+    // TEST: Verify the canvas actually has content after drawing
+    setTimeout(() => {
+      const canvas = mainCanvasRef.current;
+      if (canvas) {
+        const testCtx = canvas.getContext('2d');
+        if (testCtx) {
+          const imageData = testCtx.getImageData(0, 0, canvas.width, canvas.height);
+          let hasNonTransparentPixels = false;
+          for (let i = 3; i < imageData.data.length; i += 4) {
+            if (imageData.data[i] > 0) { // Check alpha channel
+              hasNonTransparentPixels = true;
+              break;
+            }
+          }
+          console.log('🔍 Canvas content check:', { 
+            hasContent: hasNonTransparentPixels,
+            canvasSize: { width: canvas.width, height: canvas.height },
+            canvasStyle: { 
+              zIndex: window.getComputedStyle(canvas).zIndex,
+              display: window.getComputedStyle(canvas).display,
+              visibility: window.getComputedStyle(canvas).visibility
+            }
+          });
+        }
+      }
+    }, 100);
+    
+    // Reset canvas mode back to normal
+    ctx.globalCompositeOperation = 'source-over';
+    
+    setState(prev => ({
+      ...prev,
+      isDrawing: true,
+      lastX: x,
+      lastY: y
+    }));
+    
+    console.log('🏁 startDrawingAtCoordinates completed');
+  }, [state.drawingMode, state.currentColor, state.brushSize, state.originalImageData, currentMode]);
 
+  const continueDrawingAtCoordinates = useCallback((x: number, y: number) => {
+    if (!state.isDrawing || (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser')) return;
+    if (currentMode === 'zoom') return; // Disable drawing in zoom mode
+    
+    // Use cached context
+    const canvas = mainCanvasRef.current;
+    const ctx = contextRef.current.main;
+    
+    if (!canvas || !ctx) return;
+    
+    if (state.lastX === null || state.lastY === null) return;
+    
+    const original = state.originalImageData;
+    if (!original) return;
+    
+    // Tegn linjen direkte på canvas
+    const radius = Math.max(1, Math.floor(state.brushSize / 2));
+    
+    // Samle punkter for å tegne dem i én requestAnimationFrame
+    const pointsToDraw: Array<{px: number, py: number}> = [];
+    
+    // Samle alle punkter langs linjen
+    forEachPixelOnLine(state.lastX, state.lastY, x, y, (px, py) => {
+      if (!isAnyBlackInBrush(original, px, py, radius, 80)) {
+        pointsToDraw.push({px, py});
+      }
+    });
+    
+    // Tegn alle punkter i én animasjonsramme for bedre ytelse
+    if (pointsToDraw.length > 0) {
+      requestAnimationFrame(() => {
+        // Sett opp penselstil basert på modus
+        if (state.drawingMode === 'eraser') {
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.fillStyle = '#000000'; // Color doesn't matter for erasing
+        } else {
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.fillStyle = state.currentColor;
+        }
+        
+        // Tegn alle punkter i én batch
+        pointsToDraw.forEach(({px, py}) => {
+          ctx.beginPath();
+          ctx.arc(px, py, radius, 0, 2 * Math.PI);
+          ctx.fill();
+        });
+        
+        // Reset canvas mode back to normal
+        ctx.globalCompositeOperation = 'source-over';
+      });
+    }
+    
+    setState(prev => ({
+      ...prev,
+      lastX: x,
+      lastY: y
+    }));
+  }, [state.isDrawing, state.drawingMode, state.lastX, state.lastY, state.originalImageData, state.brushSize, state.currentColor, currentMode]);
 
+  const handleStartDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    console.log('🖱️ handleStartDrawing called');
+    const canvas = mainCanvasRef.current;
+    if (!canvas) {
+      console.log('❌ No canvas in handleStartDrawing');
+      return;
+    }
+    
+    const coords = getCanvasCoordinates(e.clientX, e.clientY, canvas);
+    console.log('📍 Canvas coordinates:', coords);
+    if (!coords) {
+      console.log('❌ No coordinates from getCanvasCoordinates');
+      return;
+    }
+    
+    startDrawingAtCoordinates(coords.x, coords.y);
+  };
 
+  const handleDraw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = mainCanvasRef.current;
+    if (!canvas) return;
+    
+    const coords = getCanvasCoordinates(e.clientX, e.clientY, canvas);
+    if (!coords) return;
+    
+    continueDrawingAtCoordinates(coords.x, coords.y);
+  };
 
+  const handleStopDrawing = () => {
+    if (!state.isDrawing) return;
+    
+    // Lagre snapshot av canvas når penselstrøket er ferdig
+    const currentStroke = currentStrokeRef.current;
+    if (currentStroke) {
+      const mainCanvas = mainCanvasRef.current;
+      if (mainCanvas) {
+        // Opprett en kopi av nåværende canvas-state
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = mainCanvas.width;
+        tempCanvas.height = mainCanvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        
+        if (tempCtx) {
+          // Kopier nåværende canvas til snapshot
+          tempCtx.drawImage(mainCanvas, 0, 0);
+          currentStroke.canvasSnapshot = tempCanvas;
+          
+          // Legg til stroke i historikken
+          setBrushStrokes(prev => [...prev, currentStroke]);
+          
+          // Tøm hovedcanvas (for å forhindre dobbeltegning)
+          const mainCtx = contextRef.current.main;
+          if (mainCtx) {
+            mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+          }
+          
+          // Redraw alle strøk
+          const newStrokes = [...brushStrokes, currentStroke];
+          redrawBrushStrokes(newStrokes);
+        }
+      }
+    }
+    
+    // Nullstill nåværende strøk
+    currentStrokeRef.current = null;
+    
+    setState(prev => ({
+      ...prev,
+      isDrawing: false,
+      lastX: null,
+      lastY: null
+    }));
+  };
 
   // Touch event handlers for mobile brush drawing
   // Touch handler for fill (single tap)
@@ -747,29 +994,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       return;
     }
     
-    // Handle pencil and eraser modes
+    // Handle brush and eraser modes
     const canvas = mainCanvasRef.current;
     if (!canvas) return;
     
     const coords = getCanvasCoordinates(touch.clientX, touch.clientY, canvas);
     if (!coords) return;
     
-    // Convert touch to pointer event for specialized tools
-    const pointerEvent = new PointerEvent('pointerdown', {
-      clientX: touch.clientX,
-      clientY: touch.clientY,
-      button: 0,
-      buttons: 1,
-      pressure: 0.5,
-      pointerId: 1,
-      pointerType: 'touch'
-    });
-
-    if (state.drawingMode === 'pencil') {
-      pencilToolRef.current?.handlePointerDown(pointerEvent);
-    } else if (state.drawingMode === 'eraser') {
-      eraserToolRef.current?.handlePointerDown(pointerEvent);
-    }
+    startDrawingAtCoordinates(coords.x, coords.y);
   }, [state.drawingMode, handleFillTouch, currentMode]);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
@@ -780,7 +1012,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Only handle single touch for drawing
     
-    if (state.drawingMode !== 'pencil' && state.drawingMode !== 'eraser') return;
+    if (!state.isDrawing || (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser')) return;
     
     const canvas = mainCanvasRef.current;
     if (!canvas) return;
@@ -793,23 +1025,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (touchMoveThrottleRef.current) return;
     
     touchMoveThrottleRef.current = requestAnimationFrame(() => {
-      // Convert touch to pointer event for specialized tools
-      const pointerEvent = new PointerEvent('pointermove', {
-        clientX: touch.clientX,
-        clientY: touch.clientY,
-        button: 0,
-        buttons: 1,
-        pressure: 0.5,
-        pointerId: 1,
-        pointerType: 'touch'
-      });
-
-      if (state.drawingMode === 'pencil') {
-        pencilToolRef.current?.handlePointerMove(pointerEvent);
-      } else if (state.drawingMode === 'eraser') {
-        eraserToolRef.current?.handlePointerMove(pointerEvent);
-      }
-      
+      continueDrawingAtCoordinates(coords.x, coords.y);
       touchMoveThrottleRef.current = null;
     });
   }, [state.isDrawing, state.drawingMode, currentMode]);
@@ -825,22 +1041,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       touchMoveThrottleRef.current = null;
     }
     
-    // Convert touch to pointer event for specialized tools
-    const pointerEvent = new PointerEvent('pointerup', {
-      clientX: 0,
-      clientY: 0,
-      button: 0,
-      buttons: 0,
-      pressure: 0,
-      pointerId: 1,
-      pointerType: 'touch'
-    });
-
-    if (state.drawingMode === 'pencil') {
-      pencilToolRef.current?.handlePointerUp(pointerEvent);
-    } else if (state.drawingMode === 'eraser') {
-      eraserToolRef.current?.handlePointerUp(pointerEvent);
-    }
+    handleStopDrawing();
   }, []);
 
   // Shared fill logic for both mouse and touch
@@ -1328,6 +1529,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         if (!viewportManager) return;
         
         const currentState = viewportManager.getState();
+        console.log('ViewportManager state:', currentState);
+        console.log('scaleFactor:', scaleFactor, 'centerX:', centerX, 'centerY:', centerY);
         
         if (!currentState || typeof currentState.scale === 'undefined') {
           console.error('ViewportManager state is invalid:', currentState);
@@ -1355,6 +1558,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           y: canvasToContainerY - containerCenterY
         };
         
+        console.log('Converted coordinates:', centerRelativeToContainerCenter);
         
         const zoomParams = {
           currentState: currentState,
@@ -1363,6 +1567,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           centerY: centerRelativeToContainerCenter.y
         };
         
+        console.log('calculateZoom params:', zoomParams);
         const zoomResult = calculateZoom(zoomParams);
         
         viewportManager.setState({
@@ -1481,20 +1686,60 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           <ToolBar
             className="hidden md:block"
-            // REMOVED: tolerance props - flood fill always uses 100%
+            tolerance={state.tolerance}
+            onToleranceChange={(t) => setState(prev => ({ ...prev, tolerance: t }))}
             canUndo={historyStep > 0}
             canRedo={historyStep < history.length - 1}
             onUndo={handleUndo}
             onRedo={handleRedo}
             onReset={handleReset}
             onDownload={handleDownload}
-            drawingMode={state.drawingMode} // Now 'pencil' | 'fill' | 'eraser'
-            onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
-            pencilSize={state.pencilSize}
-            onPencilSizeChange={(size: number) => setState(prev => ({ ...prev, pencilSize: size }))}
-            eraserSize={state.eraserSize}
-            onEraserSizeChange={(size: number) => setState(prev => ({ ...prev, eraserSize: size }))}
+            drawingMode={state.drawingMode}
+            onDrawingModeChange={(mode: DrawingMode) => setState(prev => ({ ...prev, drawingMode: mode }))}
+            brushSize={state.brushSize}
+            onBrushSizeChange={(size: number) => setState(prev => ({ ...prev, brushSize: size }))}
           />
+          
+          {/* Testing controls for new tools */}
+          <div className="flex gap-2 mb-4 p-2 bg-yellow-100 rounded">
+            <button
+              onClick={() => setUseNewTools(!useNewTools)}
+              className={`px-3 py-1 rounded ${
+                useNewTools ? 'bg-green-600 text-white' : 'bg-gray-200'
+              }`}
+            >
+              New Tools: {useNewTools ? 'ON' : 'OFF'}
+            </button>
+            
+            {useNewTools && (
+              <>
+                <button
+                  onClick={() => setNewToolMode('pencil')}
+                  className={`px-3 py-1 rounded ${
+                    newToolMode === 'pencil' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+                  }`}
+                >
+                  Pencil
+                </button>
+                <button
+                  onClick={() => setNewToolMode('fill')}
+                  className={`px-3 py-1 rounded ${
+                    newToolMode === 'fill' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+                  }`}
+                >
+                  Fill (100%)
+                </button>
+                <button
+                  onClick={() => setNewToolMode('eraser')}
+                  className={`px-3 py-1 rounded ${
+                    newToolMode === 'eraser' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+                  }`}
+                >
+                  Eraser
+                </button>
+              </>
+            )}
+          </div>
           
           {/* Canvas Section */}
           <div className="flex-1 overflow-hidden bg-gray-50 p-1 flex items-center justify-center">
@@ -1532,13 +1777,47 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                               <canvas
                   ref={mainCanvasRef}
                   onClick={(e) => {
+                    console.log('🖱️ CANVAS CLICK EVENT', { currentMode, drawingMode: state.drawingMode });
                     
                     // Test what element is at the click position
                     const elementAtPoint = document.elementFromPoint(e.clientX, e.clientY);
+                    console.log('🎯 Element at click point:', {
+                      element: elementAtPoint,
+                      tagName: elementAtPoint?.tagName,
+                      className: elementAtPoint?.className,
+                      isCanvas: elementAtPoint === e.currentTarget
+                    });
                     
                     if (currentMode === 'draw' && state.drawingMode === 'fill') {
                       handleCanvasClick(e);
                     }
+                  }}
+                  onMouseDown={(e) => {
+                    console.log('🖱️ CANVAS MOUSE DOWN EVENT', { 
+                      currentMode, 
+                      drawingMode: state.drawingMode,
+                      button: e.button,
+                      buttons: e.buttons,
+                      target: e.target,
+                      currentTarget: e.currentTarget
+                    });
+                    e.stopPropagation(); // Prevent event bubbling
+                    handleMouseDown(e);
+                  }}
+                  onMouseMove={(e) => {
+                    // Don't log every move event, just when drawing
+                    if (state.isDrawing) {
+                      console.log('🖱️ CANVAS MOUSE MOVE (while drawing)');
+                    }
+                    handleMouseMove(e);
+                  }}
+                  onMouseUp={(e) => {
+                    console.log('🖱️ CANVAS MOUSE UP EVENT');
+                    handleMouseUp();
+                  }}
+                  onMouseLeave={(e) => {
+                    console.log('🖱️ CANVAS MOUSE LEAVE EVENT');
+                    handleMouseUp();
                   }}
 
                   className="relative w-full h-full bg-transparent shadow-lg cursor-crosshair z-20"
@@ -1551,12 +1830,22 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                     pointerEvents: 'all' // Ensure pointer events are enabled
                   }}
                   onPointerDown={(e) => {
+                    console.log('👆 POINTER DOWN event (working solution)', { 
+                      pointerId: e.pointerId, 
+                      pointerType: e.pointerType,
+                      button: e.button,
+                      currentMode,
+                      drawingMode: state.drawingMode
+                    });
+                    
                     // Use pointer events instead of mouse events for brush drawing
                     if (currentMode === 'zoom') {
+                      console.log('🔍 Zoom mode - setting up panning');
                       setIsPanning(true);
-                      lastPanPosition.current = { x: e.clientX, y: e.clientY };        
+                      lastPanPosition.current = { x: e.clientX, y: e.clientY };
                       e.preventDefault();
                     } else {
+                      console.log('✏️ Draw mode - calling handleStartDrawing via pointer');
                       // Convert pointer event to mouse event format
                       const mouseEvent = {
                         clientX: e.clientX,
@@ -1564,7 +1853,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                         preventDefault: () => e.preventDefault(),
                         stopPropagation: () => e.stopPropagation()
                       } as React.MouseEvent<HTMLCanvasElement>;
-                      handleMouseDown(mouseEvent);
+                      handleStartDrawing(mouseEvent);
                     }
                   }}
                   onPointerMove={(e) => {
@@ -1581,30 +1870,26 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                         panY: currentState.panY + deltaY
                       });
 
-                      lastPanPosition.current = { x: e.clientX, y: e.clientY };        
-                    } else {
-                      // Always call mouse move - let the tools decide if they're drawing
+                      lastPanPosition.current = { x: e.clientX, y: e.clientY };
+                    } else if (state.isDrawing) {
+                      console.log('👆 POINTER MOVE (while drawing)');
+                      // Convert pointer event to mouse event format
                       const mouseEvent = {
                         clientX: e.clientX,
                         clientY: e.clientY,
                         preventDefault: () => e.preventDefault(),
                         stopPropagation: () => e.stopPropagation()
                       } as React.MouseEvent<HTMLCanvasElement>;
-                      handleMouseMove(mouseEvent);
+                      handleDraw(mouseEvent);
                     }
                   }}
                   onPointerUp={(e) => {
+                    console.log('👆 POINTER UP event');
                     if (currentMode === 'zoom') {
                       setIsPanning(false);
                       lastPanPosition.current = null;
                     } else {
-                      const mouseEvent = {
-                        clientX: e.clientX,
-                        clientY: e.clientY,
-                        preventDefault: () => e.preventDefault(),
-                        stopPropagation: () => e.stopPropagation()
-                      } as React.MouseEvent<HTMLCanvasElement>;
-                      handleMouseUp(mouseEvent);
+                      handleStopDrawing();
                     }
                   }}
                 />
@@ -1621,13 +1906,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           <div className="md:hidden space-y-3 p-4">
             <MobileToolbar
               drawingMode={state.drawingMode}
-              onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
+              onDrawingModeChange={(mode: DrawingMode) => setState(prev => ({ ...prev, drawingMode: mode }))}
               onUndo={handleUndo}
               canUndo={historyStep > 0}
-              pencilSize={state.pencilSize}
-              onPencilSizeChange={(size: number) => setState(prev => ({ ...prev, pencilSize: size }))}
-              eraserSize={state.eraserSize}
-              onEraserSizeChange={(size: number) => setState(prev => ({ ...prev, eraserSize: size }))}
             />
             <MobileColorPicker
               selectedColor={state.currentColor}
