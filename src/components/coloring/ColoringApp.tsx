@@ -14,6 +14,8 @@ import { ViewportManager } from '@/core/viewport/ViewportManager'
 import { ToggleMode } from '@/core/viewport/ToggleMode'
 import type { ViewportState, ViewportMode } from '@/core/viewport/types'
 import { calculateZoom } from '@/core/viewport/ZoomUtils'
+import { COLORING_APP_CONFIG } from '@/config/coloringApp'
+import { getColoringImageUrl, preloadImage, validateImageDimensions } from '@/lib/imageUtils'
 
 interface ColoringAppProps {
   imageData: {
@@ -38,7 +40,7 @@ interface BrushStroke {
   size: number;
 }
 
-const MAX_HISTORY = 5
+const MAX_HISTORY = COLORING_APP_CONFIG.MAX_HISTORY_STEPS
 
 // Interface for canvas contexts cache
 interface CanvasContexts {
@@ -104,6 +106,7 @@ function getCanvasCoordinates(clientX: number, clientY: number, canvas: HTMLCanv
 export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
   const router = useRouter()
   
+  
   // Create our layered canvas references
   const backgroundCanvasRef = useRef<HTMLCanvasElement>(null)
   const mainCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -148,7 +151,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     originalImageData: null,
     currentColor: '#FF0000',
     brushSize: 10,
-    tolerance: 32,
+    tolerance: COLORING_APP_CONFIG.DEFAULT_TOLERANCE,
     isDrawing: false,
     history: [],
     historyStep: -1,
@@ -410,8 +413,17 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   useEffect(() => {
     const loadImage = async () => {
       const img = new Image()
+      // Set crossOrigin before setting src to ensure proper CORS handling
       img.crossOrigin = 'anonymous'
+      
       img.onload = () => {
+        // Validate image dimensions
+        if (!validateImageDimensions(img)) {
+          setError('Bildet har ugyldige dimensjoner for fargelegging')
+          setIsLoading(false)
+          return
+        }
+        
         const background = backgroundCanvasRef.current
         const canvas = mainCanvasRef.current
         const fillCanvas = fillCanvasRef.current
@@ -490,13 +502,64 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         }))
         
         console.log('Canvas setup complete');
+        
+        // Calculate the CSS scale and sync with ViewportManager
+        setTimeout(() => {
+          const canvas = mainCanvasRef.current;
+          if (canvas && viewportManagerRef.current) {
+            // Get the actual displayed size (CSS size)
+            const cssWidth = canvas.offsetWidth;
+            const actualWidth = canvas.width; // Original canvas width (2550 or img.width)
+            
+            if (cssWidth > 0 && actualWidth > 0) {
+              const currentScale = cssWidth / actualWidth;
+              console.log('Initial CSS scale:', currentScale);
+              
+              // Set minimum scale for all devices to make canvas more usable
+              const minScale = 1.0; // Minimum 100% scale for all devices
+              const finalScale = Math.max(currentScale, minScale);
+              
+              // Update viewport manager with the CSS-calculated scale
+              viewportManagerRef.current.setState({ 
+                scale: finalScale,
+                panX: 0,
+                panY: 0
+              });
+            }
+          }
+          setIsLoading(false);
+        }, 100); // Small delay to ensure CSS has applied
       }
       img.onerror = (e) => {
         console.error('Error loading image:', e)
-        setError('Kunne ikke laste bilde')
+        console.error('Image URL:', currentImage.webpImageUrl)
+        
+        // More specific error messages
+        if (currentImage.webpImageUrl.includes('cdn.sanity.io')) {
+          setError('Kunne ikke laste bilde fra Sanity CDN. CORS-feil kan være årsaken.')
+        } else {
+          setError('Kunne ikke laste bilde. Sjekk at bildet eksisterer.')
+        }
         setIsLoading(false)
       }
-      img.src = currentImage.webpImageUrl;
+      
+      // Log the image URL for debugging
+      console.log('[ColoringApp] Loading image from:', currentImage.webpImageUrl)
+      
+      try {
+        // Use utility to get the proper image URL with fallbacks
+        const finalImageUrl = getColoringImageUrl(
+          currentImage.webpImageUrl, 
+          currentImage.displayImageUrl || currentImage.fallbackImageUrl
+        );
+        console.log('[ColoringApp] Final URL:', finalImageUrl)
+        img.src = finalImageUrl;
+      } catch (urlError) {
+        console.error('Invalid image URL:', urlError)
+        setError('Ugyldig bilde-URL eller ingen tilgjengelige bilder')
+        setIsLoading(false)
+        return
+      }
     }
     
     setIsLoading(true);
@@ -1452,8 +1515,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           {/* Canvas Section */}
           <div className="flex-1 overflow-hidden bg-gray-50 p-1 flex items-center justify-center">
             <div 
-              className="relative flex items-center justify-center"
+              className="relative max-w-full max-h-full"
               style={{
+                aspectRatio: '2550 / 3300',
                 transform: `translate(${viewportState.panX}px, ${viewportState.panY}px) scale(${viewportState.scale})`,
                 transformOrigin: 'center center',
                 willChange: 'transform'
@@ -1462,7 +1526,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               {/* Background canvas (contour lines) */}
                               <canvas 
                   ref={backgroundCanvasRef} 
-                  className="absolute top-0 left-0 max-w-full max-h-full z-0"
+                  className="absolute top-0 left-0 w-full h-full z-0"
                   style={{ 
                     imageRendering: 'pixelated',
                     backgroundColor: 'rgba(255, 255, 255, 1)' // white background
@@ -1472,7 +1536,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               {/* Fill canvas (colored areas only) */}
                               <canvas
                   ref={fillCanvasRef}
-                  className="absolute top-0 left-0 max-w-full max-h-full z-10"
+                  className="absolute top-0 left-0 w-full h-full z-10"
                   style={{ 
                     imageRendering: 'pixelated',
                     pointerEvents: 'none', // Make sure it doesn't block clicks
@@ -1489,7 +1553,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                   onMouseUp={handleMouseUp}
                   onMouseLeave={handleMouseUp}
 
-                  className="relative max-w-full max-h-full bg-transparent shadow-lg cursor-crosshair z-20"
+                  className="relative w-full h-full bg-transparent shadow-lg cursor-crosshair z-20"
                   style={{ 
                     imageRendering: 'pixelated',
                     backgroundColor: 'rgba(255, 255, 255, 0)', // transparent

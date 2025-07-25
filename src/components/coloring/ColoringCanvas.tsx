@@ -6,13 +6,15 @@ import ColorPalette from './ColorPalette'
 import ToolBar from './ToolBar'
 import type { ColoringCanvasProps, ColoringState, DrawingMode } from '@/types/canvas-coloring'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
+import { COLORING_APP_CONFIG } from '@/config/coloringApp'
+import { getColoringImageUrl, preloadImage, validateImageDimensions } from '@/lib/imageUtils'
 
 type HistoryStep = {
   changes: PixelChange[];
   region: FillRegion;
 };
 
-const MAX_HISTORY = 5
+const MAX_HISTORY = COLORING_APP_CONFIG.MAX_HISTORY_STEPS
 
 export default function ColoringCanvas({
   drawingId,
@@ -52,7 +54,7 @@ export default function ColoringCanvas({
     originalImageData: null,
     currentColor: '#FF0000',
     brushSize: 10,
-    tolerance: 32,
+    tolerance: COLORING_APP_CONFIG.DEFAULT_TOLERANCE,
     isDrawing: false,
     history: [],
     historyStep: -1,
@@ -128,9 +130,19 @@ export default function ColoringCanvas({
         setIsLoading(true)
         const img = new window.Image()
         imageRef.current = img // Hold på referansen
+        // Set crossOrigin before setting src to ensure proper CORS handling
         img.crossOrigin = 'anonymous'
+        
+        // Add error handling for CORS issues
         img.onload = () => {
           if (!isMounted) return
+          
+          // Validate image dimensions
+          if (!validateImageDimensions(img)) {
+            setError('Bildet har ugyldige dimensjoner for fargelegging')
+            setIsLoading(false)
+            return
+          }
           
           // Initialize all canvases
           const background = backgroundCanvasRef.current
@@ -214,10 +226,30 @@ export default function ColoringCanvas({
         img.onerror = (e) => {
           console.error('[ColoringCanvas] img.onerror', e)
           if (!isMounted) return
-          setError('Kunne ikke laste bilde')
+          
+          // Try to provide more specific error messages
+          if (imageUrl.includes('cdn.sanity.io')) {
+            setError('Kunne ikke laste bilde fra Sanity CDN. Sjekk CORS-innstillinger.')
+          } else {
+            setError('Kunne ikke laste bilde. Sjekk at URL er gyldig.')
+          }
           setIsLoading(false)
         }
-        img.src = imageUrl
+        
+        // Log the image URL for debugging
+        console.log('[ColoringCanvas] Loading image from:', imageUrl)
+        
+        try {
+          // Use utility to get the proper image URL
+          const finalImageUrl = getColoringImageUrl(imageUrl);
+          console.log('[ColoringCanvas] Final URL:', finalImageUrl)
+          img.src = finalImageUrl;
+        } catch (urlError) {
+          console.error('Invalid image URL:', urlError)
+          setError('Ugyldig bilde-URL')
+          setIsLoading(false)
+          return
+        }
       } catch (err) {
         console.error('[ColoringCanvas] Exception ved lasting av bilde', err)
         setError('En feil oppstod ved lasting av bildet')

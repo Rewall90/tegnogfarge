@@ -363,6 +363,8 @@ export async function getColoringImageWebP(id: string) {
       _id,
       title,
       "webpImageUrl": coalesce(webpImage.asset->url, mainImage.asset->url),
+      "displayImageUrl": displayImage.asset->url,
+      "fallbackImageUrl": mainImage.asset->url,
       suggestedColors,
       "category": subcategory->parentCategory->{ 
         title, 
