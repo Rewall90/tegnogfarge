@@ -186,6 +186,13 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       viewportManagerRef.current = new ViewportManager();
       toggleModeRef.current = new ToggleMode();
       inputHandlerRef.current = new InputHandler();
+      
+      // Ensure ViewportManager has valid state
+      const state = viewportManagerRef.current.getState();
+      if (!state || typeof state.scale === 'undefined') {
+        console.warn('ViewportManager state invalid, resetting to default');
+        viewportManagerRef.current.reset();
+      }
     }
 
     // Subscribe to viewport state changes
@@ -782,62 +789,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     performFillAtCoordinates(x, y);
   }, [state.drawingMode, state.currentColor, currentMode]);
 
-  // Touch gesture state for zoom/pan
-  const touchRef = useRef<{
-    initialDistance?: number;
-    initialScale?: number;
-    initialPanX?: number;
-    initialPanY?: number;
-    lastTouchCenter?: { x: number; y: number };
-  }>({});
+  // Touch gesture state no longer needed - InputHandler handles all multi-touch gestures
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     e.preventDefault(); // Prevent scrolling and zooming
     
-    if (currentMode === 'zoom' && e.touches.length === 2) {
-      // Two-finger zoom gesture
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      
-      const distance = Math.sqrt(
-        Math.pow(touch2.clientX - touch1.clientX, 2) + 
-        Math.pow(touch2.clientY - touch1.clientY, 2)
-      );
-      
-      // Get touch center relative to container center (for transform-origin: center center)
-      const canvas = mainCanvasRef.current;
-      if (!canvas) return;
-      
-      const container = canvas.parentElement;
-      if (!container) return;
-      
-      const containerRect = container.getBoundingClientRect();
-      const containerCenterX = containerRect.left + containerRect.width / 2;
-      const containerCenterY = containerRect.top + containerRect.height / 2;
-      
-      const touchCenterX = (touch1.clientX + touch2.clientX) / 2;
-      const touchCenterY = (touch1.clientY + touch2.clientY) / 2;
-      
-      // Coordinates relative to container center
-      const centerX = touchCenterX - containerCenterX;
-      const centerY = touchCenterY - containerCenterY;
-      
-      const viewportManager = viewportManagerRef.current;
-      if (viewportManager) {
-        const currentState = viewportManager.getState();
-        touchRef.current = {
-          initialDistance: distance,
-          initialScale: currentState.scale,
-          initialPanX: currentState.panX,
-          initialPanY: currentState.panY,
-          lastTouchCenter: { x: centerX, y: centerY }
-        };
-      }
-      return;
-    }
+    // Skip multi-touch - let InputHandler handle all zoom gestures
+    if (e.touches.length > 1) return;
     
     // Only handle single touch for drawing
-    if (e.touches.length > 1) return;
     
     const touch = e.touches[0];
     
@@ -860,57 +820,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   const handleTouchMove = useCallback((e: TouchEvent) => {
     e.preventDefault(); // Critical: prevent page scroll
     
-    if (currentMode === 'zoom' && e.touches.length === 2) {
-      // Two-finger zoom and pan gesture
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      
-      const distance = Math.sqrt(
-        Math.pow(touch2.clientX - touch1.clientX, 2) + 
-        Math.pow(touch2.clientY - touch1.clientY, 2)
-      );
-      
-      // Get touch center relative to container center (for transform-origin: center center)
-      const canvas = mainCanvasRef.current;
-      if (!canvas) return;
-      
-      const container = canvas.parentElement;
-      if (!container) return;
-      
-      const containerRect = container.getBoundingClientRect();
-      const containerCenterX = containerRect.left + containerRect.width / 2;
-      const containerCenterY = containerRect.top + containerRect.height / 2;
-      
-      const touchCenterX = (touch1.clientX + touch2.clientX) / 2;
-      const touchCenterY = (touch1.clientY + touch2.clientY) / 2;
-      
-      // Coordinates relative to container center
-      const centerX = touchCenterX - containerCenterX;
-      const centerY = touchCenterY - containerCenterY;
-      
-      const viewportManager = viewportManagerRef.current;
-      const touchState = touchRef.current;
-      
-      if (viewportManager && touchState.initialDistance && touchState.lastTouchCenter) {
-        // Calculate zoom with center-relative coordinates
-        const scaleChange = distance / touchState.initialDistance;
-        const newScale = Math.max(0.25, Math.min(4.0, touchState.initialScale! * scaleChange));
-        
-        // Calculate pan using center-relative coordinates  
-        const panDeltaX = centerX - touchState.lastTouchCenter.x;
-        const panDeltaY = centerY - touchState.lastTouchCenter.y;
-        
-        viewportManager.setState({
-          scale: newScale,
-          panX: touchState.initialPanX! + panDeltaX,
-          panY: touchState.initialPanY! + panDeltaY
-        });
-      }
-      return;
-    }
+    // Skip multi-touch - let InputHandler handle all zoom gestures
+    if (e.touches.length > 1) return;
     
     // Only handle single touch for drawing
-    if (e.touches.length > 1) return;
     
     if (!state.isDrawing || (state.drawingMode !== 'brush' && state.drawingMode !== 'eraser')) return;
     
@@ -933,10 +846,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   const handleTouchEnd = useCallback((e: TouchEvent) => {
     e.preventDefault();
     
-    // Clean up touch gesture state if no more touches
-    if (e.touches.length === 0) {
-      touchRef.current = {};
-    }
+    // Touch gesture state cleanup no longer needed - InputHandler handles it
     
     // Clean up throttled operations
     if (touchMoveThrottleRef.current) {
@@ -1429,30 +1339,64 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
       // Set up zoom callback for two-finger pinch
       inputHandler.onZoom((scaleFactor: number, centerX: number, centerY: number) => {
+        if (!viewportManager) return;
+        
         const currentState = viewportManager.getState();
-        const zoomResult = calculateZoom({
-          currentScale: currentState.scale,
-          currentPanX: currentState.panX,
-          currentPanY: currentState.panY,
-          scaleFactor,
-          centerX,
-          centerY,
-          canvasWidth: canvas.width,
-          canvasHeight: canvas.height,
-          containerWidth: canvas.offsetWidth,
-          containerHeight: canvas.offsetHeight
-        });
+        console.log('ViewportManager state:', currentState);
+        console.log('scaleFactor:', scaleFactor, 'centerX:', centerX, 'centerY:', centerY);
+        
+        if (!currentState || typeof currentState.scale === 'undefined') {
+          console.error('ViewportManager state is invalid:', currentState);
+          return;
+        }
+        
+        // Convert InputHandler's canvas-relative coordinates to container-center-relative coordinates
+        const container = canvas.parentElement;
+        if (!container) return;
+        
+        const containerRect = container.getBoundingClientRect();
+        const canvasRect = canvas.getBoundingClientRect();
+        
+        // InputHandler provides coordinates relative to canvas top-left
+        // We need coordinates relative to container center
+        const containerCenterX = containerRect.width / 2;
+        const containerCenterY = containerRect.height / 2;
+        
+        // Convert canvas-relative to container-relative, then to container-center-relative
+        const canvasToContainerX = centerX + (canvasRect.left - containerRect.left);
+        const canvasToContainerY = centerY + (canvasRect.top - containerRect.top);
+        
+        const centerRelativeToContainerCenter = {
+          x: canvasToContainerX - containerCenterX,
+          y: canvasToContainerY - containerCenterY
+        };
+        
+        console.log('Converted coordinates:', centerRelativeToContainerCenter);
+        
+        const zoomParams = {
+          currentState: currentState,
+          zoomFactor: scaleFactor,
+          centerX: centerRelativeToContainerCenter.x,
+          centerY: centerRelativeToContainerCenter.y
+        };
+        
+        console.log('calculateZoom params:', zoomParams);
+        const zoomResult = calculateZoom(zoomParams);
         
         viewportManager.setState({
-          scale: zoomResult.newScale,
-          panX: zoomResult.newPanX,
-          panY: zoomResult.newPanY
+          scale: zoomResult.scale,
+          panX: zoomResult.panX,
+          panY: zoomResult.panY
         });
       });
 
       // Set up pan callback for single-finger pan in zoom mode
       inputHandler.onPan((deltaX: number, deltaY: number) => {
+        if (!viewportManager) return;
+        
         const currentState = viewportManager.getState();
+        if (!currentState) return;
+        
         viewportManager.setState({
           panX: currentState.panX + deltaX,
           panY: currentState.panY + deltaY
@@ -1483,6 +1427,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       }
     };
   }, [handleWheel, handleTouchStart, handleTouchMove, handleTouchEnd, currentMode]);
+
+  // Update InputHandler mode when currentMode changes
+  useEffect(() => {
+    const inputHandler = inputHandlerRef.current;
+    if (inputHandler && inputHandler.isReady()) {
+      inputHandler.setMode(currentMode);
+    }
+  }, [currentMode]);
 
   return (
     <div className="h-screen overflow-hidden bg-gray-100 flex flex-col" ref={appContainerRef}>
