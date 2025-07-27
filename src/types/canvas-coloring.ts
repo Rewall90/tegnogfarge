@@ -28,6 +28,8 @@ export interface ColoringState {
   drawingMode: DrawingMode
   lastX: number | null
   lastY: number | null
+  prevX: number | null
+  prevY: number | null
 }
 
 export interface Point {

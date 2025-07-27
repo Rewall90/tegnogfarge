@@ -19,7 +19,6 @@ import { COLORING_APP_CONFIG } from '@/config/coloringApp'
 import { getColoringImageUrl, preloadImage, validateImageDimensions } from '@/lib/imageUtils'
 import { PencilTool } from './PencilTool'
 import { FloodFillTool } from './FloodFillTool'
-import { EraserTool } from './EraserTool'
 
 interface ColoringAppProps {
   imageData: {
@@ -183,11 +182,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     historyStep: -1,
     drawingMode: 'fill', // Default to fill mode
     lastX: null,
-    lastY: null
+    lastY: null,
+    prevX: null,    // Add this
+    prevY: null     // Add this
   })
   const [history, setHistory] = useState<HistoryStep[]>([]);
   const [historyStep, setHistoryStep] = useState(-1);
   const [activeThemeId, setActiveThemeId] = useState(DEFAULT_THEME_ID);
+  const [backgroundType, setBackgroundType] = useState<string>("default-bg-color");
 
   // Viewport management
   const viewportManagerRef = useRef<ViewportManager | null>(null);
@@ -208,7 +210,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Refs for specialized tools
   const pencilToolRef = useRef<PencilTool | null>(null);
   const floodFillToolRef = useRef<FloodFillTool | null>(null);
-  const eraserToolRef = useRef<EraserTool | null>(null);
 
   // Initialize viewport system
   useEffect(() => {
@@ -261,9 +262,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (!floodFillToolRef.current) {
         floodFillToolRef.current = new FloodFillTool(mainCanvas);
       }
-      if (!eraserToolRef.current) {
-        eraserToolRef.current = new EraserTool(mainCanvas);
-      }
     }
   }, [state.imageData]); // Initialize after canvas is ready
 
@@ -276,11 +274,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       pencilTool.setSize(state.pencilSize);
     }
     
-    // Sync eraser tool (only size)
-    const eraserTool = eraserToolRef.current;
-    if (eraserTool) {
-      eraserTool.setSize(state.eraserSize);
-    }
     
     // Flood fill tool doesn't need syncing (uses color directly on click)
   }, [state.currentColor, state.pencilSize, state.eraserSize, state.imageData]); // Added state.imageData to trigger sync after tools are created
@@ -343,6 +336,59 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     viewportManager.setState(result);
   }, [currentMode]);
 
+  // Smart eraser - works on both main canvas and fill layer
+  const smartEraser = useCallback((
+    x: number, 
+    y: number, 
+    prevX: number, 
+    prevY: number, 
+    brushSize: number, 
+    mainCtx: CanvasRenderingContext2D,
+    fillCtx: CanvasRenderingContext2D | null,
+    backgroundType: string,
+    isDrawing: boolean
+  ) => {
+    console.log('smartEraser called:', { 
+      x, y, prevX, prevY, brushSize, isDrawing,
+      mainCtx: !!mainCtx,
+      fillCtx: !!fillCtx
+    });
+    
+    if (!isDrawing) {
+      console.log('Not drawing, returning');
+      return;
+    }
+    
+    if (!mainCtx) {
+      console.error('Main context is null!');
+      return;
+    }
+    
+    // Erase from both main canvas and fill canvas
+    const contexts = [mainCtx];
+    if (fillCtx) contexts.push(fillCtx);
+    
+    console.log('Erasing from', contexts.length, 'contexts');
+    
+    contexts.forEach((ctx, index) => {
+      console.log(`Erasing from context ${index}`);
+      
+      // Always use destination-out for erasing - creates transparency
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.strokeStyle = "rgba(0,0,0,1)";
+      
+      ctx.beginPath();
+      ctx.lineWidth = brushSize;
+      ctx.lineCap = "round";
+      ctx.moveTo(prevX, prevY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      
+      // Reset to default
+      ctx.globalCompositeOperation = "source-over";
+    });
+  }, []);
+
   // Mouse pan handlers
   const [isPanning, setIsPanning] = useState(false);
   const lastPanPosition = useRef<{ x: number; y: number } | null>(null);
@@ -371,11 +417,17 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         floodFillToolRef.current?.handleClick(pointerEvent, state.currentColor);
         e.preventDefault();
       } else if (state.drawingMode === 'eraser') {
-        eraserToolRef.current?.handlePointerDown(pointerEvent);
+        const coords = getCanvasCoordinates(e.clientX, e.clientY, mainCanvasRef.current!);
+        setState(prev => ({ 
+          ...prev, 
+          isDrawing: true, 
+          prevX: coords.x, 
+          prevY: coords.y 
+        }));
         e.preventDefault();
       }
     }
-  }, [currentMode, state.drawingMode, state.currentColor]);
+  }, [currentMode, state.drawingMode, state.currentColor, state]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (currentMode === 'zoom' && isPanning && lastPanPosition.current) {
@@ -406,11 +458,39 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (state.drawingMode === 'pencil') {
         pencilToolRef.current?.handlePointerMove(pointerEvent);
       } else if (state.drawingMode === 'eraser') {
-        eraserToolRef.current?.handlePointerMove(pointerEvent);
+        console.log('Eraser mode in mouse move', {
+          isDrawing: state.isDrawing,
+          prevX: state.prevX,
+          prevY: state.prevY,
+          hasMainCtx: !!contextRef.current.main,
+          hasFillCtx: !!contextRef.current.fill
+        });
+        
+        if (state.isDrawing && state.prevX !== null && state.prevY !== null) {
+          const coords = getCanvasCoordinates(e.clientX, e.clientY, mainCanvasRef.current!);
+          console.log('Calling smartEraser with coords:', coords);
+          
+          smartEraser(
+            coords.x, 
+            coords.y, 
+            state.prevX, 
+            state.prevY, 
+            state.eraserSize, 
+            contextRef.current.main!,
+            contextRef.current.fill,
+            backgroundType,
+            state.isDrawing
+          );
+          setState(prev => ({ 
+            ...prev, 
+            prevX: coords.x, 
+            prevY: coords.y 
+          }));
+        }
       }
       // Fill tool doesn't need move events
     }
-  }, [currentMode, isPanning, state.drawingMode]);
+  }, [currentMode, isPanning, state.drawingMode, state.prevX, state.prevY, state.eraserSize, backgroundType, smartEraser]);
 
   const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (currentMode === 'zoom') {
@@ -430,7 +510,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (state.drawingMode === 'pencil') {
         pencilToolRef.current?.handlePointerUp(pointerEvent);
       } else if (state.drawingMode === 'eraser') {
-        eraserToolRef.current?.handlePointerUp(pointerEvent);
+        setState(prev => ({ 
+          ...prev, 
+          isDrawing: false, 
+          prevX: null, 
+          prevY: null 
+        }));
       }
       // Fill tool doesn't need up events
     }
@@ -587,6 +672,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         // Draw the image on the background canvas
         bgCtx.clearRect(0, 0, background.width, background.height);
         bgCtx.drawImage(img, 0, 0);
+        
+        // Set background type for eraser functionality
+        setBackgroundType("default-bg-img");
         
         // Verify image was drawn correctly
         try {
@@ -768,7 +856,13 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (state.drawingMode === 'pencil') {
       pencilToolRef.current?.handlePointerDown(pointerEvent);
     } else if (state.drawingMode === 'eraser') {
-      eraserToolRef.current?.handlePointerDown(pointerEvent);
+      const coords = getCanvasCoordinates(touch.clientX, touch.clientY, canvas);
+      setState(prev => ({ 
+        ...prev, 
+        isDrawing: true, 
+        prevX: coords.x, 
+        prevY: coords.y 
+      }));
     }
   }, [state.drawingMode, handleFillTouch, currentMode]);
 
@@ -807,7 +901,25 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (state.drawingMode === 'pencil') {
         pencilToolRef.current?.handlePointerMove(pointerEvent);
       } else if (state.drawingMode === 'eraser') {
-        eraserToolRef.current?.handlePointerMove(pointerEvent);
+        if (state.prevX !== null && state.prevY !== null) {
+          const coords = getCanvasCoordinates(touch.clientX, touch.clientY, canvas);
+          smartEraser(
+            coords.x, 
+            coords.y, 
+            state.prevX, 
+            state.prevY, 
+            state.eraserSize, 
+            contextRef.current.main!,
+            contextRef.current.fill,
+            backgroundType,
+            state.isDrawing
+          );
+          setState(prev => ({ 
+            ...prev, 
+            prevX: coords.x, 
+            prevY: coords.y 
+          }));
+        }
       }
       
       touchMoveThrottleRef.current = null;
@@ -839,7 +951,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (state.drawingMode === 'pencil') {
       pencilToolRef.current?.handlePointerUp(pointerEvent);
     } else if (state.drawingMode === 'eraser') {
-      eraserToolRef.current?.handlePointerUp(pointerEvent);
+      setState(prev => ({ 
+        ...prev, 
+        isDrawing: false, 
+        prevX: null, 
+        prevY: null 
+      }));
     }
   }, []);
 
@@ -1561,6 +1678,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                       const mouseEvent = {
                         clientX: e.clientX,
                         clientY: e.clientY,
+                        button: e.button,
+                        buttons: e.buttons,
                         preventDefault: () => e.preventDefault(),
                         stopPropagation: () => e.stopPropagation()
                       } as React.MouseEvent<HTMLCanvasElement>;
@@ -1587,6 +1706,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                       const mouseEvent = {
                         clientX: e.clientX,
                         clientY: e.clientY,
+                        button: e.button,
+                        buttons: e.buttons,
                         preventDefault: () => e.preventDefault(),
                         stopPropagation: () => e.stopPropagation()
                       } as React.MouseEvent<HTMLCanvasElement>;
@@ -1601,6 +1722,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                       const mouseEvent = {
                         clientX: e.clientX,
                         clientY: e.clientY,
+                        button: e.button,
+                        buttons: e.buttons,
                         preventDefault: () => e.preventDefault(),
                         stopPropagation: () => e.stopPropagation()
                       } as React.MouseEvent<HTMLCanvasElement>;
