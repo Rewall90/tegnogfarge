@@ -36,6 +36,15 @@ type HistoryStep = {
   region: FillRegion;
 };
 
+// Unified history system for all tools
+type UnifiedHistoryEntry = {
+  type: 'fill' | 'pencil' | 'eraser';
+  timestamp: number;
+  canvasData: ImageData; // Canvas state after this action
+  fillData?: ImageData; // Fill layer state (if applicable)
+  fillRegions?: FillRegion[]; // Store fill regions for proper restoration
+};
+
 // New interface for brush strokes that doesn't store individual points
 interface BrushStroke {
   canvasSnapshot: HTMLCanvasElement | null; // Snapshot of canvas after stroke is complete
@@ -128,6 +137,7 @@ function getCanvasCoordinates(clientX: number, clientY: number, canvas: HTMLCanv
 }
 
 export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
+  console.log('ColoringApp rendered');
   const router = useRouter()
   
   
@@ -162,6 +172,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Throttling for flood fill operations
   const [isFilling, setIsFilling] = useState(false);
   const fillThrottleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastFillTime = useRef(0); // Prevent multiple fills
   
   // Touch handling for mobile brush drawing
   const touchMoveThrottleRef = useRef<number | null>(null);
@@ -188,6 +199,20 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   })
   const [history, setHistory] = useState<HistoryStep[]>([]);
   const [historyStep, setHistoryStep] = useState(-1);
+  
+  // Pencil stroke history system
+  const [pencilHistory, setPencilHistory] = useState<ImageData[]>([]);
+  const [pencilHistoryStep, setPencilHistoryStep] = useState(-1);
+  const pencilSaveInProgress = useRef(0); // Store timestamp instead of boolean
+  const pencilHistoryStepRef = useRef(-1); // Track current step for immediate access
+  
+  // Unified history system
+  const [unifiedHistory, setUnifiedHistory] = useState<UnifiedHistoryEntry[]>([]);
+  const [unifiedHistoryStep, setUnifiedHistoryStep] = useState(-1);
+  const MAX_UNIFIED_HISTORY = 50; // Maximum number of undo steps
+  const unifiedHistoryRef = useRef<UnifiedHistoryEntry[]>([]);
+  const unifiedHistoryStepRef = useRef(-1);
+  
   const [activeThemeId, setActiveThemeId] = useState(DEFAULT_THEME_ID);
   const [backgroundType, setBackgroundType] = useState<string>("default-bg-color");
 
@@ -232,7 +257,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     });
 
     // Subscribe to mode changes
-    const unsubscribeMode = toggleModeRef.current.addModeChangeCallback((mode) => {
+    const unsubscribeMode = toggleModeRef.current!.addModeChangeCallback((mode) => {
       setCurrentMode(mode);
       // Update viewport manager mode
       if (viewportManagerRef.current) {
@@ -242,7 +267,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
     // Initial state
     setViewportState(viewportManagerRef.current.getState());
-    setCurrentMode(toggleModeRef.current.getCurrentMode());
+    setCurrentMode(toggleModeRef.current!.getCurrentMode());
 
     // Cleanup
     return () => {
@@ -336,6 +361,55 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     viewportManager.setState(result);
   }, [currentMode]);
 
+  // Save to unified history
+  const saveToUnifiedHistory = useCallback((type: 'fill' | 'pencil' | 'eraser') => {
+    console.log(`Saving to unified history: ${type} at step ${unifiedHistoryStepRef.current}`);
+    
+    const mainCanvas = mainCanvasRef.current;
+    const fillCanvas = fillCanvasRef.current;
+    if (!mainCanvas) return;
+    
+    const mainCtx = mainCanvas.getContext('2d');
+    if (!mainCtx) return;
+    
+    // Get current canvas state
+    const canvasData = mainCtx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
+    
+    // Get fill layer state if it exists
+    let fillData: ImageData | undefined;
+    if (fillCanvas) {
+      const fillCtx = fillCanvas.getContext('2d');
+      if (fillCtx) {
+        fillData = fillCtx.getImageData(0, 0, fillCanvas.width, fillCanvas.height);
+      }
+    }
+    
+    // Create history entry
+    const entry: UnifiedHistoryEntry = {
+      type,
+      timestamp: Date.now(),
+      canvasData,
+      fillData,
+      fillRegions: [...fillRegions] // Save current fill regions
+    };
+    
+    // Update refs directly (no React state batching issues)
+    const currentStep = unifiedHistoryStepRef.current;
+    const truncatedHistory = unifiedHistoryRef.current.slice(0, currentStep + 1);
+    const newHistory = [...truncatedHistory, entry].slice(-MAX_UNIFIED_HISTORY);
+    const newStep = Math.min(currentStep + 1, MAX_UNIFIED_HISTORY - 1);
+    
+    // Update refs
+    unifiedHistoryRef.current = newHistory;
+    unifiedHistoryStepRef.current = newStep;
+    
+    console.log(`History updated: was ${unifiedHistoryRef.current.length - 1} entries, now ${newHistory.length} entries`);
+    console.log(`History step updated: ${currentStep} -> ${newStep}`);
+    
+    // Force re-render to update disabled states
+    setState(prev => ({ ...prev }));
+  }, []);
+
   // Smart eraser - works on both main canvas and fill layer
   const smartEraser = useCallback((
     x: number, 
@@ -348,14 +422,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     backgroundType: string,
     isDrawing: boolean
   ) => {
-    console.log('smartEraser called:', { 
-      x, y, prevX, prevY, brushSize, isDrawing,
-      mainCtx: !!mainCtx,
-      fillCtx: !!fillCtx
-    });
-    
     if (!isDrawing) {
-      console.log('Not drawing, returning');
       return;
     }
     
@@ -368,11 +435,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const contexts = [mainCtx];
     if (fillCtx) contexts.push(fillCtx);
     
-    console.log('Erasing from', contexts.length, 'contexts');
-    
     contexts.forEach((ctx, index) => {
-      console.log(`Erasing from context ${index}`);
-      
       // Always use destination-out for erasing - creates transparency
       ctx.globalCompositeOperation = "destination-out";
       ctx.strokeStyle = "rgba(0,0,0,1)";
@@ -414,7 +477,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         pencilToolRef.current?.handlePointerDown(pointerEvent);
         e.preventDefault();
       } else if (state.drawingMode === 'fill') {
-        floodFillToolRef.current?.handleClick(pointerEvent, state.currentColor);
+        const coords = floodFillToolRef.current?.handleClick(pointerEvent, state.currentColor);
+        if (coords) {
+          performFillAtCoordinates(coords.x, coords.y);
+        }
         e.preventDefault();
       } else if (state.drawingMode === 'eraser') {
         const coords = getCanvasCoordinates(e.clientX, e.clientY, mainCanvasRef.current!);
@@ -458,17 +524,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (state.drawingMode === 'pencil') {
         pencilToolRef.current?.handlePointerMove(pointerEvent);
       } else if (state.drawingMode === 'eraser') {
-        console.log('Eraser mode in mouse move', {
-          isDrawing: state.isDrawing,
-          prevX: state.prevX,
-          prevY: state.prevY,
-          hasMainCtx: !!contextRef.current.main,
-          hasFillCtx: !!contextRef.current.fill
-        });
-        
         if (state.isDrawing && state.prevX !== null && state.prevY !== null) {
           const coords = getCanvasCoordinates(e.clientX, e.clientY, mainCanvasRef.current!);
-          console.log('Calling smartEraser with coords:', coords);
           
           smartEraser(
             coords.x, 
@@ -510,16 +567,19 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (state.drawingMode === 'pencil') {
         pencilToolRef.current?.handlePointerUp(pointerEvent);
       } else if (state.drawingMode === 'eraser') {
+        console.log('Eraser stroke completed');
         setState(prev => ({ 
           ...prev, 
           isDrawing: false, 
           prevX: null, 
           prevY: null 
         }));
+        // Save eraser state to history
+        saveToUnifiedHistory('eraser');
       }
       // Fill tool doesn't need up events
     }
-  }, [currentMode, state.drawingMode]);
+  }, [currentMode, state.drawingMode, saveToUnifiedHistory]);
 
   // Initialize and cache canvas contexts
   const initializeContexts = useCallback(() => {
@@ -711,6 +771,22 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           historyStep: 0
         }))
         
+        // Save initial clean canvas state
+        const initialCanvasData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        setPencilHistory([initialCanvasData]);
+        setPencilHistoryStep(0);
+        pencilHistoryStepRef.current = 0;
+        
+        // Initialize unified history with clean state using refs
+        const initialFillData = fillCtx.getImageData(0, 0, fillCanvas.width, fillCanvas.height);
+        unifiedHistoryRef.current = [{
+          type: 'pencil',
+          timestamp: Date.now(),
+          canvasData: initialCanvasData,
+          fillData: initialFillData,
+          fillRegions: [] // Start with no fill regions
+        }];
+        unifiedHistoryStepRef.current = 0;
         
         // Calculate the CSS scale and sync with ViewportManager
         setTimeout(() => {
@@ -799,6 +875,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Touch event handlers for mobile brush drawing
   // Touch handler for fill (single tap)
   const handleFillTouch = useCallback((e: TouchEvent) => {
+    console.log('Touch fill handler called');
     if (state.drawingMode !== 'fill') return;
     
     // Prevent default to avoid triggering click events
@@ -951,17 +1028,29 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (state.drawingMode === 'pencil') {
       pencilToolRef.current?.handlePointerUp(pointerEvent);
     } else if (state.drawingMode === 'eraser') {
+      console.log('Eraser stroke completed (touch)');
       setState(prev => ({ 
         ...prev, 
         isDrawing: false, 
         prevX: null, 
         prevY: null 
       }));
+      // Save eraser state to history
+      saveToUnifiedHistory('eraser');
     }
-  }, []);
+  }, [state.drawingMode, saveToUnifiedHistory]);
 
   // Shared fill logic for both mouse and touch
   const performFillAtCoordinates = (x: number, y: number) => {
+    // Prevent multiple fill operations within 500ms
+    const now = Date.now();
+    if (now - lastFillTime.current < 500) {
+      console.log(`Fill operation skipped (${now - lastFillTime.current}ms ago)`);
+      return;
+    }
+    lastFillTime.current = now;
+    
+    console.log('Fill operation started');
     if (state.drawingMode !== 'fill') return;
     if (currentMode === 'zoom') return; // Disable fill in zoom mode
     
@@ -974,6 +1063,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Prevent multiple fill operations from running simultaneously
     if (isFilling) {
+      console.log('Fill already in progress, skipping');
       return;
     }
     
@@ -1001,27 +1091,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       return;
     }
     
-    // VIKTIG: Verifiser at shadow canvas har riktig innhold
-    if (!state.imageData) {
-      const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
-      sharedImageDataRef.current = imageData;
-      setState(prev => ({ ...prev, imageData }));
-      setIsFilling(false);
-      return;
-    } else if (state.imageData.width !== shadowCanvas.width || state.imageData.height !== shadowCanvas.height) {
-      const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
-      sharedImageDataRef.current = imageData;
-      setState(prev => ({ ...prev, imageData }));
-      setIsFilling(false);
-      return;
-    }
-    
-    // Reuse the cached ImageData if available, otherwise get a new one
-    let imageData = sharedImageDataRef.current;
-    if (!imageData || imageData.width !== shadowCanvas.width || imageData.height !== shadowCanvas.height) {
-      imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
-      sharedImageDataRef.current = imageData;
-    }
+    // Always read fresh data from shadow canvas to ensure consistency after undo/redo
+    // The cached imageData might be stale after undo operations
+    const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
+    sharedImageDataRef.current = imageData;
     
     if (!imageData || imageData.width === 0 || imageData.height === 0) {
       setIsFilling(false);
@@ -1034,7 +1107,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       return;
     }
     
-    const floodFill = new FloodFill(imageData, state.tolerance, 50);
+    const floodFill = new FloodFill(imageData, 100, 50); // Always use 100% tolerance
     const { imageData: newImageData, changes, region } = floodFill.fill(x, y, state.currentColor);
     
     if (changes.length === 0) {
@@ -1116,16 +1189,19 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             return newRegions;
           });
           
-          // Update history
-          const newHistory = history.slice(0, historyStep + 1);
-          newHistory.push({ changes, region });
-          setHistory(newHistory.slice(-MAX_HISTORY));
-          setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1));
+          // Update history - DISABLED: Using unified history instead
+          // const newHistory = history.slice(0, historyStep + 1);
+          // newHistory.push({ changes, region });
+          // setHistory(newHistory.slice(-MAX_HISTORY));
+          // setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1));
           
           setState(prev => ({
             ...prev,
             imageData: newImageData
           }));
+          
+          // Save fill state to unified history
+          saveToUnifiedHistory('fill');
         } catch (error) {
           console.error('Fill operation failed:', error);
         } finally {
@@ -1179,16 +1255,19 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             return newRegions;
           });
           
-          // Update history
-          const newHistory = history.slice(0, historyStep + 1);
-          newHistory.push({ changes, region });
-          setHistory(newHistory.slice(-MAX_HISTORY));
-          setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1));
+          // Update history - DISABLED: Using unified history instead
+          // const newHistory = history.slice(0, historyStep + 1);
+          // newHistory.push({ changes, region });
+          // setHistory(newHistory.slice(-MAX_HISTORY));
+          // setHistoryStep(Math.min(newHistory.length - 1, MAX_HISTORY - 1));
           
           setState(prev => ({
             ...prev,
             imageData: newImageData
           }));
+          
+          // Save fill state to unified history
+          saveToUnifiedHistory('fill');
         } catch (error) {
           console.error('Fill operation failed:', error);
         } finally {
@@ -1202,6 +1281,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
   // Mouse click handler for fill
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    console.log('Mouse click handler called');
     const mainCanvas = mainCanvasRef.current;
     if (!mainCanvas) return;
     
@@ -1219,77 +1299,186 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     }
   }
 
-  const handleUndo = useCallback(() => {
-    if (historyStep < 0) return;
+  // Save canvas state to pencil history
+  const savePencilState = useCallback(() => {
+    // Prevent rapid duplicate calls with a more robust check
+    const now = Date.now();
+    const lastSaveTime = pencilSaveInProgress.current || 0;
     
-    // Just remove the last region from our fill regions
-    const newRegions = fillRegions.slice(0, -1);
-    setFillRegions(newRegions);
-    
-    // Redraw the regions
-    redrawFillRegions(newRegions);
-    
-    // Use cached contexts to update shadow canvas for future operations
-    const shadowCtx = contextRef.current.shadow;
-    
-    if (!shadowCtx) return;
-    
-    // Reuse the cached ImageData if available
-    let imageData = sharedImageDataRef.current;
-    if (!imageData) {
-      const shadowCanvas = shadowCanvasRef.current;
-      if (!shadowCanvas) return;
-      imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
-      sharedImageDataRef.current = imageData;
+    if (now - lastSaveTime < 200) { // 200ms minimum between saves
+      return;
     }
     
-    const pixels32 = new Uint32Array(imageData.data.buffer);
-    applyChanges(pixels32, history[historyStep].changes, true);
+    pencilSaveInProgress.current = now;
     
-    // Apply to shadow canvas
-    shadowCtx.putImageData(imageData, 0, 0);
-    
-    setHistoryStep(historyStep - 1);
-    setState(prev => ({ ...prev, imageData }));
-  }, [history, historyStep, fillRegions, redrawFillRegions]);
+    const mainCanvas = mainCanvasRef.current;
+    if (!mainCanvas) return;
 
-  const handleRedo = useCallback(() => {
-    if (historyStep >= history.length - 1) return;
+    const ctx = mainCanvas.getContext('2d');
+    if (!ctx) return;
+
+    const imageData = ctx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
     
-    // Add the region back
-    const redoStep = historyStep + 1;
-    if (redoStep < history.length) {
-      const regionToRestore = history[redoStep].region;
-      const newRegions = [...fillRegions, regionToRestore];
-      setFillRegions(newRegions);
+    // Add state to history, but first truncate any future history
+    setPencilHistory(currentHistory => {
+      const currentStep = pencilHistoryStepRef.current;
+      // Truncate history from current step + 1 onwards (remove any "future" states)
+      const truncatedHistory = currentHistory.slice(0, currentStep + 1);
+      const newHistory = [...truncatedHistory, imageData];
+      const limitedHistory = newHistory.slice(-MAX_HISTORY);
       
-      // Redraw the regions
-      redrawFillRegions(newRegions);
+      // Update step to match the new history length - 1
+      const newStep = limitedHistory.length - 1;
+      pencilHistoryStepRef.current = newStep;
+      setPencilHistoryStep(newStep);
       
-      // Use cached contexts to update shadow canvas for future operations
-      const shadowCtx = contextRef.current.shadow;
-      
-      if (!shadowCtx) return;
-      
-      // Reuse the cached ImageData if available
-      let imageData = sharedImageDataRef.current;
-      if (!imageData) {
-        const shadowCanvas = shadowCanvasRef.current;
-        if (!shadowCanvas) return;
-        imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
-        sharedImageDataRef.current = imageData;
+      return limitedHistory;
+    });
+  }, []); // Remove dependency
+
+  // Restore canvas state from pencil history
+  const restorePencilState = useCallback((step: number) => {
+    const mainCanvas = mainCanvasRef.current;
+    if (!mainCanvas || step < 0 || step >= pencilHistory.length) return;
+
+    const ctx = mainCanvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.putImageData(pencilHistory[step], 0, 0);
+  }, [pencilHistory]);
+
+  // Update pencil tool callback after functions are defined
+  useEffect(() => {
+    if (pencilToolRef.current) {
+      pencilToolRef.current = new PencilTool(mainCanvasRef.current!, () => {
+        // savePencilState(); // DISABLED: Using unified history instead
+        saveToUnifiedHistory('pencil');
+      });
+    }
+  }, [savePencilState, saveToUnifiedHistory]);
+
+  const handleUndo = useCallback(() => {
+    console.log(`Undo called: current step ${unifiedHistoryStepRef.current}, history length ${unifiedHistoryRef.current.length}`);
+    console.log('Full history:', unifiedHistoryRef.current.map((entry, i) => `${i}: ${entry.type}`));
+    
+    // Use unified history for undo
+    if (unifiedHistoryStepRef.current <= 0) return;
+    
+    const mainCanvas = mainCanvasRef.current;
+    const fillCanvas = fillCanvasRef.current;
+    const shadowCanvas = shadowCanvasRef.current;
+    const backgroundCanvas = backgroundCanvasRef.current;
+    if (!mainCanvas) return;
+    
+    const mainCtx = mainCanvas.getContext('2d');
+    if (!mainCtx) return;
+    
+    // Get the previous state
+    const previousStep = unifiedHistoryStepRef.current - 1;
+    const previousEntry = unifiedHistoryRef.current[previousStep];
+    
+    console.log(`Undoing to step ${previousStep}, entry type: ${previousEntry?.type}`);
+    
+    // Restore from previous state
+    mainCtx.putImageData(previousEntry.canvasData, 0, 0);
+    
+    // Restore fill layer if it exists  
+    if (fillCanvas && previousEntry.fillData) {
+      const fillCtx = fillCanvas.getContext('2d');
+      if (fillCtx) {
+        console.log(`Restoring fill layer for step ${previousStep}`);
+        fillCtx.putImageData(previousEntry.fillData, 0, 0);
+      }
+    } else {
+      console.log(`No fill data to restore for step ${previousStep}`);
+    }
+    
+    // Restore fill regions
+    if (previousEntry.fillRegions) {
+      setFillRegions(previousEntry.fillRegions);
+    }
+    
+    // Update shadow canvas to match the restored state
+    const shadowCtx = contextRef.current.shadow;
+    if (shadowCtx && shadowCanvas && backgroundCanvas) {
+      // Redraw shadow canvas from background + fill layer
+      shadowCtx.clearRect(0, 0, shadowCanvas.width, shadowCanvas.height);
+      shadowCtx.drawImage(backgroundCanvas, 0, 0);
+      if (fillCanvas) {
+        shadowCtx.drawImage(fillCanvas, 0, 0);
       }
       
-      const pixels32 = new Uint32Array(imageData.data.buffer);
-      applyChanges(pixels32, history[redoStep].changes, false);
-      
-      // Apply to shadow canvas
-      shadowCtx.putImageData(imageData, 0, 0);
-      
-      setHistoryStep(redoStep);
-      setState(prev => ({ ...prev, imageData }));
+      // Update the cached image data
+      const newImageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
+      sharedImageDataRef.current = newImageData;
+      setState(prev => ({ ...prev, imageData: newImageData }));
     }
-  }, [history, historyStep, fillRegions, redrawFillRegions]);
+    
+    // Update the step using ref
+    unifiedHistoryStepRef.current = previousStep;
+    
+    // Force re-render to update disabled states
+    setState(prev => ({ ...prev }));
+    
+    console.log(`After undo: step is now ${previousStep}`);
+  }, [unifiedHistory, unifiedHistoryStep]);
+
+
+  const handleRedo = useCallback(() => {
+    // Use unified history for redo
+    if (unifiedHistoryStepRef.current >= unifiedHistoryRef.current.length - 1) return;
+    
+    const mainCanvas = mainCanvasRef.current;
+    const fillCanvas = fillCanvasRef.current;
+    const shadowCanvas = shadowCanvasRef.current;
+    const backgroundCanvas = backgroundCanvasRef.current;
+    if (!mainCanvas) return;
+    
+    const mainCtx = mainCanvas.getContext('2d');
+    if (!mainCtx) return;
+    
+    // Get the next state
+    const nextStep = unifiedHistoryStepRef.current + 1;
+    const nextEntry = unifiedHistoryRef.current[nextStep];
+    
+    // Restore from next state
+    mainCtx.putImageData(nextEntry.canvasData, 0, 0);
+    
+    // Restore fill layer if it exists
+    if (fillCanvas && nextEntry.fillData) {
+      const fillCtx = fillCanvas.getContext('2d');
+      if (fillCtx) {
+        fillCtx.putImageData(nextEntry.fillData, 0, 0);
+      }
+    }
+    
+    // Restore fill regions
+    if (nextEntry.fillRegions) {
+      setFillRegions(nextEntry.fillRegions);
+    }
+    
+    // Update shadow canvas to match the restored state
+    const shadowCtx = contextRef.current.shadow;
+    if (shadowCtx && shadowCanvas && backgroundCanvas) {
+      // Redraw shadow canvas from background + fill layer
+      shadowCtx.clearRect(0, 0, shadowCanvas.width, shadowCanvas.height);
+      shadowCtx.drawImage(backgroundCanvas, 0, 0);
+      if (fillCanvas) {
+        shadowCtx.drawImage(fillCanvas, 0, 0);
+      }
+      
+      // Update the cached image data
+      const newImageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
+      sharedImageDataRef.current = newImageData;
+      setState(prev => ({ ...prev, imageData: newImageData }));
+    }
+    
+    // Update the step using ref
+    unifiedHistoryStepRef.current = nextStep;
+    
+    // Force re-render to update disabled states
+    setState(prev => ({ ...prev }));
+  }, []);
 
   const handleReset = useCallback(() => {
     if (!state.originalImageData) return;
@@ -1299,6 +1488,22 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Clear all brush strokes and snapshots
     setBrushStrokes([]);
+    
+    // Clear unified history using refs
+    unifiedHistoryRef.current = [];
+    unifiedHistoryStepRef.current = -1;
+    
+    // Reset pencil history to initial clean state
+    const mainCanvas = mainCanvasRef.current;
+    if (mainCanvas) {
+      const ctx = mainCanvas.getContext('2d');
+      if (ctx) {
+        const initialCanvasData = ctx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
+        setPencilHistory([initialCanvasData]);
+        setPencilHistoryStep(0);
+        pencilHistoryStepRef.current = 0;
+      }
+    }
     
     // Clear the fill canvas
     const fillCtx = contextRef.current.fill;
@@ -1310,7 +1515,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Clear the main canvas
     const mainCtx = contextRef.current.main;
-    const mainCanvas = mainCanvasRef.current;
     
     if (mainCtx && mainCanvas) {
       mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
@@ -1570,23 +1774,45 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar with Zoom Toggle */}
-        <div className="flex-shrink-0 bg-white border-r border-gray-200 p-2 flex flex-col items-center">
-          <button
-            onClick={handleToggleZoom}
-            className={`
-              w-12 h-12 rounded-lg border-2 flex items-center justify-center text-lg font-semibold transition-all duration-200
-              ${currentMode === 'zoom' 
-                ? 'bg-blue-500 text-white border-blue-500 shadow-lg' 
-                : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50'
-              }
-            `}
-            title={currentMode === 'zoom' ? 'Switch to Draw Mode' : 'Switch to Zoom Mode'}
-          >
-            {currentMode === 'zoom' ? '✏️' : '🔍'}
-          </button>
-          <span className="text-xs text-gray-500 mt-1">
-            {currentMode === 'zoom' ? 'Draw' : 'Zoom'}
-          </span>
+        <div className="flex-shrink-0 bg-white border-r border-gray-200 p-2 flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center">
+            <button
+              onClick={handleToggleZoom}
+              className={`
+                w-12 h-12 rounded-lg border-2 flex items-center justify-center text-lg font-semibold transition-all duration-200
+                ${currentMode === 'zoom' 
+                  ? 'bg-blue-500 text-white border-blue-500 shadow-lg' 
+                  : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50'
+                }
+              `}
+              title={currentMode === 'zoom' ? 'Switch to Draw Mode' : 'Switch to Zoom Mode'}
+            >
+              {currentMode === 'zoom' ? '✏️' : '🔍'}
+            </button>
+            <span className="text-xs text-gray-500 mt-1">
+              {currentMode === 'zoom' ? 'Draw' : 'Zoom'}
+            </span>
+          </div>
+          
+          <div className="flex flex-col items-center">
+            <button
+              onClick={handleUndo}
+              disabled={unifiedHistoryStepRef.current <= 0}
+              className={`
+                w-12 h-12 rounded-lg border-2 flex items-center justify-center text-lg font-semibold transition-all duration-200
+                ${unifiedHistoryStepRef.current > 0
+                  ? 'bg-white text-gray-600 border-gray-300 hover:border-gray-400 hover:text-gray-700 hover:bg-gray-50'
+                  : 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed'
+                }
+              `}
+              title="Undo last action"
+            >
+              ↩️
+            </button>
+            <span className="text-xs text-gray-500 mt-1">
+              Undo
+            </span>
+          </div>
         </div>
         
         <ColorPalette
@@ -1599,8 +1825,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           <ToolBar
             className="hidden md:block"
             // REMOVED: tolerance props - flood fill always uses 100%
-            canUndo={historyStep > 0}
-            canRedo={historyStep < history.length - 1}
+            canUndo={unifiedHistoryStepRef.current > 0}
+            canRedo={unifiedHistoryStepRef.current < unifiedHistoryRef.current.length - 1}
             onUndo={handleUndo}
             onRedo={handleRedo}
             onReset={handleReset}
@@ -1746,7 +1972,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               drawingMode={state.drawingMode}
               onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
               onUndo={handleUndo}
-              canUndo={historyStep > 0}
+              canUndo={unifiedHistoryStepRef.current > 0}
               pencilSize={state.pencilSize}
               onPencilSizeChange={(size: number) => setState(prev => ({ ...prev, pencilSize: size }))}
               eraserSize={state.eraserSize}

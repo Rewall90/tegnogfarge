@@ -26,14 +26,16 @@ export class PencilTool {
   private lastDrawTime = 0; // For throttling
   private readonly DRAW_THROTTLE = 16; // ~60fps
   private pixelCache: Map<string, boolean> = new Map(); // Cache boundary checks
+  private onStrokeComplete?: () => void;
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, onStrokeComplete?: () => void) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d', { 
       alpha: true, 
       willReadFrequently: true // Need frequent reads for boundary detection
     })!;
     this.settings = { color: '#000000', size: 3 };
+    this.onStrokeComplete = onStrokeComplete;
   }
 
   /**
@@ -122,8 +124,15 @@ export class PencilTool {
   }
 
   handlePointerUp(e: PointerEvent) {
-    this.isDrawing = false;
-    this.lastPoint = null;
+    if (this.isDrawing) {
+      this.isDrawing = false;
+      this.lastPoint = null;
+      
+      // Call the completion callback to save state AFTER stroke is done
+      if (this.onStrokeComplete) {
+        this.onStrokeComplete();
+      }
+    }
   }
 
   setColor(color: string) {

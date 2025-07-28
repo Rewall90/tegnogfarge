@@ -111,31 +111,6 @@ export default function ToolBar({
         </div>
       )}
 
-      {/* UNCHANGED History Controls */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={onUndo}
-          disabled={!canUndo}
-          className={`px-3 py-1 rounded ${
-            canUndo
-              ? 'bg-gray-100 hover:bg-gray-200'
-              : 'bg-gray-50 text-gray-400 cursor-not-allowed'
-          }`}
-        >
-          Angre
-        </button>
-        <button
-          onClick={onRedo}
-          disabled={!canRedo}
-          className={`px-3 py-1 rounded ${
-            canRedo
-              ? 'bg-gray-100 hover:bg-gray-200'
-              : 'bg-gray-50 text-gray-400 cursor-not-allowed'
-          }`}
-        >
-          Gjør om
-        </button>
-      </div>
 
       {/* UNCHANGED Reset & Download */}
       <div className="flex items-center gap-2 ml-auto">
