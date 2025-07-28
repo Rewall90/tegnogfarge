@@ -280,10 +280,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   useEffect(() => {
     const mainCanvas = mainCanvasRef.current;
     if (mainCanvas && state.imageData) {
-      // Initialize all three tools
-      if (!pencilToolRef.current) {
-        pencilToolRef.current = new PencilTool(mainCanvas);
-      }
+      // Initialize flood fill tool only - pencil tool is initialized later with callback
       if (!floodFillToolRef.current) {
         floodFillToolRef.current = new FloodFillTool(mainCanvas);
       }
@@ -362,8 +359,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   }, [currentMode]);
 
   // Save to unified history
-  const saveToUnifiedHistory = useCallback((type: 'fill' | 'pencil' | 'eraser') => {
+  const saveToUnifiedHistory = useCallback((type: 'fill' | 'pencil' | 'eraser', currentFillRegions?: FillRegion[]) => {
     console.log(`Saving to unified history: ${type} at step ${unifiedHistoryStepRef.current}`);
+    const regionsToSave = currentFillRegions || fillRegions;
+    console.log(`🔍 SAVE DEBUG: fillRegions.length = ${fillRegions.length} when saving ${type}`);
+    console.log(`🔍 SAVE DEBUG: currentFillRegions parameter length = ${currentFillRegions?.length || 'undefined'}`);
+    console.log(`🔍 SAVE DEBUG: regionsToSave.length = ${regionsToSave.length}`);
     
     const mainCanvas = mainCanvasRef.current;
     const fillCanvas = fillCanvasRef.current;
@@ -390,8 +391,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       timestamp: Date.now(),
       canvasData,
       fillData,
-      fillRegions: [...fillRegions] // Save current fill regions
+      fillRegions: [...regionsToSave] // Save current fill regions from parameter
     };
+    
+    console.log(`🔍 SAVE DEBUG: Saved fillRegions.length = ${entry.fillRegions?.length || 0} for step ${unifiedHistoryStepRef.current + 1}`);
     
     // Update refs directly (no React state batching issues)
     const currentStep = unifiedHistoryStepRef.current;
@@ -1149,10 +1152,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         try {
           shadowCtx.putImageData(newImageData, 0, 0, minX, minY, dirtyWidth, dirtyHeight);
           
+          // Calculate new regions array outside of state update
+          const newFillRegions = [...fillRegions, region];
+          
           // Store the new region and start fade animation
           setFillRegions(prev => {
             const newRegions = [...prev, region];
             const regionIndex = prev.length;
+            console.log(`🔍 FILL DEBUG: setFillRegions callback - prev.length = ${prev.length}, newRegions.length = ${newRegions.length}`);
             
             // Start fade-in animation for this region
             fillOpacityRef.current.set(regionIndex, 0);
@@ -1189,6 +1196,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             return newRegions;
           });
           
+          // Save to unified history AFTER state update, not inside callback
+          // This ensures consistent timing with pencil/eraser tools
+          console.log(`🔍 TIMING DEBUG: About to call saveToUnifiedHistory AFTER setFillRegions callback`);
+          saveToUnifiedHistory('fill', newFillRegions);
+          
           // Update history - DISABLED: Using unified history instead
           // const newHistory = history.slice(0, historyStep + 1);
           // newHistory.push({ changes, region });
@@ -1199,9 +1211,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             ...prev,
             imageData: newImageData
           }));
-          
-          // Save fill state to unified history
-          saveToUnifiedHistory('fill');
         } catch (error) {
           console.error('Fill operation failed:', error);
         } finally {
@@ -1215,10 +1224,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         try {
           shadowCtx.putImageData(newImageData, 0, 0);
           
+          // Calculate new regions array outside of state update
+          const newFillRegions = [...fillRegions, region];
+          
           // Store the new region and start fade animation
           setFillRegions(prev => {
             const newRegions = [...prev, region];
             const regionIndex = prev.length;
+            console.log(`🔍 FILL DEBUG (fallback): setFillRegions callback - prev.length = ${prev.length}, newRegions.length = ${newRegions.length}`);
             
             // Start fade-in animation for this region
             fillOpacityRef.current.set(regionIndex, 0);
@@ -1255,6 +1268,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             return newRegions;
           });
           
+          // Save to unified history AFTER state update, not inside callback
+          // This ensures consistent timing with pencil/eraser tools
+          console.log(`🔍 TIMING DEBUG (fallback): About to call saveToUnifiedHistory AFTER setFillRegions callback`);
+          saveToUnifiedHistory('fill', newFillRegions);
+          
           // Update history - DISABLED: Using unified history instead
           // const newHistory = history.slice(0, historyStep + 1);
           // newHistory.push({ changes, region });
@@ -1265,9 +1283,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             ...prev,
             imageData: newImageData
           }));
-          
-          // Save fill state to unified history
-          saveToUnifiedHistory('fill');
         } catch (error) {
           console.error('Fill operation failed:', error);
         } finally {
@@ -1347,19 +1362,22 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     ctx.putImageData(pencilHistory[step], 0, 0);
   }, [pencilHistory]);
 
-  // Update pencil tool callback after functions are defined
+  // Initialize pencil tool with callback after functions are defined
   useEffect(() => {
-    if (pencilToolRef.current) {
-      pencilToolRef.current = new PencilTool(mainCanvasRef.current!, () => {
+    const mainCanvas = mainCanvasRef.current;
+    if (mainCanvas && state.imageData && !pencilToolRef.current) {
+      pencilToolRef.current = new PencilTool(mainCanvas, () => {
         // savePencilState(); // DISABLED: Using unified history instead
         saveToUnifiedHistory('pencil');
       });
     }
-  }, [savePencilState, saveToUnifiedHistory]);
+  }, [state.imageData, saveToUnifiedHistory]);
 
   const handleUndo = useCallback(() => {
     console.log(`Undo called: current step ${unifiedHistoryStepRef.current}, history length ${unifiedHistoryRef.current.length}`);
     console.log('Full history:', unifiedHistoryRef.current.map((entry, i) => `${i}: ${entry.type}`));
+    console.log('🔍 HISTORY DEBUG: Full history with fillRegions lengths:', 
+      unifiedHistoryRef.current.map((entry, i) => `${i}: ${entry.type} (fillRegions: ${entry.fillRegions?.length || 0})`));
     
     // Use unified history for undo
     if (unifiedHistoryStepRef.current <= 0) return;
@@ -1395,7 +1413,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Restore fill regions
     if (previousEntry.fillRegions) {
+      console.log(`🔍 UNDO DEBUG: Restoring fillRegions.length = ${previousEntry.fillRegions.length} for step ${previousStep}`);
       setFillRegions(previousEntry.fillRegions);
+    } else {
+      console.log(`🔍 UNDO DEBUG: No fillRegions to restore for step ${previousStep}`);
     }
     
     // Update shadow canvas to match the restored state
