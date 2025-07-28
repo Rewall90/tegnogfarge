@@ -41,7 +41,6 @@ type UnifiedHistoryEntry = {
   type: 'fill' | 'pencil' | 'eraser';
   timestamp: number;
   canvasData: ImageData; // Canvas state after this action
-  fillData?: ImageData; // Fill layer state (if applicable)
   fillRegions?: FillRegion[]; // Store fill regions for proper restoration
 };
 
@@ -366,6 +365,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     console.log(`🔍 SAVE DEBUG: currentFillRegions parameter length = ${currentFillRegions?.length || 'undefined'}`);
     console.log(`🔍 SAVE DEBUG: regionsToSave.length = ${regionsToSave.length}`);
     
+    // Check if we're trying to save a duplicate entry (skip for eraser since it always changes canvas)
+    if (type !== 'eraser') {
+      const currentEntry = unifiedHistoryRef.current[unifiedHistoryStepRef.current];
+      if (currentEntry && currentEntry.type === type && currentEntry.fillRegions?.length === regionsToSave.length) {
+        console.log(`🔍 SAVE DEBUG: Skipping duplicate save - already have ${type} with ${regionsToSave.length} regions at current step`);
+        return;
+      }
+    }
+    
     const mainCanvas = mainCanvasRef.current;
     const fillCanvas = fillCanvasRef.current;
     if (!mainCanvas) return;
@@ -376,21 +384,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     // Get current canvas state
     const canvasData = mainCtx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
     
-    // Get fill layer state if it exists
-    let fillData: ImageData | undefined;
-    if (fillCanvas) {
-      const fillCtx = fillCanvas.getContext('2d');
-      if (fillCtx) {
-        fillData = fillCtx.getImageData(0, 0, fillCanvas.width, fillCanvas.height);
-      }
-    }
-    
     // Create history entry
     const entry: UnifiedHistoryEntry = {
       type,
       timestamp: Date.now(),
       canvasData,
-      fillData,
       fillRegions: [...regionsToSave] // Save current fill regions from parameter
     };
     
@@ -406,12 +404,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     unifiedHistoryRef.current = newHistory;
     unifiedHistoryStepRef.current = newStep;
     
-    console.log(`History updated: was ${unifiedHistoryRef.current.length - 1} entries, now ${newHistory.length} entries`);
+    console.log(`History updated: was ${truncatedHistory.length} entries, now ${newHistory.length} entries`);
     console.log(`History step updated: ${currentStep} -> ${newStep}`);
     
     // Force re-render to update disabled states
     setState(prev => ({ ...prev }));
-  }, []);
+  }, [fillRegions]); // Fix: Include fillRegions in dependency array to prevent stale closure
 
   // Smart eraser - works on both main canvas and fill layer
   const smartEraser = useCallback((
@@ -434,14 +432,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       return;
     }
     
-    // Erase from both main canvas and fill canvas
+    // Erase from both main canvas and fill canvas using white paint
     const contexts = [mainCtx];
     if (fillCtx) contexts.push(fillCtx);
     
     contexts.forEach((ctx, index) => {
-      // Always use destination-out for erasing - creates transparency
-      ctx.globalCompositeOperation = "destination-out";
-      ctx.strokeStyle = "rgba(0,0,0,1)";
+      // Use source-over with white color - simulates erasing on white background
+      ctx.globalCompositeOperation = "source-over";
+      ctx.strokeStyle = "#ffffff";
       
       ctx.beginPath();
       ctx.lineWidth = brushSize;
@@ -449,9 +447,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       ctx.moveTo(prevX, prevY);
       ctx.lineTo(x, y);
       ctx.stroke();
-      
-      // Reset to default
-      ctx.globalCompositeOperation = "source-over";
     });
   }, []);
 
@@ -781,12 +776,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         pencilHistoryStepRef.current = 0;
         
         // Initialize unified history with clean state using refs
-        const initialFillData = fillCtx.getImageData(0, 0, fillCanvas.width, fillCanvas.height);
         unifiedHistoryRef.current = [{
           type: 'pencil',
           timestamp: Date.now(),
           canvasData: initialCanvasData,
-          fillData: initialFillData,
           fillRegions: [] // Start with no fill regions
         }];
         unifiedHistoryStepRef.current = 0;
@@ -1152,14 +1145,16 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         try {
           shadowCtx.putImageData(newImageData, 0, 0, minX, minY, dirtyWidth, dirtyHeight);
           
-          // Calculate new regions array outside of state update
-          const newFillRegions = [...fillRegions, region];
           
           // Store the new region and start fade animation
           setFillRegions(prev => {
             const newRegions = [...prev, region];
             const regionIndex = prev.length;
             console.log(`🔍 FILL DEBUG: setFillRegions callback - prev.length = ${prev.length}, newRegions.length = ${newRegions.length}`);
+            
+            // Save to history AFTER adding the new region
+            // This ensures the history captures the state including this fill operation
+            saveToUnifiedHistory('fill', newRegions);
             
             // Start fade-in animation for this region
             fillOpacityRef.current.set(regionIndex, 0);
@@ -1196,10 +1191,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             return newRegions;
           });
           
-          // Save to unified history AFTER state update, not inside callback
-          // This ensures consistent timing with pencil/eraser tools
-          console.log(`🔍 TIMING DEBUG: About to call saveToUnifiedHistory AFTER setFillRegions callback`);
-          saveToUnifiedHistory('fill', newFillRegions);
+          // History already saved before fill operation
           
           // Update history - DISABLED: Using unified history instead
           // const newHistory = history.slice(0, historyStep + 1);
@@ -1224,14 +1216,16 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         try {
           shadowCtx.putImageData(newImageData, 0, 0);
           
-          // Calculate new regions array outside of state update
-          const newFillRegions = [...fillRegions, region];
           
           // Store the new region and start fade animation
           setFillRegions(prev => {
             const newRegions = [...prev, region];
             const regionIndex = prev.length;
             console.log(`🔍 FILL DEBUG (fallback): setFillRegions callback - prev.length = ${prev.length}, newRegions.length = ${newRegions.length}`);
+            
+            // Save to history AFTER adding the new region
+            // This ensures the history captures the state including this fill operation
+            saveToUnifiedHistory('fill', newRegions);
             
             // Start fade-in animation for this region
             fillOpacityRef.current.set(regionIndex, 0);
@@ -1268,10 +1262,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             return newRegions;
           });
           
-          // Save to unified history AFTER state update, not inside callback
-          // This ensures consistent timing with pencil/eraser tools
-          console.log(`🔍 TIMING DEBUG (fallback): About to call saveToUnifiedHistory AFTER setFillRegions callback`);
-          saveToUnifiedHistory('fill', newFillRegions);
+          // History already saved before fill operation
           
           // Update history - DISABLED: Using unified history instead
           // const newHistory = history.slice(0, historyStep + 1);
@@ -1400,31 +1391,34 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     // Restore from previous state
     mainCtx.putImageData(previousEntry.canvasData, 0, 0);
     
-    // Restore fill layer if it exists  
-    if (fillCanvas && previousEntry.fillData) {
+    // Clear fill canvas and restore fill regions
+    if (fillCanvas) {
       const fillCtx = fillCanvas.getContext('2d');
       if (fillCtx) {
-        console.log(`Restoring fill layer for step ${previousStep}`);
-        fillCtx.putImageData(previousEntry.fillData, 0, 0);
+        // Clear the entire fill canvas
+        fillCtx.clearRect(0, 0, fillCanvas.width, fillCanvas.height);
+        console.log(`Cleared fill canvas for step ${previousStep}`);
       }
-    } else {
-      console.log(`No fill data to restore for step ${previousStep}`);
     }
     
-    // Restore fill regions
+    // Restore fill regions and redraw them
     if (previousEntry.fillRegions) {
       console.log(`🔍 UNDO DEBUG: Restoring fillRegions.length = ${previousEntry.fillRegions.length} for step ${previousStep}`);
       setFillRegions(previousEntry.fillRegions);
+      // Immediately redraw the fill regions on the cleared canvas
+      redrawFillRegions(previousEntry.fillRegions);
     } else {
       console.log(`🔍 UNDO DEBUG: No fillRegions to restore for step ${previousStep}`);
+      setFillRegions([]);
     }
     
     // Update shadow canvas to match the restored state
     const shadowCtx = contextRef.current.shadow;
     if (shadowCtx && shadowCanvas && backgroundCanvas) {
-      // Redraw shadow canvas from background + fill layer
+      // Redraw shadow canvas from background + main canvas (includes eraser) + fill layer
       shadowCtx.clearRect(0, 0, shadowCanvas.width, shadowCanvas.height);
       shadowCtx.drawImage(backgroundCanvas, 0, 0);
+      shadowCtx.drawImage(mainCanvas, 0, 0);
       if (fillCanvas) {
         shadowCtx.drawImage(fillCanvas, 0, 0);
       }
@@ -1438,10 +1432,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     // Update the step using ref
     unifiedHistoryStepRef.current = previousStep;
     
+    console.log(`After undo: step is now ${previousStep}`);
+    
     // Force re-render to update disabled states
     setState(prev => ({ ...prev }));
-    
-    console.log(`After undo: step is now ${previousStep}`);
   }, [unifiedHistory, unifiedHistoryStep]);
 
 
@@ -1465,25 +1459,34 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     // Restore from next state
     mainCtx.putImageData(nextEntry.canvasData, 0, 0);
     
-    // Restore fill layer if it exists
-    if (fillCanvas && nextEntry.fillData) {
+    // Clear fill canvas and restore fill regions
+    if (fillCanvas) {
       const fillCtx = fillCanvas.getContext('2d');
       if (fillCtx) {
-        fillCtx.putImageData(nextEntry.fillData, 0, 0);
+        // Clear the entire fill canvas
+        fillCtx.clearRect(0, 0, fillCanvas.width, fillCanvas.height);
+        console.log(`Cleared fill canvas for redo to step ${nextStep}`);
       }
     }
     
-    // Restore fill regions
+    // Restore fill regions and redraw them
     if (nextEntry.fillRegions) {
+      console.log(`🔍 REDO DEBUG: Restoring fillRegions.length = ${nextEntry.fillRegions.length} for step ${nextStep}`);
       setFillRegions(nextEntry.fillRegions);
+      // Immediately redraw the fill regions on the cleared canvas
+      redrawFillRegions(nextEntry.fillRegions);
+    } else {
+      console.log(`🔍 REDO DEBUG: No fillRegions to restore for step ${nextStep}`);
+      setFillRegions([]);
     }
     
     // Update shadow canvas to match the restored state
     const shadowCtx = contextRef.current.shadow;
     if (shadowCtx && shadowCanvas && backgroundCanvas) {
-      // Redraw shadow canvas from background + fill layer
+      // Redraw shadow canvas from background + main canvas (includes eraser) + fill layer
       shadowCtx.clearRect(0, 0, shadowCanvas.width, shadowCanvas.height);
       shadowCtx.drawImage(backgroundCanvas, 0, 0);
+      shadowCtx.drawImage(mainCanvas, 0, 0);
       if (fillCanvas) {
         shadowCtx.drawImage(fillCanvas, 0, 0);
       }
