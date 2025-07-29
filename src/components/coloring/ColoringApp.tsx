@@ -60,6 +60,7 @@ interface CanvasContexts {
   main: CanvasRenderingContext2D | null;
   fill: CanvasRenderingContext2D | null;
   shadow: CanvasRenderingContext2D | null;
+  overlay: CanvasRenderingContext2D | null;
 }
 
 // Helper: sjekk om en piksel er "svart nok"
@@ -145,13 +146,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   const mainCanvasRef = useRef<HTMLCanvasElement>(null)
   const fillCanvasRef = useRef<HTMLCanvasElement>(null)
   const shadowCanvasRef = useRef<HTMLCanvasElement>(null)
+  const overlayCanvasRef = useRef<HTMLCanvasElement>(null)
   
   // Cache for canvas contexts
   const contextRef = useRef<CanvasContexts>({
     background: null,
     main: null,
     fill: null,
-    shadow: null
+    shadow: null,
+    overlay: null
   });
   
   // Cache for reusable ImageData
@@ -616,13 +619,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const main = mainCanvasRef.current;
     const fill = fillCanvasRef.current;
     const shadow = shadowCanvasRef.current;
+    const overlay = overlayCanvasRef.current;
     
-    if (background && main && fill && shadow) {
+    if (background && main && fill && shadow && overlay) {
       contextRef.current = {
         background: background.getContext('2d'),
         main: main.getContext('2d', { willReadFrequently: true }),
         fill: fill.getContext('2d', { alpha: true }),
-        shadow: shadow.getContext('2d', { willReadFrequently: true })
+        shadow: shadow.getContext('2d', { willReadFrequently: true }),
+        overlay: overlay.getContext('2d', { alpha: true })
       };
       
       return true;
@@ -724,8 +729,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         const canvas = mainCanvasRef.current
         const fillCanvas = fillCanvasRef.current
         const shadowCanvas = shadowCanvasRef.current
+        const overlayCanvas = overlayCanvasRef.current
         
-        if (!background || !canvas || !fillCanvas || !shadowCanvas) {
+        if (!background || !canvas || !fillCanvas || !shadowCanvas || !overlayCanvas) {
           console.error('Canvas references not found');
           return;
         }
@@ -739,9 +745,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         fillCanvas.height = img.height
         shadowCanvas.width = img.width
         shadowCanvas.height = img.height
+        overlayCanvas.width = img.width
+        overlayCanvas.height = img.height
         
         // Initialize contexts if not already done
-        if (!contextRef.current.main || !contextRef.current.background || !contextRef.current.fill || !contextRef.current.shadow) {
+        if (!contextRef.current.main || !contextRef.current.background || !contextRef.current.fill || !contextRef.current.shadow || !contextRef.current.overlay) {
           if (!initializeContexts()) {
             console.error('Failed to initialize canvas contexts');
             return;
@@ -785,6 +793,43 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         // Get and cache the image data for processing
         const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height)
         sharedImageDataRef.current = imageData;
+        
+        // Process overlay canvas with aggressive two-tone conversion
+        const overlayCtx = contextRef.current.overlay!;
+        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+        overlayCtx.drawImage(img, 0, 0);
+        
+        // Get original image data for processing
+        const originalImageData = overlayCtx.getImageData(0, 0, overlayCanvas.width, overlayCanvas.height);
+        
+        // Create display version with aggressive two-tone conversion
+        const displayImageData = overlayCtx.createImageData(originalImageData);
+        const originalData = originalImageData.data;
+        const displayData = displayImageData.data;
+        
+        // Aggressive two-tone: only keep pure black pixels, make everything else transparent
+        for (let i = 0; i < originalData.length; i += 4) {
+          const r = originalData[i];
+          const g = originalData[i + 1];
+          const b = originalData[i + 2];
+          
+          // Only keep pixels that are clearly black
+          if (r < 50 && g < 50 && b < 50) {
+            displayData[i] = r;     // Keep original black
+            displayData[i + 1] = g;
+            displayData[i + 2] = b;
+            displayData[i + 3] = originalData[i + 3]; // Keep original alpha
+          } else {
+            // Make everything else (white, gray, anti-aliasing) transparent
+            displayData[i] = 0;
+            displayData[i + 1] = 0;
+            displayData[i + 2] = 0;
+            displayData[i + 3] = 0; // Transparent
+          }
+        }
+        
+        // Put the display version (pure black only) on overlay canvas
+        overlayCtx.putImageData(displayImageData, 0, 0);
         
         // Reset fill regions
         setFillRegions([]);
@@ -2041,6 +2086,17 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               <canvas 
                 ref={shadowCanvasRef} 
                 style={{ display: 'none' }} 
+              />
+              
+              {/* Overlay canvas - visible black outlines on top */}
+              <canvas 
+                ref={overlayCanvasRef} 
+                className="absolute top-0 left-0 w-full h-full z-40"
+                style={{ 
+                  imageRendering: 'pixelated',
+                  backgroundColor: 'rgba(255, 255, 255, 0)', // transparent
+                  pointerEvents: 'none'
+                }} 
               />
             </div>
           </div>
