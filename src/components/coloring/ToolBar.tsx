@@ -13,10 +13,6 @@ export interface ToolBarProps {
   onDownload: () => void
   drawingMode: 'pencil' | 'fill' | 'eraser' // THREE specialized tools
   onDrawingModeChange: (mode: 'pencil' | 'fill' | 'eraser') => void
-  pencilSize: number // Size for pencil tool
-  onPencilSizeChange: (size: number) => void
-  eraserSize: number // Separate size for eraser tool
-  onEraserSizeChange: (size: number) => void
   className?: string
 }
 
@@ -29,10 +25,6 @@ export default function ToolBar({
   onDownload,
   drawingMode,
   onDrawingModeChange,
-  pencilSize,
-  onPencilSizeChange,
-  eraserSize,
-  onEraserSizeChange,
   className = ""
 }: ToolBarProps) {
   return (
@@ -71,45 +63,7 @@ export default function ToolBar({
         </button>
       </div>
 
-      {/* CONTEXT-SENSITIVE SIZE CONTROLS */}
-      {/* Pencil Size - Only show when in pencil mode */}
-      {drawingMode === 'pencil' && (
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600">Penselstørrelse:</label>
-          <input
-            type="range"
-            min="1"
-            max="20"
-            value={pencilSize}
-            onChange={(e) => onPencilSizeChange(Number(e.target.value))}
-            className="w-24"
-          />
-          <span className="text-sm text-gray-600">{pencilSize}px</span>
-        </div>
-      )}
 
-      {/* Eraser Size - Only show when in eraser mode */}
-      {drawingMode === 'eraser' && (
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600">Viskelærstørrelse:</label>
-          <input
-            type="range"
-            min="5"
-            max="50"
-            value={eraserSize}
-            onChange={(e) => onEraserSizeChange(Number(e.target.value))}
-            className="w-24"
-          />
-          <span className="text-sm text-gray-600">{eraserSize}px</span>
-        </div>
-      )}
-
-      {/* Fill Mode - Show 100% tolerance indicator */}
-      {drawingMode === 'fill' && (
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">Toleranse: 100% (Maks)</span>
-        </div>
-      )}
 
 
       {/* UNCHANGED Reset & Download */}

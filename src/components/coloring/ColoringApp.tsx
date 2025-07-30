@@ -1944,6 +1944,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           selectedColor={state.currentColor}
           onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}
           suggestedColors={currentImage.suggestedColors}
+          drawingMode={state.drawingMode}
+          pencilSize={state.pencilSize}
+          onPencilSizeChange={(size) => setState(prev => ({ ...prev, pencilSize: size }))}
+          eraserSize={state.eraserSize}
+          onEraserSizeChange={(size) => setState(prev => ({ ...prev, eraserSize: size }))}
         />
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           <ToolBar
