@@ -380,13 +380,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
   // Save to unified history
   const saveToUnifiedHistory = useCallback((type: 'fill' | 'pencil' | 'eraser', currentFillRegions?: FillRegion[]) => {
+    console.log(`[saveToUnifiedHistory] Called with type: ${type}, current step: ${unifiedHistoryStepRef.current}, history length: ${unifiedHistoryRef.current.length}`);
     const newStep = unifiedHistoryStepRef.current + 1;
     const regionsToSave = currentFillRegions || fillRegions;
     
-    // Check if we're trying to save a duplicate entry (skip for eraser since it always changes canvas)
-    if (type !== 'eraser') {
+    // Check if we're trying to save a duplicate entry (only check for flood fill)
+    if (type === 'fill') {
       const currentEntry = unifiedHistoryRef.current[unifiedHistoryStepRef.current];
-      if (currentEntry && currentEntry.type === type && currentEntry.fillRegions?.length === regionsToSave.length) {
+      if (currentEntry && currentEntry.type === 'fill' && currentEntry.fillRegions?.length === regionsToSave.length) {
+        console.log('[saveToUnifiedHistory] Skipping duplicate fill entry');
         return;
       }
     }
@@ -433,8 +435,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
 
     
-    // Force re-render to update disabled states
-    setState(prev => ({ ...prev }));
+    // Update state to trigger re-render for UI updates
+    console.log(`[saveToUnifiedHistory] Updating state - new history length: ${newHistory.length}, new step: ${finalStep}`);
+    setUnifiedHistory(newHistory);
+    setUnifiedHistoryStep(finalStep);
   }, [fillRegions]); // Fix: Include fillRegions in dependency array to prevent stale closure
 
   // Smart eraser - uses dual strategy based on background type
@@ -871,14 +875,19 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         }
         
         // Initialize unified history with clean state using refs
-        unifiedHistoryRef.current = [{
-          type: 'pencil',
+        const initialHistoryEntry = {
+          type: 'pencil' as const,
           timestamp: Date.now(),
           canvasData: initialCanvasData,
           fillCanvasData: initialFillCanvasData,
           fillRegions: [] // Start with no fill regions
-        }];
+        };
+        unifiedHistoryRef.current = [initialHistoryEntry];
         unifiedHistoryStepRef.current = 0;
+        
+        // Also update state to sync UI
+        setUnifiedHistory([initialHistoryEntry]);
+        setUnifiedHistoryStep(0);
         
         // Calculate the CSS scale and sync with ViewportManager
         setTimeout(() => {
@@ -1525,11 +1534,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       setState(prev => ({ ...prev, imageData: newImageData }));
     }
     
-    // Update the step using ref
+    // Update the step using ref and state
     unifiedHistoryStepRef.current = previousStep;
-    
-    // Force re-render to update disabled states
-    setState(prev => ({ ...prev }));
+    setUnifiedHistoryStep(previousStep);
   }, [unifiedHistory, unifiedHistoryStep]);
 
 
@@ -1594,11 +1601,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       setState(prev => ({ ...prev, imageData: newImageData }));
     }
     
-    // Update the step using ref
+    // Update the step using ref and state
     unifiedHistoryStepRef.current = nextStep;
-    
-    // Force re-render to update disabled states
-    setState(prev => ({ ...prev }));
+    setUnifiedHistoryStep(nextStep);
   }, []);
 
   const handleReset = useCallback(() => {
@@ -1610,9 +1615,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     // Clear all brush strokes and snapshots
     setBrushStrokes([]);
     
-    // Clear unified history using refs
+    // Clear unified history using refs and state
     unifiedHistoryRef.current = [];
     unifiedHistoryStepRef.current = -1;
+    setUnifiedHistory([]);
+    setUnifiedHistoryStep(-1);
     
     // Reset pencil history to initial clean state
     const mainCanvas = mainCanvasRef.current;
@@ -1927,8 +1934,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           onDownload={handleDownload}
           onToggleZoom={handleToggleZoom}
           currentMode={currentMode}
-          canUndo={unifiedHistoryStepRef.current > 0}
-          canRedo={unifiedHistoryStepRef.current < unifiedHistoryRef.current.length - 1}
+          canUndo={unifiedHistory.length > 1 && unifiedHistoryStep > 0}
+          canRedo={unifiedHistoryStep < unifiedHistory.length - 1}
         />
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           
@@ -2088,7 +2095,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               drawingMode={state.drawingMode}
               onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
               onUndo={handleUndo}
-              canUndo={unifiedHistoryStepRef.current > 0}
+              canUndo={unifiedHistory.length > 1 && unifiedHistoryStep > 0}
               pencilSize={state.pencilSize}
               onPencilSizeChange={(size: number) => setState(prev => ({ ...prev, pencilSize: size }))}
               eraserSize={state.eraserSize}

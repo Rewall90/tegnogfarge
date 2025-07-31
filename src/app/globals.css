@@ -51,7 +51,7 @@ input[type="search"]::placeholder {
   }
   
   .cursor-fill {
-    cursor: url('/images/pencil-flood-eraser/fillbucket.svg') 20 20, crosshair;
+    cursor: url('/images/pencil-flood-eraser/fillbucket.svg') 50 40, crosshair;
   }
   
   .cursor-eraser {

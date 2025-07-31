@@ -32,7 +32,7 @@ export class PencilTool {
       alpha: true, 
       willReadFrequently: false
     })!;
-    this.settings = { color: '#000000', size: 3 };
+    this.settings = { color: '#FF0000', size: 25 };
     this.onStrokeComplete = onStrokeComplete;
   }
 

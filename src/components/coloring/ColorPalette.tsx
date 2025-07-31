@@ -269,7 +269,7 @@ export default function ColorPalette({
 
 
   return (
-    <div className={`w-64 lg:w-64 md:w-48 sm:w-40 flex-shrink-0 h-full bg-[#FEFAF6] border-r border-gray-200 grid overflow-hidden ${className}`}
+    <div className={`w-64 lg:w-64 md:w-48 hidden sm:flex flex-shrink-0 h-full bg-[#FEFAF6] border-r border-gray-200 grid overflow-hidden ${className}`}
          style={{
            display: 'grid',
            gridTemplateRows: 'auto 1fr auto auto auto',
