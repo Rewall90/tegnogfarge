@@ -44,4 +44,17 @@ input[type="search"]::placeholder {
   .text-button {
     @apply font-display font-semibold text-lg;
   }
+  
+  /* Custom cursor classes for drawing tools */
+  .cursor-pencil {
+    cursor: url('/images/pencil-flood-eraser/pencil40.svg') 50 40, crosshair;
+  }
+  
+  .cursor-fill {
+    cursor: url('/images/pencil-flood-eraser/fillbucket.svg') 20 20, crosshair;
+  }
+  
+  .cursor-eraser {
+    cursor: url('/images/pencil-flood-eraser/eraser50.svg') 20 20, crosshair;
+  }
 }

@@ -5,15 +5,30 @@ interface ColorWheelPickerProps {
   selectedColor: string
   onColorSelect: (color: string) => void
   onClose: () => void
+  onPositionChange?: (position: { x: number; y: number }) => void
+  onSizeChange?: (size: { width: number; height: number }) => void
+  initialPosition?: { x: number; y: number }
+  initialSize?: { width: number; height: number }
 }
 
-export default function ColorWheelPicker({ selectedColor, onColorSelect, onClose }: ColorWheelPickerProps) {
+export default function ColorWheelPicker({ 
+  selectedColor, 
+  onColorSelect, 
+  onClose, 
+  onPositionChange, 
+  onSizeChange,
+  initialPosition = { x: 0, y: 0 },
+  initialSize = { width: 320, height: 450 }
+}: ColorWheelPickerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [isMoving, setIsMoving] = useState(false)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [isResizing, setIsResizing] = useState(false)
+  const [position, setPosition] = useState(initialPosition)
+  const [size, setSize] = useState(initialSize)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 })
 
   const drawColorWheel = useCallback(() => {
     const canvas = canvasRef.current
@@ -166,9 +181,35 @@ export default function ColorWheelPicker({ selectedColor, onColorSelect, onClose
     setIsDragging(false)
   }, [])
 
+  // Resize handlers
+  const handleResizeMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsResizing(true)
+    setResizeStart({
+      x: e.clientX,
+      y: e.clientY,
+      width: size.width,
+      height: size.height
+    })
+  }, [size])
+
+  const handleResizeTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsResizing(true)
+    const touch = e.touches[0]
+    setResizeStart({
+      x: touch.clientX,
+      y: touch.clientY,
+      width: size.width,
+      height: size.height
+    })
+  }, [size])
+
   useEffect(() => {
     drawColorWheel()
-  }, [drawColorWheel])
+  }, [drawColorWheel, size])
 
   // Force redraw when component mounts
   useEffect(() => {
@@ -194,10 +235,12 @@ export default function ColorWheelPicker({ selectedColor, onColorSelect, onClose
   useEffect(() => {
     const handleGlobalMouseMove = (e: MouseEvent) => {
       if (isMoving) {
-        setPosition({
+        const newPosition = {
           x: e.clientX - dragStart.x,
           y: e.clientY - dragStart.y
-        })
+        }
+        setPosition(newPosition)
+        onPositionChange?.(newPosition)
       }
     }
 
@@ -210,20 +253,65 @@ export default function ColorWheelPicker({ selectedColor, onColorSelect, onClose
       document.addEventListener('mouseup', handleGlobalMouseUp)
     }
 
+    const handleGlobalResizeMove = (e: MouseEvent) => {
+      if (isResizing) {
+        const deltaX = e.clientX - resizeStart.x
+        const deltaY = e.clientY - resizeStart.y
+        const newWidth = Math.max(280, resizeStart.width + deltaX)
+        const newHeight = Math.max(300, resizeStart.height + deltaY)
+        const newSize = { width: newWidth, height: newHeight }
+        setSize(newSize)
+        onSizeChange?.(newSize)
+      }
+    }
+
+    const handleGlobalResizeTouchMove = (e: TouchEvent) => {
+      if (isResizing) {
+        e.preventDefault()
+        const touch = e.touches[0]
+        const deltaX = touch.clientX - resizeStart.x
+        const deltaY = touch.clientY - resizeStart.y
+        const newWidth = Math.max(280, resizeStart.width + deltaX)
+        const newHeight = Math.max(300, resizeStart.height + deltaY)
+        const newSize = { width: newWidth, height: newHeight }
+        setSize(newSize)
+        onSizeChange?.(newSize)
+      }
+    }
+
+    const handleGlobalResizeEnd = () => {
+      setIsResizing(false)
+    }
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleGlobalResizeMove)
+      document.addEventListener('mouseup', handleGlobalResizeEnd)
+      document.addEventListener('touchmove', handleGlobalResizeTouchMove, { passive: false })
+      document.addEventListener('touchend', handleGlobalResizeEnd)
+    }
+
     return () => {
       document.removeEventListener('mousemove', handleGlobalMouseMove)
       document.removeEventListener('mouseup', handleGlobalMouseUp)
+      document.removeEventListener('mousemove', handleGlobalResizeMove)
+      document.removeEventListener('mouseup', handleGlobalResizeEnd)
+      document.removeEventListener('touchmove', handleGlobalResizeTouchMove)
+      document.removeEventListener('touchend', handleGlobalResizeEnd)
     }
-  }, [isMoving, dragStart])
+  }, [isMoving, isResizing, dragStart, resizeStart, onPositionChange, onSizeChange])
 
   return (
     <>
       <div 
         ref={containerRef}
-        className="fixed bg-white bg-opacity-95 rounded-lg p-6 w-80 shadow-lg border border-gray-200 z-40"
+        className="fixed bg-white bg-opacity-95 rounded-lg p-6 shadow-lg border border-gray-200 z-40"
         style={{
           top: `${100 + position.y}px`,
           left: `${330 + position.x}px`,
+          width: size.width,
+          height: size.height,
+          minWidth: '280px',
+          minHeight: '300px',
           userSelect: 'none'
         }}
         onClick={(e) => e.stopPropagation()}
@@ -263,12 +351,12 @@ export default function ColorWheelPicker({ selectedColor, onColorSelect, onClose
           </button>
         </div>
 
-        <div className="flex flex-col items-center space-y-4">
+        <div className="flex flex-col items-center space-y-4 cursor-auto">
           {/* Color Wheel */}
           <canvas
             ref={canvasRef}
-            width={320}
-            height={320}
+            width={Math.max(200, size.width - 80)}
+            height={Math.max(200, size.width - 80)}
             className="cursor-crosshair rounded-full"
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -287,6 +375,30 @@ export default function ColorWheelPicker({ selectedColor, onColorSelect, onClose
             />
           </div>
 
+        </div>
+
+        {/* Resize handle - same 4-line grip pattern as ToolSizeControl */}
+        <div
+          className="absolute bottom-0 right-0 w-8 h-8 cursor-se-resize hover:bg-gray-100 transition-all duration-200 group flex items-end justify-end p-1"
+          onMouseDown={handleResizeMouseDown}
+          onTouchStart={handleResizeTouchStart}
+          title="Drag to resize"
+        >
+          {/* Standard grip pattern - four parallel diagonal lines */}
+          <svg 
+            width="16" 
+            height="16" 
+            viewBox="0 0 16 16" 
+            className="group-hover:scale-110 transition-transform"
+          >
+            {/* Four evenly spaced parallel diagonal lines stretching to container edges */}
+            <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-gray-500 group-hover:text-gray-700">
+              <line x1="4" y1="16" x2="16" y2="4" />
+              <line x1="7" y1="16" x2="16" y2="7" />
+              <line x1="10" y1="16" x2="16" y2="10" />
+              <line x1="13" y1="16" x2="16" y2="13" />
+            </g>
+          </svg>
         </div>
       </div>
     </>

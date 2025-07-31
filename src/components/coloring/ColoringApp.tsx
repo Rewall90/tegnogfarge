@@ -1945,6 +1945,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}
           suggestedColors={currentImage.suggestedColors}
           drawingMode={state.drawingMode}
+          onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
           pencilSize={state.pencilSize}
           onPencilSizeChange={(size) => {
             console.log('Pencil size changed to:', size);
@@ -1966,12 +1967,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             onRedo={handleRedo}
             onReset={handleReset}
             onDownload={handleDownload}
-            drawingMode={state.drawingMode} // Now 'pencil' | 'fill' | 'eraser'
-            onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
-            pencilSize={state.pencilSize}
-            onPencilSizeChange={(size: number) => setState(prev => ({ ...prev, pencilSize: size }))}
-            eraserSize={state.eraserSize}
-            onEraserSizeChange={(size: number) => setState(prev => ({ ...prev, eraserSize: size }))}
           />
           
           {/* Canvas Section */}
@@ -2019,7 +2014,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                     }
                   }}
 
-                  className="relative w-full h-full bg-transparent shadow-lg cursor-crosshair z-20"
+                  className={`relative w-full h-full bg-transparent shadow-lg z-20 ${
+                    state.drawingMode === 'pencil' 
+                      ? 'cursor-pencil' 
+                      : state.drawingMode === 'fill'
+                      ? 'cursor-fill'
+                      : state.drawingMode === 'eraser'
+                      ? 'cursor-eraser'
+                      : 'cursor-crosshair'
+                  }`}
                   style={{ 
                     imageRendering: 'pixelated',
                     backgroundColor: 'rgba(255, 255, 255, 0)', // transparent

@@ -10,6 +10,7 @@ interface ColorPaletteProps {
   className?: string
   // Tool size controls
   drawingMode?: 'pencil' | 'fill' | 'eraser'
+  onDrawingModeChange?: (mode: 'pencil' | 'fill' | 'eraser') => void
   pencilSize?: number
   onPencilSizeChange?: (size: number) => void
   eraserSize?: number
@@ -93,6 +94,7 @@ export default function ColorPalette({
   suggestedColors,
   className = "",
   drawingMode,
+  onDrawingModeChange,
   pencilSize,
   onPencilSizeChange,
   eraserSize,
@@ -100,9 +102,22 @@ export default function ColorPalette({
 }: ColorPaletteProps) {
   const [showCustomPicker, setShowCustomPicker] = useState(false)
   const [showColorWheel, setShowColorWheel] = useState(false)
+  const [colorWheelPosition, setColorWheelPosition] = useState({ x: 0, y: 0 })
+  const [colorWheelSize, setColorWheelSize] = useState({ width: 320, height: 450 })
   // Add state for popup
   const [showToolSizePopup, setShowToolSizePopup] = useState(false)
-  const [toolSizePosition, setToolSizePosition] = useState({ x: 50, y: 50 })
+  const [toolSizePosition, setToolSizePosition] = useState({ x: 330, y: 550 }) // Start with correct position
+  const [toolSizeSize, setToolSizeSize] = useState({ width: 200, height: 150 })
+  
+  // Fixed positioning - ToolSizeControl always opens at consistent position
+  const getInitialToolSizePosition = () => {
+    // Always use same positioning logic as ColorWheelPicker area
+    // ToolSizeControl should always appear at x: 330, y: around 550 (under ColorWheelPicker area)
+    return { 
+      x: 330,     // Same x as ColorWheelPicker base position
+      y: 550      // Fixed y position underneath ColorWheelPicker area
+    }
+  }
   
   const handleColorSelect = (color: string) => {
     if (color === 'custom') {
@@ -296,7 +311,7 @@ export default function ColorPalette({
          </div>
 
 
-                   {/* Hår Farge */}
+                     {/* Hår Farge */}
           <div className="mb-6">
             <SectionHeader title="Hår Farge" />
             <div className="grid grid-cols-4 gap-2">
@@ -328,7 +343,7 @@ export default function ColorPalette({
             </div>
           </div>
 
-                     {/* Leppe Farge */}
+                       {/* Leppe Farge */}
            <div className="mb-6">
              <SectionHeader title="Leppe Farge" />
              <div className="grid grid-cols-4 gap-2">
@@ -378,6 +393,62 @@ export default function ColorPalette({
 
          </div>
 
+       {/* Tool Selection Section */}
+       <div className="p-4 border-t border-gray-200 bg-gray-50 flex-shrink-0 min-h-fit">
+         <div className="flex items-center justify-between mb-2">
+           <label className="text-sm text-gray-600">Verktøy:</label>
+         </div>
+         <div className="flex flex-wrap items-center gap-2">
+           {/* Pencil Tool */}
+           <button
+             onClick={() => onDrawingModeChange?.('pencil')}
+             className={`relative flex items-center justify-center w-12 h-12 transition-all duration-300 border-2 rounded-full cursor-pointer ${
+               drawingMode === 'pencil' 
+                 ? 'border-blue-600 scale-110' 
+                 : 'border-[#E5E7EB] hover:border-gray-300'
+             }`}
+           >
+             <img 
+               className="w-full h-full rounded-full" 
+               src="/images/pencil-flood-eraser/pencil.png" 
+               alt="Pencil tool"
+             />
+           </button>
+           
+           {/* Flood Fill Tool */}
+           <button
+             onClick={() => onDrawingModeChange?.('fill')}
+             className={`relative flex items-center justify-center w-12 h-12 transition-all duration-300 border-2 rounded-full cursor-pointer ${
+               drawingMode === 'fill' 
+                 ? 'border-green-600 scale-110' 
+                 : 'border-[#E5E7EB] hover:border-gray-300'
+             }`}
+           >
+             <img 
+               className="w-full h-full rounded-full" 
+               src="/images/pencil-flood-eraser/floodandfill.png" 
+               alt="Flood fill tool"
+             />
+           </button>
+           
+           {/* Eraser Tool */}
+           <button
+             onClick={() => onDrawingModeChange?.('eraser')}
+             className={`relative flex items-center justify-center w-12 h-12 transition-all duration-300 border-2 rounded-full cursor-pointer ${
+               drawingMode === 'eraser' 
+                 ? 'border-red-600 scale-110' 
+                 : 'border-[#E5E7EB] hover:border-gray-300'
+             }`}
+           >
+             <img 
+               className="w-full h-full rounded-full" 
+               src="/images/pencil-flood-eraser/eraser.png" 
+               alt="Eraser tool"
+             />
+           </button>
+         </div>
+       </div>
+
        {/* Fixed Bottom Section */}
        <div className="p-4 pb-8 border-t border-gray-200 bg-gray-50 flex-shrink-0 min-h-fit">
          {/* Tool Size Control with expand icon */}
@@ -388,6 +459,8 @@ export default function ColorPalette({
                e.preventDefault();
                e.stopPropagation();
                console.log('Expand button clicked');
+               // Always set ToolSizeControl to consistent position (330, 550)
+               setToolSizePosition(getInitialToolSizePosition());
                setShowToolSizePopup(true);
              }}
              className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded"
@@ -449,6 +522,8 @@ export default function ColorPalette({
   onClose={() => setShowToolSizePopup(false)}
   position={toolSizePosition}
   onPositionChange={setToolSizePosition}
+  size={toolSizeSize}
+  onSizeChange={setToolSizeSize}
 />
        </div>
       
@@ -458,6 +533,8 @@ export default function ColorPalette({
           selectedColor={selectedColor}
           onColorSelect={onColorSelect}
           onClose={() => setShowColorWheel(false)}
+          onPositionChange={setColorWheelPosition}
+          onSizeChange={setColorWheelSize}
         />
       )}
     </div>
