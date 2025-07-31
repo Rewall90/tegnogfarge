@@ -28,7 +28,7 @@ export default function ToolSizeControl({
   const [isMoving, setIsMoving] = useState(false)
   const [isDraggingPopup, setIsDraggingPopup] = useState(false)
   const [isResizing, setIsResizing] = useState(false)
-  const [currentValue, setCurrentValue] = useState(pencilSize || 16)
+  const [currentValue, setCurrentValue] = useState(pencilSize || 50)
   const [popupPosition, setPopupPosition] = useState(position)
   const [popupSize, setPopupSize] = useState(size)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
@@ -41,7 +41,7 @@ export default function ToolSizeControl({
   const percentage = ((currentValue - min) / (max - min)) * 100
 
   useEffect(() => {
-    setCurrentValue(pencilSize || 16)
+    setCurrentValue(pencilSize || 50)
   }, [pencilSize])
 
   useEffect(() => {

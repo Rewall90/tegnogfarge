@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import NextImage from 'next/image'
+import Link from 'next/link'
 import { FloodFill, type PixelChange, type FillRegion } from '@/lib/flood-fill'
 import ColorPalette from './ColorPalette'
-import ToolBar from './ToolBar'
 import ImageSelector from './ImageSelector'
 import { MobileColorPicker } from './MobileColorPicker'
 import { MobileToolbar } from './MobileToolbar'
@@ -187,18 +188,20 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     imageData: null,
     originalImageData: null,
     currentColor: '#FF0000',
-    pencilSize: 3, // Size for pencil tool
+    pencilSize: 25, // Size for pencil tool
     eraserSize: 10, // Separate size for eraser tool
     // REMOVED: tolerance - flood fill always uses 100%
     isDrawing: false,
     history: [],
     historyStep: -1,
-    drawingMode: 'fill', // Default to fill mode
+    drawingMode: 'pencil', // Default to pencil mode
     lastX: null,
     lastY: null,
     prevX: null,    // Add this
     prevY: null     // Add this
   })
+  
+
   const [history, setHistory] = useState<HistoryStep[]>([]);
   const [historyStep, setHistoryStep] = useState(-1);
   
@@ -229,6 +232,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     mode: 'draw'
   });
   const [currentMode, setCurrentMode] = useState<ViewportMode>('draw');
+  const [isWheelScrolling, setIsWheelScrolling] = useState(false);
+  const wheelScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 
   // Reference to the app container for performance testing
@@ -336,6 +341,19 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     e.preventDefault();
     
+    // Set wheel scrolling state for cursor change
+    setIsWheelScrolling(true);
+    
+    // Clear existing timeout
+    if (wheelScrollTimeoutRef.current) {
+      clearTimeout(wheelScrollTimeoutRef.current);
+    }
+    
+    // Set timeout to reset wheel scrolling state
+    wheelScrollTimeoutRef.current = setTimeout(() => {
+      setIsWheelScrolling(false);
+    }, 150); // Reset after 150ms of no scrolling
+    
     const viewportManager = viewportManagerRef.current;
     if (!viewportManager) return;
 
@@ -363,17 +381,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Save to unified history
   const saveToUnifiedHistory = useCallback((type: 'fill' | 'pencil' | 'eraser', currentFillRegions?: FillRegion[]) => {
     const newStep = unifiedHistoryStepRef.current + 1;
-    console.log(`Saving to unified history: ${type} as step ${newStep} (was at step ${unifiedHistoryStepRef.current})`);
     const regionsToSave = currentFillRegions || fillRegions;
-    console.log(`🔍 SAVE DEBUG: fillRegions.length = ${fillRegions.length} when saving ${type}`);
-    console.log(`🔍 SAVE DEBUG: currentFillRegions parameter length = ${currentFillRegions?.length || 'undefined'}`);
-    console.log(`🔍 SAVE DEBUG: regionsToSave.length = ${regionsToSave.length}`);
     
     // Check if we're trying to save a duplicate entry (skip for eraser since it always changes canvas)
     if (type !== 'eraser') {
       const currentEntry = unifiedHistoryRef.current[unifiedHistoryStepRef.current];
       if (currentEntry && currentEntry.type === type && currentEntry.fillRegions?.length === regionsToSave.length) {
-        console.log(`🔍 SAVE DEBUG: Skipping duplicate save - already have ${type} with ${regionsToSave.length} regions at current step`);
         return;
       }
     }
@@ -406,8 +419,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       fillRegions: [...regionsToSave] // Keep for backward compatibility
     };
     
-    console.log(`🔍 SAVE DEBUG: Saved fillRegions.length = ${entry.fillRegions?.length || 0} for step ${newStep}`);
-    console.log(`🔍 SAVE DEBUG: Saved fillCanvasData = ${fillCanvasData ? 'YES' : 'NO'} for step ${newStep}`);
+
     
     // Update refs directly (no React state batching issues)
     const currentStep = unifiedHistoryStepRef.current;
@@ -419,8 +431,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     unifiedHistoryRef.current = newHistory;
     unifiedHistoryStepRef.current = finalStep;
     
-    console.log(`History updated: was ${truncatedHistory.length} entries, now ${newHistory.length} entries`);
-    console.log(`History step updated: ${currentStep} -> ${finalStep}`);
+
     
     // Force re-render to update disabled states
     setState(prev => ({ ...prev }));
@@ -599,7 +610,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (state.drawingMode === 'pencil') {
         pencilToolRef.current?.handlePointerUp(pointerEvent);
       } else if (state.drawingMode === 'eraser') {
-        console.log('Eraser stroke completed');
         setState(prev => ({ 
           ...prev, 
           isDrawing: false, 
@@ -941,6 +951,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         cancelAnimationFrame(fadeAnimationRef.current);
         fadeAnimationRef.current = null;
       }
+      if (wheelScrollTimeoutRef.current) {
+        clearTimeout(wheelScrollTimeoutRef.current);
+        wheelScrollTimeoutRef.current = null;
+      }
     };
   }, []);
 
@@ -957,7 +971,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Touch event handlers for mobile brush drawing
   // Touch handler for fill (single tap)
   const handleFillTouch = useCallback((e: TouchEvent) => {
-    console.log('Touch fill handler called');
     if (state.drawingMode !== 'fill') return;
     
     // Prevent default to avoid triggering click events
@@ -1110,7 +1123,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (state.drawingMode === 'pencil') {
       pencilToolRef.current?.handlePointerUp(pointerEvent);
     } else if (state.drawingMode === 'eraser') {
-      console.log('Eraser stroke completed (touch)');
       setState(prev => ({ 
         ...prev, 
         isDrawing: false, 
@@ -1127,12 +1139,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     // Prevent multiple fill operations within 500ms
     const now = Date.now();
     if (now - lastFillTime.current < 500) {
-      console.log(`Fill operation skipped (${now - lastFillTime.current}ms ago)`);
       return;
     }
     lastFillTime.current = now;
-    
-    console.log('Fill operation started');
     if (state.drawingMode !== 'fill') return;
     if (currentMode === 'zoom') return; // Disable fill in zoom mode
     
@@ -1145,7 +1154,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Prevent multiple fill operations from running simultaneously
     if (isFilling) {
-      console.log('Fill already in progress, skipping');
       return;
     }
     
@@ -1236,7 +1244,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           setFillRegions(prev => {
             const newRegions = [...prev, region];
             const regionIndex = prev.length;
-            console.log(`🔍 FILL DEBUG: setFillRegions callback - prev.length = ${prev.length}, newRegions.length = ${newRegions.length}`);
             
             // Start fade-in animation for this region
             fillOpacityRef.current.set(regionIndex, 0);
@@ -1307,7 +1314,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           setFillRegions(prev => {
             const newRegions = [...prev, region];
             const regionIndex = prev.length;
-            console.log(`🔍 FILL DEBUG (fallback): setFillRegions callback - prev.length = ${prev.length}, newRegions.length = ${newRegions.length}`);
             
             // Start fade-in animation for this region
             fillOpacityRef.current.set(regionIndex, 0);
@@ -1373,7 +1379,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
   // Mouse click handler for fill
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    console.log('Mouse click handler called');
     const mainCanvas = mainCanvasRef.current;
     if (!mainCanvas) return;
     
@@ -1447,15 +1452,19 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         // savePencilState(); // DISABLED: Using unified history instead
         saveToUnifiedHistory('pencil');
       });
+      // Set the initial size to match the React state
+      pencilToolRef.current.setSize(state.pencilSize);
     }
   }, [state.imageData, saveToUnifiedHistory]);
 
+  // Sync PencilTool size with React state
+  useEffect(() => {
+    if (pencilToolRef.current) {
+      pencilToolRef.current.setSize(state.pencilSize);
+    }
+  }, [state.pencilSize]);
+
   const handleUndo = useCallback(() => {
-    console.log(`Undo called: current step ${unifiedHistoryStepRef.current}, history length ${unifiedHistoryRef.current.length}`);
-    console.log('Full history:', unifiedHistoryRef.current.map((entry, i) => `${i}: ${entry.type}`));
-    console.log('🔍 HISTORY DEBUG: Full history with fillRegions lengths:', 
-      unifiedHistoryRef.current.map((entry, i) => `${i}: ${entry.type} (fillRegions: ${entry.fillRegions?.length || 0})`));
-    
     // Use unified history for undo
     if (unifiedHistoryStepRef.current <= 0) return;
     
@@ -1472,8 +1481,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const previousStep = unifiedHistoryStepRef.current - 1;
     const previousEntry = unifiedHistoryRef.current[previousStep];
     
-    console.log(`Undoing to step ${previousStep}, entry type: ${previousEntry?.type}`);
-    
     // Restore from previous state
     mainCtx.putImageData(previousEntry.canvasData, 0, 0);
     
@@ -1483,11 +1490,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (fillCtx) {
         if (previousEntry.fillCanvasData) {
           // Use saved fill canvas state (preserves transparency)
-          console.log(`🔍 UNDO DEBUG: Restoring fill canvas from saved state for step ${previousStep}`);
           fillCtx.putImageData(previousEntry.fillCanvasData, 0, 0);
         } else {
           // Fallback to old method for backward compatibility
-          console.log(`🔍 UNDO DEBUG: Using fallback redraw method for step ${previousStep}`);
           fillCtx.clearRect(0, 0, fillCanvas.width, fillCanvas.height);
           if (previousEntry.fillRegions) {
             redrawFillRegions(previousEntry.fillRegions);
@@ -1498,10 +1503,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Update fill regions state for consistency
     if (previousEntry.fillRegions) {
-      console.log(`🔍 UNDO DEBUG: Updating fillRegions state length = ${previousEntry.fillRegions.length} for step ${previousStep}`);
       setFillRegions(previousEntry.fillRegions);
     } else {
-      console.log(`🔍 UNDO DEBUG: No fillRegions to restore for step ${previousStep}`);
       setFillRegions([]);
     }
     
@@ -1524,8 +1527,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Update the step using ref
     unifiedHistoryStepRef.current = previousStep;
-    
-    console.log(`After undo: step is now ${previousStep}`);
     
     // Force re-render to update disabled states
     setState(prev => ({ ...prev }));
@@ -1558,11 +1559,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (fillCtx) {
         if (nextEntry.fillCanvasData) {
           // Use saved fill canvas state (preserves transparency)
-          console.log(`🔍 REDO DEBUG: Restoring fill canvas from saved state for step ${nextStep}`);
           fillCtx.putImageData(nextEntry.fillCanvasData, 0, 0);
         } else {
           // Fallback to old method for backward compatibility
-          console.log(`🔍 REDO DEBUG: Using fallback redraw method for step ${nextStep}`);
           fillCtx.clearRect(0, 0, fillCanvas.width, fillCanvas.height);
           if (nextEntry.fillRegions) {
             redrawFillRegions(nextEntry.fillRegions);
@@ -1573,10 +1572,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Update fill regions state for consistency
     if (nextEntry.fillRegions) {
-      console.log(`🔍 REDO DEBUG: Updating fillRegions state length = ${nextEntry.fillRegions.length} for step ${nextStep}`);
       setFillRegions(nextEntry.fillRegions);
     } else {
-      console.log(`🔍 REDO DEBUG: No fillRegions to restore for step ${nextStep}`);
       setFillRegions([]);
     }
     
@@ -1874,70 +1871,40 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           onClose={() => setShowImageSelector(false)}
         />
       )}
-      <header className="bg-white shadow-sm border-b flex-shrink-0 h-12 z-40">
-        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between w-full">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => router.push(`/categories/${currentImage.category.slug}/${currentImage.subcategory.slug}`)}
-                className="text-blue-600 hover:text-blue-800"
-              >
-                ← Tilbake
-              </button>
-              <h1 className="text-section">{currentImage.title}</h1>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowImageSelector(true)}
-                className="px-3 py-1 text-blue-600 hover:text-blue-800"
-              >
-                Bytt bilde
-              </button>
-            </div>
+      <header className="bg-[#FEFAF6] shadow-sm py-2 relative z-40">
+        <div className="flex justify-between items-center h-24 px-4">
+          <div className="flex items-center gap-6">
+            <Link href="/" className="flex items-center" aria-label="Til forsiden">
+              <NextImage 
+                src="/images/logo/tegnogfarge-logo.svg" 
+                alt="TegnOgFarge.no Logo" 
+                width={200} 
+                height={90} 
+                priority
+                className="h-20 w-auto"
+              />
+            </Link>
+            <h1 className="text-section text-[#264653] hidden md:block">{currentImage.title}</h1>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => router.push(`/categories/${currentImage.category.slug}/${currentImage.subcategory.slug}`)}
+              className="text-[#264653] hover:text-[#FF6F59] transition-colors duration-200 font-quicksand text-[20px]"
+            >
+              ← Tilbake
+            </button>
+            <button
+              onClick={() => setShowImageSelector(true)}
+              className="bg-[#EB7060] text-black px-5 py-2.5 rounded hover:bg-[#EB7060]/90 font-quicksand text-[20px]"
+            >
+              Bytt bilde
+            </button>
+          </div>
         </div>
       </header>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar with Zoom Toggle */}
-        <div className="flex-shrink-0 bg-white border-r border-gray-200 p-2 flex flex-col items-center gap-3">
-          <div className="flex flex-col items-center">
-            <button
-              onClick={handleToggleZoom}
-              className={`
-                w-12 h-12 rounded-lg border-2 flex items-center justify-center text-lg font-semibold transition-all duration-200
-                ${currentMode === 'zoom' 
-                  ? 'bg-blue-500 text-white border-blue-500 shadow-lg' 
-                  : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50'
-                }
-              `}
-              title={currentMode === 'zoom' ? 'Switch to Draw Mode' : 'Switch to Zoom Mode'}
-            >
-              {currentMode === 'zoom' ? '✏️' : '🔍'}
-            </button>
-            <span className="text-xs text-gray-500 mt-1">
-              {currentMode === 'zoom' ? 'Draw' : 'Zoom'}
-            </span>
-          </div>
-          
-          <div className="flex flex-col items-center">
-            <button
-              onClick={handleUndo}
-              disabled={unifiedHistoryStepRef.current <= 0}
-              className={`
-                w-12 h-12 rounded-lg border-2 flex items-center justify-center text-lg font-semibold transition-all duration-200
-                ${unifiedHistoryStepRef.current > 0
-                  ? 'bg-white text-gray-600 border-gray-300 hover:border-gray-400 hover:text-gray-700 hover:bg-gray-50'
-                  : 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed'
-                }
-              `}
-              title="Undo last action"
-            >
-              ↩️
-            </button>
-            <span className="text-xs text-gray-500 mt-1">
-              Undo
-            </span>
-          </div>
-        </div>
         
         <ColorPalette
           className="hidden md:block"
@@ -1948,29 +1915,25 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
           pencilSize={state.pencilSize}
           onPencilSizeChange={(size) => {
-            console.log('Pencil size changed to:', size);
             setState(prev => ({ ...prev, pencilSize: size }))
           }}
           eraserSize={state.eraserSize}
           onEraserSizeChange={(size) => {
-            console.log('Eraser size changed to:', size);
             setState(prev => ({ ...prev, eraserSize: size }))
           }}
+          onUndo={handleUndo}
+          onRedo={handleRedo}
+          onReset={handleReset}
+          onDownload={handleDownload}
+          onToggleZoom={handleToggleZoom}
+          currentMode={currentMode}
+          canUndo={unifiedHistoryStepRef.current > 0}
+          canRedo={unifiedHistoryStepRef.current < unifiedHistoryRef.current.length - 1}
         />
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <ToolBar
-            className="hidden md:block"
-            // REMOVED: tolerance props - flood fill always uses 100%
-            canUndo={unifiedHistoryStepRef.current > 0}
-            canRedo={unifiedHistoryStepRef.current < unifiedHistoryRef.current.length - 1}
-            onUndo={handleUndo}
-            onRedo={handleRedo}
-            onReset={handleReset}
-            onDownload={handleDownload}
-          />
           
           {/* Canvas Section */}
-          <div className="flex-1 overflow-hidden bg-gray-50 p-1 flex items-center justify-center">
+          <div className="flex-1 overflow-hidden bg-[#FEFAF6] p-1 flex items-center justify-center">
             <div 
               className="relative max-w-full max-h-full"
               style={{
@@ -2015,7 +1978,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                   }}
 
                   className={`relative w-full h-full bg-transparent shadow-lg z-20 ${
-                    state.drawingMode === 'pencil' 
+                    currentMode === 'zoom'
+                      ? isWheelScrolling
+                        ? 'cursor-zoom-in'
+                        : 'cursor-grab'
+                      : state.drawingMode === 'pencil' 
                       ? 'cursor-pencil' 
                       : state.drawingMode === 'fill'
                       ? 'cursor-fill'
