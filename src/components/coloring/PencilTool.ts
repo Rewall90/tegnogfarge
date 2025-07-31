@@ -103,7 +103,8 @@ export class PencilTool {
   }
   
   setSize(size: number) { 
-    this.settings.size = Math.max(1, Math.min(20, size)); 
+    this.settings.size = Math.max(1, Math.min(50, size));
+    console.log('PencilTool size set to:', this.settings.size, 'from input:', size);
   }
 
   getSettings() {

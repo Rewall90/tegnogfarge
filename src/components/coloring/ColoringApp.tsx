@@ -1946,9 +1946,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           suggestedColors={currentImage.suggestedColors}
           drawingMode={state.drawingMode}
           pencilSize={state.pencilSize}
-          onPencilSizeChange={(size) => setState(prev => ({ ...prev, pencilSize: size }))}
+          onPencilSizeChange={(size) => {
+            console.log('Pencil size changed to:', size);
+            setState(prev => ({ ...prev, pencilSize: size }))
+          }}
           eraserSize={state.eraserSize}
-          onEraserSizeChange={(size) => setState(prev => ({ ...prev, eraserSize: size }))}
+          onEraserSizeChange={(size) => {
+            console.log('Eraser size changed to:', size);
+            setState(prev => ({ ...prev, eraserSize: size }))
+          }}
         />
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           <ToolBar
