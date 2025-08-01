@@ -82,16 +82,25 @@ export class InputHandler {
     // Track pointer
     this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-    if (this.activePointers.size === 2) {
-      // Two pointers = pinch zoom (always available)
+    if (this.activePointers.size === 2 && this.currentMode === 'zoom') {
+      // Two pointers = pinch zoom (ONLY when zoom mode is active)
+      // Stop any ongoing pan immediately when second finger is added
+      if (this.isPanning) {
+        this.isPanning = false;
+      }
       this.startPinchZoom();
     } else if (this.activePointers.size === 1) {
-      if (this.currentMode === 'zoom' && !this.isZooming) {
-        // Single pointer in zoom mode = pan (but not during pinch zoom)
+      if (this.currentMode === 'zoom') {
+        // Single pointer in zoom mode = pan (ONLY with exactly 1 finger)
         this.startPan(e);
       } else if (this.currentMode === 'draw') {
         // Single pointer in draw mode = drawing
         this.startDraw(e);
+      }
+    } else {
+      // 3+ fingers - stop pan immediately
+      if (this.isPanning) {
+        this.isPanning = false;
       }
     }
   };
@@ -103,16 +112,25 @@ export class InputHandler {
     // Update pointer position
     this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-    if (this.activePointers.size === 2 && this.isZooming) {
-      // Handle pinch zoom
+    if (this.activePointers.size === 2 && this.isZooming && this.currentMode === 'zoom') {
+      // Handle pinch zoom (ONLY in zoom mode)
       this.updatePinchZoom();
     } else if (this.activePointers.size === 1) {
-      if (this.isPanning && this.currentMode === 'zoom' && !this.isZooming) {
-        // Handle pan (but not during or right after pinch zoom)
+      if (this.isPanning && this.currentMode === 'zoom') {
+        // Handle pan (ONLY with exactly 1 finger)
         this.updatePan(e);
       } else if (this.currentMode === 'draw') {
         // Handle drawing
         this.updateDraw(e);
+      }
+    } else {
+      // More than 2 fingers, 0 fingers, or wrong mode - stop pan immediately
+      if (this.isPanning) {
+        this.isPanning = false;
+      }
+      // Also stop zoom if not in zoom mode
+      if (this.activePointers.size === 2 && this.currentMode !== 'zoom' && this.isZooming) {
+        this.isZooming = false;
       }
     }
   };
@@ -123,10 +141,6 @@ export class InputHandler {
 
     if (this.activePointers.size < 2) {
       this.isZooming = false;
-      // Reset pan state when ending pinch zoom to prevent accidental pan
-      if (this.activePointers.size === 1) {
-        this.isPanning = false;
-      }
     }
 
     if (this.activePointers.size === 0) {
@@ -135,6 +149,9 @@ export class InputHandler {
         this.onDrawCallback(e.clientX, e.clientY, 'end');
       }
     }
+    
+    // Pan will automatically stop/start based on finger count in handlePointerMove
+    // No complex state management needed here
   };
 
   // Mouse wheel handler
@@ -197,6 +214,12 @@ export class InputHandler {
   // Update pan
   private updatePan(e: PointerEvent): void {
     if (!this.isPanning || !this.onPanCallback) return;
+    
+    // CRITICAL: Never allow pan during pinch zoom or with more than 1 finger
+    if (this.isZooming || this.activePointers.size !== 1) {
+      this.isPanning = false;
+      return;
+    }
 
     const deltaX = e.clientX - this.lastPanPosition.x;
     const deltaY = e.clientY - this.lastPanPosition.y;

@@ -2128,9 +2128,16 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                   onPointerDown={(e) => {
                     // Use pointer events instead of mouse events for brush drawing
                     if (currentMode === 'zoom') {
-                      setIsPanning(true);
-                      lastPanPosition.current = { x: e.clientX, y: e.clientY };        
-                      e.preventDefault();
+                      // Check if InputHandler is currently handling a zoom gesture
+                      const inputHandler = inputHandlerRef.current;
+                      const isZooming = inputHandler?.getGestureState().isZooming || false;
+                      
+                      // Only allow pan when NOT zooming (single finger only)
+                      if (!isZooming) {
+                        setIsPanning(true);
+                        lastPanPosition.current = { x: e.clientX, y: e.clientY };        
+                        e.preventDefault();
+                      }
                     } else {
                       // Convert pointer event to mouse event format
                       const mouseEvent = {
@@ -2146,19 +2153,30 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                   }}
                   onPointerMove={(e) => {
                     if (currentMode === 'zoom' && isPanning && lastPanPosition.current) {
-                      const viewportManager = viewportManagerRef.current;
-                      if (!viewportManager) return;
+                      // Check if InputHandler is currently handling a zoom gesture
+                      const inputHandler = inputHandlerRef.current;
+                      const isZooming = inputHandler?.getGestureState().isZooming || false;
+                      
+                      // Only continue pan when NOT zooming (block pan during pinch zoom)
+                      if (!isZooming) {
+                        const viewportManager = viewportManagerRef.current;
+                        if (!viewportManager) return;
 
-                      const deltaX = e.clientX - lastPanPosition.current.x;
-                      const deltaY = e.clientY - lastPanPosition.current.y;
+                        const deltaX = e.clientX - lastPanPosition.current.x;
+                        const deltaY = e.clientY - lastPanPosition.current.y;
 
-                      const currentState = viewportManager.getState();
-                      viewportManager.setState({
-                        panX: currentState.panX + deltaX,
-                        panY: currentState.panY + deltaY
-                      });
+                        const currentState = viewportManager.getState();
+                        viewportManager.setState({
+                          panX: currentState.panX + deltaX,
+                          panY: currentState.panY + deltaY
+                        });
 
-                      lastPanPosition.current = { x: e.clientX, y: e.clientY };        
+                        lastPanPosition.current = { x: e.clientX, y: e.clientY };        
+                      } else {
+                        // Stop pan immediately when zoom gesture starts
+                        setIsPanning(false);
+                        lastPanPosition.current = null;
+                      }
                     } else {
                       // Always call mouse move - let the tools decide if they're drawing
                       const mouseEvent = {
