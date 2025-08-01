@@ -1915,10 +1915,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           
           {/* Canvas Section */}
-          <div className="flex-1 bg-[#FEFAF6] p-1 grid grid-cols-[20%_80%] h-full" style={{ overflow: 'hidden' }}>
-            <ColorPalette
-              className="md:block"
-              selectedColor={state.currentColor}
+          <div className="flex-1 bg-[#FEFAF6] p-1 flex h-full" style={{ overflow: 'hidden' }}>
+            {/* Only render ColorPalette on desktop */}
+            <div className="hidden lg:block lg:w-1/5 lg:flex-shrink-0">
+              <ColorPalette
+                selectedColor={state.currentColor}
               onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}
               suggestedColors={currentImage.suggestedColors}
               drawingMode={state.drawingMode}
@@ -1940,13 +1941,19 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               canUndo={unifiedHistory.length > 1 && unifiedHistoryStep > 0}
               canRedo={unifiedHistoryStep < unifiedHistory.length - 1}
             />
-            <div className="relative w-full h-full p-4 flex items-center justify-center overflow-hidden">
+            </div>
+            <div className="relative flex-1 w-full h-full p-4 flex items-center justify-center overflow-hidden">
               <div 
               className="relative"
               style={{
-                width: '100%',
+                width: 'auto',
                 height: '100%',
-                maxWidth: typeof window !== 'undefined' ? `${(window.innerHeight - 200) * 2550 / 3300}px` : '100%',
+                maxWidth: typeof window !== 'undefined' ? (() => {
+                  const isDesktop = window.innerWidth >= 1024;
+                  const heightBasedWidth = (window.innerHeight - 200) * 2550 / 3300;
+                  const mobileWidthConstraint = window.innerWidth * 0.85;
+                  return `${isDesktop ? heightBasedWidth : Math.min(heightBasedWidth, mobileWidthConstraint)}px`;
+                })() : '100%',
                 maxHeight: typeof window !== 'undefined' ? `${window.innerHeight - 200}px` : '100%',
                 aspectRatio: '2550 / 3300',
                 transform: `translate(${viewportState.panX}px, ${viewportState.panY}px) scale(${viewportState.scale})`,
@@ -2095,7 +2102,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           </div>
           
           {/* Mobile Controls Section */}
-          <div className="md:hidden space-y-3 p-4">
+          <div className="lg:hidden space-y-3 p-4">
             <MobileToolbar
               drawingMode={state.drawingMode}
               onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
