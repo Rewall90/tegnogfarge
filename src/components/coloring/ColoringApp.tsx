@@ -1108,24 +1108,26 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Use cached contexts
     const shadowCtx = contextRef.current.shadow;
+    const backgroundCtx = contextRef.current.background;
     const fillCtx = contextRef.current.fill;
     const mainCanvas = mainCanvasRef.current;
     const shadowCanvas = shadowCanvasRef.current;
+    const backgroundCanvas = backgroundCanvasRef.current;
     const fillCanvas = fillCanvasRef.current;
     
-    if (!shadowCtx || !fillCtx || !mainCanvas || !shadowCanvas || !fillCanvas) {
+    if (!shadowCtx || !backgroundCtx || !fillCtx || !mainCanvas || !shadowCanvas || !backgroundCanvas || !fillCanvas) {
       setIsFilling(false);
       return;
     }
     
-    if (shadowCanvas.width === 0 || shadowCanvas.height === 0) {
+    if (backgroundCanvas.width === 0 || backgroundCanvas.height === 0) {
       setIsFilling(false);
       return;
     }
     
-    // Always read fresh data from shadow canvas to ensure consistency after undo/redo
-    // The cached imageData might be stale after undo operations
-    const imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height);
+    // Read from clean background canvas (line art only) - not shadow canvas which includes pencil strokes
+    // This allows flood fill to work over areas that have been drawn on with pencil
+    const imageData = backgroundCtx.getImageData(0, 0, backgroundCanvas.width, backgroundCanvas.height);
     sharedImageDataRef.current = imageData;
     
     if (!imageData || imageData.width === 0 || imageData.height === 0) {
