@@ -6,6 +6,8 @@ import NextImage from 'next/image'
 import Link from 'next/link'
 import { FloodFill, type PixelChange, type FillRegion } from '@/lib/flood-fill'
 import ColorPalette from './ColorPalette'
+import LeftColorSidebar from './LeftColorSidebar'
+import RightToolsSidebar from './RightToolsSidebar'
 import ImageSelector from './ImageSelector'
 import { MobileColorPicker } from './MobileColorPicker'
 import { MobileToolbar } from './MobileToolbar'
@@ -220,6 +222,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   
   const [activeThemeId, setActiveThemeId] = useState(DEFAULT_THEME_ID);
   const [backgroundType, setBackgroundType] = useState<string>("default-bg-color");
+  
+  // Track screen dimensions for layout decisions
+  const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
+  const [isTallScreen, setIsTallScreen] = useState(true);
 
   // Viewport management
   const viewportManagerRef = useRef<ViewportManager | null>(null);
@@ -238,6 +244,26 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
   // Reference to the app container for performance testing
   const appContainerRef = useRef<HTMLDivElement>(null);
+
+  // Track screen dimensions for responsive layout
+  useEffect(() => {
+    const updateScreenDimensions = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setScreenDimensions({ width, height });
+      setIsTallScreen(height >= 1024);
+    };
+
+    // Set initial dimensions
+    updateScreenDimensions();
+
+    // Add resize listener
+    window.addEventListener('resize', updateScreenDimensions);
+
+    return () => {
+      window.removeEventListener('resize', updateScreenDimensions);
+    };
+  }, []);
 
   // Refs for specialized tools
   const pencilToolRef = useRef<PencilTool | null>(null);
@@ -1914,33 +1940,38 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       <div className="flex-1 flex overflow-hidden">
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           
-          {/* Canvas Section */}
+          {/* Canvas Section - 3 Column Layout */}
           <div className="flex-1 bg-[#FEFAF6] p-1 flex h-full" style={{ overflow: 'hidden' }}>
-            {/* Only render ColorPalette on desktop */}
-            <div className="hidden lg:block lg:w-1/5 lg:flex-shrink-0">
+            {/* Original ColorPalette for tall screens (height >= 1024px) */}
+            <div className={`lg:w-1/5 lg:flex-shrink-0 ${isTallScreen ? 'hidden lg:block' : 'hidden'}`}>
               <ColorPalette
                 selectedColor={state.currentColor}
-              onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}
-              suggestedColors={currentImage.suggestedColors}
-              drawingMode={state.drawingMode}
-              onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
-              pencilSize={state.pencilSize}
-              onPencilSizeChange={(size) => {
-                setState(prev => ({ ...prev, pencilSize: size }))
-              }}
-              eraserSize={state.eraserSize}
-              onEraserSizeChange={(size) => {
-                setState(prev => ({ ...prev, eraserSize: size }))
-              }}
-              onUndo={handleUndo}
-              onRedo={handleRedo}
-              onReset={handleReset}
-              onDownload={handleDownload}
-              onToggleZoom={handleToggleZoom}
-              currentMode={currentMode}
-              canUndo={unifiedHistory.length > 1 && unifiedHistoryStep > 0}
-              canRedo={unifiedHistoryStep < unifiedHistory.length - 1}
-            />
+                onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}
+                suggestedColors={currentImage.suggestedColors}
+                drawingMode={state.drawingMode}
+                onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
+                pencilSize={state.pencilSize}
+                onPencilSizeChange={(size) => setState(prev => ({ ...prev, pencilSize: size }))}
+                eraserSize={state.eraserSize}
+                onEraserSizeChange={(size) => setState(prev => ({ ...prev, eraserSize: size }))}
+                onUndo={handleUndo}
+                onRedo={handleRedo}
+                onReset={handleReset}
+                onDownload={handleDownload}
+                onToggleZoom={handleToggleZoom}
+                currentMode={currentMode}
+                canUndo={unifiedHistory.length > 1 && unifiedHistoryStep > 0}
+                canRedo={unifiedHistoryStep < unifiedHistory.length - 1}
+              />
+            </div>
+
+            {/* Left Color Sidebar - Only on short screens (height < 1024px) */}
+            <div className={`lg:w-[15%] lg:flex-shrink-0 ${!isTallScreen ? 'hidden lg:block' : 'hidden'}`}>
+              <LeftColorSidebar
+                selectedColor={state.currentColor}
+                onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}
+                suggestedColors={currentImage.suggestedColors}
+              />
             </div>
             <div className="relative flex-1 w-full h-full p-4 flex items-center justify-center overflow-hidden">
               <div 
@@ -1948,13 +1979,24 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               style={{
                 width: 'auto',
                 height: '100%',
-                maxWidth: typeof window !== 'undefined' ? (() => {
-                  const isDesktop = window.innerWidth >= 1024;
-                  const heightBasedWidth = (window.innerHeight - 200) * 2550 / 3300;
-                  const mobileWidthConstraint = window.innerWidth * 0.85;
-                  return `${isDesktop ? heightBasedWidth : Math.min(heightBasedWidth, mobileWidthConstraint)}px`;
+                maxWidth: screenDimensions.width > 0 ? (() => {
+                  const isDesktop = screenDimensions.width >= 1024;
+                  const heightBasedWidth = (screenDimensions.height - 200) * 2550 / 3300;
+                  
+                  if (isDesktop && isTallScreen) {
+                    // Tall desktop screens: Single sidebar (20% width) - original behavior
+                    return `${heightBasedWidth}px`;
+                  } else if (isDesktop && !isTallScreen) {
+                    // Short desktop screens (wide tablets): Split sidebars (30% total width)
+                    const shortScreenConstraint = screenDimensions.width * 0.60;
+                    return `${Math.min(heightBasedWidth, shortScreenConstraint)}px`;
+                  } else {
+                    // Mobile: No sidebars, use 85% of full width
+                    const mobileWidthConstraint = screenDimensions.width * 0.85;
+                    return `${Math.min(heightBasedWidth, mobileWidthConstraint)}px`;
+                  }
                 })() : '100%',
-                maxHeight: typeof window !== 'undefined' ? `${window.innerHeight - 200}px` : '100%',
+                maxHeight: screenDimensions.height > 0 ? `${screenDimensions.height - 200}px` : '100%',
                 aspectRatio: '2550 / 3300',
                 transform: `translate(${viewportState.panX}px, ${viewportState.panY}px) scale(${viewportState.scale})`,
                 transformOrigin: 'center center',
@@ -2098,6 +2140,26 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                 }} 
               />
               </div>
+            </div>
+            
+            {/* Right Tools Sidebar - Only on short screens (height < 1024px) */}
+            <div className={`lg:w-[15%] lg:flex-shrink-0 ${!isTallScreen ? 'hidden lg:block' : 'hidden'}`}>
+              <RightToolsSidebar
+                drawingMode={state.drawingMode}
+                onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
+                pencilSize={state.pencilSize}
+                onPencilSizeChange={(size) => setState(prev => ({ ...prev, pencilSize: size }))}
+                eraserSize={state.eraserSize}
+                onEraserSizeChange={(size) => setState(prev => ({ ...prev, eraserSize: size }))}
+                onUndo={handleUndo}
+                onRedo={handleRedo}
+                onReset={handleReset}
+                onDownload={handleDownload}
+                onToggleZoom={handleToggleZoom}
+                currentMode={currentMode}
+                canUndo={unifiedHistory.length > 1 && unifiedHistoryStep > 0}
+                canRedo={unifiedHistoryStep < unifiedHistory.length - 1}
+              />
             </div>
           </div>
           
