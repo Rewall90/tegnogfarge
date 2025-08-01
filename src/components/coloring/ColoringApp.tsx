@@ -1932,37 +1932,75 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           onClose={() => setShowImageSelector(false)}
         />
       )}
-      {/* New Container with navigation */}
+      {/* New Container with tools */}
       <div className="bg-[#FEFAF6] shadow-sm p-2 relative z-40">
         <div className="flex justify-between items-center">
+          {/* Back Button */}
+          <button
+            onClick={() => router.push(`/categories/${currentImage.category.slug}/${currentImage.subcategory.slug}`)}
+            className="relative flex items-center justify-center w-12 h-12 transition-all duration-300 border-2 rounded-full cursor-pointer border-red-500 hover:border-red-600 text-red-500 hover:text-red-600"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m12 19-7-7 7-7"/>
+              <path d="M19 12H5"/>
+            </svg>
+          </button>
+
+          {/* Center tools */}
           <div className="flex items-center gap-4">
-            <Link href="/" className="lg:flex items-center hidden" aria-label="Til forsiden">
-              <NextImage 
-                src="/images/logo/tegnogfarge-logo.svg" 
-                alt="TegnOgFarge.no Logo" 
-                width={120} 
-                height={54} 
-                priority
-                className="h-12 w-auto"
-              />
-            </Link>
-            <h2 className="text-lg font-quicksand text-[#264653]">{currentImage.title}</h2>
+          {/* Undo */}
+          <button 
+           onClick={handleUndo}
+           disabled={!(unifiedHistory.length > 1 && unifiedHistoryStep > 0)}
+           className={`relative flex items-center justify-center w-12 h-12 transition-all duration-300 border-2 rounded-full cursor-pointer ${
+             !(unifiedHistory.length > 1 && unifiedHistoryStep > 0)
+               ? 'border-gray-200 opacity-50 cursor-not-allowed' 
+               : 'border-[#E5E7EB] hover:border-gray-300'
+           }`}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M20.0723 15.5117C20.0723 16.6895 19.8262 17.7148 19.334 18.5879C18.8418 19.4609 18.1299 20.1377 17.1982 20.6182C16.2725 21.0986 15.1533 21.3389 13.8408 21.3389H11.7314C11.4443 21.3389 11.21 21.2451 11.0283 21.0576C10.8467 20.8701 10.7559 20.6416 10.7559 20.3721C10.7559 20.1084 10.8467 19.8828 11.0283 19.6953C11.21 19.5078 11.4443 19.4141 11.7314 19.4141H13.7793C14.7227 19.4141 15.5195 19.2412 16.1699 18.8955C16.8262 18.5498 17.3213 18.0781 17.6553 17.4805C17.9951 16.8828 18.165 16.2031 18.165 15.4414C18.165 14.6797 17.9951 14.0059 17.6553 13.4199C17.3213 12.834 16.8262 12.377 16.1699 12.0488C15.5195 11.7148 14.7227 11.5479 13.7793 11.5479H8.18945L5.22754 11.416L5.5 10.915L7.69727 12.7695L9.95605 14.9668C10.0381 15.0488 10.1055 15.1455 10.1582 15.2568C10.2109 15.3682 10.2373 15.4941 10.2373 15.6348C10.2373 15.9043 10.1494 16.127 9.97363 16.3027C9.80371 16.4785 9.5752 16.5664 9.28809 16.5664C9.02441 16.5664 8.7959 16.4668 8.60254 16.2676L3.54883 11.3018C3.44922 11.2021 3.37305 11.0908 3.32031 10.9678C3.26758 10.8447 3.24121 10.7188 3.24121 10.5898C3.24121 10.4551 3.26758 10.3262 3.32031 10.2031C3.37305 10.0742 3.44922 9.96289 3.54883 9.86914L8.60254 4.90332C8.7959 4.69824 9.02441 4.5957 9.28809 4.5957C9.5752 4.5957 9.80371 4.68359 9.97363 4.85938C10.1494 5.03516 10.2373 5.26074 10.2373 5.53613C10.2373 5.67676 10.2109 5.80273 10.1582 5.91406C10.1055 6.01953 10.0381 6.11621 9.95605 6.2041L7.69727 8.41016L5.5 10.2646L5.22754 9.75488L8.18945 9.61426H13.7266C15.0566 9.61426 16.1963 9.86621 17.1455 10.3701C18.0947 10.8682 18.8184 11.5596 19.3164 12.4443C19.8203 13.3291 20.0723 14.3516 20.0723 15.5117Z" fill="#4E5969"/>
+            </svg>
+          </button>
+
+          {/* Zoom Tool */}
+          <button 
+           onClick={handleToggleZoom}
+           className={`relative flex items-center justify-center w-12 h-12 transition-all duration-300 border-2 rounded-full cursor-pointer ${
+             currentMode === 'zoom'
+               ? 'border-blue-600 bg-blue-50 scale-110'
+               : 'border-[#E5E7EB] hover:border-gray-300'
+           }`}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M21 21L16.514 16.506M19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z" stroke="#4E5969" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M13.5 10.5H7.5M10.5 7.5V13.5" stroke="#4E5969" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+
+          {/* Redo */}
+          <button 
+           onClick={handleRedo}
+           disabled={!(unifiedHistoryStep < unifiedHistory.length - 1)}
+           className={`relative flex items-center justify-center w-12 h-12 transition-all duration-300 border-2 rounded-full cursor-pointer ${
+             !(unifiedHistoryStep < unifiedHistory.length - 1)
+               ? 'border-gray-200 opacity-50 cursor-not-allowed' 
+               : 'border-[#E5E7EB] hover:border-gray-300'
+           }`}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M3.24121 15.5117C3.24121 14.3516 3.49316 13.3291 3.99707 12.4443C4.50098 11.5596 5.22461 10.8682 6.16797 10.3701C7.11719 9.86621 8.25684 9.61426 9.58691 9.61426H15.124L18.0859 9.75488L17.8135 10.2646L15.6162 8.41016L13.3574 6.2041C13.2695 6.11621 13.1992 6.01953 13.1465 5.91406C13.0996 5.80273 13.0762 5.67676 13.0762 5.53613C13.0762 5.26074 13.1611 5.03516 13.3311 4.85938C13.5068 4.68359 13.7354 4.5957 14.0166 4.5957C14.2861 4.5957 14.5205 4.69824 14.7197 4.90332L19.7646 9.86914C19.8643 9.96289 19.9404 10.0742 19.9932 10.2031C20.0459 10.3262 20.0723 10.4551 20.0723 10.5898C20.0723 10.7188 20.0459 10.8447 19.9932 10.9678C19.9404 11.0908 19.8643 11.2021 19.7646 11.3018L14.7197 16.2676C14.5205 16.4668 14.2861 16.5664 14.0166 16.5664C13.7354 16.5664 13.5068 16.4785 13.3311 16.3027C13.1611 16.127 13.0762 15.9043 13.0762 15.6348C13.0762 15.4941 13.0996 15.3682 13.1465 15.2568C13.1992 15.1455 13.2695 15.0488 13.3574 14.9668L15.6162 12.7695L17.8135 10.915L18.0859 11.416L15.124 11.5479H9.54297C8.59375 11.5479 7.79395 11.7148 7.14355 12.0488C6.49316 12.377 5.99805 12.834 5.6582 13.4199C5.31836 14.0059 5.14844 14.6797 5.14844 15.4414C5.14844 16.2031 5.31836 16.8828 5.6582 17.4805C5.99805 18.0781 6.49316 18.5498 7.14355 18.8955C7.79395 19.2412 8.59375 19.4141 9.54297 19.4141H11.582C11.8691 19.4141 12.1035 19.5078 12.2852 19.6953C12.4727 19.8828 12.5664 20.1084 12.5664 20.3721C12.5664 20.6416 12.4727 20.8701 12.2852 21.0576C12.1035 21.2451 11.8691 21.3389 11.582 21.3389H9.47266C8.16016 21.3389 7.03809 21.0986 6.10645 20.6182C5.18066 20.1377 4.47168 19.4609 3.97949 18.5879C3.4873 17.7148 3.24121 16.6895 3.24121 15.5117Z" fill="#4E5969"/>
+            </svg>
+          </button>
           </div>
-          
-          <div className="flex items-center gap-2 sm:gap-4">
-            <button
-              onClick={() => router.push(`/categories/${currentImage.category.slug}/${currentImage.subcategory.slug}`)}
-              className="text-[#264653] hover:text-[#FF6F59] transition-colors duration-200 font-quicksand text-sm sm:text-lg"
-            >
-              ← Tilbake
-            </button>
-            <button
-              onClick={() => setShowImageSelector(true)}
-              className="bg-[#EB7060] text-black px-3 sm:px-4 py-1.5 sm:py-2 rounded hover:bg-[#EB7060]/90 font-quicksand text-sm sm:text-lg"
-            >
-              Bytt bilde
-            </button>
-          </div>
+
+          {/* Bytt bilde button */}
+          <button
+            onClick={() => setShowImageSelector(true)}
+            className="bg-[#EB7060] text-black px-3 py-2 rounded hover:bg-[#EB7060]/90 font-quicksand text-xs whitespace-nowrap"
+          >
+            Bytt bilde
+          </button>
         </div>
       </div>
 
