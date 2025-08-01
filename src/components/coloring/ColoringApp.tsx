@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import NextImage from 'next/image'
 import Link from 'next/link'
+import useAuth from '../../../hooks/useAuth'
 import { FloodFill, type PixelChange, type FillRegion } from '@/lib/flood-fill'
 import ColorPalette from './ColorPalette'
 import LeftColorSidebar from './LeftColorSidebar'
@@ -140,6 +141,8 @@ function getCanvasCoordinates(clientX: number, clientY: number, canvas: HTMLCanv
 }
 
 export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
+  const { user } = useAuth()
+  
   // Add CSS animation for fade-up effect
   useEffect(() => {
     const style = document.createElement('style');
@@ -1932,8 +1935,42 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           onClose={() => setShowImageSelector(false)}
         />
       )}
-      {/* New Container with tools */}
-      <div className="bg-[#FEFAF6] shadow-sm p-2 relative z-40">
+      {/* Header for desktop/tablet, div for mobile */}
+      <header className="hidden md:block bg-[#FEFAF6] shadow-sm p-4 relative z-40">
+        <div className="flex justify-between items-center py-2">
+          {/* Site Logo */}
+          <Link href="/" className="flex items-center" aria-label="Til forsiden">
+            <NextImage 
+              src="/images/logo/tegnogfarge-logo.svg" 
+              alt="TegnOgFarge.no Logo" 
+              width={120} 
+              height={54} 
+              priority
+              className="h-12 w-auto"
+            />
+          </Link>
+
+          {/* Center Greeting */}
+          <div className="flex-1 flex justify-center">
+            {user && (
+              <span className="text-gray-700 font-quicksand text-lg">
+                Hei, {user.name.split(' ')[0]}!
+              </span>
+            )}
+          </div>
+
+          {/* Bytt bilde button */}
+          <button
+            onClick={() => setShowImageSelector(true)}
+            className="bg-[#EB7060] text-black px-6 py-3 rounded hover:bg-[#EB7060]/90 font-quicksand text-xl whitespace-nowrap"
+          >
+            Bytt bilde
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile version - keep as div */}
+      <div className="md:hidden bg-[#FEFAF6] shadow-sm p-2 relative z-40">
         <div className="flex justify-between items-center">
           {/* Back Button */}
           <button
