@@ -102,13 +102,9 @@ export default function RightToolsSidebar({
                 ? 'border-blue-600 scale-110' 
                 : 'border-[#E5E7EB] hover:border-gray-300'
             }`}
-            style={{ 
-              width: buttonWidth,
-              aspectRatio: '1'
-            }}
           >
             <img 
-              className="w-full h-full rounded-full object-cover" 
+              className="w-full h-full rounded-full" 
               src="/images/pencil-flood-eraser/pencil.png" 
               alt="Pencil tool"
             />
@@ -122,13 +118,9 @@ export default function RightToolsSidebar({
                 ? 'border-green-600 scale-110' 
                 : 'border-[#E5E7EB] hover:border-gray-300'
             }`}
-            style={{ 
-              width: buttonWidth,
-              aspectRatio: '1'
-            }}
           >
             <img 
-              className="w-full h-full rounded-full object-cover" 
+              className="w-full h-full rounded-full" 
               src="/images/pencil-flood-eraser/floodandfill.png" 
               alt="Flood fill tool"
             />
@@ -142,13 +134,9 @@ export default function RightToolsSidebar({
                 ? 'border-red-600 scale-110' 
                 : 'border-[#E5E7EB] hover:border-gray-300'
             }`}
-            style={{ 
-              width: buttonWidth,
-              aspectRatio: '1'
-            }}
           >
             <img 
-              className="w-full h-full rounded-full object-cover" 
+              className="w-full h-full rounded-full" 
               src="/images/pencil-flood-eraser/eraser.png" 
               alt="Eraser tool"
             />

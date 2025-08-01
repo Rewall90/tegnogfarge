@@ -1966,7 +1966,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             </div>
 
             {/* Split Layout: Left Color Sidebar - For short screens (height < 1024px) - Desktop AND Tablets */}
-            <div className={`lg:w-[15%] lg:flex-shrink-0 ${!isTallScreen ? 'hidden lg:block' : 'hidden'}`}>
+            <div className={`lg:w-[20%] lg:flex-shrink-0 ${!isTallScreen ? 'hidden lg:block' : 'hidden'}`}>
               <LeftColorSidebar
                 selectedColor={state.currentColor}
                 onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}

@@ -181,7 +181,7 @@ export default function LeftColorSidebar({
           <div className="mb-6">
             <SectionHeader title="Foreslåtte farger" />
             <div 
-              className="flex flex-wrap gap-2"
+              className="flex flex-wrap gap-1"
             >
               {suggestedColors.map((color, index) => (
                 <ColorButton
@@ -201,7 +201,7 @@ export default function LeftColorSidebar({
         <div className="mb-6">
           <SectionHeader title="Standard farger" />
           <div 
-            className="flex flex-wrap gap-2"
+            className="flex flex-wrap gap-1"
           >
             {defaultColors.map((color) => (
               <ColorButton
@@ -219,7 +219,7 @@ export default function LeftColorSidebar({
         <div className="mb-6">
           <SectionHeader title="Hudfarger" />
           <div 
-            className="flex flex-wrap gap-2"
+            className="flex flex-wrap gap-1"
           >
             {skinTones.map((color) => (
               <ColorButton
@@ -237,7 +237,7 @@ export default function LeftColorSidebar({
         <div className="mb-6">
           <SectionHeader title="Hår Farge" />
           <div 
-            className="flex flex-wrap gap-2"
+            className="flex flex-wrap gap-1"
           >
             {hairColors.map((color) => (
               <ColorButton
@@ -255,7 +255,7 @@ export default function LeftColorSidebar({
         <div className="mb-6">
           <SectionHeader title="Øye Farge" />
           <div 
-            className="flex flex-wrap gap-2"
+            className="flex flex-wrap gap-1"
           >
             {eyeColors.map((color) => (
               <ColorButton
@@ -273,7 +273,7 @@ export default function LeftColorSidebar({
         <div className="mb-6">
           <SectionHeader title="Leppe Farge" />
           <div 
-            className="flex flex-wrap gap-2"
+            className="flex flex-wrap gap-1"
           >
             {lipColors.map((color) => (
               <ColorButton
@@ -291,7 +291,7 @@ export default function LeftColorSidebar({
         <div className="mb-6">
           <SectionHeader title="Himmel Farger" />
           <div 
-            className="flex flex-wrap gap-2"
+            className="flex flex-wrap gap-1"
           >
             {skyColors.map((color) => (
               <ColorButton
@@ -309,7 +309,7 @@ export default function LeftColorSidebar({
         <div className="mb-6">
           <SectionHeader title="Skog Farger" />
           <div 
-            className="flex flex-wrap gap-2"
+            className="flex flex-wrap gap-1"
           >
             {forestColors.map((color) => (
               <ColorButton
