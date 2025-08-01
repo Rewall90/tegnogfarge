@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect, useRef } from 'react'
 
 interface LeftColorSidebarProps {
   selectedColor: string
@@ -43,17 +44,18 @@ function getOptimalDotColor(backgroundColor: string): 'white' | 'black' {
   return luminance > 0.7 ? 'black' : 'white'
 }
 
-function ColorButton({ color, isSelected, onSelect, ariaLabel }: ColorButtonProps) {
+function ColorButton({ color, isSelected, onSelect, ariaLabel, width }: ColorButtonProps & { width?: string }) {
   return (
     <button
       onClick={() => onSelect(color)}
       aria-pressed={isSelected}
-      className={`w-12 h-12 rounded-full relative transition-all duration-200
+      className={`h-12 rounded-full relative transition-all duration-200
         flex items-center justify-center
         ${isSelected 
           ? 'scale-125' 
           : 'hover:scale-110'
         }`}
+      style={{ width: width || '48px' }}
     >
       <div
         className="w-10 h-10 rounded-full"
@@ -78,12 +80,56 @@ export default function LeftColorSidebar({
   suggestedColors,
   className = ""
 }: LeftColorSidebarProps) {
+  
+  // Dynamic column detection based on container width
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [optimalColumns, setOptimalColumns] = useState(3)
+  
+  useEffect(() => {
+    const calculateOptimalColumns = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth
+        const padding = 32 // p-2 md:p-4 = 16px on each side
+        const availableWidth = containerWidth - padding
+        
+        // Each color button needs minimum 48px + 8px gap, except last one
+        const minButtonWidth = 48
+        const gap = 8
+        
+        // Calculate how many buttons can fit
+        // Formula: (availableWidth + gap) / (minButtonWidth + gap)
+        const maxColumns = Math.floor((availableWidth + gap) / (minButtonWidth + gap))
+        
+        // Ensure at least 1 column, maximum 4 columns
+        const columns = Math.max(1, Math.min(4, maxColumns))
+        
+        setOptimalColumns(columns)
+      }
+    }
+    
+    setTimeout(calculateOptimalColumns, 100)
+    
+    const resizeObserver = new ResizeObserver(() => {
+      setTimeout(calculateOptimalColumns, 50)
+    })
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current)
+    }
+    
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
 
   const defaultColors = [
     '#FF0000', '#FF8000', '#FFFF00', '#80FF00', '#00FF00', '#00FF80',
     '#00FFFF', '#0080FF', '#0000FF', '#8000FF', '#FF00FF', '#FF0080',
     '#000000', '#404040', '#808080', '#C0C0C0'
   ]
+
+  // Calculate button width based on optimal column count  
+  const buttonWidth = `calc(${100 / optimalColumns}% - ${8 * (optimalColumns - 1) / optimalColumns}px)`
+  
 
   const skinTones = [
     '#FDBCB4', '#F1C27D', '#E0AC69', '#C68642', '#8D5524', '#5C4037',
@@ -129,12 +175,14 @@ export default function LeftColorSidebar({
       </div>
 
       {/* Scrollable Color Sections Container */}
-      <div className="overflow-y-auto p-2 md:p-4" style={{ minHeight: 0 }}>
+      <div ref={containerRef} className="overflow-y-auto p-2 md:p-4" style={{ minHeight: 0 }}>
         {/* Foreslåtte farger */}
         {suggestedColors && suggestedColors.length > 0 && (
           <div className="mb-6">
             <SectionHeader title="Foreslåtte farger" />
-            <div className="grid grid-cols-4 gap-2">
+            <div 
+              className="flex flex-wrap gap-2"
+            >
               {suggestedColors.map((color, index) => (
                 <ColorButton
                   key={index}
@@ -142,6 +190,7 @@ export default function LeftColorSidebar({
                   isSelected={selectedColor === color.hex}
                   onSelect={onColorSelect}
                   ariaLabel={color.name}
+                  width={buttonWidth}
                 />
               ))}
             </div>
@@ -151,13 +200,16 @@ export default function LeftColorSidebar({
         {/* Standard farger */}
         <div className="mb-6">
           <SectionHeader title="Standard farger" />
-          <div className="grid grid-cols-4 gap-2">
+          <div 
+            className="flex flex-wrap gap-2"
+          >
             {defaultColors.map((color) => (
               <ColorButton
                 key={color}
                 color={color}
                 isSelected={selectedColor === color}
                 onSelect={onColorSelect}
+                width={buttonWidth}
               />
             ))}
           </div>
@@ -166,13 +218,16 @@ export default function LeftColorSidebar({
         {/* Hudfarger */}
         <div className="mb-6">
           <SectionHeader title="Hudfarger" />
-          <div className="grid grid-cols-4 gap-2">
+          <div 
+            className="flex flex-wrap gap-2"
+          >
             {skinTones.map((color) => (
               <ColorButton
                 key={color}
                 color={color}
                 isSelected={selectedColor === color}
                 onSelect={onColorSelect}
+                width={buttonWidth}
               />
             ))}
           </div>
@@ -181,13 +236,16 @@ export default function LeftColorSidebar({
         {/* Hår Farge */}
         <div className="mb-6">
           <SectionHeader title="Hår Farge" />
-          <div className="grid grid-cols-4 gap-2">
+          <div 
+            className="flex flex-wrap gap-2"
+          >
             {hairColors.map((color) => (
               <ColorButton
                 key={color}
                 color={color}
                 isSelected={selectedColor === color}
                 onSelect={onColorSelect}
+                width={buttonWidth}
               />
             ))}
           </div>
@@ -196,13 +254,16 @@ export default function LeftColorSidebar({
         {/* Øye Farge */}
         <div className="mb-6">
           <SectionHeader title="Øye Farge" />
-          <div className="grid grid-cols-4 gap-2">
+          <div 
+            className="flex flex-wrap gap-2"
+          >
             {eyeColors.map((color) => (
               <ColorButton
                 key={color}
                 color={color}
                 isSelected={selectedColor === color}
                 onSelect={onColorSelect}
+                width={buttonWidth}
               />
             ))}
           </div>
@@ -211,13 +272,16 @@ export default function LeftColorSidebar({
         {/* Leppe Farge */}
         <div className="mb-6">
           <SectionHeader title="Leppe Farge" />
-          <div className="grid grid-cols-4 gap-2">
+          <div 
+            className="flex flex-wrap gap-2"
+          >
             {lipColors.map((color) => (
               <ColorButton
                 key={color}
                 color={color}
                 isSelected={selectedColor === color}
                 onSelect={onColorSelect}
+                width={buttonWidth}
               />
             ))}
           </div>
@@ -226,13 +290,16 @@ export default function LeftColorSidebar({
         {/* Himmel Farger */}
         <div className="mb-6">
           <SectionHeader title="Himmel Farger" />
-          <div className="grid grid-cols-4 gap-2">
+          <div 
+            className="flex flex-wrap gap-2"
+          >
             {skyColors.map((color) => (
               <ColorButton
                 key={color}
                 color={color}
                 isSelected={selectedColor === color}
                 onSelect={onColorSelect}
+                width={buttonWidth}
               />
             ))}
           </div>
@@ -241,13 +308,16 @@ export default function LeftColorSidebar({
         {/* Skog Farger */}
         <div className="mb-6">
           <SectionHeader title="Skog Farger" />
-          <div className="grid grid-cols-4 gap-2">
+          <div 
+            className="flex flex-wrap gap-2"
+          >
             {forestColors.map((color) => (
               <ColorButton
                 key={color}
                 color={color}
                 isSelected={selectedColor === color}
                 onSelect={onColorSelect}
+                width={buttonWidth}
               />
             ))}
           </div>
