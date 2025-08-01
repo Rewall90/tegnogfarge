@@ -272,7 +272,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   useEffect(() => {
     const updateScreenDimensions = () => {
       const width = window.innerWidth;
-      const height = window.innerHeight;
+      // Use Visual Viewport API for better mobile browser UI handling
+      const height = window.visualViewport?.height || window.innerHeight;
       setScreenDimensions({ width, height });
       setIsTallScreen(height >= 1024);
       
@@ -304,9 +305,17 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
     // Add resize listener
     window.addEventListener('resize', updateScreenDimensions);
+    
+    // Add Visual Viewport listener for mobile browser UI changes
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateScreenDimensions);
+    }
 
     return () => {
       window.removeEventListener('resize', updateScreenDimensions);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', updateScreenDimensions);
+      }
     };
   }, []);
 
@@ -1851,7 +1860,14 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   }, [currentMode]);
 
   return (
-    <div className="h-screen overflow-hidden bg-gray-100 grid grid-rows-[auto_1fr_auto] lg:grid-rows-[auto_1fr]" style={{ height: '100vh', maxHeight: '100vh' }} ref={appContainerRef}>
+    <div className="h-screen overflow-hidden bg-gray-100 grid grid-rows-[auto_1fr_auto] lg:grid-rows-[auto_1fr]" style={{ 
+      height: '100vh', 
+      maxHeight: '100vh',
+      paddingTop: 'env(safe-area-inset-top)',
+      paddingLeft: 'env(safe-area-inset-left)',
+      paddingRight: 'env(safe-area-inset-right)',
+      paddingBottom: 'env(safe-area-inset-bottom)'
+    }} ref={appContainerRef}>
       {showImageSelector && (
         <ImageSelector
           currentImageId={currentImage._id}
