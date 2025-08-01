@@ -243,6 +243,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Track screen dimensions for layout decisions
   const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
   const [isTallScreen, setIsTallScreen] = useState(true); // >= 1024px height = single sidebar, < 1024px = split sidebars
+  
+  // Refs for measuring actual header and footer heights
+  const headerRef = useRef<HTMLElement>(null);
+  const mobileHeaderRef = useRef<HTMLDivElement>(null);
+  const mobileControlsRef = useRef<HTMLDivElement>(null);
+  const [availableHeight, setAvailableHeight] = useState(0);
 
   // Viewport management
   const viewportManagerRef = useRef<ViewportManager | null>(null);
@@ -262,13 +268,35 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Reference to the app container for performance testing
   const appContainerRef = useRef<HTMLDivElement>(null);
 
-  // Track screen dimensions for responsive layout
+  // Track screen dimensions and calculate available height for responsive layout
   useEffect(() => {
     const updateScreenDimensions = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
       setScreenDimensions({ width, height });
       setIsTallScreen(height >= 1024);
+      
+      // Calculate available height by measuring actual header and footer heights
+      const calculateAvailableHeight = () => {
+        let headerHeight = 0;
+        let footerHeight = 0;
+        
+        // Check if we're on mobile or desktop and measure appropriate elements
+        if (width < 768) { // Mobile breakpoint (md:)
+          headerHeight = mobileHeaderRef.current?.offsetHeight || 0;
+          footerHeight = mobileControlsRef.current?.offsetHeight || 0;
+        } else {
+          headerHeight = headerRef.current?.offsetHeight || 0;
+          // Desktop doesn't have a footer in the grid
+          footerHeight = 0;
+        }
+        
+        const available = height - headerHeight - footerHeight;
+        setAvailableHeight(Math.max(available, 200)); // Minimum 200px for safety
+      };
+      
+      // Use requestAnimationFrame to ensure DOM is updated
+      requestAnimationFrame(calculateAvailableHeight);
     };
 
     // Set initial dimensions
@@ -1834,7 +1862,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         />
       )}
       {/* Header for desktop/tablet, div for mobile */}
-      <header className="hidden md:block bg-[#FEFAF6] shadow-sm p-4 relative z-40">
+      <header ref={headerRef} className="hidden md:block bg-[#FEFAF6] shadow-sm p-4 relative z-40">
         <div className="flex justify-between items-center py-2">
           {/* Site Logo */}
           <Link href="/" className="flex items-center" aria-label="Til forsiden">
@@ -1868,7 +1896,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       </header>
 
       {/* Mobile version - keep as div */}
-      <div className="md:hidden bg-[#FEFAF6] shadow-sm p-2 relative z-40">
+      <div ref={mobileHeaderRef} className="md:hidden bg-[#FEFAF6] shadow-sm p-2 relative z-40">
         <div className="flex justify-between items-center">
           {/* Back Button */}
           <button
@@ -1983,7 +2011,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                 height: '100%',
                 maxWidth: screenDimensions.width > 0 ? (() => {
                   const isDesktop = screenDimensions.width >= 1024;
-                  const heightBasedWidth = (screenDimensions.height - 200) * 2550 / 3300;
+                  const heightBasedWidth = availableHeight * 2550 / 3300;
                   
                   if (isDesktop && isTallScreen) {
                     // Tall screens (>=1024px height): Single sidebar (20% width) - Desktop AND Tablets
@@ -1998,7 +2026,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                     return `${Math.min(heightBasedWidth, mobileWidthConstraint)}px`;
                   }
                 })() : '100%',
-                maxHeight: screenDimensions.height > 0 ? `${screenDimensions.height - 200}px` : '100%',
+                maxHeight: availableHeight > 0 ? `${availableHeight}px` : '100%',
                 aspectRatio: '2550 / 3300',
                 transform: `translate(${viewportState.panX}px, ${viewportState.panY}px) scale(${viewportState.scale})`,
                 transformOrigin: 'center center',
@@ -2185,7 +2213,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       </div>
       
       {/* Mobile Controls Section - Now a direct grid child */}
-      <div className="lg:hidden relative min-w-0">
+      <div ref={mobileControlsRef} className="lg:hidden relative min-w-0">
             <div className="bg-white shadow-lg relative transition-all duration-300 ease-out min-w-0" style={{ zIndex: 9999, position: 'relative' }}>
               
               {/* Tools Section - Overlays canvas when expanded */}
