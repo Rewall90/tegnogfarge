@@ -1032,6 +1032,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     // Skip multi-touch - let InputHandler handle all zoom gestures
     if (e.touches.length > 1) return;
     
+    // Block all drawing tools when in zoom mode (same as desktop)
+    if (currentMode === 'zoom') return;
+    
     // Only handle single touch for drawing
     
     const touch = e.touches[0];
@@ -1078,6 +1081,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     
     // Skip multi-touch - let InputHandler handle all zoom gestures
     if (e.touches.length > 1) return;
+    
+    // Block all drawing tools when in zoom mode (same as desktop)
+    if (currentMode === 'zoom') return;
     
     // Only handle single touch for drawing
     
@@ -1135,6 +1141,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
   const handleTouchEnd = useCallback((e: TouchEvent) => {
     e.preventDefault();
+    
+    // Block all drawing tools when in zoom mode (same as desktop)
+    if (currentMode === 'zoom') return;
     
     // Touch gesture state cleanup no longer needed - InputHandler handles it
     
