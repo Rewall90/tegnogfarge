@@ -1922,7 +1922,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   }, [currentMode]);
 
   return (
-    <div className="h-screen overflow-hidden bg-gray-100 flex flex-col" ref={appContainerRef}>
+    <div className="h-screen overflow-hidden bg-gray-100 grid grid-rows-[auto_1fr_auto] lg:grid-rows-[auto_1fr]" style={{ height: '100vh', maxHeight: '100vh' }} ref={appContainerRef}>
       {showImageSelector && (
         <ImageSelector
           currentImageId={currentImage._id}
@@ -1932,44 +1932,45 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           onClose={() => setShowImageSelector(false)}
         />
       )}
-      <header className="bg-[#FEFAF6] shadow-sm py-2 relative z-40">
-        <div className="flex justify-between items-center h-24 px-4">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center" aria-label="Til forsiden">
+      {/* New Container with navigation */}
+      <div className="bg-[#FEFAF6] shadow-sm p-2 relative z-40">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <Link href="/" className="lg:flex items-center hidden" aria-label="Til forsiden">
               <NextImage 
                 src="/images/logo/tegnogfarge-logo.svg" 
                 alt="TegnOgFarge.no Logo" 
-                width={200} 
-                height={90} 
+                width={120} 
+                height={54} 
                 priority
-                className="h-20 w-auto"
+                className="h-12 w-auto"
               />
             </Link>
-            <h1 className="text-section text-[#264653] hidden md:block">{currentImage.title}</h1>
+            <h2 className="text-lg font-quicksand text-[#264653]">{currentImage.title}</h2>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button
               onClick={() => router.push(`/categories/${currentImage.category.slug}/${currentImage.subcategory.slug}`)}
-              className="text-[#264653] hover:text-[#FF6F59] transition-colors duration-200 font-quicksand text-[20px]"
+              className="text-[#264653] hover:text-[#FF6F59] transition-colors duration-200 font-quicksand text-sm sm:text-lg"
             >
               ← Tilbake
             </button>
             <button
               onClick={() => setShowImageSelector(true)}
-              className="bg-[#EB7060] text-black px-5 py-2.5 rounded hover:bg-[#EB7060]/90 font-quicksand text-[20px]"
+              className="bg-[#EB7060] text-black px-3 sm:px-4 py-1.5 sm:py-2 rounded hover:bg-[#EB7060]/90 font-quicksand text-sm sm:text-lg"
             >
               Bytt bilde
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
-      <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      {/* Canvas Section - Now a direct grid child */}
+      <div className="overflow-hidden min-h-0">
           
           {/* Canvas Section - 3 Column Layout */}
-          <div className="flex-1 bg-[#FEFAF6] p-1 flex h-full" style={{ overflow: 'hidden' }}>
+          <div className="bg-[#FEFAF6] p-1 flex h-full" style={{ overflow: 'hidden' }}>
             {/* Single ColorPalette for tall screens (height >= 1024px) - Desktop AND Tablets */}
             <div className={`lg:w-1/5 lg:flex-shrink-0 ${isTallScreen ? 'hidden lg:block' : 'hidden'}`}>
               <ColorPalette
@@ -2190,10 +2191,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               />
             </div>
           </div>
-          
-          {/* Mobile Controls Section - Unified Expandable Menu */}
-          <div className="lg:hidden relative">
-            <div className="bg-white shadow-lg relative transition-all duration-300 ease-out" style={{ zIndex: 9999 }}>
+      </div>
+      
+      {/* Mobile Controls Section - Now a direct grid child */}
+      <div className="lg:hidden relative min-w-0">
+            <div className="bg-white shadow-lg relative transition-all duration-300 ease-out min-w-0" style={{ zIndex: 9999, position: 'relative' }}>
               
               {/* Tools Section - Overlays canvas when expanded */}
               {showMobileTools && (
@@ -2209,55 +2211,50 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                     <button
                       onClick={() => {
                         setState(prev => ({ ...prev, drawingMode: 'pencil' }));
-                        setShowMobileTools(false);
                       }}
-                      className={`px-3 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                      className={`relative flex items-center justify-center w-12 h-12 transition-all duration-300 border-2 rounded-full cursor-pointer ${
                         state.drawingMode === 'pencil' 
-                          ? 'bg-blue-100/80 text-blue-700' 
-                          : 'bg-gray-100/80 hover:bg-gray-200/80'
+                          ? 'border-blue-600 scale-110' 
+                          : 'border-[#E5E7EB] hover:border-gray-300'
                       }`}
                     >
-                      ✏️ Tegn
+                      <img 
+                        className="w-full h-full rounded-full" 
+                        src="/images/pencil-flood-eraser/pencil.png" 
+                        alt="Pencil tool"
+                      />
                     </button>
                     <button
                       onClick={() => {
                         setState(prev => ({ ...prev, drawingMode: 'fill' }));
-                        setShowMobileTools(false);
                       }}
-                      className={`px-3 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                      className={`relative flex items-center justify-center w-12 h-12 transition-all duration-300 border-2 rounded-full cursor-pointer ${
                         state.drawingMode === 'fill'
-                          ? 'bg-blue-100/80 text-blue-700'
-                          : 'bg-gray-100/80 hover:bg-gray-200/80'
+                          ? 'border-green-600 scale-110'
+                          : 'border-[#E5E7EB] hover:border-gray-300'
                       }`}
                     >
-                      🎨 Fyll
+                      <img 
+                        className="w-full h-full rounded-full" 
+                        src="/images/pencil-flood-eraser/floodandfill.png" 
+                        alt="Flood fill tool"
+                      />
                     </button>
                     <button
                       onClick={() => {
                         setState(prev => ({ ...prev, drawingMode: 'eraser' }));
-                        setShowMobileTools(false);
                       }}
-                      className={`px-3 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                      className={`relative flex items-center justify-center w-12 h-12 transition-all duration-300 border-2 rounded-full cursor-pointer ${
                         state.drawingMode === 'eraser'
-                          ? 'bg-blue-100/80 text-blue-700'
-                          : 'bg-gray-100/80 hover:bg-gray-200/80'
+                          ? 'border-red-600 scale-110'
+                          : 'border-[#E5E7EB] hover:border-gray-300'
                       }`}
                     >
-                      🧹 Visk
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleUndo();
-                        setShowMobileTools(false);
-                      }}
-                      disabled={!(unifiedHistory.length > 1 && unifiedHistoryStep > 0)}
-                      className={`px-3 py-2 rounded-lg transition-colors ${
-                        unifiedHistory.length > 1 && unifiedHistoryStep > 0
-                          ? 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                          : 'bg-gray-50 text-gray-400 cursor-not-allowed'
-                      }`}
-                    >
-                      ↩️
+                      <img 
+                        className="w-full h-full rounded-full" 
+                        src="/images/pencil-flood-eraser/eraser.png" 
+                        alt="Eraser tool"
+                      />
                     </button>
                   </div>
                   
@@ -2265,7 +2262,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                   {(state.drawingMode === 'pencil' || state.drawingMode === 'eraser') && (
                     <div className="flex items-center gap-3 justify-center mb-3">
                       <label className="text-sm text-gray-600">
-                        {state.drawingMode === 'pencil' ? 'Pensel:' : 'Visk:'}
+                        {state.drawingMode === 'pencil' ? 'Pensel Størrelse:' : 'Viskelær Størrelse:'}
                       </label>
                       <input
                         type="range"
@@ -2287,13 +2284,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                       </span>
                     </div>
                   )}
-                  
-                  {/* Mode Indicator */}
-                  <div className="text-center text-sm text-gray-600 mb-4">
-                    {state.drawingMode === 'pencil' && '✏️ Tegnmodus'}
-                    {state.drawingMode === 'fill' && '🎨 Fyllmodus'}
-                    {state.drawingMode === 'eraser' && '🧹 Viskelærmodus'}
-                  </div>
                 </div>
               )}
               
@@ -2306,8 +2296,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                 onToggleTools={() => setShowMobileTools(!showMobileTools)}
               />
             </div>
-          </div>
-        </div>
       </div>
     </div>
   )
