@@ -21,6 +21,7 @@ import { InputHandler } from '@/core/viewport/InputHandler'
 import { COLORING_APP_CONFIG } from '@/config/coloringApp'
 import { getColoringImageUrl, preloadImage, validateImageDimensions } from '@/lib/imageUtils'
 import { PencilTool } from './PencilTool'
+import { EraserTool } from './EraserTool'
 import { FloodFillTool } from './FloodFillTool'
 
 interface ColoringAppProps {
@@ -213,14 +214,9 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     pencilSize: 25, // Size for pencil tool
     eraserSize: 10, // Separate size for eraser tool
     // REMOVED: tolerance - flood fill always uses 100%
-    isDrawing: false,
     history: [],
     historyStep: -1,
-    drawingMode: 'pencil', // Default to pencil mode
-    lastX: null,
-    lastY: null,
-    prevX: null,    // Add this
-    prevY: null     // Add this
+    drawingMode: 'pencil' // Default to pencil mode
   })
   
 
@@ -288,6 +284,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
 
   // Refs for specialized tools
   const pencilToolRef = useRef<PencilTool | null>(null);
+  const eraserToolRef = useRef<EraserTool | null>(null);
   const floodFillToolRef = useRef<FloodFillTool | null>(null);
 
   // Initialize viewport system
@@ -488,63 +485,6 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     setUnifiedHistoryStep(finalStep);
   }, [fillRegions]); // Fix: Include fillRegions in dependency array to prevent stale closure
 
-  // Smart eraser - uses dual strategy based on background type
-  const smartEraser = useCallback((
-    x: number, 
-    y: number, 
-    prevX: number, 
-    prevY: number, 
-    brushSize: number, 
-    mainCtx: CanvasRenderingContext2D,
-    fillCtx: CanvasRenderingContext2D | null,
-    backgroundType: string,
-    isDrawing: boolean
-  ) => {
-    if (!isDrawing) {
-      return;
-    }
-    
-    if (!mainCtx) {
-      console.error('Main context is null!');
-      return;
-    }
-    
-    if (backgroundType === "default-bg-img") {
-      // Strategy 1: Coloring Layer Erasing (for images with black lines)
-      // Use destination-out to make coloring layers transparent, preserving black lines
-      const contexts = [mainCtx];
-      if (fillCtx) contexts.push(fillCtx);
-      
-      contexts.forEach((ctx) => {
-        ctx.globalCompositeOperation = "destination-out";
-        ctx.lineWidth = brushSize;
-        ctx.lineCap = "round";
-        ctx.beginPath();
-        ctx.moveTo(prevX, prevY);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-        
-        // Reset composite operation for future drawing
-        ctx.globalCompositeOperation = "source-over";
-      });
-    } else {
-      // Strategy 2: User Drawing Erasing (for plain backgrounds)  
-      // Paint white over user drawings on main/fill canvas
-      const contexts = [mainCtx];
-      if (fillCtx) contexts.push(fillCtx);
-      
-      contexts.forEach((ctx) => {
-        ctx.globalCompositeOperation = "source-over";
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = brushSize;
-        ctx.lineCap = "round";
-        ctx.beginPath();
-        ctx.moveTo(prevX, prevY);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-      });
-    }
-  }, []);
 
   // Mouse pan handlers
   const [isPanning, setIsPanning] = useState(false);
@@ -577,13 +517,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
         }
         e.preventDefault();
       } else if (state.drawingMode === 'eraser') {
-        const coords = getCanvasCoordinates(e.clientX, e.clientY, mainCanvasRef.current!);
-        setState(prev => ({ 
-          ...prev, 
-          isDrawing: true, 
-          prevX: coords.x, 
-          prevY: coords.y 
-        }));
+        eraserToolRef.current?.handlePointerDown(pointerEvent);
         e.preventDefault();
       }
     }
@@ -618,30 +552,11 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (state.drawingMode === 'pencil') {
         pencilToolRef.current?.handlePointerMove(pointerEvent);
       } else if (state.drawingMode === 'eraser') {
-        if (state.isDrawing && state.prevX !== null && state.prevY !== null) {
-          const coords = getCanvasCoordinates(e.clientX, e.clientY, mainCanvasRef.current!);
-          
-          smartEraser(
-            coords.x, 
-            coords.y, 
-            state.prevX, 
-            state.prevY, 
-            state.eraserSize, 
-            contextRef.current.main!,
-            contextRef.current.fill,
-            backgroundType,
-            state.isDrawing
-          );
-          setState(prev => ({ 
-            ...prev, 
-            prevX: coords.x, 
-            prevY: coords.y 
-          }));
-        }
+        eraserToolRef.current?.handlePointerMove(pointerEvent);
       }
       // Fill tool doesn't need move events
     }
-  }, [currentMode, isPanning, state.drawingMode, state.prevX, state.prevY, state.eraserSize, backgroundType, smartEraser]);
+  }, [currentMode, isPanning, state.drawingMode]);
 
   const handleMouseUp = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (currentMode === 'zoom') {
@@ -661,14 +576,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (state.drawingMode === 'pencil') {
         pencilToolRef.current?.handlePointerUp(pointerEvent);
       } else if (state.drawingMode === 'eraser') {
-        setState(prev => ({ 
-          ...prev, 
-          isDrawing: false, 
-          prevX: null, 
-          prevY: null 
-        }));
-        // Save eraser state to history
-        saveToUnifiedHistory('eraser');
+        eraserToolRef.current?.handlePointerUp(pointerEvent);
       }
       // Fill tool doesn't need up events
     }
@@ -1087,13 +995,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (state.drawingMode === 'pencil') {
       pencilToolRef.current?.handlePointerDown(pointerEvent);
     } else if (state.drawingMode === 'eraser') {
-      const coords = getCanvasCoordinates(touch.clientX, touch.clientY, canvas);
-      setState(prev => ({ 
-        ...prev, 
-        isDrawing: true, 
-        prevX: coords.x, 
-        prevY: coords.y 
-      }));
+      eraserToolRef.current?.handlePointerDown(pointerEvent);
     }
   }, [state.drawingMode, handleFillTouch, currentMode]);
 
@@ -1135,30 +1037,12 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       if (state.drawingMode === 'pencil') {
         pencilToolRef.current?.handlePointerMove(pointerEvent);
       } else if (state.drawingMode === 'eraser') {
-        if (state.prevX !== null && state.prevY !== null) {
-          const coords = getCanvasCoordinates(touch.clientX, touch.clientY, canvas);
-          smartEraser(
-            coords.x, 
-            coords.y, 
-            state.prevX, 
-            state.prevY, 
-            state.eraserSize, 
-            contextRef.current.main!,
-            contextRef.current.fill,
-            backgroundType,
-            state.isDrawing
-          );
-          setState(prev => ({ 
-            ...prev, 
-            prevX: coords.x, 
-            prevY: coords.y 
-          }));
-        }
+        eraserToolRef.current?.handlePointerMove(pointerEvent);
       }
       
       touchMoveThrottleRef.current = null;
     });
-  }, [state.isDrawing, state.drawingMode, currentMode]);
+  }, [state.drawingMode, currentMode]);
 
   const handleTouchEnd = useCallback((e: TouchEvent) => {
     e.preventDefault();
@@ -1188,14 +1072,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     if (state.drawingMode === 'pencil') {
       pencilToolRef.current?.handlePointerUp(pointerEvent);
     } else if (state.drawingMode === 'eraser') {
-      setState(prev => ({ 
-        ...prev, 
-        isDrawing: false, 
-        prevX: null, 
-        prevY: null 
-      }));
-      // Save eraser state to history
-      saveToUnifiedHistory('eraser');
+      eraserToolRef.current?.handlePointerUp(pointerEvent);
     }
   }, [state.drawingMode, saveToUnifiedHistory]);
 
@@ -1522,12 +1399,31 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     }
   }, [state.imageData, saveToUnifiedHistory]);
 
+  // Initialize eraser tool with callback after functions are defined
+  useEffect(() => {
+    const mainCanvas = mainCanvasRef.current;
+    if (mainCanvas && state.imageData && !eraserToolRef.current) {
+      eraserToolRef.current = new EraserTool(mainCanvas, () => {
+        saveToUnifiedHistory('eraser');
+      });
+      // Set the initial size to match the React state
+      eraserToolRef.current.setSize(state.eraserSize);
+    }
+  }, [state.imageData, saveToUnifiedHistory]);
+
   // Sync PencilTool size with React state
   useEffect(() => {
     if (pencilToolRef.current) {
       pencilToolRef.current.setSize(state.pencilSize);
     }
   }, [state.pencilSize]);
+
+  // Sync EraserTool size with React state
+  useEffect(() => {
+    if (eraserToolRef.current) {
+      eraserToolRef.current.setSize(state.eraserSize);
+    }
+  }, [state.eraserSize]);
 
   const handleUndo = useCallback(() => {
     // Use unified history for undo

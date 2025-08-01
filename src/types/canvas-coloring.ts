@@ -22,14 +22,9 @@ export interface ColoringState {
   pencilSize: number // Size for pencil tool
   eraserSize: number // Separate size for eraser tool
   // REMOVED: tolerance - flood fill always uses 100%
-  isDrawing: boolean
   history: ImageData[]
   historyStep: number
   drawingMode: DrawingMode
-  lastX: number | null
-  lastY: number | null
-  prevX: number | null
-  prevY: number | null
 }
 
 export interface Point {
