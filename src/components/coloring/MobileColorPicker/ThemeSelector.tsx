@@ -68,27 +68,25 @@ export function ThemeSelector({
   };
 
   return (
-    <div className="h-[72px] flex items-center px-4">
-      <div className="flex gap-3 overflow-x-auto scrollbar-hide">
-        {COLOR_THEMES.map((theme) => (
-          <button
-            key={theme.id}
-            onClick={() => onThemeChange(theme.id)}
-            className={`flex-shrink-0 transition-all duration-300 hover:scale-105 rounded-xl p-1 ${
-              activeThemeId === theme.id 
-                ? 'scale-110 shadow-md' 
-                : 'hover:bg-gray-50'
-            }`}
-            style={{
-              backgroundColor: activeThemeId === theme.id ? `${theme.displayColor}10` : undefined // 10 is hex for ~6% opacity
-            }}
-            aria-label={`Select ${theme.name} theme`}
-            title={theme.name}
-          >
-            {createColorWheel(theme)}
-          </button>
-        ))}
-      </div>
+    <div className="flex gap-3 overflow-x-auto overflow-y-hidden scrollbar-hide px-4">
+      {COLOR_THEMES.map((theme) => (
+        <button
+          key={theme.id}
+          onClick={() => onThemeChange(theme.id)}
+          className={`flex-shrink-0 transition-all duration-300 hover:scale-105 rounded-xl p-1 ${
+            activeThemeId === theme.id 
+              ? 'scale-110 shadow-md' 
+              : 'hover:bg-gray-50'
+          }`}
+          style={{
+            backgroundColor: activeThemeId === theme.id ? `${theme.displayColor}10` : undefined // 10 is hex for ~6% opacity
+          }}
+          aria-label={`Select ${theme.name} theme`}
+          title={theme.name}
+        >
+          {createColorWheel(theme)}
+        </button>
+      ))}
     </div>
   );
 }

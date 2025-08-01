@@ -1,24 +1,29 @@
 'use client'
 
 import { getThemeById } from '../colorConstants';
+import Image from 'next/image';
 
 interface ColorGridProps {
   selectedColor: string;
   onColorChange: (color: string) => void;
   activeThemeId: string;
+  showMobileTools: boolean;
+  onToggleTools: () => void;
 }
 
 export function ColorGrid({ 
   selectedColor, 
   onColorChange, 
-  activeThemeId
+  activeThemeId,
+  showMobileTools,
+  onToggleTools
 }: ColorGridProps) {
   const currentTheme = getThemeById(activeThemeId);
   
   return (
     <div className="h-12 flex items-center px-4">
       <div className="grid grid-cols-10 gap-1.5 w-full">
-        {currentTheme.colors.map((color: string, index: number) => (
+        {currentTheme.colors.slice(0, -1).map((color: string, index: number) => (
           <button
             key={`${activeThemeId}-${index}-${color}`}
             onClick={() => onColorChange(color)}
@@ -31,6 +36,29 @@ export function ColorGrid({
             aria-label={`Select color ${color}`}
           />
         ))}
+        
+        {/* Tools Toggle Button - Replaces last color in grid */}
+        <button
+          onClick={onToggleTools}
+          className={`w-8 h-8 rounded-full border transition-all hover:scale-105 flex items-center justify-center ${
+            showMobileTools 
+              ? 'border-2 border-blue-600 bg-blue-50 scale-110 shadow-sm' 
+              : 'border border-gray-300 hover:border-gray-400 bg-gray-50'
+          }`}
+          aria-label="Toggle tools menu"
+        >
+          <div className="transform transition-transform duration-300" style={{
+            transform: showMobileTools ? 'rotate(180deg)' : 'rotate(0deg)'
+          }}>
+            <Image
+              src="/images/mobiltoolbar/micon.svg"
+              alt="Tools menu"
+              width={16}
+              height={16}
+              className="w-4 h-4"
+            />
+          </div>
+        </button>
       </div>
     </div>
   );

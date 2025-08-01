@@ -86,10 +86,10 @@ export class InputHandler {
       // Two pointers = pinch zoom (always available)
       this.startPinchZoom();
     } else if (this.activePointers.size === 1) {
-      if (this.currentMode === 'zoom') {
-        // Single pointer in zoom mode = pan
+      if (this.currentMode === 'zoom' && !this.isZooming) {
+        // Single pointer in zoom mode = pan (but not during pinch zoom)
         this.startPan(e);
-      } else {
+      } else if (this.currentMode === 'draw') {
         // Single pointer in draw mode = drawing
         this.startDraw(e);
       }
@@ -107,8 +107,8 @@ export class InputHandler {
       // Handle pinch zoom
       this.updatePinchZoom();
     } else if (this.activePointers.size === 1) {
-      if (this.isPanning && this.currentMode === 'zoom') {
-        // Handle pan
+      if (this.isPanning && this.currentMode === 'zoom' && !this.isZooming) {
+        // Handle pan (but not during or right after pinch zoom)
         this.updatePan(e);
       } else if (this.currentMode === 'draw') {
         // Handle drawing
@@ -123,6 +123,10 @@ export class InputHandler {
 
     if (this.activePointers.size < 2) {
       this.isZooming = false;
+      // Reset pan state when ending pinch zoom to prevent accidental pan
+      if (this.activePointers.size === 1) {
+        this.isPanning = false;
+      }
     }
 
     if (this.activePointers.size === 0) {

@@ -9,6 +9,7 @@ export interface ZoomParams {
   centerY: number;
   zoomFactor: number;
   currentState: ViewportState;
+  purePinchZoom?: boolean; // Skip pan adjustments for two-finger pinch zoom
 }
 
 export interface ZoomResult {
@@ -27,7 +28,7 @@ export const ZOOM_CONFIG = {
  * This ensures consistent behavior across all input methods
  */
 export function calculateZoom(params: ZoomParams): ZoomResult {
-  const { centerX, centerY, zoomFactor, currentState } = params;
+  const { centerX, centerY, zoomFactor, currentState, purePinchZoom = false } = params;
 
   // Calculate new scale with constraints
   const newScale = Math.max(
@@ -35,7 +36,16 @@ export function calculateZoom(params: ZoomParams): ZoomResult {
     Math.min(ZOOM_CONFIG.MAX_ZOOM, currentState.scale * zoomFactor)
   );
 
-  // For transform-origin: center center, we need to adjust the pan to keep the zoom point fixed
+  // For two-finger pinch zoom, apply pure zoom without pan adjustments
+  if (purePinchZoom) {
+    return {
+      scale: newScale,
+      panX: currentState.panX, // Keep current pan unchanged
+      panY: currentState.panY  // Keep current pan unchanged
+    };
+  }
+
+  // For mouse wheel zoom, adjust pan to keep the zoom point fixed
   // centerX and centerY are relative to the container center (can be negative)
   const scaleChange = newScale / currentState.scale;
   

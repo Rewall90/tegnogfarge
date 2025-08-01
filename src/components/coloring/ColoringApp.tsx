@@ -10,7 +10,6 @@ import LeftColorSidebar from './LeftColorSidebar'
 import RightToolsSidebar from './RightToolsSidebar'
 import ImageSelector from './ImageSelector'
 import { MobileColorPicker } from './MobileColorPicker'
-import { MobileToolbar } from './MobileToolbar'
 import { DEFAULT_THEME_ID, getThemeById } from './colorConstants'
 import type { ColoringState, DrawingMode } from '@/types/canvas-coloring'
 import { ViewportManager } from '@/core/viewport/ViewportManager'
@@ -141,6 +140,24 @@ function getCanvasCoordinates(clientX: number, clientY: number, canvas: HTMLCanv
 }
 
 export default function ColoringApp({ imageData: initialImageData }: ColoringAppProps) {
+  // Add CSS animation for fade-up effect
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
   const router = useRouter()
   
   
@@ -222,6 +239,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   
   const [activeThemeId, setActiveThemeId] = useState(DEFAULT_THEME_ID);
   const [backgroundType, setBackgroundType] = useState<string>("default-bg-color");
+  const [showMobileTools, setShowMobileTools] = useState(false);
   
   // Track screen dimensions for layout decisions
   const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
@@ -1844,7 +1862,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           currentState: currentState,
           zoomFactor: scaleFactor,
           centerX: centerRelativeToContainerCenter.x,
-          centerY: centerRelativeToContainerCenter.y
+          centerY: centerRelativeToContainerCenter.y,
+          purePinchZoom: true // Two-finger pinch should not apply pan adjustments
         };
         
         const zoomResult = calculateZoom(zoomParams);
@@ -2172,24 +2191,121 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
             </div>
           </div>
           
-          {/* Mobile Controls Section */}
-          <div className="lg:hidden space-y-3 p-4">
-            <MobileToolbar
-              drawingMode={state.drawingMode}
-              onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
-              onUndo={handleUndo}
-              canUndo={unifiedHistory.length > 1 && unifiedHistoryStep > 0}
-              pencilSize={state.pencilSize}
-              onPencilSizeChange={(size: number) => setState(prev => ({ ...prev, pencilSize: size }))}
-              eraserSize={state.eraserSize}
-              onEraserSizeChange={(size: number) => setState(prev => ({ ...prev, eraserSize: size }))}
-            />
-            <MobileColorPicker
-              selectedColor={state.currentColor}
-              onColorChange={(color: string) => setState(prev => ({ ...prev, currentColor: color }))}
-              activeThemeId={activeThemeId}
-              onThemeChange={setActiveThemeId}
-            />
+          {/* Mobile Controls Section - Unified Expandable Menu */}
+          <div className="lg:hidden relative">
+            <div className="bg-white shadow-lg relative transition-all duration-300 ease-out" style={{ zIndex: 9999 }}>
+              
+              {/* Tools Section - Overlays canvas when expanded */}
+              {showMobileTools && (
+                <div className="absolute bottom-full left-0 right-0 bg-white/70 px-4 pt-4 pb-0 transition-all duration-500 ease-out animate-in slide-in-from-bottom-4 fade-in rounded-t-2xl" 
+                     style={{ 
+                       zIndex: 9999,
+                       marginBottom: '-1px', // Connect seamlessly with base
+                       boxShadow: '0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06)', // Shadow only on top
+                       animation: 'fadeSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+                     }}>
+                  {/* Tool Buttons */}
+                  <div className="flex items-center gap-3 mb-4 flex-wrap justify-center">
+                    <button
+                      onClick={() => {
+                        setState(prev => ({ ...prev, drawingMode: 'pencil' }));
+                        setShowMobileTools(false);
+                      }}
+                      className={`px-3 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                        state.drawingMode === 'pencil' 
+                          ? 'bg-blue-100/80 text-blue-700' 
+                          : 'bg-gray-100/80 hover:bg-gray-200/80'
+                      }`}
+                    >
+                      ✏️ Tegn
+                    </button>
+                    <button
+                      onClick={() => {
+                        setState(prev => ({ ...prev, drawingMode: 'fill' }));
+                        setShowMobileTools(false);
+                      }}
+                      className={`px-3 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                        state.drawingMode === 'fill'
+                          ? 'bg-blue-100/80 text-blue-700'
+                          : 'bg-gray-100/80 hover:bg-gray-200/80'
+                      }`}
+                    >
+                      🎨 Fyll
+                    </button>
+                    <button
+                      onClick={() => {
+                        setState(prev => ({ ...prev, drawingMode: 'eraser' }));
+                        setShowMobileTools(false);
+                      }}
+                      className={`px-3 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                        state.drawingMode === 'eraser'
+                          ? 'bg-blue-100/80 text-blue-700'
+                          : 'bg-gray-100/80 hover:bg-gray-200/80'
+                      }`}
+                    >
+                      🧹 Visk
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleUndo();
+                        setShowMobileTools(false);
+                      }}
+                      disabled={!(unifiedHistory.length > 1 && unifiedHistoryStep > 0)}
+                      className={`px-3 py-2 rounded-lg transition-colors ${
+                        unifiedHistory.length > 1 && unifiedHistoryStep > 0
+                          ? 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                          : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                      }`}
+                    >
+                      ↩️
+                    </button>
+                  </div>
+                  
+                  {/* Size Controls */}
+                  {(state.drawingMode === 'pencil' || state.drawingMode === 'eraser') && (
+                    <div className="flex items-center gap-3 justify-center mb-3">
+                      <label className="text-sm text-gray-600">
+                        {state.drawingMode === 'pencil' ? 'Pensel:' : 'Visk:'}
+                      </label>
+                      <input
+                        type="range"
+                        min={state.drawingMode === 'pencil' ? "1" : "5"}
+                        max={state.drawingMode === 'pencil' ? "20" : "50"}
+                        value={state.drawingMode === 'pencil' ? state.pencilSize : state.eraserSize}
+                        onChange={(e) => {
+                          const size = Number(e.target.value);
+                          if (state.drawingMode === 'pencil') {
+                            setState(prev => ({ ...prev, pencilSize: size }));
+                          } else {
+                            setState(prev => ({ ...prev, eraserSize: size }));
+                          }
+                        }}
+                        className="flex-1 max-w-32"
+                      />
+                      <span className="text-sm text-gray-600 min-w-12">
+                        {state.drawingMode === 'pencil' ? state.pencilSize : state.eraserSize}px
+                      </span>
+                    </div>
+                  )}
+                  
+                  {/* Mode Indicator */}
+                  <div className="text-center text-sm text-gray-600 mb-4">
+                    {state.drawingMode === 'pencil' && '✏️ Tegnmodus'}
+                    {state.drawingMode === 'fill' && '🎨 Fyllmodus'}
+                    {state.drawingMode === 'eraser' && '🧹 Viskelærmodus'}
+                  </div>
+                </div>
+              )}
+              
+              <MobileColorPicker
+                selectedColor={state.currentColor}
+                onColorChange={(color: string) => setState(prev => ({ ...prev, currentColor: color }))}
+                activeThemeId={activeThemeId}
+                onThemeChange={setActiveThemeId}
+                showMobileTools={showMobileTools}
+                onToggleTools={() => setShowMobileTools(!showMobileTools)}
+              />
+            </div>
           </div>
         </div>
       </div>
