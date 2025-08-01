@@ -2007,27 +2007,60 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               <div 
               className="relative"
               style={{
-                width: 'auto',
-                height: '100%',
-                maxWidth: screenDimensions.width > 0 ? (() => {
+                ...(() => {
+                  if (screenDimensions.width === 0 || availableHeight === 0) {
+                    return { width: '100%', height: '100%' };
+                  }
+
+                  const aspectRatio = 2550 / 3300;
                   const isDesktop = screenDimensions.width >= 1024;
-                  const heightBasedWidth = availableHeight * 2550 / 3300;
                   
+                  // Calculate available width based on layout
+                  let availableWidth;
                   if (isDesktop && isTallScreen) {
-                    // Tall screens (>=1024px height): Single sidebar (20% width) - Desktop AND Tablets
-                    return `${heightBasedWidth}px`;
+                    // Tall screens: Single sidebar (20% width)
+                    availableWidth = screenDimensions.width * 0.80;
                   } else if (isDesktop && !isTallScreen) {
-                    // Short screens (<1024px height): Split sidebars (30% total width) - Desktop AND Tablets  
-                    const shortScreenConstraint = screenDimensions.width * 0.60;
-                    return `${Math.min(heightBasedWidth, shortScreenConstraint)}px`;
+                    // Short screens: Split sidebars (30% total width)
+                    availableWidth = screenDimensions.width * 0.60;
                   } else {
                     // Mobile: No sidebars, use 85% of full width
-                    const mobileWidthConstraint = screenDimensions.width * 0.85;
-                    return `${Math.min(heightBasedWidth, mobileWidthConstraint)}px`;
+                    availableWidth = screenDimensions.width * 0.85;
                   }
-                })() : '100%',
-                maxHeight: availableHeight > 0 ? `${availableHeight}px` : '100%',
-                aspectRatio: '2550 / 3300',
+                  
+                  // Calculate both width-constrained and height-constrained dimensions
+                  const heightBasedWidth = availableHeight * aspectRatio;
+                  const heightBasedHeight = availableHeight;
+                  
+                  const widthBasedWidth = availableWidth;
+                  const widthBasedHeight = availableWidth / aspectRatio;
+                  
+                  // Choose the dimensions that fit within both constraints
+                  let finalWidth, finalHeight;
+                  if (heightBasedWidth <= availableWidth && heightBasedHeight <= availableHeight) {
+                    // Height-constrained fits within width limit
+                    finalWidth = heightBasedWidth;
+                    finalHeight = heightBasedHeight;
+                  } else if (widthBasedWidth <= availableWidth && widthBasedHeight <= availableHeight) {
+                    // Width-constrained fits within height limit
+                    finalWidth = widthBasedWidth;
+                    finalHeight = widthBasedHeight;
+                  } else {
+                    // Fallback: use smaller constraint
+                    if (availableWidth / aspectRatio < availableHeight) {
+                      finalWidth = availableWidth;
+                      finalHeight = availableWidth / aspectRatio;
+                    } else {
+                      finalWidth = availableHeight * aspectRatio;
+                      finalHeight = availableHeight;
+                    }
+                  }
+                  
+                  return {
+                    width: `${finalWidth}px`,
+                    height: `${finalHeight}px`
+                  };
+                })(),
                 transform: `translate(${viewportState.panX}px, ${viewportState.panY}px) scale(${viewportState.scale})`,
                 transformOrigin: 'center center',
                 willChange: 'transform'
