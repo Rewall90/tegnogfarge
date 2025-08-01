@@ -306,8 +306,8 @@ export default function ColorWheelPicker({
         ref={containerRef}
         className="fixed bg-white bg-opacity-95 rounded-lg p-6 shadow-lg border border-gray-200 z-40"
         style={{
-          top: `${100 + position.y}px`,
-          left: `${330 + position.x}px`,
+          top: `${115 + position.y}px`,
+          left: `${430 + position.x}px`,
           width: size.width,
           height: size.height,
           minWidth: '280px',

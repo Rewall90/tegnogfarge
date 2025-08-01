@@ -123,16 +123,16 @@ export default function ColorPalette({
   const [colorWheelSize, setColorWheelSize] = useState({ width: 320, height: 450 })
   // Add state for popup
   const [showToolSizePopup, setShowToolSizePopup] = useState(false)
-  const [toolSizePosition, setToolSizePosition] = useState({ x: 330, y: 550 }) // Start with correct position
+  const [toolSizePosition, setToolSizePosition] = useState({ x: 430, y: 580 }) // Start with correct position
   const [toolSizeSize, setToolSizeSize] = useState({ width: 200, height: 150 })
   
   // Fixed positioning - ToolSizeControl always opens at consistent position
   const getInitialToolSizePosition = () => {
     // Always use same positioning logic as ColorWheelPicker area
-    // ToolSizeControl should always appear at x: 330, y: around 550 (under ColorWheelPicker area)
+    // ToolSizeControl should always appear at x: 450, y: around 650 (under ColorWheelPicker area)
     return { 
-      x: 330,     // Same x as ColorWheelPicker base position
-      y: 550      // Fixed y position underneath ColorWheelPicker area
+      x: 430,     // Same x as ColorWheelPicker base position
+      y: 580      // Fixed y position underneath ColorWheelPicker area
     }
   }
   
@@ -269,7 +269,7 @@ export default function ColorPalette({
 
 
   return (
-    <div className={`w-64 lg:w-64 md:w-48 hidden sm:flex flex-shrink-0 h-full bg-[#FEFAF6] border-r border-gray-200 grid overflow-hidden ${className}`}
+    <div className={`w-full h-full bg-[#FEFAF6] border-r border-gray-200 grid overflow-hidden ${className}`}
          style={{
            display: 'grid',
            gridTemplateRows: 'auto 1fr auto auto auto',

@@ -1912,38 +1912,42 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       </header>
 
       <div className="flex-1 flex overflow-hidden">
-        
-        <ColorPalette
-          className="hidden md:block"
-          selectedColor={state.currentColor}
-          onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}
-          suggestedColors={currentImage.suggestedColors}
-          drawingMode={state.drawingMode}
-          onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
-          pencilSize={state.pencilSize}
-          onPencilSizeChange={(size) => {
-            setState(prev => ({ ...prev, pencilSize: size }))
-          }}
-          eraserSize={state.eraserSize}
-          onEraserSizeChange={(size) => {
-            setState(prev => ({ ...prev, eraserSize: size }))
-          }}
-          onUndo={handleUndo}
-          onRedo={handleRedo}
-          onReset={handleReset}
-          onDownload={handleDownload}
-          onToggleZoom={handleToggleZoom}
-          currentMode={currentMode}
-          canUndo={unifiedHistory.length > 1 && unifiedHistoryStep > 0}
-          canRedo={unifiedHistoryStep < unifiedHistory.length - 1}
-        />
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           
           {/* Canvas Section */}
-          <div className="flex-1 overflow-hidden bg-[#FEFAF6] p-1 flex items-center justify-center">
-            <div 
-              className="relative max-w-full max-h-full"
+          <div className="flex-1 bg-[#FEFAF6] p-1 grid grid-cols-[20%_80%] h-full" style={{ overflow: 'hidden' }}>
+            <ColorPalette
+              className="md:block"
+              selectedColor={state.currentColor}
+              onColorSelect={(color) => setState(prev => ({ ...prev, currentColor: color }))}
+              suggestedColors={currentImage.suggestedColors}
+              drawingMode={state.drawingMode}
+              onDrawingModeChange={(mode: 'pencil' | 'fill' | 'eraser') => setState(prev => ({ ...prev, drawingMode: mode }))}
+              pencilSize={state.pencilSize}
+              onPencilSizeChange={(size) => {
+                setState(prev => ({ ...prev, pencilSize: size }))
+              }}
+              eraserSize={state.eraserSize}
+              onEraserSizeChange={(size) => {
+                setState(prev => ({ ...prev, eraserSize: size }))
+              }}
+              onUndo={handleUndo}
+              onRedo={handleRedo}
+              onReset={handleReset}
+              onDownload={handleDownload}
+              onToggleZoom={handleToggleZoom}
+              currentMode={currentMode}
+              canUndo={unifiedHistory.length > 1 && unifiedHistoryStep > 0}
+              canRedo={unifiedHistoryStep < unifiedHistory.length - 1}
+            />
+            <div className="relative w-full h-full p-4 flex items-center justify-center overflow-hidden">
+              <div 
+              className="relative"
               style={{
+                width: '100%',
+                height: '100%',
+                maxWidth: typeof window !== 'undefined' ? `${(window.innerHeight - 200) * 2550 / 3300}px` : '100%',
+                maxHeight: typeof window !== 'undefined' ? `${window.innerHeight - 200}px` : '100%',
                 aspectRatio: '2550 / 3300',
                 transform: `translate(${viewportState.panX}px, ${viewportState.panY}px) scale(${viewportState.scale})`,
                 transformOrigin: 'center center',
@@ -2086,6 +2090,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                   pointerEvents: 'none'
                 }} 
               />
+              </div>
             </div>
           </div>
           
