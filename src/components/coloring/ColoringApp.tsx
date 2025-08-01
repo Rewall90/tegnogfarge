@@ -225,7 +225,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   
   // Track screen dimensions for layout decisions
   const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
-  const [isTallScreen, setIsTallScreen] = useState(true);
+  const [isTallScreen, setIsTallScreen] = useState(true); // >= 1024px height = single sidebar, < 1024px = split sidebars
 
   // Viewport management
   const viewportManagerRef = useRef<ViewportManager | null>(null);
@@ -1942,7 +1942,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           
           {/* Canvas Section - 3 Column Layout */}
           <div className="flex-1 bg-[#FEFAF6] p-1 flex h-full" style={{ overflow: 'hidden' }}>
-            {/* Original ColorPalette for tall screens (height >= 1024px) */}
+            {/* Single ColorPalette for tall screens (height >= 1024px) - Desktop AND Tablets */}
             <div className={`lg:w-1/5 lg:flex-shrink-0 ${isTallScreen ? 'hidden lg:block' : 'hidden'}`}>
               <ColorPalette
                 selectedColor={state.currentColor}
@@ -1965,7 +1965,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               />
             </div>
 
-            {/* Left Color Sidebar - Only on short screens (height < 1024px) */}
+            {/* Split Layout: Left Color Sidebar - For short screens (height < 1024px) - Desktop AND Tablets */}
             <div className={`lg:w-[15%] lg:flex-shrink-0 ${!isTallScreen ? 'hidden lg:block' : 'hidden'}`}>
               <LeftColorSidebar
                 selectedColor={state.currentColor}
@@ -1984,10 +1984,10 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
                   const heightBasedWidth = (screenDimensions.height - 200) * 2550 / 3300;
                   
                   if (isDesktop && isTallScreen) {
-                    // Tall desktop screens: Single sidebar (20% width) - original behavior
+                    // Tall screens (>=1024px height): Single sidebar (20% width) - Desktop AND Tablets
                     return `${heightBasedWidth}px`;
                   } else if (isDesktop && !isTallScreen) {
-                    // Short desktop screens (wide tablets): Split sidebars (30% total width)
+                    // Short screens (<1024px height): Split sidebars (30% total width) - Desktop AND Tablets  
                     const shortScreenConstraint = screenDimensions.width * 0.60;
                     return `${Math.min(heightBasedWidth, shortScreenConstraint)}px`;
                   } else {
@@ -2142,7 +2142,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               </div>
             </div>
             
-            {/* Right Tools Sidebar - Only on short screens (height < 1024px) */}
+            {/* Split Layout: Right Tools Sidebar - For short screens (height < 1024px) - Desktop AND Tablets */}
             <div className={`lg:w-[15%] lg:flex-shrink-0 ${!isTallScreen ? 'hidden lg:block' : 'hidden'}`}>
               <RightToolsSidebar
                 drawingMode={state.drawingMode}
