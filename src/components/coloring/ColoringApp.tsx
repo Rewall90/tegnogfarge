@@ -44,7 +44,10 @@ type HistoryStep = {
 type UnifiedHistoryEntry = {
   type: 'fill' | 'pencil' | 'eraser';
   timestamp: number;
-  canvasData: ImageData; // Main canvas state after this action
+  // NEW: Incremental storage (preferred method)
+  changes?: PixelChange[]; // Pixel changes for pencil/eraser operations
+  // OLD: Full canvas storage (fallback/legacy)
+  canvasData?: ImageData; // Main canvas state after this action
   fillCanvasData?: ImageData; // Fill canvas state for transparency preservation
   fillRegions?: FillRegion[]; // Store fill regions for backward compatibility
 };
@@ -223,11 +226,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   const [history, setHistory] = useState<HistoryStep[]>([]);
   const [historyStep, setHistoryStep] = useState(-1);
   
-  // Pencil stroke history system
-  const [pencilHistory, setPencilHistory] = useState<ImageData[]>([]);
-  const [pencilHistoryStep, setPencilHistoryStep] = useState(-1);
-  const pencilSaveInProgress = useRef(0); // Store timestamp instead of boolean
-  const pencilHistoryStepRef = useRef(-1); // Track current step for immediate access
+  // REMOVED: Redundant pencil history system - now using unified history with incremental changes
   
   // Unified history system
   const [unifiedHistory, setUnifiedHistory] = useState<UnifiedHistoryEntry[]>([]);
@@ -460,7 +459,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   }, [currentMode]);
 
   // Save to unified history
-  const saveToUnifiedHistory = useCallback((type: 'fill' | 'pencil' | 'eraser', currentFillRegions?: FillRegion[]) => {
+  const saveToUnifiedHistory = useCallback((type: 'fill' | 'pencil' | 'eraser', currentFillRegions?: FillRegion[], pixelChanges?: PixelChange[]) => {
     console.log(`[saveToUnifiedHistory] Called with type: ${type}, current step: ${unifiedHistoryStepRef.current}, history length: ${unifiedHistoryRef.current.length}`);
     const newStep = unifiedHistoryStepRef.current + 1;
     const regionsToSave = currentFillRegions || fillRegions;
@@ -481,26 +480,38 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const mainCtx = mainCanvas.getContext('2d');
     if (!mainCtx) return;
     
-    // Get current main canvas state
-    const canvasData = mainCtx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
-    
-    // Get current fill canvas state for transparency preservation
-    let fillCanvasData: ImageData | undefined;
-    if (fillCanvas) {
-      const fillCtx = fillCanvas.getContext('2d');
-      if (fillCtx) {
-        fillCanvasData = fillCtx.getImageData(0, 0, fillCanvas.width, fillCanvas.height);
-      }
-    }
-    
-    // Create history entry
+    // Create history entry - prefer incremental storage when available
     const entry: UnifiedHistoryEntry = {
       type,
       timestamp: Date.now(),
-      canvasData,
-      fillCanvasData, // Save fill canvas state for transparency preservation
-      fillRegions: [...regionsToSave] // Keep for backward compatibility
     };
+    
+    // STEP 2: Memory optimization - only store full canvas when necessary
+    if (pixelChanges && pixelChanges.length > 0 && (type === 'pencil' || type === 'eraser')) {
+      // NEW: Use incremental storage for pencil/eraser operations
+      entry.changes = pixelChanges;
+      const estimatedSize = pixelChanges.length * 12; // 12 bytes per PixelChange
+      console.log(`[saveToUnifiedHistory] Saving ${pixelChanges.length} pixel changes for ${type} operation (~${(estimatedSize / 1024).toFixed(1)} KB vs 32 MB)`);
+      console.log(`[Memory Savings] Avoided storing ${(32 * 1024 * 1024 - estimatedSize) / 1024 / 1024} MB`);
+    } else {
+      // Fallback: Store full canvas for flood fill operations or when no pixel changes available
+      const canvasData = mainCtx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
+      entry.canvasData = canvasData;
+      console.log(`[saveToUnifiedHistory] Saving full ImageData for ${type} operation (${(canvasData.data.length / 1024 / 1024).toFixed(2)} MB)`);
+    }
+    
+    // Get current fill canvas state for transparency preservation (flood fill only)
+    if (fillCanvas && type === 'fill') {
+      const fillCtx = fillCanvas.getContext('2d');
+      if (fillCtx) {
+        entry.fillCanvasData = fillCtx.getImageData(0, 0, fillCanvas.width, fillCanvas.height);
+      }
+    }
+    
+    // Store fill regions for backward compatibility (flood fill only)
+    if (type === 'fill') {
+      entry.fillRegions = [...regionsToSave];
+    }
     
 
     
@@ -522,6 +533,55 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     setUnifiedHistoryStep(finalStep);
   }, [fillRegions]); // Fix: Include fillRegions in dependency array to prevent stale closure
 
+  // Helper function to apply pixel changes (same as in ColoringCanvas.tsx)
+  function applyChanges(pixels32: Uint32Array, changes: PixelChange[], reverse = false) {
+    for (const change of changes) {
+      pixels32[change.index] = reverse ? change.oldColor : change.newColor;
+    }
+  }
+
+  // STEP 3: Safety function to reconstruct canvas state from base + incremental changes
+  function reconstructCanvasState(targetStep: number): ImageData | null {
+    const mainCanvas = mainCanvasRef.current;
+    if (!mainCanvas || targetStep < 0) return null;
+    
+    // Find the nearest full canvas state (working backwards from target)
+    let baseStep = targetStep;
+    let baseImageData: ImageData | null = null;
+    
+    while (baseStep >= 0) {
+      const entry = unifiedHistoryRef.current[baseStep];
+      if (entry?.canvasData) {
+        baseImageData = entry.canvasData;
+        break;
+      }
+      baseStep--;
+    }
+    
+    if (!baseImageData) {
+      console.error('[reconstructCanvasState] No base canvas state found');
+      return null;
+    }
+    
+    // Create a working copy of the base state
+    const reconstructed = new ImageData(
+      new Uint8ClampedArray(baseImageData.data),
+      baseImageData.width,
+      baseImageData.height
+    );
+    const pixels32 = new Uint32Array(reconstructed.data.buffer);
+    
+    // Apply all incremental changes from base to target
+    for (let step = baseStep + 1; step <= targetStep; step++) {
+      const entry = unifiedHistoryRef.current[step];
+      if (entry?.changes) {
+        applyChanges(pixels32, entry.changes, false); // Apply forward
+      }
+    }
+    
+    console.log(`[reconstructCanvasState] Reconstructed state for step ${targetStep} from base step ${baseStep}`);
+    return reconstructed;
+  }
 
   // Mouse pan handlers
   const [isPanning, setIsPanning] = useState(false);
@@ -851,13 +911,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
           historyStep: 0
         }))
         
-        // Save initial clean canvas state
+        // Get initial canvas states for unified history
         const initialCanvasData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        setPencilHistory([initialCanvasData]);
-        setPencilHistoryStep(0);
-        pencilHistoryStepRef.current = 0;
-        
-        // Get initial fill canvas state
         let initialFillCanvasData: ImageData | undefined;
         if (fillCanvas) {
           const fillCtx = fillCanvas.getContext('2d');
@@ -1378,60 +1433,15 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   }
 
   // Save canvas state to pencil history
-  const savePencilState = useCallback(() => {
-    // Prevent rapid duplicate calls with a more robust check
-    const now = Date.now();
-    const lastSaveTime = pencilSaveInProgress.current || 0;
-    
-    if (now - lastSaveTime < 200) { // 200ms minimum between saves
-      return;
-    }
-    
-    pencilSaveInProgress.current = now;
-    
-    const mainCanvas = mainCanvasRef.current;
-    if (!mainCanvas) return;
-
-    const ctx = mainCanvas.getContext('2d');
-    if (!ctx) return;
-
-    const imageData = ctx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
-    
-    // Add state to history, but first truncate any future history
-    setPencilHistory(currentHistory => {
-      const currentStep = pencilHistoryStepRef.current;
-      // Truncate history from current step + 1 onwards (remove any "future" states)
-      const truncatedHistory = currentHistory.slice(0, currentStep + 1);
-      const newHistory = [...truncatedHistory, imageData];
-      const limitedHistory = newHistory.slice(-MAX_HISTORY);
-      
-      // Update step to match the new history length - 1
-      const newStep = limitedHistory.length - 1;
-      pencilHistoryStepRef.current = newStep;
-      setPencilHistoryStep(newStep);
-      
-      return limitedHistory;
-    });
-  }, []); // Remove dependency
-
-  // Restore canvas state from pencil history
-  const restorePencilState = useCallback((step: number) => {
-    const mainCanvas = mainCanvasRef.current;
-    if (!mainCanvas || step < 0 || step >= pencilHistory.length) return;
-
-    const ctx = mainCanvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.putImageData(pencilHistory[step], 0, 0);
-  }, [pencilHistory]);
+  // REMOVED: savePencilState and restorePencilState functions - now handled by unified history system
 
   // Initialize pencil tool with callback after functions are defined
   useEffect(() => {
     const mainCanvas = mainCanvasRef.current;
     if (mainCanvas && state.imageData && !pencilToolRef.current) {
-      pencilToolRef.current = new PencilTool(mainCanvas, () => {
+      pencilToolRef.current = new PencilTool(mainCanvas, (changes?: PixelChange[]) => {
         // savePencilState(); // DISABLED: Using unified history instead
-        saveToUnifiedHistory('pencil');
+        saveToUnifiedHistory('pencil', undefined, changes);
       });
       // Set the initial size to match the React state
       pencilToolRef.current.setSize(state.pencilSize);
@@ -1477,12 +1487,49 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const mainCtx = mainCanvas.getContext('2d');
     if (!mainCtx) return;
     
-    // Get the previous state
-    const previousStep = unifiedHistoryStepRef.current - 1;
+    // Get the current and previous entries
+    const currentStep = unifiedHistoryStepRef.current;
+    const currentEntry = unifiedHistoryRef.current[currentStep];
+    const previousStep = currentStep - 1;
     const previousEntry = unifiedHistoryRef.current[previousStep];
     
-    // Restore from previous state
-    mainCtx.putImageData(previousEntry.canvasData, 0, 0);
+    // OPTIMIZED: Use incremental changes when available, fallback to full canvas
+    if (currentEntry.changes && currentEntry.changes.length > 0) {
+      // NEW: Memory-optimized undo using incremental changes
+      try {
+        console.log(`[Memory Optimized] Reversing ${currentEntry.changes.length} pixel changes (${currentEntry.type})`);
+        const currentImageData = mainCtx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
+        const pixels32 = new Uint32Array(currentImageData.data.buffer);
+        applyChanges(pixels32, currentEntry.changes, true); // reverse = true
+        mainCtx.putImageData(currentImageData, 0, 0);
+        
+        const savedMemory = 32 * 1024 * 1024; // 32MB we didn't need to store
+        console.log(`[Memory Savings] Avoided storing ${(savedMemory / 1024 / 1024).toFixed(1)} MB`);
+      } catch (error) {
+        console.warn('[Memory Optimized] Incremental undo failed, falling back to full canvas:', error);
+        // STEP 3: Safety fallback - reconstruct state if needed
+        if (previousEntry.canvasData) {
+          mainCtx.putImageData(previousEntry.canvasData, 0, 0);
+        } else {
+          // Try to reconstruct by applying all changes from the base state
+          console.log('[Safety Fallback] Reconstructing state from base canvas');
+          const reconstructed = reconstructCanvasState(previousStep);
+          if (reconstructed) {
+            mainCtx.putImageData(reconstructed, 0, 0);
+          } else {
+            console.error('[handleUndo] Cannot reconstruct previous state - unsafe to continue');
+            return;
+          }
+        }
+      }
+    } else if (previousEntry.canvasData) {
+      // OLD: Fallback to full canvas restoration for flood fill/eraser
+      console.log(`[handleUndo] Restoring full canvas to previous state (${previousEntry.type})`);
+      mainCtx.putImageData(previousEntry.canvasData, 0, 0);
+    } else {
+      console.warn('[handleUndo] No undo data available');
+      return;
+    }
     
     // Restore fill canvas state
     if (fillCanvas) {
@@ -1544,12 +1591,48 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const mainCtx = mainCanvas.getContext('2d');
     if (!mainCtx) return;
     
-    // Get the next state
+    // Get the next state to redo
     const nextStep = unifiedHistoryStepRef.current + 1;
     const nextEntry = unifiedHistoryRef.current[nextStep];
     
-    // Restore from next state
-    mainCtx.putImageData(nextEntry.canvasData, 0, 0);
+    // OPTIMIZED: Use incremental changes when available, fallback to full canvas
+    if (nextEntry.changes && nextEntry.changes.length > 0) {
+      // NEW: Memory-optimized redo using incremental changes
+      try {
+        console.log(`[Memory Optimized] Applying ${nextEntry.changes.length} pixel changes (${nextEntry.type})`);
+        const currentImageData = mainCtx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
+        const pixels32 = new Uint32Array(currentImageData.data.buffer);
+        applyChanges(pixels32, nextEntry.changes, false); // reverse = false for redo
+        mainCtx.putImageData(currentImageData, 0, 0);
+        
+        const savedMemory = 32 * 1024 * 1024; // 32MB we didn't need to store
+        console.log(`[Memory Savings] Avoided storing ${(savedMemory / 1024 / 1024).toFixed(1)} MB`);
+      } catch (error) {
+        console.warn('[Memory Optimized] Incremental redo failed, falling back to reconstruction:', error);
+        // STEP 3: Safety fallback - reconstruct the target state
+        const reconstructed = reconstructCanvasState(nextStep);
+        if (reconstructed) {
+          mainCtx.putImageData(reconstructed, 0, 0);
+        } else {
+          console.error('[handleRedo] Cannot reconstruct target state - unsafe to continue');
+          return;
+        }
+      }
+    } else if (nextEntry.canvasData) {
+      // OLD: Fallback to full canvas restoration for flood fill operations
+      console.log(`[handleRedo] Restoring to next state (${nextEntry.type})`);
+      mainCtx.putImageData(nextEntry.canvasData, 0, 0);
+    } else {
+      // STEP 3: Final fallback - reconstruct the target state
+      console.log('[Safety Fallback] Reconstructing target state for redo');
+      const reconstructed = reconstructCanvasState(nextStep);
+      if (reconstructed) {
+        mainCtx.putImageData(reconstructed, 0, 0);
+      } else {
+        console.error('[handleRedo] No redo data available and cannot reconstruct');
+        return;
+      }
+    }
     
     // Restore fill canvas state
     if (fillCanvas) {
@@ -1616,12 +1699,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const mainCanvas = mainCanvasRef.current;
     if (mainCanvas) {
       const ctx = mainCanvas.getContext('2d');
-      if (ctx) {
-        const initialCanvasData = ctx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
-        setPencilHistory([initialCanvasData]);
-        setPencilHistoryStep(0);
-        pencilHistoryStepRef.current = 0;
-      }
+      // REMOVED: Pencil history initialization - now handled by unified history system
     }
     
     // Clear the fill canvas
@@ -2365,6 +2443,8 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
               />
             </div>
       </div>
+      
+      {/* Development Testing Component */}
     </div>
   )
 } 
