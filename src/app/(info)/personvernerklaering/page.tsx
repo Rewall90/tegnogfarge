@@ -7,8 +7,13 @@ import GenericWebPageJsonLd from '@/components/json-ld/GenericWebPageJsonLd';
 export const metadata: Metadata = {
   title: 'Personvernerklæring - TegnOgFarge.no',
   description: 'Denne personvernerklæringen forklarer hvordan vi i Tegn og Farge samler inn, bruker og beskytter personopplysninger når du bruker nettstedet vårt.',
+  keywords: 'personvern, cookies, informasjonskapsler, samtykke, GDPR, norsk personvernlov, cookie consent',
   alternates: {
     canonical: 'https://tegnogfarge.no/personvernerklaering',
+  },
+  other: {
+    'privacy-policy': 'https://tegnogfarge.no/personvernerklaering',
+    'cookie-policy': 'https://tegnogfarge.no/personvernerklaering',
   },
 };
 
@@ -25,6 +30,38 @@ export default function PrivacyPolicyPage() {
         title="Personvernerklæring - TegnOgFarge.no"
         description="Denne personvernerklæringen forklarer hvordan vi i Tegn og Farge samler inn, bruker og beskytter personopplysninger når du bruker nettstedet vårt."
         pathname="/personvernerklaering"
+      />
+      
+      {/* Enhanced JSON-LD for Privacy Compliance */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Personvernerklæring",
+            "description": "Komplett personvernerklæring med informasjonskapsler og samtykkebehandling",
+            "url": "https://tegnogfarge.no/personvernerklaering",
+            "lastReviewed": "2024-11-07",
+            "about": [
+              {
+                "@type": "Thing",
+                "name": "GDPR Compliance",
+                "description": "EU General Data Protection Regulation compliance"
+              },
+              {
+                "@type": "Thing", 
+                "name": "Cookie Consent",
+                "description": "User consent management for information cookies"
+              },
+              {
+                "@type": "Thing",
+                "name": "Norwegian Privacy Law",
+                "description": "Compliance with Norwegian data protection regulations"
+              }
+            ]
+          })
+        }}
       />
       <div className="max-w-4xl mx-auto">
         <Breadcrumbs items={breadcrumbItems} />
@@ -119,8 +156,16 @@ export default function PrivacyPolicyPage() {
           <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">Endringer i personvernerklæringen</h2>
           <p className="text-lg text-gray-600">Vi kan oppdatere denne teksten fra tid til annen. Endringer blir lagt ut på denne siden, og vi varsler deg hvis det skjer større endringer.</p>
 
+          <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">Samtykkebehandling</h2>
+          <p className="text-lg text-gray-600 mb-4">
+            Vi respekterer ditt valg når det gjelder informasjonskapsler. Du kan når som helst endre dine samtykkepreferanser ved å klikke på cookie-innstillinger-knappen nederst til venstre på nettsiden.
+          </p>
+          <p className="text-lg text-gray-600 mb-4">
+            Ditt samtykke lagres i 12 måneder. Etter dette vil du bli bedt om å fornye samtykket ditt. Du kan trekke tilbake samtykket ditt når som helst uten at det påvirker lovligheten av behandlingen som ble utført før tilbaketrekkingen.
+          </p>
+
           <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">Kontakt oss</h2>
-          <p className="text-lg text-gray-600">Har du spørsmål om personvern? <Link href="/kontakt" className="text-link-orange hover:underline">Ta kontakt med oss</Link>, så hjelper vi deg gjerne!</p>
+          <p className="text-lg text-gray-600">Har du spørsmål om personvern eller cookies? <Link href="/kontakt" className="text-link-orange hover:underline">Ta kontakt med oss</Link>, så hjelper vi deg gjerne!</p>
 
         </div>
       </div>
