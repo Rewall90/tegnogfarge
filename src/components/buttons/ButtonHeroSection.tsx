@@ -11,7 +11,7 @@ export function ButtonHeroSection({ className }: ButtonHeroSectionProps) {
   return (
     <div className={`flex justify-center mt-8 max-w-md mx-auto ${className}`}>
       <Button
-        href="/natur/fargelegg-hostens-motiver/barn-plukker-epler-sammen"
+        href="/dyr/fargelegg-katter/katt-hopper-og-leker-med-ball"
         variant="hero"
         size="2xl"
         ariaLabel="Fargelegg Dagens Motiv"
