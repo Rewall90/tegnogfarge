@@ -40,7 +40,7 @@ export default function Button({
     md: 'py-2 px-4 text-base',
     lg: 'py-3 px-6 text-lg',
     xl: 'py-4 px-8 text-xl',
-    '2xl': 'py-6 px-12 text-2xl',
+    '2xl': 'py-3 px-6 text-lg md:py-6 md:px-12 md:text-2xl',
   };
   
   const disabledStyles = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';

@@ -231,7 +231,7 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
   // Unified history system
   const [unifiedHistory, setUnifiedHistory] = useState<UnifiedHistoryEntry[]>([]);
   const [unifiedHistoryStep, setUnifiedHistoryStep] = useState(-1);
-  const MAX_UNIFIED_HISTORY = 50; // Maximum number of undo steps
+  const MAX_UNIFIED_HISTORY = 10; // Maximum number of undo steps
   const unifiedHistoryRef = useRef<UnifiedHistoryEntry[]>([]);
   const unifiedHistoryStepRef = useRef(-1);
   
