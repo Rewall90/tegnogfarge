@@ -8,20 +8,46 @@ import { SearchForm } from "../shared/SearchForm";
 import { trackImagePerformance } from "@/utils/imageLoadingMetrics";
 
 export function FrontpageHero() {
-  // Set up performance tracking for hero image (critical for LCP)
+  // Lazy load performance tracking after initial paint to reduce JavaScript evaluation time
   React.useEffect(() => {
-    const cleanup = trackImagePerformance({
-      debug: true,
-      trackAllImages: false, // Only track LCP for hero
-      onMetricsCollected: (metrics) => {
-        if (metrics.isLCP) {
-          console.log('[Hero LCP] Performance metrics:', metrics);
-          // In production, send to analytics service
+    // Use requestIdleCallback for better performance, fallback to setTimeout
+    const loadPerformanceTracking = () => {
+      const cleanup = trackImagePerformance({
+        debug: true,
+        trackAllImages: false, // Only track LCP for hero
+        onMetricsCollected: (metrics) => {
+          if (metrics.isLCP) {
+            console.log('[Hero LCP] Performance metrics:', metrics);
+            // In production, send to analytics service
+          }
         }
-      }
-    });
+      });
+      
+      return cleanup;
+    };
+
+    let cleanup: (() => void) | undefined;
     
-    return cleanup;
+    if ('requestIdleCallback' in window) {
+      const idleCallbackId = window.requestIdleCallback(() => {
+        cleanup = loadPerformanceTracking();
+      });
+      
+      return () => {
+        window.cancelIdleCallback(idleCallbackId);
+        cleanup?.();
+      };
+    } else {
+      // Fallback for browsers without requestIdleCallback
+      const timeoutId = setTimeout(() => {
+        cleanup = loadPerformanceTracking();
+      }, 1);
+      
+      return () => {
+        clearTimeout(timeoutId);
+        cleanup?.();
+      };
+    }
   }, []);
 
   return (
@@ -31,10 +57,11 @@ export function FrontpageHero() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0 items-center">
             <div className="max-w-xl">
               <h1 id="hero-heading" className="text-heading mb-4 text-[#264653] font-bold">
-                Fantasien har ingen grenser med våre gratis fargeleggingsark – Perfekt for Barn og Voksne!
+                Gratis fargeleggingsark for barn og voksne
               </h1>
               <p className="mb-6 text-[#264653] text-lg">
-                Last ned, skriv ut eller fargelegg direkte i nettleseren – våre gratis fargeleggingsark er morsomme, lærerike og kreative. Perfekte til bruk hjemme, i barnehagen eller på skolen. Utforsk <strong className="font-bold">tusenvis</strong> av motiver som inspirerer og engasjerer barn og voksne i alle aldre.
+                <span className="md:hidden">Last ned, skriv ut eller fargelegg direkte i nettleseren</span>
+                <span className="hidden md:block">Perfekt for hjemme, barnehage og skole. For barn og voksne i alle aldre!</span>
               </p>
               
               <div className="mt-6 max-w-md">
