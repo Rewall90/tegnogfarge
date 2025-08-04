@@ -13,7 +13,7 @@ export function ButtonHeroSection({ className }: ButtonHeroSectionProps) {
       <Button
         href="/natur/fargelegg-hostens-motiver/barn-plukker-epler-sammen"
         variant="hero"
-        size="lg"
+        size="2xl"
         ariaLabel="Fargelegg Dagens Motiv"
       >
         Fargelegg Dagens Motiv

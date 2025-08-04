@@ -10,23 +10,7 @@ import dynamic from 'next/dynamic';
 const ColoringCategories = dynamic(
   () => import('@/components/frontpage/ColoringCategories').then(mod => ({ default: mod.ColoringCategories })),
   { 
-    loading: () => (
-      <section className="py-12 bg-cream" aria-labelledby="loading-categories">
-        <div className="max-w-6xl mx-auto px-4">
-          <header className="text-navy">
-            <h2 className="text-heading text-center mb-2 text-navy">Fargeleggingsmoro</h2>
-            <p className="text-section text-center mb-10 text-navy">
-              Laster kategorier...
-            </p>
-          </header>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="w-full aspect-[4/5] bg-gray-200 rounded-[32px] animate-pulse" />
-            ))}
-          </div>
-        </div>
-      </section>
-    ),
+    loading: () => null,
     ssr: false 
   }
 );
@@ -34,23 +18,7 @@ const ColoringCategories = dynamic(
 const SubcategoryHighlights = dynamic(
   () => import('@/components/category/SubcategoryHighlights').then(mod => ({ default: mod.SubcategoryHighlights })),
   { 
-    loading: () => (
-      <section className="py-12 bg-[#FEFAF6]" aria-labelledby="loading-subcategories">
-        <div className="max-w-6xl mx-auto px-4">
-          <header className="text-navy">
-            <h2 className="text-heading text-center mb-2 text-navy">Utvalgte Fargeleggingsark</h2>
-            <p className="text-section text-center mb-10 text-navy">
-              Laster populære samlinger...
-            </p>
-          </header>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="w-full aspect-[4/5] bg-gray-200 rounded-[32px] animate-pulse" />
-            ))}
-          </div>
-        </div>
-      </section>
-    ),
+    loading: () => null,
     ssr: false 
   }
 );
@@ -59,20 +27,17 @@ import CategoriesListJsonLd from '@/components/json-ld/CategoriesListJsonLd';
 const FAQAccordion = dynamic(
   () => import('@/components/frontpage/FAQAccordion'),
   { 
-    loading: () => (
-      <div className="space-y-6">
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="border border-gray-200 rounded-lg p-4">
-            <div className="h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
-            <div className="h-4 bg-gray-100 rounded animate-pulse w-3/4"></div>
-          </div>
-        ))}
-      </div>
-    ),
+    loading: () => null,
     ssr: false 
   }
 );
-import NewsletterForm from '@/components/newsletter/NewsletterForm';
+const NewsletterForm = dynamic(
+  () => import('@/components/newsletter/NewsletterForm'),
+  { 
+    loading: () => null,
+    ssr: false 
+  }
+);
 
 interface Category {
   title: string;
