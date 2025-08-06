@@ -75,7 +75,7 @@ export async function generateMetadata() {
         "name": "Er det gratis?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Ja, plattformen tilbyr gratis tilgang til grunnleggende funksjoner. Du kan oppgradere til premium for flere verktøy og ressurser. Utforsk alternativene våre for mer informasjon."
+          "text": "Ja, plattformen er helt gratis å bruke. Vi krever kun kontoregistrering for å verifisere at det er ekte brukere som bruker tjenesten."
         }
       },
       {
@@ -83,23 +83,31 @@ export async function generateMetadata() {
         "name": "Hvordan lagrer jeg arbeidet?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Ditt arbeid lagres automatisk når du bruker plattformen. Du kan også lagre det manuelt ved å klikke på \"Lagre\" knappen. Bruk Dashboard-siden for å se alle lagrede verk."
+          "text": "Du kan laste ned ditt ferdigfargede arbeid som en bildefil når du er ferdig. Det er også mulig å skrive ut fargeleggingene direkte fra nettleseren for fysiske kopier."
         }
       },
       {
         "@type": "Question",
-        "name": "Kan jeg dele arbeidet?",
+        "name": "Hvilken alder er dette egnet for?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Ja, du kan enkelt dele arbeidet ditt på sosiale medier. Klikk på \"Del\" knappen for å få tilgang til delingsmuligheter. Vi har også innebygd støtte for å venneliste!"
+          "text": "Fargeleggingssiden er egnet for alle aldre, fra små barn til voksne. Vi har enkle motiver for de minste og mer detaljerte tegninger for eldre barn og voksne."
         }
       },
       {
         "@type": "Question",
-        "name": "Hva er premium-funksjoner?",
+        "name": "Er dette pedagogisk nyttig for barn?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Premium-funksjoner inkluderer tilgang til flere avanserte farger, spesialeffekter, ubegrenset lagring av dine prosjekter, og mulighet til å laste ned høyoppløselige versjoner av arbeidet ditt. Du får også prioritert støtte fra vårt team."
+          "text": "Ja, digital fargelegging utvikler barns kreativitet, finmotorikk og fargeforståelse. Det er en trygg og lærerik aktivitet som kombinerer teknologi med kunstnerisk uttrykk."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Er innholdet trygt for barn?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Alle våre fargeleggingstegninger er familievennlige og tryge for barn. Vi har kun positive motiver uten vold eller upassende innhold."
         }
       }
     ]
@@ -250,25 +258,31 @@ export default async function Home() {
                 <FAQAccordion 
                   id="faq-2"
                   question="Er det gratis?" 
-                  answer="Ja, plattformen tilbyr gratis tilgang til grunnleggende funksjoner. Du kan oppgradere til premium for flere verktøy og ressurser. Utforsk alternativene våre for mer informasjon."
+                  answer="Ja, plattformen er helt gratis å bruke. Vi krever kun kontoregistrering for å verifisere at det er ekte brukere som bruker tjenesten."
                 />
                 
                 <FAQAccordion 
                   id="faq-3"
                   question="Hvordan lagrer jeg arbeidet?" 
-                  answer="Ditt arbeid lagres automatisk når du bruker plattformen. Du kan også lagre det manuelt ved å klikke på &quot;Lagre&quot; knappen. Bruk Dashboard-siden for å se alle lagrede verk."
+                  answer="Du kan laste ned ditt ferdigfargede arbeid som en bildefil når du er ferdig. Det er også mulig å skrive ut fargeleggingene direkte fra nettleseren for fysiske kopier."
                 />
                 
                 <FAQAccordion 
                   id="faq-4"
-                  question="Kan jeg dele arbeidet?" 
-                  answer="Ja, du kan enkelt dele arbeidet ditt på sosiale medier. Klikk på &quot;Del&quot; knappen for å få tilgang til delingsmuligheter. Vi har også innebygd støtte for å venneliste!"
+                  question="Hvilken alder er dette egnet for?" 
+                  answer="Fargeleggingssiden er egnet for alle aldre, fra små barn til voksne. Vi har enkle motiver for de minste og mer detaljerte tegninger for eldre barn og voksne."
                 />
                 
                 <FAQAccordion 
                   id="faq-5"
-                  question="Hva er premium-funksjoner?" 
-                  answer="Premium-funksjoner inkluderer tilgang til flere avanserte farger, spesialeffekter, ubegrenset lagring av dine prosjekter, og mulighet til å laste ned høyoppløselige versjoner av arbeidet ditt. Du får også prioritert støtte fra vårt team."
+                  question="Er dette pedagogisk nyttig for barn?" 
+                  answer="Ja, digital fargelegging utvikler barns kreativitet, finmotorikk og fargeforståelse. Det er en trygg og lærerik aktivitet som kombinerer teknologi med kunstnerisk uttrykk."
+                />
+                
+                <FAQAccordion 
+                  id="faq-6"
+                  question="Er innholdet trygt for barn?" 
+                  answer="Alle våre fargeleggingstegninger er familievennlige og tryge for barn. Vi har kun positive motiver uten vold eller upassende innhold."
                 />
               </div>
               

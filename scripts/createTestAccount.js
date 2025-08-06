@@ -14,7 +14,7 @@ async function createTestAccount() {
     
     // Test account details
     const testEmail = 'test@tegnogfarge.no';
-    const testPassword = 'TestKonto2024!';
+    const testPassword = 'TestKonto2025!';
     const hashedPassword = await bcrypt.hash(testPassword, 10);
     
     // Check if test account already exists
@@ -50,7 +50,7 @@ async function createTestAccount() {
     console.log('Test Account Credentials:');
     console.log('------------------------');
     console.log('Email: test@tegnogfarge.no');
-    console.log('Password: TestKonto2024!');
+    console.log('Password: TestKonto2025!');
     console.log('');
     console.log('You can share these credentials with webmasters for testing.');
     
