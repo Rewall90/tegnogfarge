@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+// Temporarily disabled authentication requirement
+// import { useSession } from 'next-auth/react';
 import Button from '../ui/Button';
 
 interface StartColoringButtonProps {
@@ -12,16 +13,18 @@ interface StartColoringButtonProps {
 }
 
 export function StartColoringButton({ drawingId, title = 'Start Fargelegging', className }: StartColoringButtonProps) {
-  const { data: session } = useSession();
+  // Temporarily disabled authentication requirement
+  // const { data: session } = useSession();
   const router = useRouter();
 
 
 
   function handleClick() {
-    if (!session) {
-      router.push('/login?redirect=' + encodeURIComponent(window.location.pathname));
-      return;
-    }
+    // Temporarily disabled authentication requirement
+    // if (!session) {
+    //   router.push('/login?redirect=' + encodeURIComponent(window.location.pathname));
+    //   return;
+    // }
 
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('coloringAppImageId', drawingId);
