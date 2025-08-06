@@ -21,12 +21,29 @@ const nextConfig = {
         hostname: "placehold.co",
       },
     ],
-    // Define more granular image sizes for better optimization
-    deviceSizes: [320, 420, 520, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Reduced device sizes to minimize transformations
+    deviceSizes: [640, 750, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    // Limit formats to reduce transformations
+    formats: ['image/webp'],
+    // Minimize caching time to reduce new transformations
+    minimumCacheTTL: 31536000, // 1 year in seconds
+    // Disable static imports optimization for SVGs
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'inline',
   },
   async headers() {
     return [
+      // Add cache headers for Next.js optimized images
+      {
+        source: '/_next/image(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
       {
         source: '/api/:path*',
         headers: [

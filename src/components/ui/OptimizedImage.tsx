@@ -81,6 +81,11 @@ export function OptimizedImage({
 }: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   
+  // Check if the image is an SVG or small icon that shouldn't be optimized
+  const isSvg = typeof src === 'string' && src.endsWith('.svg');
+  const isIcon = typeof src === 'string' && (src.includes('/icon') || src.includes('.ico'));
+  const shouldOptimize = !isSvg && !isIcon;
+  
   // Use the optimized lazy loading hook
   // Disable it if isPriority is true
   const { targetRef, isIntersecting, hasIntersected } = useOptimizedLazyLoading({
@@ -126,9 +131,10 @@ export function OptimizedImage({
           alt={alt}
           className={className}
           style={imageStyle}
-          placeholder={placeholder}
-          blurDataURL={blurDataURL}
+          placeholder={shouldOptimize ? placeholder : undefined}
+          blurDataURL={shouldOptimize ? blurDataURL : undefined}
           priority={isPriority}
+          unoptimized={!shouldOptimize}
           onLoad={() => setIsLoaded(true)}
           {...props}
         />
