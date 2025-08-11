@@ -31,7 +31,7 @@ export default function SkribentPage() {
           
           <h2 className="text-2xl font-semibold mt-6 mb-4">Min Bakgrunn</h2>
           <p>
-            Helt siden jeg var liten, har tegning vært min måte å uttrykke meg på. Jeg har tilbrakt utallige timer med blyant og papir, og senere med digitale tegneverktøy, for å skape verdener og karakterer fra fantasien. Jeg har en formell utdanning innen grafisk design og illustrasjon, noe som har gitt meg et solid fundament for å skape de tegningene du ser her.
+            Helt siden jeg var liten, har tegning vært min måte å uttrykke meg på. Jeg har tilbrakt utallige timer med blyant og papir, og senere med digitale tegneverktøy, for å skape verdener og karakterer fra fantasien. 
           </p>
 
           <h2 className="text-2xl font-semibold mt-6 mb-4">Min Filosofi</h2>
@@ -43,12 +43,7 @@ export default function SkribentPage() {
 
           <p>
             Alle tegningene på denne siden er laget med kjærlighet og et ønske om å inspirere. Jeg håper de gir deg
-            like mye glede å fargelegge som de ga meg å tegne.
-          </p>
-
-          <p>
-            Hvis du vil se mer av arbeidet mitt utenfor dette prosjektet, eller kanskje til og med bestille en
-            personlig tegning, kan du besøke min portefølje på [Link til portefølje/annen nettside].
+            like mye glede å fargelegge som de ga meg å lage.
           </p>
           
           <p>
