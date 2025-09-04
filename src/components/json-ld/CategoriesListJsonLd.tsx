@@ -128,19 +128,6 @@ export default function CategoriesListJsonLd({
   
   // Add category pages
   categories.forEach(category => {
-    // Get the image URL
-    const categoryImageUrl = category.image?.url || category.imageUrl;
-    
-    // Create image object for category page
-    const categoryImage = categoryImageUrl ? createImageObject(
-      categoryImageUrl,
-      category.image?.alt || category.title,
-      category.image?.metadata?.dimensions ? {
-        width: category.image.metadata.dimensions.width || 800,
-        height: category.image.metadata.dimensions.height || 600
-      } : undefined,
-      `${category.title} fargeleggingsark kategori`
-    ) : null;
     
     // Try to identify a Wikipedia page for the category (for about property)
     let aboutObject = null;
@@ -181,7 +168,6 @@ export default function CategoriesListJsonLd({
       "name": `${category.seoTitle || category.title} – Fargeleggingsark`,
       "url": `${baseUrl}/${category.slug}`,
       "inLanguage": STRUCTURED_DATA.SITE.LANGUAGE,
-      ...(categoryImage && { "image": categoryImage }),
       "description": category.description || `Utforsk våre fargeleggingsark med ${category.title.toLowerCase()}-tema for barn.`,
       "isPartOf": {
         "@id": categoriesId
