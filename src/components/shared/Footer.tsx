@@ -33,12 +33,12 @@ export default function Footer() {
   ];
 
   const popularSubcategories: Subcategory[] = [
-    { _id: 'sub-1', title: 'Enhjørninger', slug: 'fargelegg-enhjorninger', parentCategory: { slug: 'mytiske-skapninger' } },
+    { _id: 'sub-1', title: 'Enhjørninger', slug: 'fargelegg-enhjorninger', parentCategory: { slug: 'tegneserier' } },
     { _id: 'sub-2', title: 'Dinosaurer', slug: 'dinosaurer', parentCategory: { slug: 'dyr' } },
-    { _id: 'sub-3', title: 'Biler', slug: 'biler', parentCategory: { slug: 'kjoretoy' } },
-    { _id: 'sub-4', title: 'Katter', slug: 'katter', parentCategory: { slug: 'dyr' } },
-    { _id: 'sub-5', title: 'Prinsesser', slug: 'prinsesser', parentCategory: { slug: 'figurer' } },
-    { _id: 'sub-6', title: 'Hunder', slug: 'hunder', parentCategory: { slug: 'dyr' } },
+    { _id: 'sub-3', title: 'Biler', slug: 'fargelegg-biler', parentCategory: { slug: 'kjoretoy' } },
+    { _id: 'sub-4', title: 'Katter', slug: 'fargelegg-katter', parentCategory: { slug: 'dyr' } },
+    { _id: 'sub-5', title: 'Prinsesser', slug: 'fargelegg-prinsesser', parentCategory: { slug: 'tegneserier' } },
+    { _id: 'sub-6', title: 'Hunder', slug: 'fargelegg-hunder', parentCategory: { slug: 'dyr' } },
     { _id: 'sub-7', title: 'Roser', slug: 'roser', parentCategory: { slug: 'blomster' } },
   ];
 
