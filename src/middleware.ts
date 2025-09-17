@@ -40,6 +40,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // --- COPYRIGHT CONTENT DETECTION ---
+  // These patterns will match both category pages and all individual pages within them
   const copyrightedPatterns = [
     '/tegneserier/pokemon-figurer',
     '/tegneserier/fargelegg-paw-patrol',
@@ -61,6 +62,8 @@ export async function middleware(request: NextRequest) {
   ];
 
   // Check if current path matches any copyrighted content pattern
+  // This will catch both category pages (/tegneserier/disney-prinsesser)
+  // and individual pages (/tegneserier/disney-prinsesser/anna-og-eventyret-i-snoen)
   const isCopyrightedContent = copyrightedPatterns.some(pattern =>
     pathname.startsWith(pattern)
   );
