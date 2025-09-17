@@ -1,0 +1,131 @@
+BULK DEACTIVATION QUERIES FOR SANITY STUDIO VISION
+====================================================
+
+Copy and paste these queries into Sanity Studio Vision to bulk deactivate all copyrighted content:
+
+1. DEACTIVATE ALL COPYRIGHTED SUBCATEGORIES:
+-------------------------------------------
+
+// This query will update all copyrighted subcategories to isActive: false
+[
+  *[_type == "subcategory" && _id in [
+    "0ee36888-dd85-4390-8e5b-1611d37810ec", // Pokemon Figurer
+    "7946942b-c622-473e-b807-16b8674c8afb", // Fargelgg PawPatrol
+    "d73b37fc-2d66-436e-9e21-ebd3ca3fdc51", // Fargelegg Ole Brumm
+    "ab07aa95-db21-40df-8fae-980804cb5785", // Fargelegg Ninjago
+    "790d299b-9ae8-4656-bbe0-d13582d3c690", // Fargelegg Minions
+    "3ffdc5b9-e400-47e2-9d89-d284514aa736", // Fargelegg Karakterene i My Little Pony
+    "21780f69-53f4-4aa2-a122-23bc41007982", // Fargelegg Hello Kitty
+    "01781d83-f1de-43bd-9be6-5040e1fee4e5", // Fargelegg Harry Potter
+    "feb10488-b0d3-4213-92a4-7d41fe8b27a0", // Fargelegg Elsa
+    "6941859a-69cd-470a-ab2b-98b7ee213e6e", // Disney Prinsesser
+    "8a19da8a-5aed-4552-91ba-141b3ee914bb", // Fargelegg Disney Figurer
+    "6265e08e-b88e-43a9-8d33-10ba50645ed3", // Fargelegg Barbie
+    "8629531d-3edf-4ede-9309-8695001471b9", // Fargelegg Spiderman
+    "f4545a83-f722-4dca-a94e-5e60c85387be", // Fargelegg Sonic
+    "2cb2b5c8-92b1-4182-8b09-5600adc2fe04", // Fargelegg Mario
+    "1270073f-1bcb-4000-9255-4b12568e9d10", // Fargelegg DeadPool
+    "dd1aeea8-b581-4b72-83a2-15b7ff0beacb"  // Fargelegg Captain America
+  ]] {
+    _id,
+    title,
+    isActive,
+    "update": patch(_id)
+      .set({ isActive: false })
+      .commit()
+  }
+]
+
+2. DEACTIVATE ALL RELATED DRAWINGS:
+-----------------------------------
+
+// This query will update all drawings in copyrighted subcategories to isActive: false
+[
+  *[_type == "drawingImage" && subcategory._ref in [
+    "0ee36888-dd85-4390-8e5b-1611d37810ec", // Pokemon Figurer
+    "7946942b-c622-473e-b807-16b8674c8afb", // Fargelgg PawPatrol
+    "d73b37fc-2d66-436e-9e21-ebd3ca3fdc51", // Fargelegg Ole Brumm
+    "ab07aa95-db21-40df-8fae-980804cb5785", // Fargelegg Ninjago
+    "790d299b-9ae8-4656-bbe0-d13582d3c690", // Fargelegg Minions
+    "3ffdc5b9-e400-47e2-9d89-d284514aa736", // Fargelegg Karakterene i My Little Pony
+    "21780f69-53f4-4aa2-a122-23bc41007982", // Fargelegg Hello Kitty
+    "01781d83-f1de-43bd-9be6-5040e1fee4e5", // Fargelegg Harry Potter
+    "feb10488-b0d3-4213-92a4-7d41fe8b27a0", // Fargelegg Elsa
+    "6941859a-69cd-470a-ab2b-98b7ee213e6e", // Disney Prinsesser
+    "8a19da8a-5aed-4552-91ba-141b3ee914bb", // Fargelegg Disney Figurer
+    "6265e08e-b88e-43a9-8d33-10ba50645ed3", // Fargelegg Barbie
+    "8629531d-3edf-4ede-9309-8695001471b9", // Fargelegg Spiderman
+    "f4545a83-f722-4dca-a94e-5e60c85387be", // Fargelegg Sonic
+    "2cb2b5c8-92b1-4182-8b09-5600adc2fe04", // Fargelegg Mario
+    "1270073f-1bcb-4000-9255-4b12568e9d10", // Fargelegg DeadPool
+    "dd1aeea8-b581-4b72-83a2-15b7ff0beacb"  // Fargelegg Captain America
+  ]] {
+    _id,
+    title,
+    isActive,
+    "update": patch(_id)
+      .set({ isActive: false })
+      .commit()
+  }
+]
+
+3. VERIFICATION QUERY (Run after deactivation):
+-----------------------------------------------
+
+// Check that all copyrighted content is deactivated
+{
+  "deactivatedSubcategories": count(*[_type == "subcategory" && _id in [
+    "0ee36888-dd85-4390-8e5b-1611d37810ec",
+    "7946942b-c622-473e-b807-16b8674c8afb",
+    "d73b37fc-2d66-436e-9e21-ebd3ca3fdc51",
+    "ab07aa95-db21-40df-8fae-980804cb5785",
+    "790d299b-9ae8-4656-bbe0-d13582d3c690",
+    "3ffdc5b9-e400-47e2-9d89-d284514aa736",
+    "21780f69-53f4-4aa2-a122-23bc41007982",
+    "01781d83-f1de-43bd-9be6-5040e1fee4e5",
+    "feb10488-b0d3-4213-92a4-7d41fe8b27a0",
+    "6941859a-69cd-470a-ab2b-98b7ee213e6e",
+    "8a19da8a-5aed-4552-91ba-141b3ee914bb",
+    "6265e08e-b88e-43a9-8d33-10ba50645ed3",
+    "8629531d-3edf-4ede-9309-8695001471b9",
+    "f4545a83-f722-4dca-a94e-5e60c85387be",
+    "2cb2b5c8-92b1-4182-8b09-5600adc2fe04",
+    "1270073f-1bcb-4000-9255-4b12568e9d10",
+    "dd1aeea8-b581-4b72-83a2-15b7ff0beacb"
+  ] && isActive == false]),
+  "deactivatedDrawings": count(*[_type == "drawingImage" && subcategory._ref in [
+    "0ee36888-dd85-4390-8e5b-1611d37810ec",
+    "7946942b-c622-473e-b807-16b8674c8afb",
+    "d73b37fc-2d66-436e-9e21-ebd3ca3fdc51",
+    "ab07aa95-db21-40df-8fae-980804cb5785",
+    "790d299b-9ae8-4656-bbe0-d13582d3c690",
+    "3ffdc5b9-e400-47e2-9d89-d284514aa736",
+    "21780f69-53f4-4aa2-a122-23bc41007982",
+    "01781d83-f1de-43bd-9be6-5040e1fee4e5",
+    "feb10488-b0d3-4213-92a4-7d41fe8b27a0",
+    "6941859a-69cd-470a-ab2b-98b7ee213e6e",
+    "8a19da8a-5aed-4552-91ba-141b3ee914bb",
+    "6265e08e-b88e-43a9-8d33-10ba50645ed3",
+    "8629531d-3edf-4ede-9309-8695001471b9",
+    "f4545a83-f722-4dca-a94e-5e60c85387be",
+    "2cb2b5c8-92b1-4182-8b09-5600adc2fe04",
+    "1270073f-1bcb-4000-9255-4b12568e9d10",
+    "dd1aeea8-b581-4b72-83a2-15b7ff0beacb"
+  ] && isActive == false])
+}
+
+INSTRUCTIONS:
+=============
+
+1. Open Sanity Studio (http://localhost:3334 or your studio URL)
+2. Go to Vision tool
+3. Run query #1 to deactivate subcategories
+4. Run query #2 to deactivate drawings
+5. Run query #3 to verify everything is deactivated
+6. Expected results: 17 deactivated subcategories, 596 deactivated drawings
+
+AFFECTED CONTENT:
+================
+- 17 copyrighted subcategories
+- 596 copyrighted drawings
+- Highest risk: Pokemon (148 drawings), Spiderman (58 drawings)

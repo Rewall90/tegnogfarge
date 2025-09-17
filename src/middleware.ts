@@ -66,7 +66,7 @@ export async function middleware(request: NextRequest) {
   );
 
   if (isCopyrightedContent) {
-    return NextResponse.redirect(new URL('/410-gone', request.url));
+    return NextResponse.redirect(new URL('/api/410-gone', request.url));
   }
 
   // --- AUTHENTICATION LOGIC ---
