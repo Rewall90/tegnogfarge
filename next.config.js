@@ -138,6 +138,92 @@ const nextConfig = {
         destination: '/hoved-kategori',
         permanent: true,
       },
+      // 410 Gone redirects for copyrighted content
+      {
+        source: '/tegneserier/pokemon-figurer/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-paw-patrol/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-ole-brumm/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-ninjago/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-minions/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-my-little-pony/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-hello-kitty/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-harry-potter/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-elsa/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/disney-prinsesser/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-disney-figurer/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-barbie/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-spiderman/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/superhelter/fargelegg-sonic/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/tegneserier/fargelegg-mario/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/superhelter/fargelegg-deadpool/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
+      {
+        source: '/superhelter/fargelegg-captain-america/:path*',
+        destination: '/410-gone',
+        permanent: true,
+      },
     ];
   },
   // Disable linting during build for now

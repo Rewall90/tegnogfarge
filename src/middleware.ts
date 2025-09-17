@@ -39,6 +39,36 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/all', request.url));
   }
 
+  // --- COPYRIGHT CONTENT DETECTION ---
+  const copyrightedPatterns = [
+    '/tegneserier/pokemon-figurer',
+    '/tegneserier/fargelegg-paw-patrol',
+    '/tegneserier/fargelegg-ole-brumm',
+    '/tegneserier/fargelegg-ninjago',
+    '/tegneserier/fargelegg-minions',
+    '/tegneserier/fargelegg-my-little-pony',
+    '/tegneserier/fargelegg-hello-kitty',
+    '/tegneserier/fargelegg-harry-potter',
+    '/tegneserier/fargelegg-elsa',
+    '/tegneserier/disney-prinsesser',
+    '/tegneserier/fargelegg-disney-figurer',
+    '/tegneserier/fargelegg-barbie',
+    '/tegneserier/fargelegg-spiderman',
+    '/superhelter/fargelegg-sonic',
+    '/tegneserier/fargelegg-mario',
+    '/superhelter/fargelegg-deadpool',
+    '/superhelter/fargelegg-captain-america',
+  ];
+
+  // Check if current path matches any copyrighted content pattern
+  const isCopyrightedContent = copyrightedPatterns.some(pattern =>
+    pathname.startsWith(pattern)
+  );
+
+  if (isCopyrightedContent) {
+    return NextResponse.redirect(new URL('/410-gone', request.url));
+  }
+
   // --- AUTHENTICATION LOGIC ---
   const token = await getToken({
     req: request,

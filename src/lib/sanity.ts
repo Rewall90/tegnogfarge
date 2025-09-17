@@ -715,12 +715,12 @@ export async function getSitemapPageData() {
         "slug": slug.current,
         _updatedAt
       },
-      "subcategories": *[_type == "subcategory" && defined(slug.current) && defined(parentCategory->slug.current) && !(_id in path("drafts.**"))] {
+      "subcategories": *[_type == "subcategory" && defined(slug.current) && defined(parentCategory->slug.current) && isActive == true && !(_id in path("drafts.**"))] {
         "slug": slug.current,
         "parentCategorySlug": parentCategory->slug.current,
         _updatedAt
       },
-      "drawings": *[_type == "drawingImage" && defined(slug.current) && defined(subcategory->slug.current) && defined(subcategory->parentCategory->slug.current) && !(_id in path("drafts.**"))] {
+      "drawings": *[_type == "drawingImage" && defined(slug.current) && defined(subcategory->slug.current) && defined(subcategory->parentCategory->slug.current) && isActive == true && !(_id in path("drafts.**"))] {
         "slug": slug.current,
         "subcategorySlug": subcategory->slug.current,
         "parentCategorySlug": subcategory->parentCategory->slug.current,
@@ -732,7 +732,7 @@ export async function getSitemapPageData() {
 
 export async function getSitemapImageData() {
   return client.fetch(`
-    *[_type == "drawingImage" && defined(slug.current) && defined(displayImage.asset) && !(_id in path("drafts.**"))] {
+    *[_type == "drawingImage" && defined(slug.current) && defined(displayImage.asset) && isActive == true && !(_id in path("drafts.**"))] {
       "drawingSlug": slug.current,
       "subcategorySlug": subcategory->slug.current,
       "categorySlug": subcategory->parentCategory->slug.current,
