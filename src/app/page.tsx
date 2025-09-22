@@ -75,7 +75,7 @@ export async function generateMetadata() {
         "name": "Er det gratis?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Ja, plattformen er helt gratis å bruke. Vi krever kun kontoregistrering for å verifisere at det er ekte brukere som bruker tjenesten."
+          "text": "Ja, plattformen er helt gratis å bruke. Du kan begynne å fargelegge med en gang uten å registrere deg."
         }
       },
       {
@@ -99,7 +99,7 @@ export async function generateMetadata() {
         "name": "Er dette pedagogisk nyttig for barn?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Ja, digital fargelegging utvikler barns kreativitet, finmotorikk og fargeforståelse. Det er en trygg og lærerik aktivitet som kombinerer teknologi med kunstnerisk uttrykk."
+          "text": "Ja, fargelegging utvikler barns kreativitet, finmotorikk og fargeforståelse. Du kan både fargelegge digitalt eller laste ned og skrive ut arkene for fysisk fargelegging. Det er en trygg og lærerik aktivitet som kombinerer teknologi med kunstnerisk uttrykk."
         }
       },
       {
@@ -107,7 +107,7 @@ export async function generateMetadata() {
         "name": "Er innholdet trygt for barn?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Alle våre fargeleggingstegninger er familievennlige og tryge for barn. Vi har kun positive motiver uten vold eller upassende innhold."
+          "text": "Alle våre fargeleggingstegninger er familievennlige og trygge for barn. Vi har kun positive motiver uten vold eller upassende innhold."
         }
       }
     ]
@@ -255,10 +255,10 @@ export default async function Home() {
                   answer="For å registere deg, klikk på &quot;Registrer deg&quot; knappen på hjemmesiden. Fyll ut skjemaet med nødvendig informasjon. Når du har sendt inn, vil du motta en bekreftelse e-post."
                 />
                 
-                <FAQAccordion 
+                <FAQAccordion
                   id="faq-2"
-                  question="Er det gratis?" 
-                  answer="Ja, plattformen er helt gratis å bruke. Vi krever kun kontoregistrering for å verifisere at det er ekte brukere som bruker tjenesten."
+                  question="Er det gratis?"
+                  answer="Ja, plattformen er helt gratis å bruke. Du kan begynne å fargelegge med en gang uten å registrere deg."
                 />
                 
                 <FAQAccordion 
@@ -273,24 +273,24 @@ export default async function Home() {
                   answer="Fargeleggingssiden er egnet for alle aldre, fra små barn til voksne. Vi har enkle motiver for de minste og mer detaljerte tegninger for eldre barn og voksne."
                 />
                 
-                <FAQAccordion 
+                <FAQAccordion
                   id="faq-5"
-                  question="Er dette pedagogisk nyttig for barn?" 
-                  answer="Ja, digital fargelegging utvikler barns kreativitet, finmotorikk og fargeforståelse. Det er en trygg og lærerik aktivitet som kombinerer teknologi med kunstnerisk uttrykk."
+                  question="Er dette pedagogisk nyttig for barn?"
+                  answer="Ja, fargelegging utvikler barns kreativitet, finmotorikk og fargeforståelse. Du kan både fargelegge digitalt eller laste ned og skrive ut arkene for fysisk fargelegging. Det er en trygg og lærerik aktivitet som kombinerer teknologi med kunstnerisk uttrykk."
                 />
                 
-                <FAQAccordion 
+                <FAQAccordion
                   id="faq-6"
-                  question="Er innholdet trygt for barn?" 
-                  answer="Alle våre fargeleggingstegninger er familievennlige og tryge for barn. Vi har kun positive motiver uten vold eller upassende innhold."
+                  question="Er innholdet trygt for barn?"
+                  answer="Alle våre fargeleggingstegninger er familievennlige og trygge for barn. Vi har kun positive motiver uten vold eller upassende innhold."
                 />
               </div>
               
               <div className="mt-12 text-center">
                 <h3 className="text-section font-bold mb-4">Har du fortsatt spørsmål?</h3>
                 <p className="text-body mb-6 text-gray-600">Ta kontakt med oss, så hjelper vi deg så raskt som mulig.</p>
-                <Link 
-                  href="/contact" 
+                <Link
+                  href="/kontakt"
                   className="text-button border border-black px-6 py-3 rounded inline-block hover:bg-gray-100"
                   aria-label="Kontakt oss med dine spørsmål"
                 >
