@@ -25,29 +25,53 @@ function isAnalyticsAvailable(): boolean {
 }
 
 /**
+ * Wait for Google Analytics to be ready
+ */
+function waitForGtag(maxWaitTime = 5000): Promise<boolean> {
+  return new Promise((resolve) => {
+    // If gtag already exists, resolve immediately
+    if (typeof window !== 'undefined' && window.gtag) {
+      resolve(true);
+      return;
+    }
+
+    // Otherwise, wait for it with a timeout
+    const startTime = Date.now();
+    const checkInterval = setInterval(() => {
+      if (typeof window !== 'undefined' && window.gtag) {
+        clearInterval(checkInterval);
+        resolve(true);
+      } else if (Date.now() - startTime > maxWaitTime) {
+        clearInterval(checkInterval);
+        resolve(false); // Timeout
+      }
+    }, 100); // Check every 100ms
+  });
+}
+
+/**
  * Send a custom event to Google Analytics
  */
-function trackEvent(eventName: string, eventParams?: Record<string, any>): void {
-  // Debug logging (always enabled for now)
-  console.log('[Analytics trackEvent] Called:', eventName, eventParams);
-  console.log('[Analytics trackEvent] isAnalyticsAvailable:', isAnalyticsAvailable());
-  console.log('[Analytics trackEvent] window.gtag exists:', typeof window !== 'undefined' && typeof window.gtag !== 'undefined');
-
-  // Always log in development for debugging, even if gtag isn't loaded
+async function trackEvent(eventName: string, eventParams?: Record<string, any>): Promise<void> {
+  // Always log in development for debugging
   if (process.env.NODE_ENV === 'development') {
     console.log('[Analytics]', eventName, eventParams);
   }
 
-  // Only send to GA if available (production)
-  if (!isAnalyticsAvailable()) {
-    console.log('[Analytics trackEvent] Analytics not available, returning');
+  // Skip if not in browser
+  if (typeof window === 'undefined') return;
+
+  // Wait for gtag to be available (with 5 second timeout)
+  const gtagReady = await waitForGtag(5000);
+
+  if (!gtagReady || !window.gtag) {
+    console.warn('[Analytics] Google Analytics not loaded after 5 seconds, event not tracked:', eventName);
     return;
   }
 
   try {
-    console.log('[Analytics trackEvent] Calling window.gtag...');
-    window.gtag!('event', eventName, eventParams);
-    console.log('[Analytics trackEvent] window.gtag called successfully');
+    window.gtag('event', eventName, eventParams);
+    console.log('[Analytics] Event tracked:', eventName);
   } catch (error) {
     console.error('Analytics tracking error:', error);
   }
