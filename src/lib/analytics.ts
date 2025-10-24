@@ -82,19 +82,46 @@ async function trackEvent(eventName: string, eventParams?: Record<string, any>):
  * This runs alongside GA4 tracking for the hybrid approach
  */
 async function incrementCounter(imageId: string, eventType: string = 'download'): Promise<void> {
+  const startTime = performance.now();
+  console.log('[Analytics] incrementCounter called', {
+    imageId,
+    eventType,
+    timestamp: new Date().toISOString()
+  });
+
   // Skip if not in browser
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {
+    console.warn('[Analytics] incrementCounter: Not in browser environment, skipping');
+    return;
+  }
 
   try {
-    await fetch('/api/analytics/increment', {
+    console.log('[Analytics] Sending POST to /api/analytics/increment', {
+      imageId,
+      eventType,
+      elapsed: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
+
+    const response = await fetch('/api/analytics/increment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ imageId, eventType }),
     });
-    console.log('[Analytics] Counter incremented:', imageId);
+
+    const data = await response.json();
+    console.log('[Analytics] Counter incremented successfully', {
+      imageId,
+      response: data,
+      elapsed: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
   } catch (error) {
     // Fail silently - don't break user experience
-    console.error('[Analytics] Failed to increment counter:', error);
+    console.error('[Analytics] Failed to increment counter:', {
+      error,
+      imageId,
+      eventType,
+      elapsed: `${(performance.now() - startTime).toFixed(2)}ms`
+    });
   }
 }
 
@@ -136,7 +163,20 @@ export function trackPdfDownload(params: {
   category: string;
   subcategory: string;
 }): void {
+  const startTime = performance.now();
+  console.log('[Analytics] trackPdfDownload started', {
+    imageId: params.imageId,
+    imageTitle: params.imageTitle,
+    category: params.category,
+    subcategory: params.subcategory,
+    timestamp: new Date().toISOString()
+  });
+
   // Track in Google Analytics (full details)
+  console.log('[Analytics] Calling trackEvent for download_pdf', {
+    elapsed: `${(performance.now() - startTime).toFixed(2)}ms`
+  });
+
   trackEvent('download_pdf', {
     event_category: 'Downloads',
     event_label: params.imageTitle,
@@ -146,8 +186,16 @@ export function trackPdfDownload(params: {
     value: 1,
   });
 
+  console.log('[Analytics] trackEvent called, now calling incrementCounter', {
+    elapsed: `${(performance.now() - startTime).toFixed(2)}ms`
+  });
+
   // Increment counter in database (for real-time display)
   incrementCounter(params.imageId, 'pdf_download');
+
+  console.log('[Analytics] trackPdfDownload completed (synchronous part)', {
+    elapsed: `${(performance.now() - startTime).toFixed(2)}ms`
+  });
 }
 
 /**
