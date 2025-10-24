@@ -12,6 +12,7 @@ interface DrawingDetailProps {
   difficultyLabels: Record<string, string>;
   ageRangeLabels: Record<string, string>;
   customComponents: PortableTextComponents;
+  downloadCount?: number;
 }
 
 export function DrawingDetail({
@@ -20,6 +21,7 @@ export function DrawingDetail({
   difficultyLabels,
   ageRangeLabels,
   customComponents,
+  downloadCount = 0,
 }: DrawingDetailProps) {
   // Helper function to get difficulty key safely
   const getDifficultyKey = (value: string | undefined): 'easy' | 'medium' | 'hard' => {
@@ -71,9 +73,31 @@ export function DrawingDetail({
           </div>
           
           <p className="text-navy text-base">{drawing.description}</p>
+
+          {/* Download Counter - Real-time from database */}
+          {downloadCount > 0 && (
+            <div className="mt-4 flex items-center gap-2 text-sm text-gray-600">
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+              <span className="font-medium">
+                Nedlastet {downloadCount.toLocaleString('nb-NO')} {downloadCount === 1 ? 'gang' : 'ganger'}
+              </span>
+            </div>
+          )}
         </div>
       </div>
-      
+
       {/* New Button Section */}
       <div className="my-8 flex justify-center items-center flex-col sm:flex-row gap-10">
         {drawing.downloadUrl && (

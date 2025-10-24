@@ -23,9 +23,13 @@ export function DownloadPdfButton({
   className,
   analyticsData
 }: DownloadPdfButtonProps) {
-  const handleDownload = () => {
+  const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Prevent default navigation
+    e.preventDefault();
+
     // Track download event if analytics data is provided
     if (analyticsData) {
+      // Fire and forget - don't wait for completion
       trackPdfDownload({
         imageId: analyticsData.imageId,
         imageTitle: analyticsData.imageTitle,
@@ -33,6 +37,13 @@ export function DownloadPdfButton({
         subcategory: analyticsData.subcategory,
       });
     }
+
+    // Small delay to allow the tracking request to be sent
+    // This ensures the API call isn't cancelled by navigation
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Now navigate to the download URL
+    window.location.href = downloadUrl;
   };
 
   return (

@@ -77,6 +77,52 @@ async function trackEvent(eventName: string, eventParams?: Record<string, any>):
   }
 }
 
+/**
+ * Increment download counter in database (for real-time display)
+ * This runs alongside GA4 tracking for the hybrid approach
+ */
+async function incrementCounter(imageId: string, eventType: string = 'download'): Promise<void> {
+  // Skip if not in browser
+  if (typeof window === 'undefined') return;
+
+  try {
+    await fetch('/api/analytics/increment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageId, eventType }),
+    });
+    console.log('[Analytics] Counter incremented:', imageId);
+  } catch (error) {
+    // Fail silently - don't break user experience
+    console.error('[Analytics] Failed to increment counter:', error);
+  }
+}
+
+/**
+ * Get download count for an image (server-side helper)
+ * Use this in Server Components to display download counts
+ */
+export async function getDownloadCount(imageId: string, eventType: string = 'pdf_download'): Promise<number> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const response = await fetch(
+      `${baseUrl}/api/analytics/increment?imageId=${encodeURIComponent(imageId)}&eventType=${encodeURIComponent(eventType)}`,
+      { next: { revalidate: 60 } } // Cache for 1 minute
+    );
+
+    if (!response.ok) {
+      console.error('Failed to fetch download count:', response.statusText);
+      return 0;
+    }
+
+    const data = await response.json();
+    return data.count || 0;
+  } catch (error) {
+    console.error('Error fetching download count:', error);
+    return 0;
+  }
+}
+
 // ============================================================================
 // DOWNLOAD TRACKING
 // ============================================================================
@@ -90,6 +136,7 @@ export function trackPdfDownload(params: {
   category: string;
   subcategory: string;
 }): void {
+  // Track in Google Analytics (full details)
   trackEvent('download_pdf', {
     event_category: 'Downloads',
     event_label: params.imageTitle,
@@ -98,6 +145,9 @@ export function trackPdfDownload(params: {
     subcategory: params.subcategory,
     value: 1,
   });
+
+  // Increment counter in database (for real-time display)
+  incrementCounter(params.imageId, 'pdf_download');
 }
 
 /**
@@ -110,6 +160,7 @@ export function trackColoredImageDownload(params: {
   subcategory: string;
   format: 'png' | 'jpg';
 }): void {
+  // Track in Google Analytics (full details)
   trackEvent('download_colored_image', {
     event_category: 'Downloads',
     event_label: params.imageTitle,
@@ -119,6 +170,9 @@ export function trackColoredImageDownload(params: {
     file_format: params.format,
     value: 1,
   });
+
+  // Increment counter in database (for real-time display)
+  incrementCounter(params.imageId, 'colored_download');
 }
 
 // ============================================================================

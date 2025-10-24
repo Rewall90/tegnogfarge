@@ -16,6 +16,7 @@ import { DrawingPageSidebar } from '@/components/sidebar/DrawingPageSidebar';
 import { DrawingDetail } from '@/components/drawing/DrawingDetail';
 import type { Drawing } from '@/types';
 import { PageViewTracker } from '@/components/analytics/PageViewTracker';
+import { getDownloadCount } from '@/lib/analytics';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -150,7 +151,10 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
   
   // Prepare the path for JSON-LD
   const pathname = `/${categorySlug}/${subcategorySlug}/${drawingSlug}`;
-  
+
+  // Fetch download count (hybrid approach - real-time from database)
+  const downloadCount = await getDownloadCount(drawing._id, 'pdf_download');
+
   return (
     <div className="flex flex-col min-h-screen bg-cream">
       <PageViewTracker
@@ -215,6 +219,7 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
                 difficultyLabels={difficultyLabels}
                 ageRangeLabels={ageRangeLabels}
                 customComponents={customComponents}
+                downloadCount={downloadCount}
               />
               <DrawingPageSidebar />
             </div>
