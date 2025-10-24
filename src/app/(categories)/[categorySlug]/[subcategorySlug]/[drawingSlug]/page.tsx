@@ -153,7 +153,13 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
   const pathname = `/${categorySlug}/${subcategorySlug}/${drawingSlug}`;
 
   // Fetch download count (hybrid approach - real-time from database)
+  console.log('[DrawingPage] Fetching download count for drawing:', {
+    drawingId: drawing._id,
+    drawingSlug: drawingSlug,
+    drawingTitle: drawing.title
+  });
   const downloadCount = await getDownloadCount(drawing._id, 'pdf_download');
+  console.log('[DrawingPage] Download count result:', downloadCount);
 
   return (
     <div className="flex flex-col min-h-screen bg-cream">

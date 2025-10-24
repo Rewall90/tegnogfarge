@@ -130,22 +130,36 @@ async function incrementCounter(imageId: string, eventType: string = 'download')
  * Use this in Server Components to display download counts
  */
 export async function getDownloadCount(imageId: string, eventType: string = 'pdf_download'): Promise<number> {
+  // Return 0 if no imageId provided
+  if (!imageId) {
+    console.warn('[Analytics] getDownloadCount: No imageId provided');
+    return 0;
+  }
+
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const response = await fetch(
-      `${baseUrl}/api/analytics/increment?imageId=${encodeURIComponent(imageId)}&eventType=${encodeURIComponent(eventType)}`,
-      { next: { revalidate: 60 } } // Cache for 1 minute
-    );
+    const url = `${baseUrl}/api/analytics/increment?imageId=${encodeURIComponent(imageId)}&eventType=${encodeURIComponent(eventType)}`;
+
+    console.log('[Analytics] Fetching download count:', { imageId, eventType, url });
+
+    const response = await fetch(url, {
+      next: { revalidate: 60 } // Cache for 1 minute
+    });
 
     if (!response.ok) {
-      console.error('Failed to fetch download count:', response.statusText);
+      console.error('[Analytics] Failed to fetch download count:', {
+        status: response.status,
+        statusText: response.statusText,
+        imageId
+      });
       return 0;
     }
 
     const data = await response.json();
+    console.log('[Analytics] Download count fetched:', { imageId, count: data.count });
     return data.count || 0;
   } catch (error) {
-    console.error('Error fetching download count:', error);
+    console.error('[Analytics] Error fetching download count:', { error, imageId });
     return 0;
   }
 }
