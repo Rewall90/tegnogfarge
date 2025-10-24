@@ -2,29 +2,40 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-// Temporarily disabled authentication requirement
-// import { useSession } from 'next-auth/react';
 import Button from '../ui/Button';
+import { trackStartColoring } from '@/lib/analytics';
 
 interface StartColoringButtonProps {
   drawingId: string;
   title?: string;
   className?: string;
+  // Analytics tracking data (optional)
+  analyticsData?: {
+    imageId: string;
+    imageTitle: string;
+    category: string;
+    subcategory: string;
+  };
 }
 
-export function StartColoringButton({ drawingId, title = 'Start Fargelegging', className }: StartColoringButtonProps) {
-  // Temporarily disabled authentication requirement
-  // const { data: session } = useSession();
+export function StartColoringButton({
+  drawingId,
+  title = 'Start Fargelegging',
+  className,
+  analyticsData
+}: StartColoringButtonProps) {
   const router = useRouter();
 
-
-
   function handleClick() {
-    // Temporarily disabled authentication requirement
-    // if (!session) {
-    //   router.push('/login?redirect=' + encodeURIComponent(window.location.pathname));
-    //   return;
-    // }
+    // Track analytics event
+    if (analyticsData) {
+      trackStartColoring({
+        imageId: analyticsData.imageId,
+        imageTitle: analyticsData.imageTitle,
+        category: analyticsData.category,
+        subcategory: analyticsData.subcategory,
+      });
+    }
 
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('coloringAppImageId', drawingId);

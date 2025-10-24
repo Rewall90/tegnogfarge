@@ -1,30 +1,44 @@
 'use client';
 
 import React from 'react';
-// Temporarily disabled authentication requirement
-// import { useSession } from 'next-auth/react';
-// import { useRouter } from 'next/navigation';
 import Button from '../ui/Button';
+import { trackPdfDownload } from '@/lib/analytics';
 
 interface DownloadPdfButtonProps {
   downloadUrl: string;
   title?: string;
   className?: string;
+  // Analytics tracking data (optional)
+  analyticsData?: {
+    imageId: string;
+    imageTitle: string;
+    category: string;
+    subcategory: string;
+  };
 }
 
-export function DownloadPdfButton({ downloadUrl, title = 'Last ned PDF', className }: DownloadPdfButtonProps) {
-  // Temporarily disabled authentication requirement
-  // const { data: session } = useSession();
-  // const router = useRouter();
-
-  // const handleRedirect = () => {
-  //     router.push('/login?redirect=' + encodeURIComponent(window.location.pathname));
-  // };
+export function DownloadPdfButton({
+  downloadUrl,
+  title = 'Last ned PDF',
+  className,
+  analyticsData
+}: DownloadPdfButtonProps) {
+  const handleDownload = () => {
+    // Track download event if analytics data is provided
+    if (analyticsData) {
+      trackPdfDownload({
+        imageId: analyticsData.imageId,
+        imageTitle: analyticsData.imageTitle,
+        category: analyticsData.category,
+        subcategory: analyticsData.subcategory,
+      });
+    }
+  };
 
   return (
     <Button
       href={downloadUrl}
-      // onClick={!session ? handleRedirect : undefined}
+      onClick={handleDownload}
       variant="hero"
       size="xl"
       className={className}

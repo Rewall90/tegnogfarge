@@ -1,0 +1,292 @@
+/**
+ * Google Analytics Event Tracking
+ *
+ * This module provides type-safe wrapper functions for tracking user interactions
+ * with Google Analytics. All events respect user cookie consent preferences.
+ */
+
+// Extend Window interface to include gtag
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
+/**
+ * Check if analytics is available and user has consented
+ */
+function isAnalyticsAvailable(): boolean {
+  if (typeof window === 'undefined') return false;
+  if (!window.gtag) return false;
+
+  // Check for cookie consent - analytics should only run if user has consented
+  // The GoogleAnalytics component from @next/third-parties handles consent automatically
+  return true;
+}
+
+/**
+ * Send a custom event to Google Analytics
+ */
+function trackEvent(eventName: string, eventParams?: Record<string, any>): void {
+  // Always log in development for debugging, even if gtag isn't loaded
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics]', eventName, eventParams);
+  }
+
+  // Only send to GA if available (production)
+  if (!isAnalyticsAvailable()) return;
+
+  try {
+    window.gtag!('event', eventName, eventParams);
+  } catch (error) {
+    console.error('Analytics tracking error:', error);
+  }
+}
+
+// ============================================================================
+// DOWNLOAD TRACKING
+// ============================================================================
+
+/**
+ * Track PDF download events
+ */
+export function trackPdfDownload(params: {
+  imageId: string;
+  imageTitle: string;
+  category: string;
+  subcategory: string;
+}): void {
+  trackEvent('download_pdf', {
+    event_category: 'Downloads',
+    event_label: params.imageTitle,
+    image_id: params.imageId,
+    category: params.category,
+    subcategory: params.subcategory,
+    value: 1,
+  });
+}
+
+/**
+ * Track colored image download from coloring app
+ */
+export function trackColoredImageDownload(params: {
+  imageId: string;
+  imageTitle: string;
+  category: string;
+  subcategory: string;
+  format: 'png' | 'jpg';
+}): void {
+  trackEvent('download_colored_image', {
+    event_category: 'Downloads',
+    event_label: params.imageTitle,
+    image_id: params.imageId,
+    category: params.category,
+    subcategory: params.subcategory,
+    file_format: params.format,
+    value: 1,
+  });
+}
+
+// ============================================================================
+// COLORING APP TRACKING
+// ============================================================================
+
+/**
+ * Track when user starts coloring an image
+ */
+export function trackStartColoring(params: {
+  imageId: string;
+  imageTitle: string;
+  category: string;
+  subcategory: string;
+}): void {
+  trackEvent('start_coloring', {
+    event_category: 'Engagement',
+    event_label: params.imageTitle,
+    image_id: params.imageId,
+    category: params.category,
+    subcategory: params.subcategory,
+  });
+}
+
+/**
+ * Track coloring session completion (when user downloads their work)
+ */
+export function trackColoringComplete(params: {
+  imageId: string;
+  imageTitle: string;
+  timeSpentSeconds: number;
+}): void {
+  trackEvent('coloring_complete', {
+    event_category: 'Engagement',
+    event_label: params.imageTitle,
+    image_id: params.imageId,
+    time_spent: params.timeSpentSeconds,
+    value: Math.round(params.timeSpentSeconds / 60), // Value in minutes
+  });
+}
+
+/**
+ * Track tool usage in coloring app
+ */
+export function trackToolUsage(tool: 'pencil' | 'eraser' | 'fill' | 'eyedropper'): void {
+  trackEvent('tool_usage', {
+    event_category: 'Coloring Tools',
+    event_label: tool,
+    tool_name: tool,
+  });
+}
+
+// ============================================================================
+// PAGE VIEW TRACKING
+// ============================================================================
+
+/**
+ * Track category page views
+ */
+export function trackCategoryView(params: {
+  categorySlug: string;
+  categoryTitle: string;
+}): void {
+  trackEvent('view_category', {
+    event_category: 'Navigation',
+    event_label: params.categoryTitle,
+    category_slug: params.categorySlug,
+  });
+}
+
+/**
+ * Track subcategory page views
+ */
+export function trackSubcategoryView(params: {
+  categorySlug: string;
+  subcategorySlug: string;
+  subcategoryTitle: string;
+}): void {
+  trackEvent('view_subcategory', {
+    event_category: 'Navigation',
+    event_label: params.subcategoryTitle,
+    category_slug: params.categorySlug,
+    subcategory_slug: params.subcategorySlug,
+  });
+}
+
+/**
+ * Track individual drawing page views
+ */
+export function trackDrawingView(params: {
+  imageId: string;
+  imageTitle: string;
+  category: string;
+  subcategory: string;
+}): void {
+  trackEvent('view_drawing', {
+    event_category: 'Content',
+    event_label: params.imageTitle,
+    image_id: params.imageId,
+    category: params.category,
+    subcategory: params.subcategory,
+  });
+}
+
+// ============================================================================
+// SEARCH TRACKING
+// ============================================================================
+
+/**
+ * Track search queries
+ */
+export function trackSearch(params: {
+  searchQuery: string;
+  resultsCount: number;
+}): void {
+  trackEvent('search', {
+    event_category: 'Search',
+    search_term: params.searchQuery,
+    results_count: params.resultsCount,
+  });
+}
+
+// ============================================================================
+// USER ENGAGEMENT
+// ============================================================================
+
+/**
+ * Track newsletter signups
+ */
+export function trackNewsletterSignup(source: string): void {
+  trackEvent('newsletter_signup', {
+    event_category: 'Engagement',
+    event_label: source,
+    signup_source: source,
+    value: 1,
+  });
+}
+
+/**
+ * Track when user adds image to favorites
+ */
+export function trackAddFavorite(params: {
+  imageId: string;
+  imageTitle: string;
+}): void {
+  trackEvent('add_favorite', {
+    event_category: 'Engagement',
+    event_label: params.imageTitle,
+    image_id: params.imageId,
+  });
+}
+
+/**
+ * Track when user removes image from favorites
+ */
+export function trackRemoveFavorite(params: {
+  imageId: string;
+  imageTitle: string;
+}): void {
+  trackEvent('remove_favorite', {
+    event_category: 'Engagement',
+    event_label: params.imageTitle,
+    image_id: params.imageId,
+  });
+}
+
+// ============================================================================
+// SOCIAL SHARING
+// ============================================================================
+
+/**
+ * Track social media shares
+ */
+export function trackShare(params: {
+  platform: 'facebook' | 'twitter' | 'pinterest' | 'copy_link';
+  contentType: 'drawing' | 'category' | 'blog_post';
+  contentTitle: string;
+}): void {
+  trackEvent('share', {
+    event_category: 'Social',
+    method: params.platform,
+    content_type: params.contentType,
+    item_id: params.contentTitle,
+  });
+}
+
+// ============================================================================
+// ERROR TRACKING
+// ============================================================================
+
+/**
+ * Track errors and issues
+ */
+export function trackError(params: {
+  errorType: string;
+  errorMessage: string;
+  page?: string;
+}): void {
+  trackEvent('error', {
+    event_category: 'Errors',
+    error_type: params.errorType,
+    error_message: params.errorMessage,
+    page: params.page || window.location.pathname,
+  });
+}

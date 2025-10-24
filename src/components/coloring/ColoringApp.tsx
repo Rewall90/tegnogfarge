@@ -1753,28 +1753,28 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
     const background = backgroundCanvasRef.current;
     const fillCanvas = fillCanvasRef.current;
     const mainCanvas = mainCanvasRef.current;
-    
+
     if (!background || !fillCanvas || !mainCanvas) return;
-    
+
     tempCanvas.width = background.width;
     tempCanvas.height = background.height;
     const tempCtx = tempCanvas.getContext('2d');
-    
+
     if (!tempCtx) return;
-    
+
     // Draw background layer
     tempCtx.drawImage(background, 0, 0);
-    
+
     // Draw fill layer
     tempCtx.drawImage(fillCanvas, 0, 0);
-    
+
     // Draw brush strokes layer
     tempCtx.drawImage(mainCanvas, 0, 0);
-    
+
     // Export as PNG
     tempCanvas.toBlob(blob => {
       if (!blob) return;
-      
+
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -1783,8 +1783,19 @@ export default function ColoringApp({ imageData: initialImageData }: ColoringApp
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      // Track analytics event
+      import('@/lib/analytics').then(({ trackColoredImageDownload }) => {
+        trackColoredImageDownload({
+          imageId: currentImage._id,
+          imageTitle: currentImage.title,
+          category: currentImage.category.title,
+          subcategory: currentImage.subcategory.title,
+          format: 'png',
+        });
+      });
     }, 'image/png', 0.95);
-  }, [currentImage._id]);
+  }, [currentImage]);
 
   // Konsolider penselstrøk for å forhindre minnevekst
   const consolidateBrushStrokes = useCallback(() => {

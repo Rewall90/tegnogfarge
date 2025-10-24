@@ -15,6 +15,7 @@ import { RelatedDrawings } from '@/components/drawing/RelatedDrawings';
 import { DrawingPageSidebar } from '@/components/sidebar/DrawingPageSidebar';
 import { DrawingDetail } from '@/components/drawing/DrawingDetail';
 import type { Drawing } from '@/types';
+import { PageViewTracker } from '@/components/analytics/PageViewTracker';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -152,6 +153,13 @@ export default async function DrawingPage({ params }: PageProps) {
   
   return (
     <div className="flex flex-col min-h-screen bg-cream">
+      <PageViewTracker
+        type="drawing"
+        imageId={drawing._id}
+        imageTitle={drawing.title}
+        category={subcategory.parentCategory?.title || 'Ukjent'}
+        subcategory={subcategory.title}
+      />
       <Header />
       {/* Add structured data */}
       <DrawingJsonLd 

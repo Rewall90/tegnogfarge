@@ -80,12 +80,24 @@ export function DrawingDetail({
           <DownloadPdfButton
             downloadUrl={drawing.downloadUrl}
             title="Last ned Bilde"
+            analyticsData={{
+              imageId: drawing._id,
+              imageTitle: drawing.title,
+              category: drawing.category?.title || 'Ukjent',
+              subcategory: drawing.subcategory?.title || 'Ukjent',
+            }}
           />
         )}
         {drawing.hasDigitalColoring && drawing._id && (
           <StartColoringButton
             drawingId={drawing._id}
             title="Start Fargelegging"
+            analyticsData={{
+              imageId: drawing._id,
+              imageTitle: drawing.title,
+              category: drawing.category?.title || 'Ukjent',
+              subcategory: drawing.subcategory?.title || 'Ukjent',
+            }}
           />
         )}
       </div>

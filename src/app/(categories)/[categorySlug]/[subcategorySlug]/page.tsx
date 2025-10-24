@@ -17,6 +17,7 @@ import { DrawingCard } from '@/components/cards/DrawingCard';
 import { WEBP_PLACEHOLDER_PATH, SVG_BLUR_PLACEHOLDER } from '@/lib/utils';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { RelatedSubcategories } from '@/components/category/RelatedSubcategories';
+import { PageViewTracker } from '@/components/analytics/PageViewTracker';
 
 export const revalidate = 3600; // Oppdater siden hver time for bedre caching
 
@@ -261,6 +262,12 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FEFAF6]">
+      <PageViewTracker
+        type="subcategory"
+        categorySlug={categorySlug}
+        subcategorySlug={subcategorySlug}
+        subcategoryTitle={subcategory.title}
+      />
       <Header />
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8">

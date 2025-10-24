@@ -6,6 +6,7 @@ import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import { CategoryGrid, EmptyState } from '@/components/category/CategoryGrid';
 import { urlFor } from '@/lib/sanity';
+import { PageViewTracker } from '@/components/analytics/PageViewTracker';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -246,6 +247,11 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
   
   return (
     <div className="flex flex-col min-h-screen bg-[#FEFAF6]">
+      <PageViewTracker
+        type="category"
+        categorySlug={categorySlug}
+        categoryTitle={category.title}
+      />
       <Header />
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8">
