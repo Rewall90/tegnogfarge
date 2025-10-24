@@ -24,16 +24,16 @@ export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
 // The local interfaces are now removed, as they are imported from @/types
 
 interface PageProps {
-  params: {
+  params: Promise<{
     categorySlug: string;
     subcategorySlug: string;
     drawingSlug: string;
-  };
+  }>;
 }
 
 // Generer metadata
-export async function generateMetadata({ params }: PageProps) {
-  const { categorySlug, subcategorySlug, drawingSlug } = params;
+export async function generateMetadata({ params: paramsPromise }: PageProps) {
+  const { categorySlug, subcategorySlug, drawingSlug } = await paramsPromise;
   
   // Få tak i tegningen (basert på ID eller slug)
   const drawing = await getColoringImage(drawingSlug);
@@ -113,8 +113,8 @@ const customComponents: PortableTextComponents = {
 };
 
 // Main component
-export default async function DrawingPage({ params }: PageProps) {
-  const { categorySlug, subcategorySlug, drawingSlug } = params;
+export default async function DrawingPage({ params: paramsPromise }: PageProps) {
+  const { categorySlug, subcategorySlug, drawingSlug } = await paramsPromise;
   
   // Fetch data
   const drawing = await getColoringImage(drawingSlug);
