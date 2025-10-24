@@ -36,6 +36,9 @@ type PageViewTrackerProps = CategoryViewProps | SubcategoryViewProps | DrawingVi
  */
 export function PageViewTracker(props: PageViewTrackerProps) {
   useEffect(() => {
+    // Debug log to verify component is mounting
+    console.log('[PageViewTracker] Component mounted', props.type);
+
     // Track page view on mount
     if (props.type === 'category') {
       trackCategoryView({
