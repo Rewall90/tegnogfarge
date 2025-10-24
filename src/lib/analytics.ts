@@ -28,16 +28,26 @@ function isAnalyticsAvailable(): boolean {
  * Send a custom event to Google Analytics
  */
 function trackEvent(eventName: string, eventParams?: Record<string, any>): void {
+  // Debug logging (always enabled for now)
+  console.log('[Analytics trackEvent] Called:', eventName, eventParams);
+  console.log('[Analytics trackEvent] isAnalyticsAvailable:', isAnalyticsAvailable());
+  console.log('[Analytics trackEvent] window.gtag exists:', typeof window !== 'undefined' && typeof window.gtag !== 'undefined');
+
   // Always log in development for debugging, even if gtag isn't loaded
   if (process.env.NODE_ENV === 'development') {
     console.log('[Analytics]', eventName, eventParams);
   }
 
   // Only send to GA if available (production)
-  if (!isAnalyticsAvailable()) return;
+  if (!isAnalyticsAvailable()) {
+    console.log('[Analytics trackEvent] Analytics not available, returning');
+    return;
+  }
 
   try {
+    console.log('[Analytics trackEvent] Calling window.gtag...');
     window.gtag!('event', eventName, eventParams);
+    console.log('[Analytics trackEvent] window.gtag called successfully');
   } catch (error) {
     console.error('Analytics tracking error:', error);
   }
