@@ -3,6 +3,7 @@ import { searchDrawings } from '@/lib/sanity';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import { DrawingCard } from '@/components/cards/DrawingCard';
+import { SearchPageTracker } from '@/components/analytics/SearchPageTracker';
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -41,6 +42,8 @@ export default async function SearchPage({ searchParams }: PageProps) {
 
   return (
     <div className="flex flex-col min-h-screen bg-cream">
+      {/* Track search analytics */}
+      <SearchPageTracker searchQuery={query} resultsCount={drawings.length} />
       <Header />
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-12">

@@ -357,6 +357,23 @@ export function trackSearch(params: {
   });
 }
 
+/**
+ * Track searches with no results
+ * This helps identify content gaps - what users want that you don't have
+ */
+export function trackSearchNoResults(params: {
+  searchQuery: string;
+  searchContext?: 'autocomplete' | 'search_page';
+}): void {
+  trackEvent('search_no_results', {
+    event_category: 'Search',
+    event_label: 'No Results',
+    search_term: params.searchQuery,
+    search_context: params.searchContext || 'search_page',
+    value: 0,
+  });
+}
+
 // ============================================================================
 // USER ENGAGEMENT
 // ============================================================================

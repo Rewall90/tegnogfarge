@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDebounce } from '@/hooks/useDebounce';
+import { trackSearchNoResults } from '@/lib/analytics';
 
 interface SearchResult {
   _id: string;
@@ -60,10 +61,18 @@ export function SearchForm({ className }: SearchFormProps) {
       try {
         const response = await fetch(`/api/search?q=${encodeURIComponent(debouncedSearchQuery)}`, { signal });
         if (!response.ok) throw new Error('Network response was not ok');
-        
+
         const data: SearchResult[] = await response.json();
         setResults(data);
         setIsDropdownVisible(true);
+
+        // Track searches with no results
+        if (data.length === 0 && debouncedSearchQuery.trim()) {
+          trackSearchNoResults({
+            searchQuery: debouncedSearchQuery.trim(),
+            searchContext: 'autocomplete',
+          });
+        }
       } catch (error: any) {
         if (error.name !== 'AbortError') {
           console.error('Fetch error:', error);
