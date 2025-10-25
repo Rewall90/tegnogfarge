@@ -1,11 +1,13 @@
 import React from 'react';
 import { getRelatedDrawings } from '@/lib/sanity';
-import { DrawingCard } from '@/components/cards/DrawingCard';
+import { TrackedDrawingCard } from '@/components/cards/TrackedDrawingCard';
 
 interface RelatedDrawingsProps {
   categorySlug: string;
   subcategorySlug: string;
   currentDrawingSlug: string;
+  currentDrawingId: string;
+  currentDrawingTitle: string;
   subcategoryTitle: string;
 }
 
@@ -25,6 +27,8 @@ export async function RelatedDrawings({
   categorySlug,
   subcategorySlug,
   currentDrawingSlug,
+  currentDrawingId,
+  currentDrawingTitle,
   subcategoryTitle,
 }: RelatedDrawingsProps) {
   const relatedDrawings: DrawingForCard[] = await getRelatedDrawings(
@@ -43,8 +47,8 @@ export async function RelatedDrawings({
           Relaterte tegninger i {subcategoryTitle}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {relatedDrawings.map((drawing) => (
-            <DrawingCard
+          {relatedDrawings.map((drawing, index) => (
+            <TrackedDrawingCard
               key={drawing._id}
               title={drawing.title}
               href={`/${categorySlug}/${subcategorySlug}/${drawing.slug}`}
@@ -53,6 +57,11 @@ export async function RelatedDrawings({
               lqip={drawing.lqip}
               difficulty={drawing.difficulty}
               titleClassName="font-display text-lg"
+              drawingId={drawing._id}
+              position={index + 1}
+              fromDrawingId={currentDrawingId}
+              fromDrawingTitle={currentDrawingTitle}
+              subcategory={subcategoryTitle}
             />
           ))}
         </div>

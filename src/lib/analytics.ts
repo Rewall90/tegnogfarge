@@ -375,6 +375,35 @@ export function trackSearchNoResults(params: {
 }
 
 // ============================================================================
+// RELATED CONTENT TRACKING
+// ============================================================================
+
+/**
+ * Track clicks on related drawings
+ * This helps optimize recommendation algorithms and understand user navigation patterns
+ */
+export function trackRelatedDrawingClick(params: {
+  fromDrawingId: string;
+  fromDrawingTitle: string;
+  toDrawingId: string;
+  toDrawingTitle: string;
+  position: number;
+  subcategory: string;
+}): void {
+  trackEvent('click_related_drawing', {
+    event_category: 'Navigation',
+    event_label: `${params.fromDrawingTitle} → ${params.toDrawingTitle}`,
+    from_drawing_id: params.fromDrawingId,
+    from_drawing_title: params.fromDrawingTitle,
+    to_drawing_id: params.toDrawingId,
+    to_drawing_title: params.toDrawingTitle,
+    position: params.position,
+    subcategory: params.subcategory,
+    value: params.position, // Lower position = higher value (1st item is most valuable)
+  });
+}
+
+// ============================================================================
 // USER ENGAGEMENT
 // ============================================================================
 

@@ -236,6 +236,8 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
           categorySlug={categorySlug}
           subcategorySlug={subcategorySlug}
           currentDrawingSlug={drawingSlug}
+          currentDrawingId={drawing._id}
+          currentDrawingTitle={drawing.title}
           subcategoryTitle={subcategory.title}
         />
       </main>
