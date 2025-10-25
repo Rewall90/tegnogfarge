@@ -13,6 +13,7 @@ interface DrawingDetailProps {
   ageRangeLabels: Record<string, string>;
   customComponents: PortableTextComponents;
   downloadCount?: number;
+  completionCount?: number;
 }
 
 export function DrawingDetail({
@@ -22,6 +23,7 @@ export function DrawingDetail({
   ageRangeLabels,
   customComponents,
   downloadCount = 0,
+  completionCount = 0,
 }: DrawingDetailProps) {
   // Helper function to get difficulty key safely
   const getDifficultyKey = (value: string | undefined): 'easy' | 'medium' | 'hard' => {
@@ -74,25 +76,52 @@ export function DrawingDetail({
           
           <p className="text-navy text-base">{drawing.description}</p>
 
-          {/* Download Counter - Real-time from database */}
-          {downloadCount > 0 && (
-            <div className="mt-4 flex items-center gap-2 text-sm text-gray-600">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              <span className="font-medium">
-                Nedlastet {downloadCount.toLocaleString('nb-NO')} {downloadCount === 1 ? 'gang' : 'ganger'}
-              </span>
+          {/* Engagement Funnel - Real-time from database */}
+          {(downloadCount > 0 || completionCount > 0) && (
+            <div className="mt-4 space-y-2">
+              {/* PDF Download Counter (Offline/Physical Coloring) */}
+              {downloadCount > 0 && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                    />
+                  </svg>
+                  <span className="font-medium">
+                    📄 {downloadCount.toLocaleString('nb-NO')} {downloadCount === 1 ? 'person' : 'personer'} har lastet ned PDF
+                  </span>
+                </div>
+              )}
+
+              {/* Online Coloring Completion Counter */}
+              {completionCount > 0 && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+                    />
+                  </svg>
+                  <span className="font-medium">
+                    🎨 {completionCount.toLocaleString('nb-NO')} {completionCount === 1 ? 'person' : 'personer'} har fargelagt online
+                  </span>
+                </div>
+              )}
             </div>
           )}
         </div>

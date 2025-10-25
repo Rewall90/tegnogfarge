@@ -16,7 +16,7 @@ import { DrawingPageSidebar } from '@/components/sidebar/DrawingPageSidebar';
 import { DrawingDetail } from '@/components/drawing/DrawingDetail';
 import type { Drawing } from '@/types';
 import { PageViewTracker } from '@/components/analytics/PageViewTracker';
-import { getDownloadCount } from '@/lib/analytics';
+import { getDownloadCount, getCompletionCount } from '@/lib/analytics';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -161,6 +161,15 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
   const downloadCount = await getDownloadCount(drawing._id, 'pdf_download');
   console.log('[DrawingPage] Download count result:', downloadCount);
 
+  // Fetch online coloring completion count (hybrid approach - real-time from database)
+  console.log('[DrawingPage] Fetching completion count for drawing:', {
+    drawingId: drawing._id,
+    drawingSlug: drawingSlug,
+    drawingTitle: drawing.title
+  });
+  const completionCount = await getCompletionCount(drawing._id);
+  console.log('[DrawingPage] Completion count result:', completionCount);
+
   return (
     <div className="flex flex-col min-h-screen bg-cream">
       <PageViewTracker
@@ -226,6 +235,7 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
                 ageRangeLabels={ageRangeLabels}
                 customComponents={customComponents}
                 downloadCount={downloadCount}
+                completionCount={completionCount}
               />
               <DrawingPageSidebar />
             </div>

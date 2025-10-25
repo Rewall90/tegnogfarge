@@ -164,6 +164,46 @@ export async function getDownloadCount(imageId: string, eventType: string = 'pdf
   }
 }
 
+/**
+ * Get coloring completion count for an image (server-side helper)
+ * Tracks ONLINE/DIGITAL coloring completions (not physical PDF coloring)
+ * Use this in Server Components to display completion counts
+ */
+export async function getCompletionCount(imageId: string): Promise<number> {
+  // Return 0 if no imageId provided
+  if (!imageId) {
+    console.warn('[Analytics] getCompletionCount: No imageId provided');
+    return 0;
+  }
+
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const url = `${baseUrl}/api/analytics/increment?imageId=${encodeURIComponent(imageId)}&eventType=coloring_complete`;
+
+    console.log('[Analytics] Fetching completion count:', { imageId, url });
+
+    const response = await fetch(url, {
+      next: { revalidate: 60 } // Cache for 1 minute
+    });
+
+    if (!response.ok) {
+      console.error('[Analytics] Failed to fetch completion count:', {
+        status: response.status,
+        statusText: response.statusText,
+        imageId
+      });
+      return 0;
+    }
+
+    const data = await response.json();
+    console.log('[Analytics] Completion count fetched:', { imageId, count: data.count });
+    return data.count || 0;
+  } catch (error) {
+    console.error('[Analytics] Error fetching completion count:', { error, imageId });
+    return 0;
+  }
+}
+
 // ============================================================================
 // DOWNLOAD TRACKING
 // ============================================================================
@@ -261,12 +301,14 @@ export function trackStartColoring(params: {
 
 /**
  * Track coloring session completion (when user downloads their work)
+ * This tracks ONLINE/DIGITAL coloring completions (not physical PDF coloring)
  */
 export function trackColoringComplete(params: {
   imageId: string;
   imageTitle: string;
   timeSpentSeconds: number;
 }): void {
+  // Track in Google Analytics (full details)
   trackEvent('coloring_complete', {
     event_category: 'Engagement',
     event_label: params.imageTitle,
@@ -274,6 +316,9 @@ export function trackColoringComplete(params: {
     time_spent: params.timeSpentSeconds,
     value: Math.round(params.timeSpentSeconds / 60), // Value in minutes
   });
+
+  // Increment counter in database (for real-time display)
+  incrementCounter(params.imageId, 'coloring_complete');
 }
 
 /**
