@@ -1,18 +1,20 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchTopDrawings, type TopDrawing } from '@/lib/analytics-api';
+import { fetchTopDrawings, type TopDrawing, type DateRange } from '@/lib/analytics-api';
 
 interface TopDrawingsTableProps {
   metric?: 'downloads' | 'completions';
   limit?: number;
+  dateRange?: DateRange;
 }
 
 /**
  * TopDrawingsTable - Display top performing drawings in a table
  * Allows switching between downloads and completions metrics
+ * Supports date filtering
  */
-export function TopDrawingsTable({ metric = 'downloads', limit = 10 }: TopDrawingsTableProps) {
+export function TopDrawingsTable({ metric = 'downloads', limit = 10, dateRange }: TopDrawingsTableProps) {
   const [drawings, setDrawings] = useState<TopDrawing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +24,7 @@ export function TopDrawingsTable({ metric = 'downloads', limit = 10 }: TopDrawin
     async function loadTopDrawings() {
       try {
         setLoading(true);
-        const data = await fetchTopDrawings(activeMetric, limit);
+        const data = await fetchTopDrawings(activeMetric, limit, dateRange);
         setDrawings(data);
         setError(null);
       } catch (err) {
@@ -34,7 +36,7 @@ export function TopDrawingsTable({ metric = 'downloads', limit = 10 }: TopDrawin
     }
 
     loadTopDrawings();
-  }, [activeMetric, limit]);
+  }, [activeMetric, limit, dateRange]);
 
   if (error) {
     return (

@@ -14,6 +14,7 @@ export interface OverviewStats {
   totalCompletions: number;
   totalViews: number;
   uniqueImages: number;
+  uniqueUsers: number; // NEW: Unique users who downloaded in period
 }
 
 export interface TopDrawing {
@@ -32,16 +33,31 @@ export interface CategoryStats {
   imageCount: number;
 }
 
+export interface DateRange {
+  startDate: string | null; // ISO date string (YYYY-MM-DD)
+  endDate: string | null;   // ISO date string (YYYY-MM-DD)
+}
+
 // ============================================================================
 // API CLIENT FUNCTIONS
 // ============================================================================
 
 /**
- * Fetch overview statistics
+ * Fetch overview statistics with optional date filtering
  */
-export async function fetchOverviewStats(): Promise<OverviewStats> {
+export async function fetchOverviewStats(dateRange?: DateRange): Promise<OverviewStats> {
   try {
-    const response = await fetch('/api/analytics/overview');
+    let url = '/api/analytics/overview';
+
+    // Add date parameters if provided
+    if (dateRange?.startDate || dateRange?.endDate) {
+      const params = new URLSearchParams();
+      if (dateRange.startDate) params.append('startDate', dateRange.startDate);
+      if (dateRange.endDate) params.append('endDate', dateRange.endDate);
+      url += `?${params.toString()}`;
+    }
+
+    const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error(`Failed to fetch overview stats: ${response.statusText}`);
@@ -55,14 +71,24 @@ export async function fetchOverviewStats(): Promise<OverviewStats> {
 }
 
 /**
- * Fetch top drawings by metric
+ * Fetch top drawings by metric with optional date filtering
  */
 export async function fetchTopDrawings(
   metric: 'downloads' | 'completions' = 'downloads',
-  limit: number = 10
+  limit: number = 10,
+  dateRange?: DateRange
 ): Promise<TopDrawing[]> {
   try {
-    const response = await fetch(`/api/analytics/top-drawings?metric=${metric}&limit=${limit}`);
+    const params = new URLSearchParams({
+      metric,
+      limit: limit.toString(),
+    });
+
+    // Add date parameters if provided
+    if (dateRange?.startDate) params.append('startDate', dateRange.startDate);
+    if (dateRange?.endDate) params.append('endDate', dateRange.endDate);
+
+    const response = await fetch(`/api/analytics/top-drawings?${params.toString()}`);
 
     if (!response.ok) {
       throw new Error(`Failed to fetch top drawings: ${response.statusText}`);

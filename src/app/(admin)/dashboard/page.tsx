@@ -1,18 +1,41 @@
+'use client';
+
+import { useState } from 'react';
 import { OverviewCards } from '@/components/analytics/dashboard/OverviewCards';
 import { TopDrawingsTable } from '@/components/analytics/dashboard/TopDrawingsTable';
-
-export const metadata = {
-  title: 'Analytics Dashboard | TegnOgFarge.no',
-  description: 'Real-time analytics dashboard for TegnOgFarge.no',
-};
+import { DateFilter, type DateRange } from '@/components/analytics/dashboard/DateFilter';
 
 /**
  * Dashboard Page - Main analytics dashboard
- * Displays real-time metrics from MongoDB
+ * Displays real-time metrics from MongoDB with date filtering
  *
  * URL: /dashboard (clean URL thanks to (admin) route group)
  */
 export default function DashboardPage() {
+  // Calculate default date range (last 7 days)
+  const getDefaultDateRange = (): DateRange => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    // Format dates in local timezone to avoid timezone conversion issues
+    const formatLocalDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    return {
+      preset: 'last7days',
+      startDate: formatLocalDate(sevenDaysAgo),
+      endDate: formatLocalDate(today),
+    };
+  };
+
+  const [dateRange, setDateRange] = useState<DateRange>(getDefaultDateRange());
+
   return (
     <div className="space-y-8">
       {/* Page Header */}
@@ -23,15 +46,20 @@ export default function DashboardPage() {
         </p>
       </div>
 
+      {/* Date Filter */}
+      <section>
+        <DateFilter value={dateRange} onChange={setDateRange} />
+      </section>
+
       {/* Overview Cards */}
       <section>
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Oversikt</h2>
-        <OverviewCards />
+        <OverviewCards dateRange={dateRange} />
       </section>
 
       {/* Top Drawings Table */}
       <section>
-        <TopDrawingsTable limit={10} />
+        <TopDrawingsTable limit={10} dateRange={dateRange} />
       </section>
 
       {/* Info Card */}
@@ -41,16 +69,16 @@ export default function DashboardPage() {
         </h3>
         <div className="text-sm text-blue-800 space-y-2">
           <p>
-            <strong>Data kilde:</strong> MongoDB (sanntidsdata fra brukere)
+            <strong>Data kilde:</strong> MongoDB (unike nedlastninger per bruker)
           </p>
           <p>
-            <strong>Oppdatering:</strong> Data oppdateres automatisk hver 60. sekund
+            <strong>Periode:</strong> Velg tidsperiode med filteret over
           </p>
           <p>
-            <strong>Hybrid tracking:</strong> MongoDB for visning + Google Analytics 4 for detaljert analyse
+            <strong>Unike brukere:</strong> Teller hver bruker én gang per bilde (email eller fingerprint)
           </p>
           <p className="pt-2 border-t border-blue-300 mt-3">
-            <strong>Fase 2B (kommende):</strong> GA4 integrasjon med tidsserier, brukerflyt, og avanserte diagrammer
+            <strong>Kommende:</strong> Sammenligning med forrige periode og trenddiagrammer
           </p>
         </div>
       </div>

@@ -2,13 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import { MetricCard } from './MetricCard';
-import { fetchOverviewStats, type OverviewStats } from '@/lib/analytics-api';
+import { fetchOverviewStats, type OverviewStats, type DateRange } from '@/lib/analytics-api';
+
+interface OverviewCardsProps {
+  dateRange?: DateRange;
+}
 
 /**
  * OverviewCards - Display key analytics metrics in card format
- * Fetches real-time data from MongoDB
+ * Fetches real-time data from MongoDB with optional date filtering
  */
-export function OverviewCards() {
+export function OverviewCards({ dateRange }: OverviewCardsProps) {
   const [stats, setStats] = useState<OverviewStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +21,7 @@ export function OverviewCards() {
     async function loadStats() {
       try {
         setLoading(true);
-        const data = await fetchOverviewStats();
+        const data = await fetchOverviewStats(dateRange);
         setStats(data);
         setError(null);
       } catch (err) {
@@ -29,7 +33,7 @@ export function OverviewCards() {
     }
 
     loadStats();
-  }, []);
+  }, [dateRange]);
 
   if (error) {
     return (
@@ -43,7 +47,7 @@ export function OverviewCards() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <MetricCard
-        title="Totale nedlastninger"
+        title="Nedlastninger"
         value={stats?.totalDownloads ?? 0}
         loading={loading}
         icon={
@@ -62,6 +66,28 @@ export function OverviewCards() {
           </svg>
         }
         subtitle="PDF-nedlastninger"
+      />
+
+      <MetricCard
+        title="Unike brukere"
+        value={stats?.uniqueUsers ?? 0}
+        loading={loading}
+        icon={
+          <svg
+            className="w-8 h-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+            />
+          </svg>
+        }
+        subtitle="Som lastet ned"
       />
 
       <MetricCard
@@ -87,34 +113,6 @@ export function OverviewCards() {
       />
 
       <MetricCard
-        title="Totale visninger"
-        value={stats?.totalViews ?? 0}
-        loading={loading}
-        icon={
-          <svg
-            className="w-8 h-8"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-            />
-          </svg>
-        }
-        subtitle="Kommer fra GA4"
-      />
-
-      <MetricCard
         title="Unike tegninger"
         value={stats?.uniqueImages ?? 0}
         loading={loading}
@@ -133,7 +131,7 @@ export function OverviewCards() {
             />
           </svg>
         }
-        subtitle="Med analytics"
+        subtitle="Med nedlastninger"
       />
     </div>
   );
