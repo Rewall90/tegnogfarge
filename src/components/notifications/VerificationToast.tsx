@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { setVerifiedEmail } from '@/lib/userIdentification';
 
 export function VerificationToast() {
   const [isVisible, setIsVisible] = useState(false);
@@ -12,12 +13,19 @@ export function VerificationToast() {
   useEffect(() => {
     const verified = searchParams.get('verified');
     const error = searchParams.get('error');
+    const email = searchParams.get('email');
 
     // Handle subscription verification
     if (verified === 'success') {
       setMessage('Takk! Ditt abonnement er bekreftet.');
       setIsError(false);
       setIsVisible(true);
+
+      // Store verified email for unique download tracking
+      if (email) {
+        setVerifiedEmail(email);
+        console.log('[VerificationToast] Verified email stored for unique tracking');
+      }
 
       // Auto-dismiss after 4 seconds
       const timer = setTimeout(() => {

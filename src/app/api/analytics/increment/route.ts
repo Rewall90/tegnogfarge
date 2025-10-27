@@ -4,12 +4,16 @@ import { getDb } from '@/lib/db';
 /**
  * API Route: Increment download counter for an image
  *
+ * NEW: Tracks unique downloads per user to prevent duplicate counting
+ * - Same user downloading same image multiple times = counts as 1
+ * - Same user downloading different images = counts each one
+ *
  * This keeps real-time download counts in MongoDB while
  * full analytics details are tracked in Google Analytics.
  */
 export async function POST(request: Request) {
   try {
-    const { imageId, eventType = 'download' } = await request.json();
+    const { imageId, eventType = 'download', userIdentifier } = await request.json();
 
     if (!imageId) {
       return NextResponse.json(
@@ -20,8 +24,35 @@ export async function POST(request: Request) {
 
     const db = await getDb();
 
-    // Use a dedicated counters collection for simplicity
-    // This works regardless of whether drawings exist in MongoDB
+    // If userIdentifier is provided, check for unique download
+    if (userIdentifier) {
+      // Check if this user has already downloaded this image
+      const existingDownload = await db.collection('unique_downloads').findOne({
+        userIdentifier,
+        imageId,
+        eventType
+      });
+
+      // If already downloaded, return success but don't increment
+      if (existingDownload) {
+        return NextResponse.json({
+          success: true,
+          alreadyDownloaded: true,
+          message: 'Download already recorded for this user'
+        });
+      }
+
+      // Record this unique download
+      await db.collection('unique_downloads').insertOne({
+        userIdentifier,
+        imageId,
+        eventType,
+        downloadedAt: new Date(),
+        createdAt: new Date()
+      });
+    }
+
+    // Increment the counter (only if new unique download or no userIdentifier)
     const result = await db.collection('analytics_counters').updateOne(
       { imageId, eventType },
       {
@@ -33,6 +64,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
+      newDownload: true,
       count: result.upsertedCount ? 1 : undefined
     });
   } catch (error) {

@@ -7,10 +7,11 @@
  * TRACKING STRATEGY:
  * - GA4: Full historical tracking, familiar reporting
  * - PostHog: Session replay, funnels, natural language queries via MCP
- * - MongoDB: Real-time counters for dashboard display
+ * - MongoDB: Real-time counters for dashboard display (with unique user tracking)
  */
 
 import { trackPostHogEvent } from './posthog';
+import { getUserIdentifier } from './userIdentification';
 
 // Extend Window interface to include gtag
 declare global {
@@ -87,6 +88,10 @@ async function trackEvent(eventName: string, eventParams?: Record<string, any>):
 /**
  * Increment download counter in database (for real-time display)
  * This runs alongside GA4 tracking for the hybrid approach
+ *
+ * NEW: Includes user identification for unique download tracking
+ * - Same user downloading same image multiple times = counts as 1
+ * - Same user downloading different images = counts each one
  */
 async function incrementCounter(imageId: string, eventType: string = 'download'): Promise<void> {
   const startTime = performance.now();
@@ -103,20 +108,24 @@ async function incrementCounter(imageId: string, eventType: string = 'download')
   }
 
   try {
+    // Get user identifier for unique tracking
+    const userIdentifier = getUserIdentifier();
+
     console.log('[Analytics] Sending POST to /api/analytics/increment', {
       imageId,
       eventType,
+      userIdentifier: userIdentifier.split(':')[0], // Log only type (email/fingerprint), not full value
       elapsed: `${(performance.now() - startTime).toFixed(2)}ms`
     });
 
     const response = await fetch('/api/analytics/increment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageId, eventType }),
+      body: JSON.stringify({ imageId, eventType, userIdentifier }),
     });
 
     const data = await response.json();
-    console.log('[Analytics] Counter incremented successfully', {
+    console.log('[Analytics] Counter increment response', {
       imageId,
       response: data,
       elapsed: `${(performance.now() - startTime).toFixed(2)}ms`

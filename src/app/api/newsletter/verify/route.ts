@@ -40,8 +40,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/?error=subscriber-not-found', request.url));
     }
 
-    // Redirect to success page
-    return NextResponse.redirect(new URL('/?verified=success', request.url));
+    // Redirect to success page with email for client-side storage
+    const redirectUrl = new URL('/', request.url);
+    redirectUrl.searchParams.set('verified', 'success');
+    redirectUrl.searchParams.set('email', verification.email);
+    return NextResponse.redirect(redirectUrl);
   } catch (error: unknown) {
     const typedError = error as Error;
     console.error('Newsletter verification error:', typedError);
