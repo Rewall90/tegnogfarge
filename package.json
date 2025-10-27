@@ -36,6 +36,7 @@
     "next-auth": "^4.24.5",
     "next-sanity": "^9.0.0",
     "node-fetch": "^3.3.2",
+    "posthog-js": "^1.280.1",
     "process": "^0.11.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -54,7 +55,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.0.0",
     "@next/bundle-analyzer": "^15.4.3",
-    "@stagewise/toolbar": "^0.4.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.16",
     "@types/bcrypt": "^5.0.2",

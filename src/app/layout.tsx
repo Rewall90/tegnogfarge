@@ -3,16 +3,17 @@ import { Inter, Quicksand } from "next/font/google";
 import "./globals.css";
 import { draftMode } from 'next/headers';
 import SessionProviderWrapper from "@/components/auth/SessionProviderWrapper";
-import StagewiseToolbarWrapper from "@/components/dev/StagewiseToolbarWrapper";
 import BaseJsonLd from "@/components/json-ld/BaseJsonLd";
 import dynamic from 'next/dynamic';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import { 
-  CookieConsentProvider, 
-  CookieConsentBanner, 
-  CookieConsentModal, 
-  CookieSettingsButton 
+import {
+  CookieConsentProvider,
+  CookieConsentBanner,
+  CookieConsentModal,
+  CookieSettingsButton
 } from "@/components/cookie-consent";
+import { LeadPopupManager } from "@/components/lead/LeadPopupManager";
+import { PostHogProvider } from "@/components/providers/PostHogProvider";
 
 // Dynamisk import av VisualEditing
 const VisualEditing = dynamic(
@@ -80,18 +81,21 @@ export default function RootLayout({
       </head>
       <body className="font-sans bg-white text-gray-900 min-h-screen flex flex-col">
         <CookieConsentProvider>
-          <SessionProviderWrapper>{children}</SessionProviderWrapper>
-          <StagewiseToolbarWrapper />
-          {/* Kun last VisualEditing når vi er i draft mode */}
-          {isDraftMode && <VisualEditing />}
-          {/* Google Analytics - kun i produksjon og med samtykke */}
-          {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_GA_ID && (
-            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
-          )}
-          {/* Cookie consent components */}
-          <CookieConsentBanner />
-          <CookieConsentModal />
-          <CookieSettingsButton />
+          <PostHogProvider>
+            <SessionProviderWrapper>{children}</SessionProviderWrapper>
+            {/* Kun last VisualEditing når vi er i draft mode */}
+            {isDraftMode && <VisualEditing />}
+            {/* Google Analytics - kun i produksjon og med samtykke */}
+            {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_GA_ID && (
+              <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+            )}
+            {/* Cookie consent components */}
+            <CookieConsentBanner />
+            <CookieConsentModal />
+            <CookieSettingsButton />
+            {/* Lead capture popup */}
+            <LeadPopupManager />
+          </PostHogProvider>
         </CookieConsentProvider>
       </body>
     </html>

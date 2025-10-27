@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
@@ -33,9 +33,16 @@ const FAQAccordion = dynamic(
 );
 const NewsletterForm = dynamic(
   () => import('@/components/newsletter/NewsletterForm'),
-  { 
+  {
     loading: () => null,
-    ssr: false 
+    ssr: false
+  }
+);
+const VerificationToast = dynamic(
+  () => import('@/components/notifications/VerificationToast').then(mod => ({ default: mod.VerificationToast })),
+  {
+    loading: () => null,
+    ssr: false
   }
 );
 
@@ -213,6 +220,11 @@ export default async function Home() {
 
   return (
     <>
+      {/* Verification Toast - shows success/error messages after email confirmation */}
+      <Suspense fallback={null}>
+        <VerificationToast />
+      </Suspense>
+
       <Header />
       <FrontpageHero />
       <main className="bg-white">

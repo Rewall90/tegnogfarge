@@ -56,24 +56,28 @@ export function DownloadPdfButton({
       console.log('[DownloadButton] trackPdfDownload called', {
         elapsed: `${(performance.now() - startTime).toFixed(2)}ms`
       });
+
+      // Dispatch custom event for lead popup system (includes downloadUrl)
+      window.dispatchEvent(
+        new CustomEvent('pdf_downloaded', {
+          detail: {
+            imageId: analyticsData.imageId,
+            imageTitle: analyticsData.imageTitle,
+            downloadUrl: downloadUrl, // Pass URL so popup can handle download
+          },
+        })
+      );
+
+      console.log('[DownloadButton] pdf_downloaded event dispatched (popup will handle download)', {
+        elapsed: `${(performance.now() - startTime).toFixed(2)}ms`,
+        downloadUrl
+      });
     } else {
       console.warn('[DownloadButton] No analytics data provided - skipping tracking');
+
+      // If no analytics, open PDF directly (no popup gate)
+      window.open(downloadUrl, '_blank');
     }
-
-    // Small delay to allow the tracking request to be sent
-    // This ensures the API call isn't cancelled by navigation
-    console.log('[DownloadButton] Waiting 100ms before navigation...', {
-      elapsed: `${(performance.now() - startTime).toFixed(2)}ms`
-    });
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    console.log('[DownloadButton] Delay complete, navigating to PDF', {
-      elapsed: `${(performance.now() - startTime).toFixed(2)}ms`,
-      url: downloadUrl
-    });
-
-    // Now navigate to the download URL
-    window.location.href = downloadUrl;
   };
 
   return (

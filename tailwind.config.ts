@@ -24,11 +24,16 @@ const config: Config = {
       },
       animation: {
         'slide-up': 'slideUp 0.3s ease-out',
+        'pulse-subtle': 'pulseSubtle 2s ease-in-out infinite',
       },
       keyframes: {
         slideUp: {
           '0%': { transform: 'translateY(100%)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        pulseSubtle: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1.05)', opacity: '0.95' },
         },
       },
     },

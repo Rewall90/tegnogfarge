@@ -161,56 +161,50 @@ export class EmailService {
   static async sendNewsletterVerificationEmail({ email }: { email: string }) {
     try {
       const token = await this.generateVerificationToken(email, 'newsletter_verification');
-      const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-newsletter?token=${token}`;
-      
-      // Bruk en enklere e-postmal
-      const htmlContent = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Bekreft ditt nyhetsbrevabonnement</title>
-          </head>
-          <body style="font-family: sans-serif; padding: 20px; background-color: #f5f5f5;">
-            <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-              <h1 style="text-align: center; color: #333;">Bekreft ditt nyhetsbrevabonnement</h1>
-              <p>Hei!</p>
-              <p>Takk for at du meldte deg på vårt nyhetsbrev. For å fullføre registreringen, må du bekrefte e-postadressen din ved å klikke på knappen nedenfor.</p>
-              <div style="text-align: center; margin: 30px 0;">
-                <a href="${verificationUrl}" style="background-color: #4f46e5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Bekreft mitt abonnement</a>
-              </div>
-              <p>Eller kopier og lim inn følgende URL i nettleseren din:</p>
-              <div style="background-color: #f5f5f5; padding: 12px; border-radius: 4px; word-break: break-all;">
-                ${verificationUrl}
-              </div>
-              <hr style="margin: 30px 0; border-color: #e6e6e6;">
-              <p style="font-size: 13px; color: #888;">Hvis du ikke meldte deg på vårt nyhetsbrev, kan du trygt ignorere denne e-posten.</p>
-            </div>
-          </body>
-        </html>
-      `;
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000';
+
+      // Fetch the unsubscribeToken from the database
+      const client = await clientPromise;
+      const db = client.db('newsletter');
+      const subscriber = await db.collection('subscribers').findOne({ email });
+      const unsubscribeToken = subscriber?.unsubscribeToken;
+
+      // Import and use the template
+      const { newsletterVerificationTemplate } = await import('./email-templates');
+      const emailTemplate = newsletterVerificationTemplate({
+        verificationCode: token,
+        baseUrl,
+        emailAddress: email,
+        unsubscribeToken
+      });
 
       // In development, use either DEV_TEST_EMAIL or Resend's test email
       let recipientEmail = email;
-      
+
       if (process.env.NODE_ENV === 'development') {
-        // Use the verified email from Resend account if specified
         if (process.env.DEV_TEST_EMAIL) {
           recipientEmail = process.env.DEV_TEST_EMAIL;
-        } 
-        // Alternatively, use Resend's test address for successful delivery
-        else {
+        } else {
           recipientEmail = 'delivered@resend.dev';
         }
       }
 
+      // Build unsubscribe URL for headers
+      const unsubscribeUrl = unsubscribeToken ? `${baseUrl}/api/newsletter/unsubscribe?token=${unsubscribeToken}` : '';
+
       const result = await resend.emails.send({
         from: `${process.env.EMAIL_FROM_NAME || 'Fargelegg Nå'} <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
         to: recipientEmail,
-        subject: 'Bekreft ditt nyhetsbrevabonnement',
-        html: htmlContent,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+        // Add List-Unsubscribe headers for Gmail/Outlook unsubscribe button
+        headers: unsubscribeUrl ? {
+          'List-Unsubscribe': `<${unsubscribeUrl}>`,
+          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
+        } : undefined
       });
-      
+
+      const verificationUrl = `${baseUrl}/api/newsletter/verify?token=${token}`;
       return { success: true, messageId: result.data?.id, verificationUrl };
     } catch (error: unknown) {
       const typedError = error as ResendAPIError;

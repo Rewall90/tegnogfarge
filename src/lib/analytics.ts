@@ -1,9 +1,16 @@
 /**
- * Google Analytics Event Tracking
+ * Dual Analytics Tracking: Google Analytics + PostHog
  *
  * This module provides type-safe wrapper functions for tracking user interactions
- * with Google Analytics. All events respect user cookie consent preferences.
+ * to both Google Analytics 4 and PostHog. All events respect user cookie consent.
+ *
+ * TRACKING STRATEGY:
+ * - GA4: Full historical tracking, familiar reporting
+ * - PostHog: Session replay, funnels, natural language queries via MCP
+ * - MongoDB: Real-time counters for dashboard display
  */
+
+import { trackPostHogEvent } from './posthog';
 
 // Extend Window interface to include gtag
 declare global {
@@ -226,23 +233,20 @@ export function trackPdfDownload(params: {
     timestamp: new Date().toISOString()
   });
 
-  // Track in Google Analytics (full details)
-  console.log('[Analytics] Calling trackEvent for download_pdf', {
-    elapsed: `${(performance.now() - startTime).toFixed(2)}ms`
-  });
-
-  trackEvent('download_pdf', {
+  const eventData = {
     event_category: 'Downloads',
     event_label: params.imageTitle,
     image_id: params.imageId,
     category: params.category,
     subcategory: params.subcategory,
     value: 1,
-  });
+  };
 
-  console.log('[Analytics] trackEvent called, now calling incrementCounter', {
-    elapsed: `${(performance.now() - startTime).toFixed(2)}ms`
-  });
+  // Track to Google Analytics 4
+  trackEvent('download_pdf', eventData);
+
+  // Track to PostHog (lazy-loaded, non-blocking)
+  trackPostHogEvent('download_pdf', eventData);
 
   // Increment counter in database (for real-time display)
   incrementCounter(params.imageId, 'pdf_download');
@@ -262,8 +266,7 @@ export function trackColoredImageDownload(params: {
   subcategory: string;
   format: 'png' | 'jpg';
 }): void {
-  // Track in Google Analytics (full details)
-  trackEvent('download_colored_image', {
+  const eventData = {
     event_category: 'Downloads',
     event_label: params.imageTitle,
     image_id: params.imageId,
@@ -271,7 +274,11 @@ export function trackColoredImageDownload(params: {
     subcategory: params.subcategory,
     file_format: params.format,
     value: 1,
-  });
+  };
+
+  // Track to GA4 and PostHog
+  trackEvent('download_colored_image', eventData);
+  trackPostHogEvent('download_colored_image', eventData);
 
   // Increment counter in database (for real-time display)
   incrementCounter(params.imageId, 'colored_download');
@@ -290,13 +297,16 @@ export function trackStartColoring(params: {
   category: string;
   subcategory: string;
 }): void {
-  trackEvent('start_coloring', {
+  const eventData = {
     event_category: 'Engagement',
     event_label: params.imageTitle,
     image_id: params.imageId,
     category: params.category,
     subcategory: params.subcategory,
-  });
+  };
+
+  trackEvent('start_coloring', eventData);
+  trackPostHogEvent('start_coloring', eventData);
 }
 
 /**
@@ -308,14 +318,17 @@ export function trackColoringComplete(params: {
   imageTitle: string;
   timeSpentSeconds: number;
 }): void {
-  // Track in Google Analytics (full details)
-  trackEvent('coloring_complete', {
+  const eventData = {
     event_category: 'Engagement',
     event_label: params.imageTitle,
     image_id: params.imageId,
     time_spent: params.timeSpentSeconds,
     value: Math.round(params.timeSpentSeconds / 60), // Value in minutes
-  });
+  };
+
+  // Track to GA4 and PostHog
+  trackEvent('coloring_complete', eventData);
+  trackPostHogEvent('coloring_complete', eventData);
 
   // Increment counter in database (for real-time display)
   incrementCounter(params.imageId, 'coloring_complete');
@@ -325,11 +338,14 @@ export function trackColoringComplete(params: {
  * Track tool usage in coloring app
  */
 export function trackToolUsage(tool: 'pencil' | 'eraser' | 'fill' | 'eyedropper'): void {
-  trackEvent('tool_usage', {
+  const eventData = {
     event_category: 'Coloring Tools',
     event_label: tool,
     tool_name: tool,
-  });
+  };
+
+  trackEvent('tool_usage', eventData);
+  trackPostHogEvent('tool_usage', eventData);
 }
 
 // ============================================================================
@@ -343,11 +359,14 @@ export function trackCategoryView(params: {
   categorySlug: string;
   categoryTitle: string;
 }): void {
-  trackEvent('view_category', {
+  const eventData = {
     event_category: 'Navigation',
     event_label: params.categoryTitle,
     category_slug: params.categorySlug,
-  });
+  };
+
+  trackEvent('view_category', eventData);
+  trackPostHogEvent('view_category', eventData);
 }
 
 /**
@@ -358,12 +377,15 @@ export function trackSubcategoryView(params: {
   subcategorySlug: string;
   subcategoryTitle: string;
 }): void {
-  trackEvent('view_subcategory', {
+  const eventData = {
     event_category: 'Navigation',
     event_label: params.subcategoryTitle,
     category_slug: params.categorySlug,
     subcategory_slug: params.subcategorySlug,
-  });
+  };
+
+  trackEvent('view_subcategory', eventData);
+  trackPostHogEvent('view_subcategory', eventData);
 }
 
 /**
@@ -375,13 +397,16 @@ export function trackDrawingView(params: {
   category: string;
   subcategory: string;
 }): void {
-  trackEvent('view_drawing', {
+  const eventData = {
     event_category: 'Content',
     event_label: params.imageTitle,
     image_id: params.imageId,
     category: params.category,
     subcategory: params.subcategory,
-  });
+  };
+
+  trackEvent('view_drawing', eventData);
+  trackPostHogEvent('view_drawing', eventData);
 }
 
 // ============================================================================
@@ -395,11 +420,14 @@ export function trackSearch(params: {
   searchQuery: string;
   resultsCount: number;
 }): void {
-  trackEvent('search', {
+  const eventData = {
     event_category: 'Search',
     search_term: params.searchQuery,
     results_count: params.resultsCount,
-  });
+  };
+
+  trackEvent('search', eventData);
+  trackPostHogEvent('search', eventData);
 }
 
 /**
@@ -410,13 +438,16 @@ export function trackSearchNoResults(params: {
   searchQuery: string;
   searchContext?: 'autocomplete' | 'search_page';
 }): void {
-  trackEvent('search_no_results', {
+  const eventData = {
     event_category: 'Search',
     event_label: 'No Results',
     search_term: params.searchQuery,
     search_context: params.searchContext || 'search_page',
     value: 0,
-  });
+  };
+
+  trackEvent('search_no_results', eventData);
+  trackPostHogEvent('search_no_results', eventData);
 }
 
 // ============================================================================
@@ -435,7 +466,7 @@ export function trackRelatedDrawingClick(params: {
   position: number;
   subcategory: string;
 }): void {
-  trackEvent('click_related_drawing', {
+  const eventData = {
     event_category: 'Navigation',
     event_label: `${params.fromDrawingTitle} → ${params.toDrawingTitle}`,
     from_drawing_id: params.fromDrawingId,
@@ -445,7 +476,10 @@ export function trackRelatedDrawingClick(params: {
     position: params.position,
     subcategory: params.subcategory,
     value: params.position, // Lower position = higher value (1st item is most valuable)
-  });
+  };
+
+  trackEvent('click_related_drawing', eventData);
+  trackPostHogEvent('click_related_drawing', eventData);
 }
 
 // ============================================================================
@@ -456,12 +490,15 @@ export function trackRelatedDrawingClick(params: {
  * Track newsletter signups
  */
 export function trackNewsletterSignup(source: string): void {
-  trackEvent('newsletter_signup', {
+  const eventData = {
     event_category: 'Engagement',
     event_label: source,
     signup_source: source,
     value: 1,
-  });
+  };
+
+  trackEvent('newsletter_signup', eventData);
+  trackPostHogEvent('newsletter_signup', eventData);
 }
 
 /**
@@ -471,11 +508,14 @@ export function trackAddFavorite(params: {
   imageId: string;
   imageTitle: string;
 }): void {
-  trackEvent('add_favorite', {
+  const eventData = {
     event_category: 'Engagement',
     event_label: params.imageTitle,
     image_id: params.imageId,
-  });
+  };
+
+  trackEvent('add_favorite', eventData);
+  trackPostHogEvent('add_favorite', eventData);
 }
 
 /**
@@ -485,11 +525,14 @@ export function trackRemoveFavorite(params: {
   imageId: string;
   imageTitle: string;
 }): void {
-  trackEvent('remove_favorite', {
+  const eventData = {
     event_category: 'Engagement',
     event_label: params.imageTitle,
     image_id: params.imageId,
-  });
+  };
+
+  trackEvent('remove_favorite', eventData);
+  trackPostHogEvent('remove_favorite', eventData);
 }
 
 // ============================================================================
@@ -504,12 +547,15 @@ export function trackShare(params: {
   contentType: 'drawing' | 'category' | 'blog_post';
   contentTitle: string;
 }): void {
-  trackEvent('share', {
+  const eventData = {
     event_category: 'Social',
     method: params.platform,
     content_type: params.contentType,
     item_id: params.contentTitle,
-  });
+  };
+
+  trackEvent('share', eventData);
+  trackPostHogEvent('share', eventData);
 }
 
 // ============================================================================
@@ -524,10 +570,13 @@ export function trackError(params: {
   errorMessage: string;
   page?: string;
 }): void {
-  trackEvent('error', {
+  const eventData = {
     event_category: 'Errors',
     error_type: params.errorType,
     error_message: params.errorMessage,
     page: params.page || window.location.pathname,
-  });
+  };
+
+  trackEvent('error', eventData);
+  trackPostHogEvent('error', eventData);
 }
