@@ -197,20 +197,31 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
   };
 
   return {
-    title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder | ${subcategory.parentCategory?.title || 'Fargelegg Nå'}`,
+    title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder`,
     description: subcategory.seoDescription || subcategory.description || `Utforsk ${subcategory.title} tegninger i kategorien ${subcategory.parentCategory?.title}`,
     metadataBase: new URL(baseUrl),
     alternates: {
       canonical: `${baseUrl}/${categorySlug}/${subcategorySlug}`,
     },
     openGraph: {
-      title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder | ${subcategory.parentCategory?.title || 'Fargelegg Nå'}`,
+      title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder`,
       description: subcategory.seoDescription || subcategory.description || `Utforsk ${subcategory.title} tegninger i kategorien ${subcategory.parentCategory?.title}`,
       url: `${baseUrl}/${categorySlug}/${subcategorySlug}`,
-      siteName: 'Fargelegg Nå',
-      images: subcategoryImageUrl ? [{ url: subcategoryImageUrl }] : [],
+      siteName: 'TegnOgFarge.no',
+      images: subcategoryImageUrl ? [{
+        url: subcategoryImageUrl,
+        width: 1200,
+        height: 630,
+        alt: `${subcategory.title} fargeleggingsbilder`,
+      }] : [],
       locale: 'nb_NO',
       type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder`,
+      description: subcategory.seoDescription || subcategory.description || `Utforsk ${subcategory.title} tegninger i kategorien ${subcategory.parentCategory?.title}`,
+      images: subcategoryImageUrl ? [subcategoryImageUrl] : [],
     },
     other: {
       'application/ld+json': JSON.stringify(jsonLd),

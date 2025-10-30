@@ -56,22 +56,22 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
   const currentUrl = `${baseUrl}${pathname}`;
   
   return {
-    title: `${drawing.title} | ${subcategory.title} | ${subcategory.parentCategory?.title} | Fargelegg Nå`,
+    title: `Fargelegg ${drawing.title} - TegnOgFarge.no`,
     description: drawing.metaDescription || drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
     metadataBase: new URL(baseUrl),
     alternates: {
       canonical: `${baseUrl}${pathname}`,
     },
     openGraph: {
-      title: `${drawing.title} | ${subcategory.title} | Fargelegg Nå`,
+      title: `Fargelegg ${drawing.title} - TegnOgFarge.no`,
       description: drawing.metaDescription || drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
       url: currentUrl,
-      siteName: 'Fargelegg Nå',
+      siteName: 'TegnOgFarge.no',
       images: [
         {
           url: drawing.thumbnailUrl || drawing.imageUrl || '',
-          width: 800,
-          height: 600,
+          width: 1200,
+          height: 630,
           alt: drawing.title,
         },
       ],
@@ -80,7 +80,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     },
     twitter: {
       card: 'summary_large_image',
-      title: drawing.title,
+      title: `Fargelegg ${drawing.title} - TegnOgFarge.no`,
       description: drawing.metaDescription || drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
       images: drawing.thumbnailUrl || drawing.imageUrl,
     },

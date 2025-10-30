@@ -158,20 +158,31 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     };
 
     return {
-      title: `${title} Fargeleggingsbilder | Fargelegg Nå`,
+      title: category.seoTitle || `${category.title} Fargeleggingsbilder`,
       description,
       metadataBase: new URL(baseUrl),
       alternates: {
         canonical: `${baseUrl}/${categorySlug}`,
       },
       openGraph: {
-        title: `${title} Fargeleggingsbilder | Fargelegg Nå`,
+        title: category.seoTitle || `${category.title} Fargeleggingsbilder`,
         description,
         url: `${baseUrl}/${categorySlug}`,
-        siteName: 'Fargelegg Nå',
-        images: categoryImageUrl ? [{ url: categoryImageUrl }] : [],
+        siteName: 'TegnOgFarge.no',
+        images: categoryImageUrl ? [{
+          url: categoryImageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${category.title} fargeleggingsbilder`,
+        }] : [],
         locale: 'nb_NO',
         type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: category.seoTitle || `${category.title} Fargeleggingsbilder`,
+        description,
+        images: categoryImageUrl ? [categoryImageUrl] : [],
       },
       other: {
         'application/ld+json': JSON.stringify(jsonLd),

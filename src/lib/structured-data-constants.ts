@@ -26,7 +26,7 @@ export const STRUCTURED_DATA = {
   
   // Site metadata
   SITE: {
-    NAME: "Fargelegg Nå",
+    NAME: "TegnOgFarge.no",
     DESCRIPTION: "Fargeleggingsark for barn og voksne",
     LANGUAGE: "nb-NO"
   },

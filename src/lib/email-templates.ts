@@ -8,29 +8,29 @@ export interface EmailTemplateProps {
 
 export const userVerificationTemplate = ({ verificationCode, baseUrl, userName, emailAddress }: EmailTemplateProps) => {
   return {
-    subject: 'Bekreft din e-postadresse - Fargelegg Nå',
+    subject: 'Bekreft din e-postadresse - TegnOgFarge.no',
     html: `
       <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
-        <h1 style="color: #333;">Velkommen til Fargelegg Nå!</h1>
+        <h1 style="color: #333;">Velkommen til TegnOgFarge.no!</h1>
         <p>Hei ${userName || 'der'},</p>
-        <p>Takk for at du registrerte deg på Fargelegg Nå! For å fullføre registreringen, bruk følgende kode for å bekrefte din e-postadresse:</p>
-        
+        <p>Takk for at du registrerte deg på TegnOgFarge.no! For å fullføre registreringen, bruk følgende kode for å bekrefte din e-postadresse:</p>
+
         <div style="text-align: center; margin: 30px 0;">
           <div style="font-size: 32px; letter-spacing: 8px; font-weight: bold; background-color: #f5f5f5; padding: 20px; border-radius: 5px; display: inline-block;">
             ${verificationCode}
           </div>
         </div>
-        
+
         <p style="text-align: center;">
           Gå til <a href="${baseUrl}/verify-email" style="color: #4F46E5; text-decoration: underline;">verifiseringssiden</a> og skriv inn koden over.
         </p>
-        
+
         <p style="color: #666; font-size: 14px;">
-          Denne koden utløper om 24 timer. Hvis du ikke registrerte deg på Fargelegg Nå, kan du ignorere denne e-posten.
+          Denne koden utløper om 24 timer. Hvis du ikke registrerte deg på TegnOgFarge.no, kan du ignorere denne e-posten.
         </p>
-        
+
         <hr style="border: 1px solid #eee; margin: 30px 0;">
-        <p style="color: #999; font-size: 12px;">© 2025 Fargelegg Nå. Alle rettigheter reservert.</p>
+        <p style="color: #999; font-size: 12px;">© 2025 TegnOgFarge.no. Alle rettigheter reservert.</p>
       </div>
     `
   };
@@ -41,7 +41,7 @@ export const newsletterVerificationTemplate = ({ verificationCode, baseUrl, emai
   const unsubscribeUrl = unsubscribeToken ? `${baseUrl}/api/newsletter/unsubscribe?token=${unsubscribeToken}` : '';
 
   return {
-    subject: 'Bekreft ditt abonnement - Tegn og Farge',
+    subject: 'Bekreft ditt abonnement - TegnOgFarge.no',
     html: `
       <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; color: #333;">
         <h1 style="color: #264653; font-size: 24px; margin-bottom: 20px;">Bekreft ditt abonnement</h1>
@@ -85,7 +85,7 @@ export const newsletterVerificationTemplate = ({ verificationCode, baseUrl, emai
         <!-- Footer with unsubscribe link -->
         <div style="text-align: center;">
           <p style="color: #999; font-size: 12px; margin-bottom: 10px;">
-            © 2025 Tegn og Farge. Alle rettigheter reservert.
+            © 2025 TegnOgFarge.no. Alle rettigheter reservert.
           </p>
           ${unsubscribeUrl ? `
           <p style="color: #999; font-size: 11px; margin-top: 10px;">
@@ -96,4 +96,4 @@ export const newsletterVerificationTemplate = ({ verificationCode, baseUrl, emai
       </div>
     `
   };
-}; 
+};

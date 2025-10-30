@@ -123,7 +123,7 @@ export class EmailService {
       }
       
       const result = await resend.emails.send({
-        from: `${process.env.EMAIL_FROM_NAME || 'Fargelegg Nå'} <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+        from: `${process.env.EMAIL_FROM_NAME || 'TegnOgFarge.no'} <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
         to: recipientEmail,
         subject: 'Bekreft e-postadressen din',
         html: htmlContent,
@@ -193,7 +193,7 @@ export class EmailService {
       const unsubscribeUrl = unsubscribeToken ? `${baseUrl}/api/newsletter/unsubscribe?token=${unsubscribeToken}` : '';
 
       const result = await resend.emails.send({
-        from: `${process.env.EMAIL_FROM_NAME || 'Fargelegg Nå'} <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+        from: `${process.env.EMAIL_FROM_NAME || 'TegnOgFarge.no'} <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
         to: recipientEmail,
         subject: emailTemplate.subject,
         html: emailTemplate.html,
