@@ -21,8 +21,8 @@ const nextConfig = {
         hostname: "placehold.co",
       },
     ],
-    // Reduced device sizes to minimize transformations
-    deviceSizes: [640, 750, 1080, 1200, 1920],
+    // Reduced device sizes to minimize transformations and prevent 4XX errors
+    deviceSizes: [640, 750, 1080, 1200],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
     // Limit formats to reduce transformations
     formats: ['image/webp'],
