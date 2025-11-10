@@ -16,31 +16,45 @@ function PageViewTracker() {
   const { hasConsent } = useCookieConsent();
 
   useEffect(() => {
-    // Initialize PostHog on first mount (following official PostHog docs)
-    if (typeof window !== 'undefined' && !posthog.__loaded && POSTHOG_KEY) {
-      console.log('[PostHog] Initializing with key:', POSTHOG_KEY.substring(0, 10) + '...');
+    // Defer PostHog initialization until after page is interactive for better performance
+    const initializePostHog = () => {
+      if (typeof window !== 'undefined' && !posthog.__loaded && POSTHOG_KEY) {
+        console.log('[PostHog] Initializing with key:', POSTHOG_KEY.substring(0, 10) + '...');
 
-      posthog.init(POSTHOG_KEY, {
-        api_host: POSTHOG_HOST,
-        person_profiles: 'always',
-        capture_pageview: false,
-        autocapture: {
-          dom_event_allowlist: ['click', 'change', 'submit'],
-          url_allowlist: [window.location.origin],
-          element_allowlist: ['button', 'a'],
-        },
-        session_recording: {
-          maskAllInputs: true,
-          maskTextSelector: '.ph-no-capture',
-        },
-        loaded: (ph) => {
-          console.log('[PostHog] ✅ Initialized');
-          ph.debug();
-          (window as any).posthog = ph;
-        },
-      });
-    } else if (!POSTHOG_KEY && typeof window !== 'undefined') {
-      console.warn('[PostHog] API key not found. Set NEXT_PUBLIC_POSTHOG_KEY in .env.local');
+        posthog.init(POSTHOG_KEY, {
+          api_host: POSTHOG_HOST,
+          person_profiles: 'always',
+          capture_pageview: false,
+          // Disable feature flags to prevent 401 errors
+          // Feature flags require server-side authentication
+          advanced_disable_feature_flags: true,
+          advanced_disable_feature_flags_on_first_load: true,
+          autocapture: {
+            dom_event_allowlist: ['click', 'change', 'submit'],
+            url_allowlist: [window.location.origin],
+            element_allowlist: ['button', 'a'],
+          },
+          session_recording: {
+            maskAllInputs: true,
+            maskTextSelector: '.ph-no-capture',
+          },
+          loaded: (ph) => {
+            console.log('[PostHog] ✅ Initialized');
+            ph.debug();
+            (window as any).posthog = ph;
+          },
+        });
+      } else if (!POSTHOG_KEY && typeof window !== 'undefined') {
+        console.warn('[PostHog] API key not found. Set NEXT_PUBLIC_POSTHOG_KEY in .env.local');
+      }
+    };
+
+    // Defer PostHog loading until browser is idle or after 2 seconds
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      requestIdleCallback(initializePostHog, { timeout: 2000 });
+    } else {
+      // Fallback for browsers that don't support requestIdleCallback
+      setTimeout(initializePostHog, 1000);
     }
   }, []);
 
