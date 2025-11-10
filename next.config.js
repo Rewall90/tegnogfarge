@@ -86,6 +86,13 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // Videospill → Feiring category rename (301 permanent redirects)
+      // Following Google best practices: direct redirects, no chains, kept for 1+ year
+      {
+        source: '/videospill/:path*',
+        destination: '/feiring/:path*',
+        permanent: true,
+      },
       // Vitenskap category redirects - adding "fargelegg-" prefix to subcategories
       {
         source: '/vitenskap/stjernetegn/:path*',
