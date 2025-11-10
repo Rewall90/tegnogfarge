@@ -68,9 +68,18 @@ Description: Update to match "Feiring" theme
 
 ### Step 4: Verify in Production
 
-1. Visit https://tegnogfarge.no/feiring (should load correctly)
-2. Visit https://tegnogfarge.no/videospill (should redirect to /feiring)
+**⏱️ Wait 2-3 minutes** after publishing for changes to propagate, then test:
+
+1. Visit https://tegnogfarge.no/feiring (should load the renamed category)
+2. Visit https://tegnogfarge.no/videospill (should **301 redirect** to /feiring)
 3. Check breadcrumbs show "Feiring" correctly
+4. Test a subcategory URL: https://tegnogfarge.no/videospill/fargelegge-vennskap (should redirect)
+
+**How to verify it's a 301 redirect:**
+- Browser devtools → Network tab → should show "301 Moved Permanently"
+- Or use: `curl -I https://tegnogfarge.no/videospill` (should show HTTP 301)
+
+**Note:** The redirect activates automatically once the old Sanity slug no longer exists. Next.js will detect the 404 and apply the redirect rule.
 
 ---
 
