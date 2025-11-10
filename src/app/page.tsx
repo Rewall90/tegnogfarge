@@ -121,12 +121,12 @@ export async function generateMetadata() {
   };
 
   return {
-    title: 'TegnOgFarge.no – Last ned & fargelegg gratis fargeleggingssider',
-    description: 'Fargelegg gratis – last ned eller tegn i nettleseren. Motiver for barn og voksne i PNG/PDF – print og kos deg nå!',
+    title: 'Fargelegging Barn Og Voksne – Gratis Fargeleggingsark',
+    description: 'Gratis fargeleggingssider for barn og voksne. Last ned eller fargelegg i nettleseren. Tusenvis av motiver i PNG/PDF-format. Trygt og pedagogisk innhold – print og kos deg!',
     metadataBase: new URL(base),
     openGraph: {
-      title: 'TegnOgFarge.no – Last ned & fargelegg gratis fargeleggingssider',
-      description: 'Fargelegg gratis – last ned eller tegn i nettleseren. Motiver for barn og voksne i PNG/PDF – print og kos deg nå!',
+      title: 'Fargelegging Barn Og Voksne – Gratis Fargeleggingsark',
+      description: 'Gratis fargeleggingssider for barn og voksne. Last ned eller fargelegg i nettleseren. Tusenvis av motiver i PNG/PDF-format. Trygt og pedagogisk innhold – print og kos deg!',
       url: base,
       siteName: 'TegnOgFarge.no',
       locale: 'nb_NO',
@@ -142,8 +142,8 @@ export async function generateMetadata() {
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'TegnOgFarge.no – Last ned & fargelegg gratis fargeleggingssider',
-      description: 'Fargelegg gratis – last ned eller tegn i nettleseren. Motiver for barn og voksne i PNG/PDF – print og kos deg nå!',
+      title: 'Fargelegging Barn Og Voksne – Gratis Fargeleggingsark',
+      description: 'Gratis fargeleggingssider for barn og voksne. Last ned eller fargelegg i nettleseren. Tusenvis av motiver i PNG/PDF-format. Trygt og pedagogisk innhold – print og kos deg!',
       images: [`${base}/images/hero section/fargelegging-barn-voksne-gratis-motiver.webp`],
     },
     alternates: {
