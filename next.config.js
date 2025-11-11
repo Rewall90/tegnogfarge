@@ -93,6 +93,13 @@ const nextConfig = {
         destination: '/feiring/:path*',
         permanent: true,
       },
+      // Superhelter → Mandala category rename (301 permanent redirect)
+      // Following Google best practices: direct redirect, kept for 1+ year
+      {
+        source: '/superhelter/:path*',
+        destination: '/mandala/:path*',
+        permanent: true,
+      },
       // Vitenskap category redirects - adding "fargelegg-" prefix to subcategories
       {
         source: '/vitenskap/stjernetegn/:path*',
