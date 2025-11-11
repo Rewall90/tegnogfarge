@@ -12,8 +12,8 @@ All URLs will automatically redirect with 301 status:
 
 ```
 OLD → NEW
-/superhelter → /mandala
-/superhelter/* → /mandala/*
+/superhelter → /fargelegg-mandala
+/superhelter/* → /fargelegg-mandala/*
 ```
 
 **Total affected URLs:** **1 URL** (main category page only)
@@ -26,7 +26,7 @@ OLD → NEW
 
 ### 1. 301 Redirects ✅
 - Implemented in `next.config.js`
-- Pattern: `/superhelter/:path*` → `/mandala/:path*`
+- Pattern: `/superhelter/:path*` → `/fargelegg-mandala/:path*`
 - Status: HTTP 301 Permanent (as per Google recommendations)
 - No redirect chains (direct mapping)
 
@@ -76,7 +76,7 @@ Update these fields:
 
 ```yaml
 Title: "Mandala"  # Changed from "Superhelter"
-Slug: "mandala"   # Changed from "superhelter"
+Slug: "fargelegg-mandala"   # Changed from "superhelter"
 Description: "Velkommen til Mandala, en kreativ kategori full av vakre mønstre og former! Her finner du tegninger med symmetriske design, geometriske mønstre og detaljerte mandalamotiver som både inspirerer til ro og kreativitet. Motivene varierer fra enkle sirkelmønstre for de minste barna til mer komplekse og detaljerte mandalategninger for de eldre barna som ønsker en utfordring. Alle tegningene er helt gratis og kan enten lastes ned som høyoppløselige PDF-er klare for utskrift i A4 eller A3, eller fargelegges direkte i nettleseren. Dette er perfekt for rolige stunder, fokusøvelser i skolen, eller som en avslappende aktivitet hjemme. Gi barna friheten til å eksperimentere med farger og mønstre mens de utvikler finmotorikk og konsentrasjon!"
 SEO Title: "Fargelegg mandala – Vakre mønstre og geometriske design for barn. Tegn online eller last ned gratis fargeleggingsark."
 SEO Description: "Utforsk vår samling av mandala-tegninger for barn! Fra enkle mønstre til detaljerte design. Fargelegg online eller last ned gratis PDF-er i A4/A3 – perfekt for rolige stunder og kreativ utfoldelse."
@@ -93,8 +93,8 @@ SEO Description: "Utforsk vår samling av mandala-tegninger for barn! Fra enkle 
 
 **⏱️ Wait 2-3 minutes** after publishing for changes to propagate, then test:
 
-1. Visit https://tegnogfarge.no/mandala (should load the renamed category)
-2. Visit https://tegnogfarge.no/superhelter (should **301 redirect** to /mandala)
+1. Visit https://tegnogfarge.no/fargelegg-mandala (should load the renamed category)
+2. Visit https://tegnogfarge.no/superhelter (should **301 redirect** to /fargelegg-mandala)
 3. Check breadcrumbs show "Mandala" correctly
 4. Verify category appears in navigation with new name
 
@@ -164,14 +164,14 @@ SEO Description: "Utforsk vår samling av mandala-tegninger for barn! Fra enkle 
 # Test locally after deploying
 curl -I https://tegnogfarge.no/superhelter
 # Should return: HTTP/1.1 301 Moved Permanently
-# Location: https://tegnogfarge.no/mandala
+# Location: https://tegnogfarge.no/fargelegg-mandala
 ```
 
 ### Manual Test URLs
 After Sanity changes are published, test:
 
-1. https://tegnogfarge.no/superhelter → should redirect to /mandala
-2. Any future subcategories will auto-redirect (e.g., /superhelter/noe → /mandala/noe)
+1. https://tegnogfarge.no/superhelter → should redirect to /fargelegg-mandala
+2. Any future subcategories will auto-redirect (e.g., /superhelter/noe → /fargelegg-mandala/noe)
 
 ---
 
@@ -186,7 +186,7 @@ After Sanity changes are published, test:
 
 2. **Request Indexing (Optional)**
    - Go to URL Inspection tool
-   - Enter: https://tegnogfarge.no/mandala
+   - Enter: https://tegnogfarge.no/fargelegg-mandala
    - Click "Request Indexing"
 
 3. **Monitor Coverage Report**
