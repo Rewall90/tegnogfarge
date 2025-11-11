@@ -1,0 +1,33 @@
+═══════════════════════════════════════════════════════════════
+COPY-PASTE TEXT FOR MANDALA CATEGORY IN SANITY STUDIO
+═══════════════════════════════════════════════════════════════
+
+Go to: https://tegnogfarge.sanity.studio
+Navigate to: Content → Categories → Mandala
+Click to edit the category
+
+Then copy-paste these three fields:
+
+─────────────────────────────────────────────────────────────────
+📝 DESCRIPTION FIELD:
+─────────────────────────────────────────────────────────────────
+
+Velkommen til Mandala, en kreativ kategori full av vakre mønstre og former! Her finner du tegninger med symmetriske design, geometriske mønstre og detaljerte mandalamotiver som både inspirerer til ro og kreativitet. Motivene varierer fra enkle sirkelmønstre for de minste barna til mer komplekse og detaljerte mandalategninger for de eldre barna som ønsker en utfordring. Alle tegningene er helt gratis og kan enten lastes ned som høyoppløselige PDF-er klare for utskrift i A4 eller A3, eller fargelegges direkte i nettleseren. Dette er perfekt for rolige stunder, fokusøvelser i skolen, eller som en avslappende aktivitet hjemme. Gi barna friheten til å eksperimentere med farger og mønstre mens de utvikler finmotorikk og konsentrasjon!
+
+─────────────────────────────────────────────────────────────────
+🎯 SEO TITLE FIELD:
+─────────────────────────────────────────────────────────────────
+
+Fargelegg mandala – Vakre mønstre og geometriske design for barn. Tegn online eller last ned gratis fargeleggingsark.
+
+─────────────────────────────────────────────────────────────────
+📄 SEO DESCRIPTION FIELD:
+─────────────────────────────────────────────────────────────────
+
+Utforsk vår samling av mandala-tegninger for barn! Fra enkle mønstre til detaljerte design. Fargelegg online eller last ned gratis PDF-er i A4/A3 – perfekt for rolige stunder og kreativ utfoldelse.
+
+═══════════════════════════════════════════════════════════════
+
+✅ After pasting, click "Publish" to save the changes.
+
+═══════════════════════════════════════════════════════════════

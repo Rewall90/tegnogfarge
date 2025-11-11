@@ -97,7 +97,7 @@ const nextConfig = {
       // Following Google best practices: direct redirect, kept for 1+ year
       {
         source: '/superhelter/:path*',
-        destination: '/mandala/:path*',
+        destination: '/fargelegg-mandala/:path*',
         permanent: true,
       },
       // Vitenskap category redirects - adding "fargelegg-" prefix to subcategories
