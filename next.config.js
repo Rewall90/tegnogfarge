@@ -129,12 +129,12 @@ const nextConfig = {
       },
       {
         source: '/videospill/sonic',
-        destination: '/superhelter/fargelegg-sonic',
+        destination: '/api/410-gone',
         permanent: true,
       },
       {
         source: '/superhelter/spider-man',
-        destination: '/superhelter/fargelegg-spiderman',
+        destination: '/api/410-gone',
         permanent: true,
       },
       {
