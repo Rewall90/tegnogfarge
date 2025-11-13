@@ -34,11 +34,21 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# translation progress tracking
+.translation-progress/
+
+# backup files
+*.tar.gz
+*.zip
+*.backup
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
 
 .vercel

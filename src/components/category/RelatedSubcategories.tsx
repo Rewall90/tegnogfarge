@@ -6,12 +6,14 @@ interface RelatedSubcategoriesProps {
   categorySlug: string;
   currentSubcategorySlug: string;
   categoryTitle: string;
+  locale?: string;
 }
 
-export async function RelatedSubcategories({ 
-  categorySlug, 
+export async function RelatedSubcategories({
+  categorySlug,
   currentSubcategorySlug,
   categoryTitle,
+  locale = 'no',
 }: RelatedSubcategoriesProps) {
   // The SubcategoryCard component expects a specific shape for the subcategory object.
   // We need to define it here for type safety, matching what getRelatedSubcategories returns
@@ -19,8 +21,10 @@ export async function RelatedSubcategories({
   type SubcategoryForCard = React.ComponentProps<typeof SubcategoryCard>['subcategory'];
 
   const relatedSubcategories: SubcategoryForCard[] = await getRelatedSubcategories(
-    currentSubcategorySlug, 
-    categorySlug
+    currentSubcategorySlug,
+    categorySlug,
+    3,
+    locale
   );
 
   if (!relatedSubcategories || relatedSubcategories.length === 0) {
@@ -35,10 +39,11 @@ export async function RelatedSubcategories({
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {relatedSubcategories.map((subcategory) => (
-            <SubcategoryCard 
-              key={subcategory._id} 
-              subcategory={subcategory} 
+            <SubcategoryCard
+              key={subcategory._id}
+              subcategory={subcategory}
               categorySlug={categorySlug}
+              locale={locale}
               titleClassName="font-display text-lg"
             />
           ))}

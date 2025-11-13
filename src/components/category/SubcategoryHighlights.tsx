@@ -22,12 +22,14 @@ interface SubcategoryHighlightsProps {
   subcategories: SubcategoryItem[];
   title?: string;
   subtitle?: string;
+  locale?: string;
 }
 
-export function SubcategoryHighlights({ 
-  subcategories, 
+export function SubcategoryHighlights({
+  subcategories,
   title = "Popular Coloring Pages",
-  subtitle = "Explore Our Featured Collections"
+  subtitle = "Explore Our Featured Collections",
+  locale = 'no'
 }: SubcategoryHighlightsProps) {
   // Client-side state to track images that failed to load
   const [failedImages, setFailedImages] = React.useState<Record<string, boolean>>({});
@@ -77,7 +79,9 @@ export function SubcategoryHighlights({
             // Ensure we have valid category and subcategory slugs
             const categorySlug = subcategory.parentCategory?.slug || 'category';
             const subcategorySlug = subcategory.slug || '';
-            const href = `/${categorySlug}/${subcategorySlug}`;
+            // Create locale-aware href
+            const path = `/${categorySlug}/${subcategorySlug}`;
+            const href = locale === 'no' ? path : `/${locale}${path}`;
             const title = subcategory.title || '';
             
             // Hide items beyond 4th on mobile for performance

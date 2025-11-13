@@ -46,9 +46,9 @@ export async function getImagesInCategory(subcategory: string, page = 1, limit =
 }
 
 // Hent alle hovedkategorier
-export async function getAllCategories() {
+export async function getAllCategories(locale: string = 'no') {
   return client.fetch(`
-    *[_type == "category" && isActive == true]
+    *[_type == "category" && isActive == true && language == $locale]
     | order(order asc, title asc) {
       _id,
       title,
@@ -64,10 +64,10 @@ export async function getAllCategories() {
         "url": asset->url,
         alt
       },
-      "subcategoryCount": count(*[_type == "subcategory" && parentCategory._ref == ^._id && isActive == true]),
-      "drawingCount": count(*[_type == "drawingImage" && subcategory->parentCategory._ref == ^._id && isActive == true])
+      "subcategoryCount": count(*[_type == "subcategory" && parentCategory._ref == ^._id && isActive == true && language == $locale]),
+      "drawingCount": count(*[_type == "drawingImage" && subcategory->parentCategory._ref == ^._id && isActive == true && language == $locale])
     }
-  `);
+  `, { locale });
 }
 
 // GROQ query-funksjon for å hente alle innlegg
@@ -170,9 +170,9 @@ export async function getColoringImage(id: string) {
 }
 
 // Hent en kategori med sine underkategorier
-export async function getCategoryWithSubcategories(categorySlug: string) {
+export async function getCategoryWithSubcategories(categorySlug: string, locale: string = 'no') {
   return client.fetch(`
-    *[_type == "category" && slug.current == $categorySlug && isActive == true][0] {
+    *[_type == "category" && slug.current == $categorySlug && isActive == true && language == $locale][0] {
       _id,
       title,
       description,
@@ -187,7 +187,7 @@ export async function getCategoryWithSubcategories(categorySlug: string) {
         "url": asset->url,
         alt
       },
-      "subcategories": *[_type == "subcategory" && parentCategory._ref == ^._id && isActive == true]
+      "subcategories": *[_type == "subcategory" && parentCategory._ref == ^._id && isActive == true && language == $locale]
       | order(order asc, title asc) {
         _id,
         title,
@@ -203,8 +203,8 @@ export async function getCategoryWithSubcategories(categorySlug: string) {
           alt,
           "lqip": asset->metadata.lqip
         },
-        "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true]),
-        "sampleImage": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true][0] {
+        "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true && language == $locale]),
+        "sampleImage": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true && language == $locale][0] {
           "thumbnailUrl": thumbnailImage.asset->url,
           "thumbnailAlt": thumbnailImage.alt,
           "thumbnailLqip": thumbnailImage.asset->metadata.lqip,
@@ -214,13 +214,13 @@ export async function getCategoryWithSubcategories(categorySlug: string) {
         }
       }
     }
-  `, { categorySlug });
+  `, { categorySlug, locale });
 }
 
 // Hent alle underkategorier for en kategori
-export async function getSubcategoriesByCategory(categorySlug: string) {
+export async function getSubcategoriesByCategory(categorySlug: string, locale: string = 'no') {
   return client.fetch(`
-    *[_type == "subcategory" && parentCategory->slug.current == $categorySlug && isActive == true]
+    *[_type == "subcategory" && parentCategory->slug.current == $categorySlug && isActive == true && language == $locale]
     | order(order asc, title asc) {
       _id,
       title,
@@ -237,15 +237,15 @@ export async function getSubcategoriesByCategory(categorySlug: string) {
         "lqip": asset->metadata.lqip
       },
       "parentCategory": parentCategory->{ title, "slug": slug.current },
-      "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+      "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true && language == $locale])
     }
-  `, { categorySlug });
+  `, { categorySlug, locale });
 }
 
 // Hent en spesifikk underkategori med tegninger
-export async function getSubcategoryWithDrawings(categorySlug: string, subcategorySlug: string) {
+export async function getSubcategoryWithDrawings(categorySlug: string, subcategorySlug: string, locale: string = 'no') {
   return client.fetch(`
-    *[_type == "subcategory" && slug.current == $subcategorySlug && parentCategory->slug.current == $categorySlug && isActive == true][0] {
+    *[_type == "subcategory" && slug.current == $subcategorySlug && parentCategory->slug.current == $categorySlug && isActive == true && language == $locale][0] {
       _id,
       title,
       description,
@@ -258,7 +258,7 @@ export async function getSubcategoryWithDrawings(categorySlug: string, subcatego
         "alt": alt
       },
       "parentCategory": parentCategory->{ title, "slug": slug.current },
-      "drawings": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true]
+      "drawings": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true && language == $locale]
       | order(order asc, title asc) {
         _id,
         title,
@@ -278,7 +278,7 @@ export async function getSubcategoryWithDrawings(categorySlug: string, subcatego
         isActive
       }
     }
-  `, { categorySlug, subcategorySlug });
+  `, { categorySlug, subcategorySlug, locale });
 }
 
 // Oppdatert getCategoryImagesWithColoring til å støtte underkategorier
@@ -298,9 +298,9 @@ export async function getCategoryImagesWithColoring(categorySlug: string) {
 }
 
 // Hent tegninger for en spesifikk underkategori
-export async function getDrawingsBySubcategory(subcategorySlug: string) {
+export async function getDrawingsBySubcategory(subcategorySlug: string, locale: string = 'no') {
   return client.fetch(`
-    *[_type == "drawingImage" && subcategory->slug.current == $subcategorySlug] {
+    *[_type == "drawingImage" && subcategory->slug.current == $subcategorySlug && language == $locale] {
       _id,
       title,
       "slug": slug.current,
@@ -310,7 +310,7 @@ export async function getDrawingsBySubcategory(subcategorySlug: string) {
       order,
       isActive
     } | order(order asc, title asc)
-  `, { subcategorySlug })
+  `, { subcategorySlug, locale })
 }
 
 // Hent alle bilder som kan fargelegges (for static paths)
@@ -422,16 +422,16 @@ export async function getAllCategoriesWithSubcategories() {
 }
 
 // Funksjon for å søke etter tegninger
-export async function searchDrawings(query: string, limit?: number) {
-  const params: { [key: string]: string | number } = { query: `${query}*` };
-  
+export async function searchDrawings(query: string, limit?: number, locale: string = 'no') {
+  const params: { [key: string]: string | number } = { query: `${query}*`, locale };
+
   let groqQuery = `*[_type == "drawingImage" && (
-    title match $query || 
+    title match $query ||
     description match $query ||
     tags[] match $query ||
     subcategory->title match $query ||
     subcategory->parentCategory->title match $query
-  ) && isActive == true]`;
+  ) && isActive == true && language == $locale]`;
 
   if (typeof limit === 'number') {
     groqQuery += ` | order(_createdAt desc)[0...$limit]`;
@@ -454,9 +454,9 @@ export async function searchDrawings(query: string, limit?: number) {
 }
 
 // Hent alle underkategorier på tvers av alle kategorier
-export async function getAllSubcategories() {
+export async function getAllSubcategories(locale: string = 'no') {
   return client.fetch(`
-    *[_type == "subcategory" && isActive == true]
+    *[_type == "subcategory" && isActive == true && language == $locale]
     | order(order asc, title asc) {
       _id,
       title,
@@ -472,23 +472,23 @@ export async function getAllSubcategories() {
         "alt": alt,
         "lqip": asset->metadata.lqip
       },
-      "parentCategory": parentCategory->{ 
+      "parentCategory": parentCategory->{
         _id,
-        title, 
-        "slug": slug.current 
+        title,
+        "slug": slug.current
       },
-      "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+      "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true && language == $locale])
     }
-  `);
+  `, { locale });
 }
 
 // Hent populære underkategorier basert på antall tegninger
-export async function getPopularSubcategories(limit = 3) {
-  console.log(`Fetching ${limit} popular subcategories`);
-  
+export async function getPopularSubcategories(limit: number = 3, locale: string = 'no') {
+  console.log(`Fetching ${limit} popular subcategories for locale: ${locale}`);
+
   try {
     const result = await client.fetch(`
-      *[_type == "subcategory" && isActive == true && defined(featuredImage)] {
+      *[_type == "subcategory" && isActive == true && language == $locale && defined(featuredImage)] {
         _id,
         title,
         "slug": slug.current,
@@ -497,21 +497,21 @@ export async function getPopularSubcategories(limit = 3) {
           "alt": alt,
           "lqip": asset->metadata.lqip
         },
-        "parentCategory": parentCategory->{ 
-          title, 
-          "slug": slug.current 
+        "parentCategory": parentCategory->{
+          title,
+          "slug": slug.current
         },
-        "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+        "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true && language == $locale])
       } | order(drawingCount desc, title asc)[0...${limit}]
-    `);
-    
+    `, { locale });
+
     console.log('Found popular subcategories:', result);
-    
+
     // If no results, try to get featured subcategories
     if (!result || result.length === 0) {
       console.log('No popular subcategories found, trying featured subcategories...');
       const featuredResult = await client.fetch(`
-        *[_type == "subcategory" && isActive == true && defined(featuredImage) && featured == true] {
+        *[_type == "subcategory" && isActive == true && language == $locale && defined(featuredImage) && featured == true] {
           _id,
           title,
           "slug": slug.current,
@@ -520,21 +520,21 @@ export async function getPopularSubcategories(limit = 3) {
             "alt": alt,
             "lqip": asset->metadata.lqip
           },
-          "parentCategory": parentCategory->{ 
-            title, 
-            "slug": slug.current 
+          "parentCategory": parentCategory->{
+            title,
+            "slug": slug.current
           },
-          "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+          "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true && language == $locale])
         } | order(order asc, title asc)[0...${limit}]
-      `);
-      
+      `, { locale });
+
       console.log('Found featured subcategories:', featuredResult);
-      
+
       // If still no results, just get any subcategories
       if (!featuredResult || featuredResult.length === 0) {
         console.log('No featured subcategories found, getting any subcategories...');
         const anyResult = await client.fetch(`
-          *[_type == "subcategory" && isActive == true] {
+          *[_type == "subcategory" && isActive == true && language == $locale] {
             _id,
             title,
             "slug": slug.current,
@@ -543,21 +543,21 @@ export async function getPopularSubcategories(limit = 3) {
               "alt": alt,
               "lqip": asset->metadata.lqip
             },
-            "parentCategory": parentCategory->{ 
-              title, 
-              "slug": slug.current 
+            "parentCategory": parentCategory->{
+              title,
+              "slug": slug.current
             },
-            "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true])
+            "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true && language == $locale])
           } | order(title asc)[0...${limit}]
-        `);
-        
+        `, { locale });
+
         console.log('Found any subcategories:', anyResult);
         return anyResult;
       }
-      
+
       return featuredResult;
     }
-    
+
     return result;
   } catch (error) {
     console.error('Error fetching popular subcategories:', error);
@@ -621,15 +621,17 @@ export async function getSpecificSubcategories(slugs: string[]) {
 
 // Hent relaterte underkategorier
 export async function getRelatedSubcategories(
-  currentSubcategorySlug: string, 
-  categorySlug: string, 
-  limit: number = 4
+  currentSubcategorySlug: string,
+  categorySlug: string,
+  limit: number = 4,
+  locale: string = 'no'
 ) {
   return client.fetch(
-    `*[_type == "subcategory" 
-      && slug.current != $currentSubcategorySlug 
-      && parentCategory->slug.current == $categorySlug 
-      && isActive == true]
+    `*[_type == "subcategory"
+      && slug.current != $currentSubcategorySlug
+      && parentCategory->slug.current == $categorySlug
+      && isActive == true
+      && language == $locale]
     | order(order asc, title asc)[0...$limit] {
       _id,
       title,
@@ -640,15 +642,15 @@ export async function getRelatedSubcategories(
         "url": asset->url,
         "alt": alt,
       },
-      "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true]),
-      "sampleImage": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true][0] {
+      "drawingCount": count(*[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true && language == $locale]),
+      "sampleImage": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true && language == $locale][0] {
         "thumbnailUrl": thumbnailImage.asset->url,
         "thumbnailAlt": thumbnailImage.alt,
         "imageUrl": webpImage.asset->url,
         "imageAlt": webpImage.alt
       }
     }`,
-    { currentSubcategorySlug, categorySlug, limit }
+    { currentSubcategorySlug, categorySlug, limit, locale }
   );
 }
 
@@ -656,13 +658,15 @@ export async function getRelatedSubcategories(
 export async function getRelatedDrawings(
   currentDrawingSlug: string,
   subcategorySlug: string,
-  limit: number = 4
+  limit: number = 4,
+  locale: string = 'no'
 ) {
   return client.fetch(
-    `*[_type == "drawingImage" 
-      && slug.current != $currentDrawingSlug 
-      && subcategory->slug.current == $subcategorySlug 
-      && isActive == true]
+    `*[_type == "drawingImage"
+      && slug.current != $currentDrawingSlug
+      && subcategory->slug.current == $subcategorySlug
+      && isActive == true
+      && language == $locale]
     | order(order asc, title asc)[0...$limit] {
       _id,
       title,
@@ -672,20 +676,20 @@ export async function getRelatedDrawings(
       "imageAlt": thumbnailImage.alt,
       "lqip": thumbnailImage.asset->metadata.lqip
     }`,
-    { currentDrawingSlug, subcategorySlug, limit }
+    { currentDrawingSlug, subcategorySlug, limit, locale }
   );
 }
 
 // Hent trending underkategorier
-export async function getTrendingSubcategories(limit: number = 2) {
+export async function getTrendingSubcategories(limit: number = 2, locale: string = 'no') {
   return client.fetch(
-    `*[_type == "subcategory" && isTrending == true && isActive == true][0...$limit] {
+    `*[_type == "subcategory" && isTrending == true && isActive == true && language == $locale][0...$limit] {
       _id,
       title,
       "slug": slug.current,
       "parentCategory": parentCategory->{ "slug": slug.current }
     }`,
-    { limit }
+    { limit, locale }
   );
 }
 
@@ -704,35 +708,35 @@ export async function getNewestSubcategories(limit: number = 7) {
   );
 }
 
-export async function getSitemapPageData() {
+export async function getSitemapPageData(locale: string = 'no') {
   return client.fetch(`
     {
       "posts": *[_type == "post" && defined(slug.current) && !(_id in path("drafts.**"))] {
         "slug": slug.current,
         _updatedAt
       },
-      "categories": *[_type == "category" && defined(slug.current) && !(_id in path("drafts.**"))] {
+      "categories": *[_type == "category" && defined(slug.current) && language == $locale && !(_id in path("drafts.**"))] {
         "slug": slug.current,
         _updatedAt
       },
-      "subcategories": *[_type == "subcategory" && defined(slug.current) && defined(parentCategory->slug.current) && isActive == true && !(_id in path("drafts.**"))] {
+      "subcategories": *[_type == "subcategory" && defined(slug.current) && defined(parentCategory->slug.current) && isActive == true && language == $locale && !(_id in path("drafts.**"))] {
         "slug": slug.current,
         "parentCategorySlug": parentCategory->slug.current,
         _updatedAt
       },
-      "drawings": *[_type == "drawingImage" && defined(slug.current) && defined(subcategory->slug.current) && defined(subcategory->parentCategory->slug.current) && isActive == true && !(_id in path("drafts.**"))] {
+      "drawings": *[_type == "drawingImage" && defined(slug.current) && defined(subcategory->slug.current) && defined(subcategory->parentCategory->slug.current) && isActive == true && language == $locale && !(_id in path("drafts.**"))] {
         "slug": slug.current,
         "subcategorySlug": subcategory->slug.current,
         "parentCategorySlug": subcategory->parentCategory->slug.current,
         _updatedAt
       }
     }
-  `);
+  `, { locale });
 }
 
-export async function getSitemapImageData() {
+export async function getSitemapImageData(locale: string = 'no') {
   return client.fetch(`
-    *[_type == "drawingImage" && defined(slug.current) && defined(displayImage.asset) && isActive == true && !(_id in path("drafts.**"))] {
+    *[_type == "drawingImage" && defined(slug.current) && defined(displayImage.asset) && isActive == true && language == $locale && !(_id in path("drafts.**"))] {
       "drawingSlug": slug.current,
       "subcategorySlug": subcategory->slug.current,
       "categorySlug": subcategory->parentCategory->slug.current,
@@ -741,5 +745,22 @@ export async function getSitemapImageData() {
       description,
       _updatedAt
     }
-  `);
+  `, { locale });
+}
+
+// Hent tegning med fullstendig sti-informasjon for URL-bygging
+// Brukes av daily-drawing for å bygge /category/subcategory/drawing URLs
+export async function getDrawingWithFullPath(id: string, locale: string = 'no') {
+  return client.fetch(`
+    *[_type == "drawingImage" && _id == $id && isActive == true && language == $locale][0] {
+      _id,
+      title,
+      "slug": slug.current,
+      "categorySlug": subcategory->parentCategory->slug.current,
+      "categoryTitle": subcategory->parentCategory->title,
+      "subcategorySlug": subcategory->slug.current,
+      "subcategoryTitle": subcategory->title,
+      isActive
+    }
+  `, { id, locale });
 } 

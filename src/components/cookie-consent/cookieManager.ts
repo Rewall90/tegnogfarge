@@ -6,28 +6,45 @@ const CONSENT_DURATION_DAYS = 365;
 export const cookieManager = {
   getPreferences(): CookiePreferences | null {
     if (typeof window === 'undefined') return null;
-    
+
+    // Auto-accept all cookies in development mode for easier testing
+    if (process.env.NODE_ENV === 'development') {
+      const devPreferences: CookiePreferences = {
+        consentGiven: true,
+        consentDate: new Date().toISOString(),
+        categories: {
+          necessary: true,
+          functional: true,
+          analytics: true,
+          performance: true,
+          advertising: true,
+        },
+      };
+      console.log('[CookieConsent] Development mode: Auto-accepting all cookies');
+      return devPreferences;
+    }
+
     try {
       const stored = localStorage.getItem(CONSENT_COOKIE_NAME);
       if (!stored) return null;
-      
+
       const preferences = JSON.parse(stored) as CookiePreferences;
-      
+
       // Validate the stored data
       if (!preferences.consentDate || !preferences.categories) {
         return null;
       }
-      
+
       // Check if consent is still valid (1 year)
       const consentDate = new Date(preferences.consentDate);
       const now = new Date();
       const daysSinceConsent = (now.getTime() - consentDate.getTime()) / (1000 * 60 * 60 * 24);
-      
+
       if (daysSinceConsent > CONSENT_DURATION_DAYS) {
         this.clearPreferences();
         return null;
       }
-      
+
       return preferences;
     } catch (error) {
       console.error('Error reading cookie preferences:', error);

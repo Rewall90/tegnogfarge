@@ -8,6 +8,20 @@ export default defineType({
   icon: ImageIcon,
   fields: [
     defineField({
+      name: 'language',
+      type: 'string',
+      readOnly: true,
+      hidden: true,
+    }),
+    defineField({
+      name: 'baseDocumentId',
+      title: 'Base Document ID',
+      type: 'string',
+      description: 'ID of the original Norwegian document (used for translation linking)',
+      readOnly: true,
+      hidden: true,
+    }),
+    defineField({
       name: 'title',
       title: 'Tittel',
       type: 'string',
@@ -23,9 +37,11 @@ export default defineType({
         slugify: input => input
           .toLowerCase()
           .replace(/\s+/g, '-')           // Replace spaces with hyphens
-          .replace(/[æ]/g, 'ae')          // Replace æ with ae
-          .replace(/[ø]/g, 'o')           // Replace ø with o
-          .replace(/[å]/g, 'a')           // Replace å with a
+          .replace(/[æ]/g, 'ae')          // Replace æ with ae (Norwegian)
+          .replace(/[ø]/g, 'o')           // Replace ø with o (Norwegian)
+          .replace(/[å]/g, 'a')           // Replace å with a (Norwegian)
+          .replace(/[ä]/g, 'a')           // Replace ä with a (Swedish)
+          .replace(/[ö]/g, 'o')           // Replace ö with o (Swedish)
           .replace(/[^a-z0-9-]/g, '')     // Remove all non-alphanumeric characters except hyphens
           .replace(/-+/g, '-')            // Replace multiple hyphens with single hyphen
           .replace(/^-|-$/g, '')          // Remove hyphens from start and end
@@ -52,6 +68,7 @@ export default defineType({
       options: {
         list: [
           { title: '3-5 år', value: '3-5' },
+          { title: '4-7 år', value: '4-7' },
           { title: '6-8 år', value: '6-8' },
           { title: '9-12 år', value: '9-12' },
           { title: 'Over 12 år', value: '12+' },

@@ -46,24 +46,31 @@ function getDifficultyProps(difficulty: number | undefined): { label: string; cl
 }
 
 // Subcategory card component for better code organization
-export function SubcategoryCard({ 
-  subcategory, 
+export function SubcategoryCard({
+  subcategory,
   categorySlug,
+  locale = 'no',
   isPriority = false,
   titleClassName = ''
-}: { 
-  subcategory: Subcategory; 
+}: {
+  subcategory: Subcategory;
   categorySlug: string;
+  locale?: string;
   isPriority?: boolean;
   titleClassName?: string;
 }) {
   const imageUrl = subcategory.featuredImage?.url || subcategory.sampleImage?.thumbnailUrl || subcategory.sampleImage?.imageUrl;
   const difficultyProps = getDifficultyProps(subcategory.difficulty);
 
+  // Helper function to create locale-aware hrefs
+  const getLocalizedHref = (path: string) => {
+    return locale === 'no' ? path : `/${locale}${path}`;
+  };
+
   return (
     <article className="bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-      <Link 
-        href={`/${categorySlug}/${subcategory.slug}`}
+      <Link
+        href={getLocalizedHref(`/${categorySlug}/${subcategory.slug}`)}
         aria-label={`Gå til ${subcategory.title} fargeleggingsark`}
         className="block"
       >
@@ -84,8 +91,8 @@ export function SubcategoryCard({
         )}
       </Link>
       <div className="p-4">
-        <Link 
-          href={`/${categorySlug}/${subcategory.slug}`}
+        <Link
+          href={getLocalizedHref(`/${categorySlug}/${subcategory.slug}`)}
           aria-label={`Gå til ${subcategory.title} fargeleggingsark`}
         >
           <h2 className={`font-display font-bold text-lg mb-2 text-navy ${titleClassName}`}>{subcategory.title}</h2>

@@ -19,8 +19,17 @@ interface Subcategory {
   };
 }
 
-export default function Footer() {
+interface FooterProps {
+  locale?: string;
+}
+
+export default function Footer({ locale = 'no' }: FooterProps) {
   const currentYear = new Date().getFullYear();
+
+  // Helper function to create locale-aware hrefs
+  const getLocalizedHref = (path: string) => {
+    return locale === 'no' ? path : `/${locale}${path}`;
+  };
 
   const popularCategories: Category[] = [
     { _id: 'cat-1', title: 'Tegneserier', slug: 'tegneserier' },
@@ -59,13 +68,13 @@ export default function Footer() {
             <div className="w-1/2 md:w-auto mb-8 md:mb-0">
               <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">Informasjon</h3>
               <ul className="space-y-2">
-                <li><Link href="/om-oss" className="hover:underline">Om TegnOgFarge.no</Link></li>
-                <li><Link href="/om-skribenten" className="hover:underline">Om Skribenten</Link></li>
-                <li><Link href="/kontakt" className="hover:underline">Kontakt Oss</Link></li>
-                <li><Link href="/vilkar-og-betingelser" className="hover:underline">Vilkår og Betingelser</Link></li>
-                <li><Link href="/personvernerklaering" className="hover:underline">Personvernerklæring</Link></li>
-                <li><Link href="/lisensieringspolicy" className="hover:underline">Lisensieringspolicy</Link></li>
-                <li><Link href="/fjerning-av-innhold" className="hover:underline">Fjerning av Innhold</Link></li>
+                <li><Link href={getLocalizedHref('/om-oss')} className="hover:underline">Om TegnOgFarge.no</Link></li>
+                <li><Link href={getLocalizedHref('/om-skribenten')} className="hover:underline">Om Skribenten</Link></li>
+                <li><Link href={getLocalizedHref('/kontakt')} className="hover:underline">Kontakt Oss</Link></li>
+                <li><Link href={getLocalizedHref('/vilkar-og-betingelser')} className="hover:underline">Vilkår og Betingelser</Link></li>
+                <li><Link href={getLocalizedHref('/personvernerklaering')} className="hover:underline">Personvernerklæring</Link></li>
+                <li><Link href={getLocalizedHref('/lisensieringspolicy')} className="hover:underline">Lisensieringspolicy</Link></li>
+                <li><Link href={getLocalizedHref('/fjerning-av-innhold')} className="hover:underline">Fjerning av Innhold</Link></li>
               </ul>
             </div>
             <div className="w-1/2 md:w-auto mb-8 md:mb-0">
@@ -73,7 +82,7 @@ export default function Footer() {
               <ul>
                 {popularCategories.map(category => (
                   <li key={category._id} className="mb-2">
-                    <Link href={`/${category.slug}`} className="hover:text-gray-300">
+                    <Link href={getLocalizedHref(`/${category.slug}`)} className="hover:text-gray-300">
                       {category.title}
                     </Link>
                   </li>
@@ -85,7 +94,7 @@ export default function Footer() {
               <ul>
                 {popularSubcategories.map(subcategory => (
                   <li key={subcategory._id} className="mb-2">
-                    <Link href={`/${subcategory.parentCategory?.slug}/${subcategory.slug}`} className="hover:text-gray-300">
+                    <Link href={getLocalizedHref(`/${subcategory.parentCategory?.slug}/${subcategory.slug}`)} className="hover:text-gray-300">
                       {subcategory.title}
                     </Link>
                   </li>
@@ -117,7 +126,7 @@ export default function Footer() {
                       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                     </svg>
                   </span>
-                  <Link href="#" className="ml-2 hover:underline">YouTube</Link>
+                  <Link href={getLocalizedHref('/#')} className="ml-2 hover:underline">YouTube</Link>
                 </li>
                 <li className="flex items-center">
                   <span className="w-6">

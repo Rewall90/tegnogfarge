@@ -4,18 +4,27 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 
-export default function MobileMenu() {
+interface MobileMenuProps {
+  locale?: string;
+}
+
+export default function MobileMenu({ locale = 'no' }: MobileMenuProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session } = useSession();
 
   const mobileLinkClasses = "text-[#264653] hover:text-[#FF6F59] text-lg relative inline-block after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-[2px] after:bg-[#FF6F59] after:opacity-0 after:transition-opacity after:duration-300 hover:after:opacity-100 transition-transform duration-200 hover:-translate-y-[2px]";
+
+  // Helper function to create locale-aware hrefs
+  const getLocalizedHref = (path: string) => {
+    return locale === 'no' ? path : `/${locale}${path}`;
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const handleSignOut = () => {
-    signOut({ callbackUrl: '/' });
+    signOut({ callbackUrl: getLocalizedHref('/') });
   };
 
   return (
@@ -49,13 +58,13 @@ export default function MobileMenu() {
         <div id="mobile-menu" className="md:hidden absolute top-24 left-0 right-0 bg-[#FEFAF6] shadow-md z-50">
           <div className="container mx-auto px-4 py-4 border-t">
             <nav className="flex flex-col space-y-4" aria-label="Mobilnavigasjon">
-              <Link href="/alle-underkategorier" className={mobileLinkClasses}>Fargeleggingsark</Link>
+              <Link href={getLocalizedHref('/alle-underkategorier')} className={mobileLinkClasses}>Fargeleggingsark</Link>
               {session && (
                 <Link href="/dashboard" className={mobileLinkClasses}>Dashboard</Link>
               )}
-              
-              <Link href="/hoved-kategori" className={mobileLinkClasses}>Kategorier</Link>
-              <Link href="/om-oss" className={mobileLinkClasses}>Om Oss</Link>
+
+              <Link href={getLocalizedHref('/hoved-kategori')} className={mobileLinkClasses}>Kategorier</Link>
+              <Link href={getLocalizedHref('/om-oss')} className={mobileLinkClasses}>Om Oss</Link>
               
               <div className="border-t my-4"></div>
 

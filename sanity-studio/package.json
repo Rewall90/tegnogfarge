@@ -9,22 +9,28 @@
     "start": "sanity start",
     "build": "sanity build",
     "deploy": "sanity deploy",
-    "deploy-graphql": "sanity graphql deploy"
+    "deploy-graphql": "sanity graphql deploy",
+    "migrate:language": "sanity exec scripts/migrate-language-field.ts --with-user-token",
+    "migrate:language:dry": "sanity exec scripts/migrate-language-field.ts --with-user-token",
+    "migrate:mandala": "sanity exec scripts/migrate-mandala-blomster.ts --with-user-token",
+    "migrate:mandala:dry": "sanity exec scripts/migrate-mandala-blomster.ts --with-user-token",
+    "test:translation": "sanity exec scripts/test-translation-creation.ts --with-user-token"
   },
   "keywords": [
     "sanity"
   ],
   "dependencies": {
     "@portabletext/react": "^3.2.1",
+    "@sanity/document-internationalization": "^4.1.0",
     "@sanity/image-url": "^1.1.0",
-    "@sanity/vision": "^4.11.0",
+    "@sanity/vision": "^4.12.0",
     "dotenv": "^16.6.0",
     "next-sanity": "^9.11.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^19.1.0",
     "rxjs": "^7.8.2",
-    "sanity": "^4.11.0",
+    "sanity": "^4.12.0",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {

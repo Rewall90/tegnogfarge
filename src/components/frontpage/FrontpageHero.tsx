@@ -7,7 +7,11 @@ import { ButtonHeroSection } from "../buttons/ButtonHeroSection";
 import { SearchForm } from "../shared/SearchForm";
 import { trackImagePerformance } from "@/utils/imageLoadingMetrics";
 
-export function FrontpageHero() {
+interface FrontpageHeroProps {
+  dailyDrawingUrl?: string;
+}
+
+export function FrontpageHero({ dailyDrawingUrl }: FrontpageHeroProps) {
   // Lazy load performance tracking after initial paint to reduce JavaScript evaluation time
   React.useEffect(() => {
     // Use requestIdleCallback for better performance, fallback to setTimeout
@@ -66,7 +70,7 @@ export function FrontpageHero() {
               
               <div className="mt-6 max-w-md">
                 <SearchForm />
-                <ButtonHeroSection />
+                <ButtonHeroSection dailyDrawingUrl={dailyDrawingUrl} />
               </div>
             </div>
             

@@ -19,17 +19,19 @@ export function CookieConsentProvider({ children }: CookieConsentProviderProps) 
   // Initialize preferences on mount
   useEffect(() => {
     const storedPreferences = cookieManager.getPreferences();
-    
+
     if (storedPreferences) {
       setPreferences(storedPreferences);
       setShowBanner(false);
     } else {
-      setShowBanner(true);
+      // Don't show banner in development (auto-accepted)
+      const isDev = process.env.NODE_ENV === 'development';
+      setShowBanner(!isDev);
     }
-    
+
     // Initialize Google consent mode
     cookieManager.initializeGoogleConsent();
-    
+
     setIsLoading(false);
   }, []);
 

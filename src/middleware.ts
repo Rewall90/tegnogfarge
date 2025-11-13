@@ -1,7 +1,8 @@
 /**
  * Simplified Middleware
- * 
+ *
  * This middleware handles:
+ * - Locale routing (Norwegian/Swedish)
  * - Category URL redirects
  * - Authentication and route protection
  * - Canonical domain redirects
@@ -10,6 +11,16 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import createMiddleware from 'next-intl/middleware';
+import { locales, defaultLocale } from './i18n';
+
+// Create next-intl middleware with locale prefix strategy
+const intlMiddleware = createMiddleware({
+  locales,
+  defaultLocale,
+  localePrefix: 'as-needed', // No prefix for Norwegian, /sv/ for Swedish
+  localeDetection: false, // Disable automatic locale detection to prevent unwanted redirects
+});
 
 export async function middleware(request: NextRequest) {
   // --- CANONICAL DOMAIN REDIRECT ---
@@ -101,6 +112,30 @@ export async function middleware(request: NextRequest) {
 
   if (isAdminPage && token?.role !== 'admin') {
     return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
+  // --- LOCALE ROUTING (next-intl) ---
+  // Pattern: Default language (Norwegian) has NO prefix: /jul/farglegg-nisse
+  //          Other languages (Swedish) have prefix: /sv/jul/farglaegg-tomte
+  // Using next-intl with localePrefix: 'as-needed'
+
+  // Skip locale routing for non-localized routes
+  const nonLocalizedRoutes = [
+    '/dashboard',
+    '/login',
+    '/register',
+    '/studio',
+    '/verify-email',
+    '/verify-newsletter',
+    '/unsubscribe-confirmation',
+    '/api',
+  ];
+
+  const shouldSkipLocale = nonLocalizedRoutes.some(route => pathname.startsWith(route)) || pathname.includes('.');
+
+  if (!shouldSkipLocale) {
+    // Use next-intl middleware for locale routing
+    return intlMiddleware(request);
   }
 
   return NextResponse.next();
