@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import TurnstileWidget, { type TurnstileWidgetRef } from './TurnstileWidget';
 
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -15,6 +15,20 @@ export default function ContactForm() {
   const [honeypot, setHoneypot] = useState(''); // Honeypot field - should remain empty
   const [formLoadTime] = useState(() => Date.now()); // Track when form was loaded for time-based validation
   const turnstileRef = useRef<TurnstileWidgetRef>(null); // Reference to Turnstile widget for reset
+
+  // Memoized callbacks to prevent re-rendering of TurnstileWidget
+  const handleVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
+
+  const handleExpire = useCallback(() => {
+    setTurnstileToken('');
+  }, []);
+
+  const handleError = useCallback(() => {
+    setStatus('error');
+    setFeedbackMessage('CAPTCHA-verifisering mislyktes. Vennligst prøv igjen.');
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,12 +156,9 @@ export default function ContactForm() {
       <div>
         <TurnstileWidget
           ref={turnstileRef}
-          onVerify={(token) => setTurnstileToken(token)}
-          onExpire={() => setTurnstileToken('')}
-          onError={() => {
-            setStatus('error');
-            setFeedbackMessage('CAPTCHA-verifisering mislyktes. Vennligst prøv igjen.');
-          }}
+          onVerify={handleVerify}
+          onExpire={handleExpire}
+          onError={handleError}
           theme="light"
           size="normal"
         />
