@@ -7,6 +7,7 @@ import Footer from '@/components/shared/Footer';
 import { CategoryGrid, EmptyState } from '@/components/category/CategoryGrid';
 import { urlFor } from '@/lib/sanity';
 import { PageViewTracker } from '@/components/analytics/PageViewTracker';
+import { AppDownloadSidebar } from '@/components/sidebar/AppDownloadSidebar';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -276,7 +277,7 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
                 Tilbake til forsiden
               </Link>
             </nav>
-            
+
             <header className="mb-8">
               <h1 id="category-title" className="text-3xl font-bold mb-2 flex items-center font-display text-navy">
                 {category.icon && <img src={urlFor(category.icon).width(30).height(30).url()} alt={`${category.title} icon`} className="mr-3"/>}
@@ -286,19 +287,28 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
                 <p className="text-lg text-navy mt-4">{category.description}</p>
               )}
             </header>
-            
-            {category.subcategories && category.subcategories.length > 0 ? (
-              <section className="category-listing" aria-labelledby="subcategories-heading">
-                <h2 id="subcategories-heading" className="sr-only">Underkategorier</h2>
-                <CategoryGrid
-                  subcategories={category.subcategories}
-                  categorySlug={categorySlug}
-                  locale={locale}
-                />
-              </section>
-            ) : (
-              <EmptyState />
-            )}
+
+            {/* Two-column layout: Main content + Sidebar */}
+            <div className="flex flex-col md:flex-row gap-8">
+              {/* Main Content */}
+              <div className="flex-grow md:w-3/4">
+                {category.subcategories && category.subcategories.length > 0 ? (
+                  <section className="category-listing" aria-labelledby="subcategories-heading">
+                    <h2 id="subcategories-heading" className="sr-only">Underkategorier</h2>
+                    <CategoryGrid
+                      subcategories={category.subcategories}
+                      categorySlug={categorySlug}
+                      locale={locale}
+                    />
+                  </section>
+                ) : (
+                  <EmptyState />
+                )}
+              </div>
+
+              {/* App Download Sidebar */}
+              <AppDownloadSidebar appStoreUrl="https://apps.apple.com/no/app/tegn-farge/id6755291484?l=nb" />
+            </div>
           </div>
         </div>
       </main>

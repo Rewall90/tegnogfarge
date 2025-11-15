@@ -18,6 +18,7 @@ import { WEBP_PLACEHOLDER_PATH, SVG_BLUR_PLACEHOLDER } from '@/lib/utils';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { RelatedSubcategories } from '@/components/category/RelatedSubcategories';
 import { PageViewTracker } from '@/components/analytics/PageViewTracker';
+import { AppDownloadSidebar } from '@/components/sidebar/AppDownloadSidebar';
 
 export const revalidate = 3600; // Oppdater siden hver time for bedre caching
 
@@ -291,21 +292,30 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
                 {subcategory.title}
               </h1>
             </header>
-            
+
             <p className="w-full text-lg text-gray-600 mb-8">{subcategory.description}</p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {sortedDrawings.map((drawing: Drawing) => (
-                <DrawingCard
-                  key={drawing._id}
-                  title={drawing.title}
-                  imageUrl={drawing.thumbnail?.url || WEBP_PLACEHOLDER_PATH}
-                  imageAlt={drawing.thumbnail?.alt || 'Tegning'}
-                  lqip={drawing.thumbnail?.lqip || SVG_BLUR_PLACEHOLDER}
-                  href={locale === 'no' ? `/${categorySlug}/${subcategorySlug}/${drawing.slug}` : `/${locale}/${categorySlug}/${subcategorySlug}/${drawing.slug}`}
-                  difficulty={drawing.difficulty}
-                />
-              ))}
+
+            {/* Two-column layout: Main content + Sidebar */}
+            <div className="flex flex-col md:flex-row gap-8">
+              {/* Main Content */}
+              <div className="flex-grow md:w-3/4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {sortedDrawings.map((drawing: Drawing) => (
+                    <DrawingCard
+                      key={drawing._id}
+                      title={drawing.title}
+                      imageUrl={drawing.thumbnail?.url || WEBP_PLACEHOLDER_PATH}
+                      imageAlt={drawing.thumbnail?.alt || 'Tegning'}
+                      lqip={drawing.thumbnail?.lqip || SVG_BLUR_PLACEHOLDER}
+                      href={locale === 'no' ? `/${categorySlug}/${subcategorySlug}/${drawing.slug}` : `/${locale}/${categorySlug}/${subcategorySlug}/${drawing.slug}`}
+                      difficulty={drawing.difficulty}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* App Download Sidebar */}
+              <AppDownloadSidebar appStoreUrl="https://apps.apple.com/no/app/tegn-farge/id6755291484?l=nb" />
             </div>
           </div>
         </div>
