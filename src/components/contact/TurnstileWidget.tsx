@@ -166,7 +166,6 @@ const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetProps>(
         <div
           ref={containerRef}
           className={`cf-turnstile ${className}`}
-          data-sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
         />
       </>
     );
