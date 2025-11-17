@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 
 export default function AuthStatus() {
-  const { data: session } = useSession();
+  const sessionData = useSession();
+  const session = sessionData?.data;
 
   const handleSignOut = () => {
     signOut({ callbackUrl: '/' });

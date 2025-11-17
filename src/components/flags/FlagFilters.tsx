@@ -33,6 +33,7 @@ export function FlagFilters({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const t = flagsTranslations[locale as 'no' | 'sv'];
+  const searchTimeoutRef = useRef<NodeJS.Timeout>();
 
   // Initialize filters from URL params
   const [filters, setFilters] = useState<FlagFilterState>(() => {
@@ -50,6 +51,9 @@ export function FlagFilters({
       isIsland: searchParams.get('isIsland') === 'true' ? true : undefined,
     };
   });
+
+  // Local state for search input (for debouncing)
+  const [searchInput, setSearchInput] = useState(filters.search);
 
   // Update URL when filters change
   const updateURL = useCallback((newFilters: FlagFilterState) => {
@@ -99,10 +103,35 @@ export function FlagFilters({
     handleFilterChange('colors', newColors);
   }, [filters.colors, handleFilterChange]);
 
+  // Debounced search handler
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchInput(value);
+
+    // Clear existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Set new timeout for debounced update
+    searchTimeoutRef.current = setTimeout(() => {
+      handleFilterChange('search', value);
+    }, 300); // 300ms debounce delay
+  }, [handleFilterChange]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Reset all filters
   const resetFilters = useCallback(() => {
     const emptyFilters = createEmptyFilterState();
     setFilters(emptyFilters);
+    setSearchInput(''); // Reset search input state
     updateURL(emptyFilters);
     onFilterChange?.(emptyFilters);
   }, [updateURL, onFilterChange]);
@@ -135,8 +164,8 @@ export function FlagFilters({
           <input
             type="text"
             placeholder={t.filters.search.placeholder}
-            value={filters.search}
-            onChange={(e) => handleFilterChange('search', e.target.value)}
+            value={searchInput}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2EC4B6] focus:border-transparent outline-none transition"
           />
         </div>
