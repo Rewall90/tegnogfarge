@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
 import { validateTurnstileToken, validateHoneypot } from '@/lib/turnstile';
+import { getContactEmailTemplates } from '@/lib/email-templates';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 // --- DEBUGGING STEP ---
@@ -10,13 +11,47 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const adminEmail = "petter@tegnogfarge.no"; // <-- CHANGE THIS
 // const adminEmail = 'petter@tegnogfarge.no';
 
+// Locale-aware error messages
+function getErrorMessages(locale: string) {
+  const messages = {
+    no: {
+      nameRequired: 'Navn er påkrevd',
+      invalidEmail: 'Ugyldig e-postadresse',
+      messageRequired: 'Melding kan ikke være tom',
+      captchaRequired: 'CAPTCHA-verifisering er påkrevd',
+      invalidFormData: 'Ugyldig skjemadata',
+      submittedTooQuickly: 'Vennligst vent litt før du sender skjemaet',
+      formExpired: 'Skjemaet har utløpt. Vennligst last inn siden på nytt.',
+      validationFailed: 'Validering mislyktes',
+      captchaFailed: 'CAPTCHA-verifisering mislyktes. Vennligst prøv igjen.',
+      messageSent: 'Meldingen ble sendt!',
+      sendFailed: 'Kunne ikke sende meldingen. Prøv igjen senere.',
+    },
+    sv: {
+      nameRequired: 'Namn krävs',
+      invalidEmail: 'Ogiltig e-postadress',
+      messageRequired: 'Meddelandet kan inte vara tomt',
+      captchaRequired: 'CAPTCHA-verifiering krävs',
+      invalidFormData: 'Ogiltig formulärdata',
+      submittedTooQuickly: 'Vänligen vänta lite innan du skickar formuläret',
+      formExpired: 'Formuläret har gått ut. Vänligen ladda om sidan.',
+      validationFailed: 'Validering misslyckades',
+      captchaFailed: 'CAPTCHA-verifiering misslyckades. Vänligen försök igen.',
+      messageSent: 'Meddelandet skickades!',
+      sendFailed: 'Kunde inte skicka meddelandet. Försök igen senare.',
+    },
+  };
+  return messages[locale as keyof typeof messages] || messages.no;
+}
+
 const contactFormSchema = z.object({
-  name: z.string().min(1, { message: 'Navn er påkrevd' }),
-  email: z.string().email({ message: 'Ugyldig e-postadresse' }),
-  message: z.string().min(1, { message: 'Melding kan ikke være tom' }),
-  'cf-turnstile-response': z.string().min(1, { message: 'CAPTCHA-verifisering er påkrevd' }),
+  name: z.string().min(1),
+  email: z.string().email(),
+  message: z.string().min(1),
+  'cf-turnstile-response': z.string().min(1),
   honeypot: z.string().optional(),
-  formLoadTime: z.number({ required_error: 'Ugyldig skjemadata' }),
+  formLoadTime: z.number(),
+  locale: z.string().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -25,11 +60,11 @@ export async function POST(req: NextRequest) {
     const parsed = contactFormSchema.safeParse(body);
 
     if (!parsed.success) {
-      const errorMessages = parsed.error.issues.map(issue => issue.message).join(', ');
-      return NextResponse.json({ error: `Invalid input: ${errorMessages}` }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
     }
 
-    const { name, email, message, 'cf-turnstile-response': turnstileToken, honeypot, formLoadTime } = parsed.data;
+    const { name, email, message, 'cf-turnstile-response': turnstileToken, honeypot, formLoadTime, locale = 'no' } = parsed.data;
+    const errorMessages = getErrorMessages(locale);
 
     // --- TIME-BASED VALIDATION ---
     // Check submission timing - bots often submit instantly, humans take at least 3 seconds
@@ -39,7 +74,7 @@ export async function POST(req: NextRequest) {
     if (timeDiff < 3) {
       console.warn(`Form submitted too quickly: ${timeDiff.toFixed(2)}s - potential bot detected`);
       return NextResponse.json(
-        { error: 'Vennligst vent litt før du sender skjemaet' },
+        { error: errorMessages.submittedTooQuickly },
         { status: 400 }
       );
     }
@@ -47,7 +82,7 @@ export async function POST(req: NextRequest) {
     if (timeDiff > 1800) { // 30 minutes
       console.warn(`Form submission timeout: ${timeDiff.toFixed(2)}s`);
       return NextResponse.json(
-        { error: 'Skjemaet har utløpt. Vennligst last inn siden på nytt.' },
+        { error: errorMessages.formExpired },
         { status: 400 }
       );
     }
@@ -56,7 +91,7 @@ export async function POST(req: NextRequest) {
     // Check honeypot field - if filled, it's likely a bot
     if (!validateHoneypot(honeypot)) {
       console.warn('Honeypot validation failed - potential bot detected');
-      return NextResponse.json({ error: 'Validering mislyktes' }, { status: 400 });
+      return NextResponse.json({ error: errorMessages.validationFailed }, { status: 400 });
     }
 
     // --- TURNSTILE VALIDATION ---
@@ -70,48 +105,38 @@ export async function POST(req: NextRequest) {
     if (!turnstileResult.success) {
       console.warn('Turnstile validation failed:', turnstileResult.message);
       return NextResponse.json(
-        { error: 'CAPTCHA-verifisering mislyktes. Vennligst prøv igjen.' },
+        { error: errorMessages.captchaFailed },
         { status: 400 }
       );
     }
+
+    // Get locale-aware email templates
+    const emailTemplates = getContactEmailTemplates(locale);
 
     // Create email promises
     const sendAdminEmail = resend.emails.send({
       from: 'Kontaktskjema <noreply@tegnogfarge.no>',
       to: adminEmail,
-      subject: `Ny henvendelse fra kontaktskjema: ${name}`,
+      subject: emailTemplates.admin.subject(name),
       reply_to: email,
-      html: `
-        <h1>Ny henvendelse fra kontaktskjema på TegnOgFarge.no</h1>
-        <p><strong>Navn:</strong> ${name}</p>
-        <p><strong>E-post:</strong> ${email}</p>
-        <hr>
-        <p><strong>Melding:</strong></p>
-        <p style="white-space: pre-wrap;">${message}</p>
-      `,
+      html: emailTemplates.admin.body(name, email, message),
     });
 
     const sendUserConfirmationEmail = resend.emails.send({
         from: 'TegnOgFarge.no <noreply@tegnogfarge.no>',
         to: email,
-        subject: 'Vi har mottatt din henvendelse!',
-        html: `
-            <h1>Takk, ${name}!</h1>
-            <p>Vi har mottatt henvendelsen din og vil svare deg så snart som mulig.</p>
-            <p>Her er en kopi av meldingen du sendte:</p>
-            <blockquote style="border-left: 2px solid #cccccc; padding-left: 1rem; margin-left: 1rem; color: #666666;">
-                <p style="white-space: pre-wrap;">${message}</p>
-            </blockquote>
-            <p>Med vennlig hilsen,<br>Teamet hos TegnOgFarge.no</p>
-        `,
+        subject: emailTemplates.user.subject,
+        html: emailTemplates.user.body(name, message),
     });
 
     // Await both promises concurrently
     await Promise.all([sendAdminEmail, sendUserConfirmationEmail]);
 
-    return NextResponse.json({ message: 'Meldingen ble sendt!' });
+    return NextResponse.json({ message: errorMessages.messageSent });
   } catch (error) {
     console.error('Error sending contact email:', error);
-    return NextResponse.json({ error: 'Kunne ikke sende meldingen. Prøv igjen senere.' }, { status: 500 });
+    // Try to get locale from error context, fallback to Norwegian
+    const errorMessages = getErrorMessages('no');
+    return NextResponse.json({ error: errorMessages.sendFailed }, { status: 500 });
   }
 } 

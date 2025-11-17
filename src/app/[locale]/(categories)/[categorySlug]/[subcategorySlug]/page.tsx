@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  getSubcategoryWithDrawings, 
-  getAllCategories, 
-  getSubcategoriesByCategory, 
+import {
+  getSubcategoryWithDrawings,
+  getAllCategories,
+  getSubcategoriesByCategory,
   getCategoryWithSubcategories,
   getAllCategoriesWithSubcategories
 } from '@/lib/sanity';
@@ -19,6 +19,8 @@ import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { RelatedSubcategories } from '@/components/category/RelatedSubcategories';
 import { PageViewTracker } from '@/components/analytics/PageViewTracker';
 import { AppDownloadSidebar } from '@/components/sidebar/AppDownloadSidebar';
+import { buildAlternates, getLocaleConfig } from '@/lib/seo-utils';
+import type { Locale } from '@/i18n';
 
 export const revalidate = 3600; // Oppdater siden hver time for bedre caching
 
@@ -84,10 +86,13 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
 
   // Prepare the JSON-LD data for this subcategory
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
-  const currentUrl = `${baseUrl}/${categorySlug}/${subcategorySlug}`;
+  const pathname = `/${categorySlug}/${subcategorySlug}`;
+  const alternates = buildAlternates(pathname, locale as Locale);
+  const localeConfig = getLocaleConfig(locale as Locale);
+  const currentUrl = alternates.canonical;
   const subcategoryId = currentUrl;
-  const categoryId = subcategory.parentCategory 
-    ? `${baseUrl}/${subcategory.parentCategory.slug}` 
+  const categoryId = subcategory.parentCategory
+    ? `${baseUrl}/${subcategory.parentCategory.slug}`
     : undefined;
   const subcategoryImageUrl = subcategory.featuredImage?.url;
   
@@ -107,7 +112,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     "name": (subcategory.seoTitle || subcategory.title) + " – Fargeleggingsark",
     "description": subcategory.seoDescription || subcategory.description || `Fargeleggingsark med ${subcategory.title.toLowerCase()}-tema for barn.`,
     "url": currentUrl,
-    "inLanguage": "nb-NO",
+    "inLanguage": localeConfig.inLanguage,
     ...(subcategoryImageUrl && { 
       "image": subcategoryImageUrl,
       "thumbnailUrl": subcategoryImageUrl 
@@ -145,7 +150,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
         {
           "@type": "ListItem",
           "position": 1,
-          "name": "Hjem",
+          "name": localeConfig.homeLabel,
           "item": baseUrl
         },
         ...(subcategory.parentCategory ? [
@@ -180,7 +185,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
         "@id": `${baseUrl}/${categorySlug}/${subcategorySlug}/${drawing.slug}`,
         "name": `${drawing.seoTitle || drawing.title} – Fargeleggingsark`,
         "url": `${baseUrl}/${categorySlug}/${subcategorySlug}/${drawing.slug}`,
-        "inLanguage": "nb-NO",
+        "inLanguage": localeConfig.inLanguage,
         ...(drawingImageUrl && { 
           "image": drawingImageUrl,
           "thumbnailUrl": drawingImageUrl 
@@ -202,13 +207,11 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder`,
     description: subcategory.seoDescription || subcategory.description || `Utforsk ${subcategory.title} tegninger i kategorien ${subcategory.parentCategory?.title}`,
     metadataBase: new URL(baseUrl),
-    alternates: {
-      canonical: `${baseUrl}/${categorySlug}/${subcategorySlug}`,
-    },
+    alternates,
     openGraph: {
       title: subcategory.seoTitle || `${subcategory.title} Fargeleggingsbilder`,
       description: subcategory.seoDescription || subcategory.description || `Utforsk ${subcategory.title} tegninger i kategorien ${subcategory.parentCategory?.title}`,
-      url: `${baseUrl}/${categorySlug}/${subcategorySlug}`,
+      url: currentUrl,
       siteName: 'TegnOgFarge.no',
       images: subcategoryImageUrl ? [{
         url: subcategoryImageUrl,
@@ -216,7 +219,8 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
         height: 630,
         alt: `${subcategory.title} fargeleggingsbilder`,
       }] : [],
-      locale: 'nb_NO',
+      locale: localeConfig.ogLocale,
+      alternateLocale: localeConfig.ogAlternate,
       type: 'website',
     },
     twitter: {
@@ -234,21 +238,26 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
 // Generer statiske paths
 export async function generateStaticParams() {
   try {
-    // Hent alle kategorier med underkategorier i én spørring
-    const categoriesWithSubs = await getAllCategoriesWithSubcategories();
+    const locales = ['no', 'sv'];
     const paths = [];
-    
-    for (const category of categoriesWithSubs) {
-      if (category.subcategories && category.subcategories.length > 0) {
-        for (const subcategory of category.subcategories) {
-          paths.push({
-            categorySlug: category.slug,
-            subcategorySlug: subcategory.slug
-          });
+
+    for (const locale of locales) {
+      // Hent alle kategorier med underkategorier i én spørring for denne locale
+      const categoriesWithSubs = await getAllCategoriesWithSubcategories(locale);
+
+      for (const category of categoriesWithSubs) {
+        if (category.subcategories && category.subcategories.length > 0) {
+          for (const subcategory of category.subcategories) {
+            paths.push({
+              locale,
+              categorySlug: category.slug,
+              subcategorySlug: subcategory.slug
+            });
+          }
         }
       }
     }
-    
+
     return paths;
   } catch (error) {
     console.error('Feil ved generering av underkategori-paths:', error);
@@ -315,7 +324,11 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
               </div>
 
               {/* App Download Sidebar */}
-              <AppDownloadSidebar appStoreUrl="https://apps.apple.com/no/app/tegn-farge/id6755291484?l=nb" />
+              <aside className="flex-shrink-0 md:w-1/4">
+                <div className="bg-[#FDF2EC] border border-[#2EC4B6]/20 rounded-lg p-6 shadow-sm">
+                  <AppDownloadSidebar appStoreUrl="https://apps.apple.com/no/app/tegn-farge/id6755291484?l=nb" locale={locale as Locale} />
+                </div>
+              </aside>
             </div>
           </div>
         </div>

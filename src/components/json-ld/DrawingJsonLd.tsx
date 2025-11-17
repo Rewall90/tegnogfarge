@@ -42,14 +42,18 @@ interface Subcategory {
   };
 }
 
-export default function DrawingJsonLd({ 
-  drawing, 
+export default function DrawingJsonLd({
+  drawing,
   pathname,
-  subcategory
-}: { 
+  subcategory,
+  inLanguage,
+  homeLabel
+}: {
   drawing: Drawing;
   pathname: string;
   subcategory?: Subcategory;
+  inLanguage?: string;
+  homeLabel?: string;
 }) {
   const baseUrl = STRUCTURED_DATA.ORGANIZATION.URL;
   const currentUrl = `${baseUrl}${pathname}`;
@@ -130,7 +134,7 @@ export default function DrawingJsonLd({
     {
       "@type": STRUCTURED_DATA.SCHEMA_TYPES.LIST_ITEM,
       "position": 1,
-      "name": "Hjem",
+      "name": homeLabel || "Hjem",
       "item": baseUrl
     }
   ];
@@ -185,7 +189,7 @@ export default function DrawingJsonLd({
     "headline": drawing.seoTitle || drawing.title,
     "description": drawing.seoDescription || drawing.description || `Fargeleggingsark - ${drawing.title}`,
     "url": currentUrl,
-    "inLanguage": STRUCTURED_DATA.SITE.LANGUAGE,
+    "inLanguage": inLanguage || STRUCTURED_DATA.SITE.LANGUAGE,
     "datePublished": datePublished,
     "dateModified": datePublished,
     "image": mainImageUrl ? { "@id": primaryImageId } : undefined,
@@ -272,7 +276,7 @@ export default function DrawingJsonLd({
     "url": currentUrl,
     "name": `${drawing.seoTitle || drawing.title} - Fargeleggingsark`,
     "description": drawing.seoDescription || drawing.description || `Fargeleggingsark - ${drawing.title}`,
-    "inLanguage": STRUCTURED_DATA.SITE.LANGUAGE,
+    "inLanguage": inLanguage || STRUCTURED_DATA.SITE.LANGUAGE,
     "datePublished": datePublished,
     "dateModified": datePublished,
     "isPartOf": {

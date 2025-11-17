@@ -11,6 +11,7 @@ export interface Drawing {
   imageAlt?: string;
   fallbackImageUrl?: string;
   fallbackImageLqip?: string;
+  fallbackImageAlt?: string;
   thumbnailUrl?: string;
   thumbnailLqip?: string;
   thumbnailAlt?: string;

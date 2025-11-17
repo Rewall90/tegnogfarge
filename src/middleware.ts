@@ -135,10 +135,21 @@ export async function middleware(request: NextRequest) {
 
   if (!shouldSkipLocale) {
     // Use next-intl middleware for locale routing
-    return intlMiddleware(request);
+    const response = intlMiddleware(request);
+
+    // Extract locale from pathname and set it as a header for root layout
+    const locale = pathname.startsWith('/sv') ? 'sv' : 'no';
+    response.headers.set('x-locale', locale);
+
+    return response;
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  // Set locale header for non-localized routes too
+  const locale = pathname.startsWith('/sv') ? 'sv' : 'no';
+  response.headers.set('x-locale', locale);
+
+  return response;
 }
 
 export const config = {

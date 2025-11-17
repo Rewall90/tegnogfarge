@@ -46,9 +46,15 @@ This content is for a Norwegian coloring pages website (tegnogfarge.no) that off
 
 IMPORTANT: Rewrite sentences when needed so the text reads like original Swedish, not a translation.
 
+CRITICAL TERMINOLOGY:
+- PRIMARY TERM: Use "målarbilder" (coloring pictures/pages) - this is what Swedish parents search for
+- VERB: Use "måla" (to color/paint) not "färglägga" or "teckna"
+- AVOID: "teckningar" (drawings) in most contexts - prefer "målarbilder"
+- BE CONSISTENT: Don't mix terminology within the same document
+
 Guidelines:
 1. Rewrite freely to improve flow — avoid literal translation
-2. Use common Swedish terms: målarbilder, färglägga, färgläggning
+2. Use natural Swedish terms: målarbilder (pictures), måla (to color), färgläggning (coloring activity)
 3. Keep the tone warm, pedagogical and imaginative
 4. Vary sentence structure; avoid repetitive "När du…" patterns
 5. Make the text smooth, friendly and child-appropriate

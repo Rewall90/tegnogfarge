@@ -97,3 +97,73 @@ export const newsletterVerificationTemplate = ({ verificationCode, baseUrl, emai
     `
   };
 };
+
+// Contact form email templates with locale support
+
+interface ContactEmailTemplates {
+  admin: {
+    subject: (name: string) => string;
+    body: (name: string, email: string, message: string) => string;
+  };
+  user: {
+    subject: string;
+    body: (name: string, message: string) => string;
+  };
+}
+
+const contactEmailTemplates: Record<string, ContactEmailTemplates> = {
+  no: {
+    admin: {
+      subject: (name: string) => `Ny henvendelse fra kontaktskjema: ${name}`,
+      body: (name: string, email: string, message: string) => `
+        <h1>Ny henvendelse fra kontaktskjema på TegnOgFarge.no</h1>
+        <p><strong>Navn:</strong> ${name}</p>
+        <p><strong>E-post:</strong> ${email}</p>
+        <hr>
+        <p><strong>Melding:</strong></p>
+        <p style="white-space: pre-wrap;">${message}</p>
+      `,
+    },
+    user: {
+      subject: 'Vi har mottatt din henvendelse!',
+      body: (name: string, message: string) => `
+        <h1>Takk, ${name}!</h1>
+        <p>Vi har mottatt henvendelsen din og vil svare deg så snart som mulig.</p>
+        <p>Her er en kopi av meldingen du sendte:</p>
+        <blockquote style="border-left: 2px solid #cccccc; padding-left: 1rem; margin-left: 1rem; color: #666666;">
+          <p style="white-space: pre-wrap;">${message}</p>
+        </blockquote>
+        <p>Med vennlig hilsen,<br>Teamet hos TegnOgFarge.no</p>
+      `,
+    },
+  },
+  sv: {
+    admin: {
+      subject: (name: string) => `Ny förfrågan från kontaktformulär: ${name}`,
+      body: (name: string, email: string, message: string) => `
+        <h1>Ny förfrågan från kontaktformuläret på TegnOgFarge.no</h1>
+        <p><strong>Namn:</strong> ${name}</p>
+        <p><strong>E-post:</strong> ${email}</p>
+        <hr>
+        <p><strong>Meddelande:</strong></p>
+        <p style="white-space: pre-wrap;">${message}</p>
+      `,
+    },
+    user: {
+      subject: 'Vi har mottagit din förfrågan!',
+      body: (name: string, message: string) => `
+        <h1>Tack, ${name}!</h1>
+        <p>Vi har mottagit din förfrågan och kommer att svara dig så snart som möjligt.</p>
+        <p>Här är en kopia av meddelandet du skickade:</p>
+        <blockquote style="border-left: 2px solid #cccccc; padding-left: 1rem; margin-left: 1rem; color: #666666;">
+          <p style="white-space: pre-wrap;">${message}</p>
+        </blockquote>
+        <p>Med vänliga hälsningar,<br>Teamet på TegnOgFarge.no</p>
+      `,
+    },
+  },
+};
+
+export function getContactEmailTemplates(locale: string): ContactEmailTemplates {
+  return contactEmailTemplates[locale] || contactEmailTemplates.no;
+}

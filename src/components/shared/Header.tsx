@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 import AuthStatus from '../auth/AuthStatus';
 import MobileMenu from './MobileMenu';
 
@@ -10,8 +11,10 @@ interface HeaderProps {
   locale?: string;
 }
 
-export default function Header({ locale = 'no' }: HeaderProps) {
+export default function Header({ locale: localeProp }: HeaderProps = {}) {
   const [showDropdown, setShowDropdown] = useState(false);
+  const params = useParams();
+  const locale = localeProp || (params?.locale as string) || 'no';
 
   // Main categories
   const mainCategories = [

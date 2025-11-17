@@ -4,9 +4,11 @@ import Image from 'next/image';
 interface AppQRCodeProps {
   appStoreUrl: string;
   size?: number;
+  ariaLabel: string;
+  qrAlt: string;
 }
 
-export function AppQRCode({ appStoreUrl, size = 160 }: AppQRCodeProps) {
+export function AppQRCode({ appStoreUrl, size = 160, ariaLabel, qrAlt }: AppQRCodeProps) {
   return (
     <div className="flex justify-center items-center p-4 bg-white rounded-lg">
       <a
@@ -14,11 +16,11 @@ export function AppQRCode({ appStoreUrl, size = 160 }: AppQRCodeProps) {
         target="_blank"
         rel="noopener noreferrer"
         className="block"
-        aria-label="Last ned Tegn og Farge appen fra App Store - Scan QR kode"
+        aria-label={ariaLabel}
       >
         <Image
           src="/images/qr-code-app.webp"
-          alt="QR kode for å laste ned Tegn og Farge app fra App Store - scan med mobilkamera for å åpne appen direkte"
+          alt={qrAlt}
           width={size}
           height={size}
           quality={90}

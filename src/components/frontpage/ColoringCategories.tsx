@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 
 interface CategoryItem {
   name: string;
@@ -11,13 +12,27 @@ interface CategoryItem {
   slug: string;
 }
 
-interface ColoringCategoriesProps {
-  categories: CategoryItem[];
+interface CategoryTranslations {
+  heading: string;
+  subtitle: string;
 }
 
-export function ColoringCategories({ categories }: ColoringCategoriesProps) {
+interface ColoringCategoriesProps {
+  categories: CategoryItem[];
+  translations?: CategoryTranslations;
+}
+
+export function ColoringCategories({ categories, translations }: ColoringCategoriesProps) {
+  const params = useParams();
+  const locale = params?.locale as string || 'no';
   // Client-side state to track images that failed to load
   const [failedImages, setFailedImages] = React.useState<Record<string, boolean>>({});
+
+  // Default translations
+  const t = translations || {
+    heading: 'Fargeleggingsmoro',
+    subtitle: 'Utforsk våre fargeleggingskategorier'
+  };
   
   const handleImageError = (slug: string) => {
     setFailedImages(prev => ({
@@ -30,9 +45,9 @@ export function ColoringCategories({ categories }: ColoringCategoriesProps) {
     <section className="py-12 bg-cream" aria-labelledby="coloring-categories-heading">
       <div className="max-w-6xl mx-auto px-4">
         <header className="text-navy">
-          <h2 id="categories-heading" className="text-heading text-center mb-2 text-navy">Fargeleggingsmoro</h2>
+          <h2 id="categories-heading" className="text-heading text-center mb-2 text-navy">{t.heading}</h2>
           <p className="text-section text-center mb-10 text-navy">
-            Utforsk våre fargeleggingskategorier
+            {t.subtitle}
           </p>
         </header>
         
@@ -40,8 +55,8 @@ export function ColoringCategories({ categories }: ColoringCategoriesProps) {
           {categories.map((category) => (
             <li key={category.slug} className="flex flex-col items-center">
               <article className="w-full aspect-[4/5] bg-[#2EC4B6] rounded-[32px] shadow-lg flex flex-col overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-xl">
-                <Link 
-                  href={`/${category.slug}`} 
+                <Link
+                  href={locale === 'no' ? `/${category.slug}` : `/${locale}/${category.slug}`}
                   className="flex flex-col w-full h-full"
                   aria-label={`Utforsk ${category.name} fargeleggingskategori`}
                 >

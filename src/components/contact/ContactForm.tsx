@@ -2,10 +2,16 @@
 
 import React, { useState, useRef, useCallback } from 'react';
 import TurnstileWidget, { type TurnstileWidgetRef } from './TurnstileWidget';
+import type { ContactFormTranslations } from '@/i18n/translations/contact';
 
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 
-export default function ContactForm() {
+interface ContactFormProps {
+  translations: ContactFormTranslations;
+  locale: string;
+}
+
+export default function ContactForm({ translations, locale }: ContactFormProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -27,8 +33,8 @@ export default function ContactForm() {
 
   const handleError = useCallback(() => {
     setStatus('error');
-    setFeedbackMessage('CAPTCHA-verifisering mislyktes. Vennligst prøv igjen.');
-  }, []);
+    setFeedbackMessage(translations.messages.captchaFailed);
+  }, [translations]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +44,7 @@ export default function ContactForm() {
     // Validate Turnstile token on client side
     if (!turnstileToken) {
       setStatus('error');
-      setFeedbackMessage('Vennligst fullfør CAPTCHA-verifiseringen.');
+      setFeedbackMessage(translations.messages.captchaRequired);
       return;
     }
 
@@ -53,6 +59,7 @@ export default function ContactForm() {
           'cf-turnstile-response': turnstileToken,
           honeypot, // Include honeypot for server-side validation
           formLoadTime, // Include form load time for time-based validation
+          locale, // Include locale for server-side error messages and emails
         }),
       });
 
@@ -68,13 +75,13 @@ export default function ContactForm() {
         setHoneypot('');
       } else {
         setStatus('error');
-        setFeedbackMessage(data.error || 'Noe gikk galt.');
+        setFeedbackMessage(data.error || translations.messages.genericError);
         setTurnstileToken(''); // Reset token on error
         turnstileRef.current?.reset(); // Reset widget for retry
       }
     } catch (error) {
       setStatus('error');
-      setFeedbackMessage('Kunne ikke koble til serveren. Prøv igjen senere.');
+      setFeedbackMessage(translations.messages.serverError);
       setTurnstileToken(''); // Reset token on error
       turnstileRef.current?.reset(); // Reset widget for retry
     }
@@ -83,7 +90,7 @@ export default function ContactForm() {
   if (status === 'success') {
     return (
       <div className="p-4 text-center bg-green-100 text-green-800 rounded-md">
-        <p className="font-semibold">Takk for din henvendelse!</p>
+        <p className="font-semibold">{translations.messages.successTitle}</p>
         <p>{feedbackMessage}</p>
       </div>
     );
@@ -92,38 +99,38 @@ export default function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6 mb-20">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Navn</label>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700">{translations.labels.name}</label>
         <input
           type="text"
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          placeholder="Ditt navn her..."
+          placeholder={translations.placeholders.name}
           className="mt-1 block w-full px-4 py-3 bg-white border-2 border-[#2EC4B6]/40 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#2EC4B6]"
         />
       </div>
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">E-post</label>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700">{translations.labels.email}</label>
         <input
           type="email"
           id="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          placeholder="Din e-postadresse..."
+          placeholder={translations.placeholders.email}
           className="mt-1 block w-full px-4 py-3 bg-white border-2 border-[#2EC4B6]/40 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#2EC4B6]"
         />
       </div>
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700">Melding</label>
+        <label htmlFor="message" className="block text-sm font-medium text-gray-700">{translations.labels.message}</label>
         <textarea
           id="message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           rows={5}
           required
-          placeholder="Skriv meldingen din her..."
+          placeholder={translations.placeholders.message}
           className="mt-1 block w-full px-4 py-3 bg-white border-2 border-[#2EC4B6]/40 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#2EC4B6]"
         />
       </div>
@@ -170,7 +177,7 @@ export default function ContactForm() {
           disabled={status === 'loading' || !turnstileToken}
           className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-black bg-[#F4D35E] hover:bg-[#E0C24A] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2EC4B6] disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
-          {status === 'loading' ? 'Sender...' : 'Send Melding'}
+          {status === 'loading' ? translations.button.sending : translations.button.submit}
         </button>
       </div>
       {status === 'error' && (

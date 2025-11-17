@@ -20,7 +20,8 @@
     "translate:dry-run": "tsx scripts/translation/translate.ts --dry-run",
     "translate:categories": "tsx scripts/translation/translate.ts --type=category",
     "translate:subcategories": "tsx scripts/translation/translate.ts --type=subcategory",
-    "translate:drawings": "tsx scripts/translation/translate.ts --type=drawingImage"
+    "translate:drawings": "tsx scripts/translation/translate.ts --type=drawingImage",
+    "translate:by-subcategory": "node --max-old-space-size=8192 node_modules/tsx/dist/cli.mjs scripts/translation/translate-by-subcategory.ts"
   },
   "dependencies": {
     "@babel/runtime": "^7.27.6",
@@ -52,6 +53,7 @@
     "react-email": "^2.1.0",
     "react-error-boundary": "^4.0.13",
     "react-is": "^18.2.0",
+    "react-qr-code": "^2.0.18",
     "resend": "^3.2.0",
     "sanity": "^3.30.0",
     "schema-dts": "^1.1.5",

@@ -17,6 +17,8 @@ import { DrawingDetail } from '@/components/drawing/DrawingDetail';
 import type { Drawing } from '@/types';
 import { PageViewTracker } from '@/components/analytics/PageViewTracker';
 import { getDownloadCount, getCompletionCount } from '@/lib/analytics';
+import { buildAlternates, getLocaleConfig } from '@/lib/seo-utils';
+import type { Locale } from '@/i18n';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -52,17 +54,17 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
   }
 
   // Prepare structured data for metadata
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
   const pathname = `/${categorySlug}/${subcategorySlug}/${drawingSlug}`;
-  const currentUrl = `${baseUrl}${pathname}`;
-  
+  const alternates = buildAlternates(pathname, locale as Locale);
+  const localeConfig = getLocaleConfig(locale as Locale);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
+  const currentUrl = alternates.canonical;
+
   return {
     title: `Fargelegg ${drawing.title} - TegnOgFarge.no`,
     description: drawing.metaDescription || drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
     metadataBase: new URL(baseUrl),
-    alternates: {
-      canonical: `${baseUrl}${pathname}`,
-    },
+    alternates,
     openGraph: {
       title: `Fargelegg ${drawing.title} - TegnOgFarge.no`,
       description: drawing.metaDescription || drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
@@ -76,7 +78,8 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
           alt: drawing.title,
         },
       ],
-      locale: 'nb_NO',
+      locale: localeConfig.ogLocale,
+      alternateLocale: localeConfig.ogAlternate,
       type: 'article',
     },
     twitter: {
@@ -150,8 +153,9 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
     'all': 'Alle aldre'
   };
   
-  // Prepare the path for JSON-LD
+  // Prepare the path for JSON-LD and locale configuration
   const pathname = `/${categorySlug}/${subcategorySlug}/${drawingSlug}`;
+  const localeConfig = getLocaleConfig(locale as Locale);
 
   // Fetch download count (hybrid approach - real-time from database)
   console.log('[DrawingPage] Fetching download count for drawing:', {
@@ -182,15 +186,17 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
       />
       <Header />
       {/* Add structured data */}
-      <DrawingJsonLd 
-        drawing={drawing} 
-        pathname={pathname} 
+      <DrawingJsonLd
+        drawing={drawing}
+        pathname={pathname}
         subcategory={{
           _id: subcategory._id,
           slug: subcategory.slug,
           title: subcategory.title,
           parentCategory: subcategory.parentCategory
         }}
+        inLanguage={localeConfig.inLanguage}
+        homeLabel={localeConfig.homeLabel}
       />
       <main className="flex-grow bg-cream">
         <div className="w-full bg-cream text-black">
@@ -238,7 +244,7 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
                 downloadCount={downloadCount}
                 completionCount={completionCount}
               />
-              <DrawingPageSidebar />
+              <DrawingPageSidebar locale={locale as Locale} />
             </div>
           </div>
         </div>

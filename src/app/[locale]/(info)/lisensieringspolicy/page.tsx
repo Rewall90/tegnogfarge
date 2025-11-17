@@ -1,8 +1,10 @@
-import { Metadata } from 'next';
 import Link from 'next/link';
 import PageLayout from '@/components/shared/PageLayout';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import GenericWebPageJsonLd from '@/components/json-ld/GenericWebPageJsonLd';
+import { buildAlternates, getLocaleConfig } from '@/lib/seo-utils';
+import type { Locale } from '@/i18n';
+import { licensingTranslations } from '@/i18n/translations/licensing';
 
 interface PageProps {
   params: Promise<{
@@ -10,73 +12,91 @@ interface PageProps {
   }>;
 }
 
-export const metadata: Metadata = {
-  title: 'Lisensieringspolicy - TegnOgFarge.no',
-  description: 'Alt innhold på Tegn og Farge er beskyttet av opphavsrett. Les om hva du har lov til å gjøre med innholdet vårt, og hva som ikke er tillatt.',
-  alternates: {
-    canonical: 'https://tegnogfarge.no/lisensieringspolicy',
-  },
-};
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = licensingTranslations[locale as Locale] || licensingTranslations.no;
+  const pathname = '/lisensieringspolicy';
+  const alternates = buildAlternates(pathname, locale as Locale);
+  const localeConfig = getLocaleConfig(locale as Locale);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
+
+  return {
+    title: t.metadata.title,
+    description: t.metadata.description,
+    metadataBase: new URL(baseUrl),
+    alternates,
+    openGraph: {
+      title: t.metadata.title,
+      description: t.metadata.description,
+      url: alternates.canonical,
+      siteName: 'TegnOgFarge.no',
+      locale: localeConfig.ogLocale,
+      alternateLocale: localeConfig.ogAlternate,
+      type: 'website',
+    },
+  };
+}
 
 export default async function LicensePage({ params }: PageProps) {
   const { locale } = await params;
+  const t = licensingTranslations[locale as Locale] || licensingTranslations.no;
 
   const breadcrumbItems = [
-    { label: 'Hjem', href: locale === 'no' ? '/' : `/${locale}` },
-    { label: 'Lisensieringspolicy', href: locale === 'no' ? '/lisensieringspolicy' : `/${locale}/lisensieringspolicy`, active: true }
+    { label: t.breadcrumb.home, href: locale === 'no' ? '/' : `/${locale}` },
+    { label: t.breadcrumb.licensing, href: locale === 'no' ? '/lisensieringspolicy' : `/${locale}/lisensieringspolicy`, active: true }
   ];
 
   return (
     <PageLayout wrapperClassName="bg-[#FEFAF6]">
       <GenericWebPageJsonLd
         pageType="WebPage"
-        title="Lisensieringspolicy - TegnOgFarge.no"
-        description="Alt innhold på Tegn og Farge er beskyttet av opphavsrett. Les om hva du har lov til å gjøre med innholdet vårt, og hva som ikke er tillatt."
+        title={t.metadata.title}
+        description={t.metadata.description}
         pathname="/lisensieringspolicy"
       />
       <div className="max-w-4xl mx-auto">
         <Breadcrumbs items={breadcrumbItems} />
         <div>
-            <h1 className="text-heading text-[#264653] font-bold mb-4">Lisensieringspolicy</h1>
+            <h1 className="text-heading text-[#264653] font-bold mb-4">{t.heading}</h1>
             <p className="text-lg text-gray-600 mb-8">
-                Alt innhold på Tegn og Farge – som fargeleggingsark, bilder og tekst – er beskyttet av opphavsrett. Det betyr at det er vi som eier det, og at det kun er ment til personlig bruk eller bruk i skolesammenheng. Når du bruker innholdet vårt, sier du deg enig i reglene under:
+                {t.intro}
             </p>
 
-            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">1. Hva du har lov til å gjøre</h2>
-            <p className="text-lg text-gray-600 mb-4">Du kan laste ned, skrive ut og dele fargeleggingsarkene våre så lenge det er til privat eller skolebruk. Dette gjelder for eksempel:</p>
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">{t.sections.allowed.heading}</h2>
+            <p className="text-lg text-gray-600 mb-4">{t.sections.allowed.intro}</p>
             <ul className="list-disc list-inside space-y-2 text-gray-600 text-lg">
-                <li>Bruk i skoler av lærere og elever, både i klasserommet og hjemme</li>
-                <li>Å dele med venner og familie</li>
-                <li>Å legge ut bilder på sosiale medier, så lenge det ikke er for å tjene penger</li>
+                {t.sections.allowed.items.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
             </ul>
 
-            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">2. Hva du ikke har lov til</h2>
-            <p className="text-lg text-gray-600 mb-4">Du kan ikke bruke innholdet vårt til noe som handler om å tjene penger. Dette gjelder blant annet:</p>
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">{t.sections.notAllowed.heading}</h2>
+            <p className="text-lg text-gray-600 mb-4">{t.sections.notAllowed.intro}</p>
             <ul className="list-disc list-inside space-y-2 text-gray-600 text-lg">
-                <li>Å selge eller dele arkene våre videre, enten slik de er eller endret</li>
-                <li>Å bruke innholdet vårt i bøker, produkter eller ting som folk betaler for</li>
-                <li>Å bruke bildene våre i reklame eller prosjekter hvor noen tjener penger</li>
+                {t.sections.notAllowed.items.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
             </ul>
-            <p className="text-lg text-gray-600 mt-4 mb-8">Det er ikke lov å bruke innholdet vårt til kommersielle formål uten tillatelse. Det kan få konsekvenser.</p>
+            <p className="text-lg text-gray-600 mt-4 mb-8">{t.sections.notAllowed.note}</p>
 
-            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">3. Hvem som eier innholdet</h2>
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">{t.sections.ownership.heading}</h2>
             <p className="text-lg text-gray-600 mb-8">
-                Alt på Tegn og Farge er laget og eid av oss. Du kan ikke si at du har laget det selv, eller bruke det som ditt eget – verken originalen eller noe du har forandret på.
+                {t.sections.ownership.content}
             </p>
 
-            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">4. Spesielle ønsker?</h2>
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">{t.sections.specialRequests.heading}</h2>
             <p className="text-lg text-gray-600 mb-8">
-                Har du lyst til å bruke noe fra oss på en måte som ikke står her – for eksempel i et prosjekt eller noe kommersielt – må du <Link href={locale === 'no' ? '/kontakt' : `/${locale}/kontakt`} className="text-link-orange hover:underline">kontakte oss</Link>. Vi leser hver forespørsel og svarer så fort vi kan.
+                {t.sections.specialRequests.text} <Link href={locale === 'no' ? '/kontakt' : `/${locale}/kontakt`} className="text-link-orange hover:underline">{t.sections.specialRequests.linkText}</Link>{t.sections.specialRequests.suffix}
             </p>
 
-            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">5. Endringer i reglene</h2>
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">{t.sections.changes.heading}</h2>
             <p className="text-lg text-gray-600 mb-8">
-                Vi kan endre på disse reglene når som helst. Sjekk gjerne innom her av og til for å se hva som gjelder.
+                {t.sections.changes.content}
             </p>
 
-            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">Spørsmål?</h2>
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#264653]">{t.sections.questions.heading}</h2>
             <p className="text-lg text-gray-600">
-                Lurer du på noe om disse reglene? <Link href={locale === 'no' ? '/kontakt' : `/${locale}/kontakt`} className="text-link-orange hover:underline">Ta kontakt med oss</Link> – vi hjelper deg gjerne!
+                {t.sections.questions.text} <Link href={locale === 'no' ? '/kontakt' : `/${locale}/kontakt`} className="text-link-orange hover:underline">{t.sections.questions.linkText}</Link>{t.sections.questions.suffix}
             </p>
         </div>
       </div>

@@ -59,14 +59,15 @@ export async function fetchSourceDocuments(
 ): Promise<Array<CategoryDocument | SubcategoryDocument | DrawingDocument>> {
   const client = getSanityClient();
 
-  const query = `*[_type == $documentType && language == $language] | order(_createdAt asc)`;
+  // Only fetch active published documents (exclude drafts)
+  const query = `*[_type == $documentType && language == $language && isActive == true && !(_id in path("drafts.**"))] | order(_createdAt asc)`;
 
   const documents = await client.fetch(query, {
     documentType,
     language: sourceLanguage,
   });
 
-  console.log(`✓ Fetched ${documents.length} ${documentType} documents in ${sourceLanguage}`);
+  console.log(`✓ Fetched ${documents.length} active ${documentType} documents in ${sourceLanguage}`);
 
   return documents;
 }
@@ -74,6 +75,8 @@ export async function fetchSourceDocuments(
 /**
  * Check if a Swedish translation already exists for a document
  * FIXED: Query using baseDocumentId for reliable cross-session detection
+ *
+ * @deprecated Use fetchAllTranslatedIds() for bulk checking - much faster!
  */
 export async function translationExists(
   baseDocumentId: string,
@@ -97,6 +100,39 @@ export async function translationExists(
   );
 
   return count > 0;
+}
+
+/**
+ * OPTIMIZED: Fetch all translated document IDs in one bulk query
+ * Returns a Set of baseDocumentIds that have been translated
+ *
+ * This is MUCH faster than calling translationExists() for each document:
+ * - Before: N individual queries (one per document)
+ * - After: 1 bulk query + in-memory Set lookup
+ */
+export async function fetchAllTranslatedIds(
+  documentType: DocumentType,
+  targetLanguage: string = 'sv'
+): Promise<Set<string>> {
+  const client = getSanityClient();
+
+  // Fetch all translations with their baseDocumentId in one query
+  const translations = await client.fetch(
+    `*[_type == $documentType && language == $targetLanguage]{baseDocumentId}`,
+    { documentType, targetLanguage }
+  );
+
+  // Build a Set for O(1) lookup speed
+  const translatedIds = new Set<string>();
+  translations.forEach((doc: any) => {
+    if (doc.baseDocumentId) {
+      translatedIds.add(doc.baseDocumentId);
+    }
+  });
+
+  console.log(`  ✓ Found ${translatedIds.size} existing ${targetLanguage} translations (bulk query)`);
+
+  return translatedIds;
 }
 
 /**
@@ -137,6 +173,21 @@ export async function createTranslationDocument(
 
   const client = getSanityClient();
 
+  // DOUBLE-CHECK: Re-verify translation doesn't exist right before creation
+  // This minimizes race condition window
+  const existingTranslations = await client.fetch(
+    `*[_type == "${baseDocument._type}" && language == $targetLanguage && baseDocumentId == $baseDocumentId]{_id}`,
+    {
+      targetLanguage,
+      baseDocumentId: baseDocument._id,
+    }
+  );
+
+  if (existingTranslations.length > 0) {
+    console.log(`  ⊘ Translation already exists (race condition detected), skipping`);
+    return existingTranslations[0];
+  }
+
   // CRITICAL FIX: Resolve all references to Swedish translations
   console.log(`  🔗 Resolving references to Swedish documents...`);
   const resolvedBaseDocument = await resolveAllReferences(baseDocument, targetLanguage);
@@ -145,16 +196,46 @@ export async function createTranslationDocument(
   // Copy all fields from resolved base document, then override with translations
   const translatedDocument = {
     ...resolvedBaseDocument,
+    ...translatedFields,
+    _type: baseDocument._type, // CRITICAL: Must be AFTER translatedFields to prevent overwrite
     _id: undefined, // Let Sanity generate new ID
     _rev: undefined, // Don't copy revision
     language: targetLanguage,
     baseDocumentId: baseDocument._id, // CRITICAL: Link back to Norwegian original for cross-session lookups
-    ...translatedFields,
   };
 
   try {
     const result = await client.create(translatedDocument);
     console.log(`  ✓ Created translation ${result._id} for ${baseDocument._id}`);
+
+    // VERIFICATION: Check if duplicate was created simultaneously by another process
+    // Wait a moment for database to sync
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const allTranslations = await client.fetch(
+      `*[_type == "${baseDocument._type}" && language == $targetLanguage && baseDocumentId == $baseDocumentId] | order(_createdAt asc)`,
+      {
+        targetLanguage,
+        baseDocumentId: baseDocument._id,
+      }
+    );
+
+    if (allTranslations.length > 1) {
+      // Duplicate detected! Keep the first one, delete ours if we're not first
+      const firstId = allTranslations[0]._id;
+      if (result._id !== firstId) {
+        console.warn(`  ⚠ Duplicate detected! Deleting our copy ${result._id}, keeping ${firstId}`);
+        await client.delete(result._id);
+        return allTranslations[0];
+      } else {
+        // We're the first, delete the others
+        console.warn(`  ⚠ Duplicate detected! Deleting ${allTranslations.length - 1} later copy/copies`);
+        for (let i = 1; i < allTranslations.length; i++) {
+          await client.delete(allTranslations[i]._id);
+        }
+      }
+    }
+
     return result;
   } catch (error) {
     console.error(`  ✗ Failed to create translation for ${baseDocument._id}:`, error);

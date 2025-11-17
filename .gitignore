@@ -36,6 +36,7 @@ yarn-error.log*
 
 # translation progress tracking
 .translation-progress/
+.translation-lock
 
 # backup files
 *.tar.gz

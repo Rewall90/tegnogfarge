@@ -18,10 +18,12 @@
 import * as dotenv from 'dotenv';
 import { program } from 'commander';
 import { TRANSLATION_CONFIG } from './config';
+import { acquireLock, releaseLock } from './process-lock';
 import {
   initSanityClient,
   fetchSourceDocuments,
   translationExists,
+  fetchAllTranslatedIds,
   createTranslationDocument,
   getTranslationStats,
 } from './sanity-client';
@@ -98,6 +100,12 @@ async function translateDocuments(options: {
 }): Promise<void> {
   console.log('🌐 Translation Script Starting...\n');
 
+  // Acquire process lock to prevent concurrent runs
+  if (!options.dryRun && !acquireLock()) {
+    console.error('Exiting to prevent duplicate translations.\n');
+    process.exit(1);
+  }
+
   // Initialize clients
   try {
     initSanityClient();
@@ -105,6 +113,7 @@ async function translateDocuments(options: {
     console.log('✓ Clients initialized\n');
   } catch (error) {
     console.error('✗ Failed to initialize clients:', error);
+    if (!options.dryRun) releaseLock();
     process.exit(1);
   }
 
@@ -169,6 +178,11 @@ async function translateDocuments(options: {
 
     console.log(`Processing ${documentsToProcess.length} documents...\n`);
 
+    // OPTIMIZATION: Fetch all translated IDs once (bulk query)
+    console.log('🚀 Fetching existing translations (bulk query)...');
+    const translatedIds = await fetchAllTranslatedIds(docType, 'sv');
+    console.log();
+
     // Initialize or load progress tracker
     let progress: TranslationProgress;
     const existingProgress = loadProgress();
@@ -223,10 +237,8 @@ async function translateDocuments(options: {
       }
 
       try {
-        // Check if translation already exists
-        const exists = await translationExists(document._id, docType, 'sv');
-
-        if (exists) {
+        // OPTIMIZED: Check if translation already exists using in-memory Set (O(1) lookup)
+        if (translatedIds.has(document._id)) {
           console.log('  ⊘ Translation already exists, skipping');
           translationStats.skipped++;
           recordSkipped(progress);

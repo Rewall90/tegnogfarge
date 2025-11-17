@@ -8,6 +8,8 @@ import { CategoryGrid, EmptyState } from '@/components/category/CategoryGrid';
 import { urlFor } from '@/lib/sanity';
 import { PageViewTracker } from '@/components/analytics/PageViewTracker';
 import { AppDownloadSidebar } from '@/components/sidebar/AppDownloadSidebar';
+import { buildAlternates, getLocaleConfig } from '@/lib/seo-utils';
+import type { Locale } from '@/i18n';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -31,11 +33,14 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
 
     const title = category.seoTitle || category.title;
     const description = category.seoDescription || category.description || `Utforsk ${category.title} fargeleggingsbilder`;
-    
+
     // Prepare the JSON-LD data for this category
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
+    const pathname = `/${categorySlug}`;
+    const alternates = buildAlternates(pathname, locale as Locale);
+    const localeConfig = getLocaleConfig(locale as Locale);
     const categoryId = `${baseUrl}/${category.slug}`;
-    const currentUrl = `${baseUrl}/${categorySlug}`;
+    const currentUrl = alternates.canonical;
     const categoryImageUrl = category.image?.url;
     
     // Create hasPart array for the main category
@@ -54,7 +59,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
       "name": (category.seoTitle || category.title) + " – Fargeleggingsark",
       "description": category.seoDescription || category.description || `Oppdag vårt utvalg av fargeleggingsark med ${category.title.toLowerCase()}.`,
       "url": currentUrl,
-      "inLanguage": "nb-NO",
+      "inLanguage": localeConfig.inLanguage,
       ...(categoryImageUrl && { 
         "image": {
           "@type": "ImageObject",
@@ -103,7 +108,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
           {
             "@type": "ListItem",
             "position": 1,
-            "name": "Hjem",
+            "name": localeConfig.homeLabel,
             "item": baseUrl
           },
           {
@@ -125,7 +130,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
           "@id": `${baseUrl}/${category.slug}/${subcategory.slug}`,
           "name": `${subcategory.seoTitle || subcategory.title} – Fargeleggingsark`,
           "url": `${baseUrl}/${category.slug}/${subcategory.slug}`,
-          "inLanguage": "nb-NO",
+          "inLanguage": localeConfig.inLanguage,
           ...(subcategoryImageUrl && { 
             "image": {
               "@type": "ImageObject",
@@ -163,13 +168,11 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
       title: category.seoTitle || `${category.title} Fargeleggingsbilder`,
       description,
       metadataBase: new URL(baseUrl),
-      alternates: {
-        canonical: `${baseUrl}/${categorySlug}`,
-      },
+      alternates,
       openGraph: {
         title: category.seoTitle || `${category.title} Fargeleggingsbilder`,
         description,
-        url: `${baseUrl}/${categorySlug}`,
+        url: currentUrl,
         siteName: 'TegnOgFarge.no',
         images: categoryImageUrl ? [{
           url: categoryImageUrl,
@@ -177,7 +180,8 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
           height: 630,
           alt: `${category.title} fargeleggingsbilder`,
         }] : [],
-        locale: 'nb_NO',
+        locale: localeConfig.ogLocale,
+        alternateLocale: localeConfig.ogAlternate,
         type: 'website',
       },
       twitter: {
@@ -239,10 +243,20 @@ interface Category {
 // Generer statiske paths
 export async function generateStaticParams() {
   try {
-    const categoriesWithSubs = await getAllCategoriesWithSubcategories();
-    return categoriesWithSubs.map((category: Category) => ({
-      categorySlug: category.slug
-    }));
+    const locales = ['no', 'sv'];
+    const paths = [];
+
+    for (const locale of locales) {
+      const categoriesWithSubs = await getAllCategoriesWithSubcategories(locale);
+      for (const category of categoriesWithSubs) {
+        paths.push({
+          locale,
+          categorySlug: category.slug
+        });
+      }
+    }
+
+    return paths;
   } catch (error) {
     console.error('Feil ved generering av kategori-paths:', error);
     return [];
@@ -307,7 +321,11 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
               </div>
 
               {/* App Download Sidebar */}
-              <AppDownloadSidebar appStoreUrl="https://apps.apple.com/no/app/tegn-farge/id6755291484?l=nb" />
+              <aside className="flex-shrink-0 md:w-1/4">
+                <div className="bg-[#FDF2EC] border border-[#2EC4B6]/20 rounded-lg p-6 shadow-sm">
+                  <AppDownloadSidebar appStoreUrl="https://apps.apple.com/no/app/tegn-farge/id6755291484?l=nb" locale={locale as Locale} />
+                </div>
+              </aside>
             </div>
           </div>
         </div>

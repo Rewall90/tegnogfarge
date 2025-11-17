@@ -31,19 +31,21 @@ interface Subcategory {
 interface CategoryGridInnerProps {
   subcategories: Subcategory[];
   categorySlug: string;
+  locale: string;
 }
 
 // The inner grid component that consumes the AboveFold context
-function CategoryGridInner({ subcategories, categorySlug }: CategoryGridInnerProps) {
+function CategoryGridInner({ subcategories, categorySlug, locale }: CategoryGridInnerProps) {
   const { isAboveFold } = useAboveFold();
-  
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 list-none p-0">
       {subcategories.map((subcategory: Subcategory, index: number) => (
-        <SubcategoryCard 
+        <SubcategoryCard
           key={subcategory._id}
-          subcategory={subcategory} 
-          categorySlug={categorySlug} 
+          subcategory={subcategory}
+          categorySlug={categorySlug}
+          locale={locale}
           isPriority={isAboveFold(index)} // Use the context to determine priority
         />
       ))}
@@ -69,12 +71,14 @@ export function EmptyState() {
 }
 
 // Main exported component that wraps the inner grid with the provider
-export function CategoryGrid({ 
-  subcategories, 
-  categorySlug 
-}: { 
+export function CategoryGrid({
+  subcategories,
+  categorySlug,
+  locale
+}: {
   subcategories: Subcategory[];
-  categorySlug: string; 
+  categorySlug: string;
+  locale: string;
 }) {
   return (
     <AboveFoldProvider
@@ -82,9 +86,10 @@ export function CategoryGrid({
       gridLayout={GRID_LAYOUTS.compact}
       defaultCount={12}
     >
-      <CategoryGridInner 
+      <CategoryGridInner
         subcategories={subcategories}
         categorySlug={categorySlug}
+        locale={locale}
       />
     </AboveFoldProvider>
   );

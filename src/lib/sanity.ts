@@ -152,10 +152,13 @@ export async function getColoringImage(id: string) {
       recommendedAgeRange,
       "slug": slug.current,
       "imageUrl": displayImage.asset->url,
+      "imageAlt": displayImage.alt,
       "imageLqip": displayImage.asset->metadata.lqip,
       "fallbackImageUrl": webpImage.asset->url,
+      "fallbackImageAlt": webpImage.alt,
       "fallbackImageLqip": webpImage.asset->metadata.lqip,
       "thumbnailUrl": thumbnailImage.asset->url,
+      "thumbnailAlt": thumbnailImage.alt,
       "thumbnailLqip": thumbnailImage.asset->metadata.lqip,
       "downloadUrl": downloadFile.asset->url,
       contextContent,
@@ -404,21 +407,21 @@ export async function getSubcategoryColoringImages(categorySlug: string, subcate
 }
 
 // Hent alle kategorier med underkategorier for statisk generering
-export async function getAllCategoriesWithSubcategories() {
+export async function getAllCategoriesWithSubcategories(locale: string = 'no') {
   return client.fetch(`
-    *[_type == "category" && isActive == true]
+    *[_type == "category" && isActive == true && language == $locale]
     | order(order asc, title asc) {
       _id,
       title,
       "slug": slug.current,
-      "subcategories": *[_type == "subcategory" && parentCategory._ref == ^._id && isActive == true]
+      "subcategories": *[_type == "subcategory" && parentCategory._ref == ^._id && isActive == true && language == $locale]
       | order(order asc, title asc) {
         _id,
         title,
         "slug": slug.current
       }
     }
-  `);
+  `, { locale });
 }
 
 // Funksjon for å søke etter tegninger

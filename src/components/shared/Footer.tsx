@@ -1,6 +1,10 @@
+'use client';
+
 import Link from 'next/link';
 import NewsletterForm from '../newsletter/NewsletterForm';
 import Image from 'next/image';
+import { usePathname, useParams } from 'next/navigation';
+import { footerTranslations } from '@/i18n/translations/footer';
 
 // Define the Category type
 interface Category {
@@ -23,33 +27,48 @@ interface FooterProps {
   locale?: string;
 }
 
-export default function Footer({ locale = 'no' }: FooterProps) {
+export default function Footer({ locale: localeProp }: FooterProps = {}) {
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname();
+  const params = useParams();
+  const locale = localeProp || (params?.locale as string) || 'no';
+  const t = footerTranslations[locale] || footerTranslations.no;
 
   // Helper function to create locale-aware hrefs
   const getLocalizedHref = (path: string) => {
     return locale === 'no' ? path : `/${locale}${path}`;
   };
 
-  const popularCategories: Category[] = [
-    { _id: 'cat-1', title: 'Tegneserier', slug: 'tegneserier' },
-    { _id: 'cat-2', title: 'Superhelter', slug: 'superhelter' },
-    { _id: 'cat-3', title: 'Vitenskap', slug: 'vitenskap' },
-    { _id: 'cat-4', title: 'Kjøretøy', slug: 'kjoretoy' },
-    { _id: 'cat-5', title: 'Dyr', slug: 'dyr' },
-    { _id: 'cat-6', title: 'Natur', slug: 'natur' },
-    { _id: 'cat-7', title: 'Blomster', slug: 'blomster' },
-  ];
+  // Generate language switcher URL
+  const getAlternateLanguageUrl = () => {
+    // Remove any existing locale prefix from pathname
+    const pathWithoutLocale = pathname.replace(/^\/sv/, '');
 
-  const popularSubcategories: Subcategory[] = [
-    { _id: 'sub-1', title: 'Enhjørninger', slug: 'fargelegg-enhjorninger', parentCategory: { slug: 'tegneserier' } },
-    { _id: 'sub-2', title: 'Sommeren', slug: 'fargelegg-sommeren', parentCategory: { slug: 'natur' } },
-    { _id: 'sub-3', title: 'Biler', slug: 'fargelegg-biler', parentCategory: { slug: 'kjoretoy' } },
-    { _id: 'sub-4', title: 'Prinsesser', slug: 'fargelegg-prinsesser', parentCategory: { slug: 'tegneserier' } },
-    { _id: 'sub-5', title: 'Høstens Motiver', slug: 'fargelegg-hostens-motiver', parentCategory: { slug: 'natur' } },
-    { _id: 'sub-6', title: 'Hunder', slug: 'fargelegg-hunder', parentCategory: { slug: 'dyr' } },
-    { _id: 'sub-7', title: 'Gresskar', slug: 'fargelegg-gresskar', parentCategory: { slug: 'mat' } },
-  ];
+    if (locale === 'sv') {
+      // Switch to Norwegian - use path without /sv prefix
+      return pathWithoutLocale || '/';
+    } else {
+      // Switch to Swedish - add /sv prefix to path without any existing prefix
+      return `/sv${pathWithoutLocale}`;
+    }
+  };
+
+  const alternateLanguageLabel = locale === 'sv' ? t.languageSwitcher.norwegian : t.languageSwitcher.swedish;
+
+  // Get popular categories from translations (locale-specific slugs)
+  const popularCategories: Category[] = t.popularLinks.map((link, index) => ({
+    _id: `cat-${index + 1}`,
+    title: link.title,
+    slug: link.slug,
+  }));
+
+  // Get popular subcategories from translations (locale-specific slugs)
+  const popularSubcategories: Subcategory[] = t.popularPages.map((page, index) => ({
+    _id: `sub-${index + 1}`,
+    title: page.title,
+    slug: page.slug,
+    parentCategory: { slug: page.parentSlug },
+  }));
 
   return (
     <footer className="bg-[#264653] text-white py-10">
@@ -58,7 +77,7 @@ export default function Footer({ locale = 'no' }: FooterProps) {
         <div className="flex flex-col md:flex-row items-start justify-center gap-2 md:gap-12 mb-12">
           <div className="mb-8 md:mb-0 md:w-1/4">
             <p className="mb-4 max-w-md text-body">
-              Bli med på vårt nyhetsbrev for å holde deg oppdatert om funksjoner og nyheter.
+              {t.newsletter.text}
             </p>
             <NewsletterForm />
           </div>
@@ -66,19 +85,27 @@ export default function Footer({ locale = 'no' }: FooterProps) {
           {/* Footer Links */}
           <div className="flex flex-wrap justify-start md:flex-nowrap gap-8 lg:gap-16 md:w-1/2">
             <div className="w-1/2 md:w-auto mb-8 md:mb-0">
-              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">Informasjon</h3>
+              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">{t.sections.information}</h3>
               <ul className="space-y-2">
-                <li><Link href={getLocalizedHref('/om-oss')} className="hover:underline">Om TegnOgFarge.no</Link></li>
-                <li><Link href={getLocalizedHref('/om-skribenten')} className="hover:underline">Om Skribenten</Link></li>
-                <li><Link href={getLocalizedHref('/kontakt')} className="hover:underline">Kontakt Oss</Link></li>
-                <li><Link href={getLocalizedHref('/vilkar-og-betingelser')} className="hover:underline">Vilkår og Betingelser</Link></li>
-                <li><Link href={getLocalizedHref('/personvernerklaering')} className="hover:underline">Personvernerklæring</Link></li>
-                <li><Link href={getLocalizedHref('/lisensieringspolicy')} className="hover:underline">Lisensieringspolicy</Link></li>
-                <li><Link href={getLocalizedHref('/fjerning-av-innhold')} className="hover:underline">Fjerning av Innhold</Link></li>
+                <li><Link href={getLocalizedHref('/om-oss')} className="hover:underline">{t.links.about}</Link></li>
+                <li><Link href={getLocalizedHref(`/${t.links.aboutAuthorSlug}`)} className="hover:underline">{t.links.aboutAuthor}</Link></li>
+                <li><Link href={getLocalizedHref('/kontakt')} className="hover:underline">{t.links.contact}</Link></li>
+                <li><Link href={getLocalizedHref(`/${t.links.termsSlug}`)} className="hover:underline">{t.links.terms}</Link></li>
+                <li><Link href={getLocalizedHref(`/${t.links.privacySlug}`)} className="hover:underline">{t.links.privacy}</Link></li>
+                <li><Link href={getLocalizedHref(`/${t.links.licensingSlug}`)} className="hover:underline">{t.links.licensing}</Link></li>
+                <li><Link href={getLocalizedHref(`/${t.links.contentRemovalSlug}`)} className="hover:underline">{t.links.contentRemoval}</Link></li>
+                <li className="pt-2 border-t border-gray-600">
+                  <Link href={getAlternateLanguageUrl()} className="hover:underline flex items-center gap-2" hrefLang={locale === 'sv' ? 'no' : 'sv'}>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                    </svg>
+                    {alternateLanguageLabel}
+                  </Link>
+                </li>
               </ul>
             </div>
             <div className="w-1/2 md:w-auto mb-8 md:mb-0">
-              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">Populære Kategorier</h3>
+              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">{t.sections.popularCategories}</h3>
               <ul>
                 {popularCategories.map(category => (
                   <li key={category._id} className="mb-2">
@@ -90,7 +117,7 @@ export default function Footer({ locale = 'no' }: FooterProps) {
               </ul>
             </div>
             <div className="w-1/2 md:w-auto mb-8 md:mb-0">
-              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">Populære Sider</h3>
+              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">{t.sections.popularPages}</h3>
               <ul>
                 {popularSubcategories.map(subcategory => (
                   <li key={subcategory._id} className="mb-2">
@@ -102,7 +129,7 @@ export default function Footer({ locale = 'no' }: FooterProps) {
               </ul>
             </div>
             <div className="w-1/2 md:w-auto">
-              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">Følg oss</h3>
+              <h3 className="font-display font-bold text-lg mb-4 text-[#F4D35E]">{t.sections.followUs}</h3>
               <ul className="space-y-2">
                 <li className="flex items-center">
                   <span className="w-6">
@@ -145,7 +172,7 @@ export default function Footer({ locale = 'no' }: FooterProps) {
         <div className="border-t border-gray-700 pt-6 mt-6">
           <div className="flex flex-col md:flex-row justify-center items-center">
             <p className="text-sm text-gray-300 mb-4 md:mb-0 md:w-1/4">
-              &copy; {currentYear} TegnOgFarge.no. Alle rettigheter reservert.
+              &copy; {currentYear} TegnOgFarge.no. {t.copyright}
             </p>
             <nav aria-label="Juridisk informasjon" className="md:w-1/2">
               <ul className="flex flex-wrap justify-center space-x-4 text-sm">

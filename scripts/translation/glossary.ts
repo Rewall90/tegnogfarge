@@ -4,15 +4,19 @@
  */
 
 export const TRANSLATION_GLOSSARY = {
-  // Core terminology
-  'fargelegg': 'färglägg',
-  'fargelegging': 'färgläggning',
-  'fargeleggingsark': 'färgläggningsark',
-  'fargeleggingssider': 'färgläggningssidor',
-  'fargeleg': 'färglägg',
-  'tegning': 'teckning',
-  'tegninger': 'teckningar',
-  'tegnebilde': 'teckningsbild',
+  // Core terminology - Natural Swedish usage
+  'fargelegg': 'måla',           // "Color [something]" → "Paint/Color [something]"
+  'fargelegging': 'färgläggning', // "Coloring" (noun/activity)
+  'fargeleggingsark': 'målarbilder', // "Coloring sheets" → "Coloring pictures"
+  'fargeleggingssider': 'målarbilder', // "Coloring pages" → "Coloring pictures"
+  'fargeleg': 'måla',
+  'målarbilder': 'målarbilder',   // Explicit: coloring pictures/pages (PRIMARY TERM)
+
+  // Drawing/Picture terminology - Context matters!
+  'tegn': 'måla',               // "Color/Draw" in coloring context → use "måla"
+  'tegning': 'målarbild',       // "Drawing/coloring page" → use "målarbild" not "teckning"
+  'tegninger': 'målarbilder',   // "Drawings/coloring pages" → use "målarbilder" not "teckningar"
+  'tegnebilde': 'målarbild',    // "Drawing picture" → "målarbild"
 
   // Categories & Organization
   'kategori': 'kategori',

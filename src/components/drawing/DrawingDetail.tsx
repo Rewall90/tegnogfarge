@@ -40,7 +40,7 @@ export function DrawingDetail({
             <div className="relative w-full max-w-[450px] min-h-[600px]">
               <Image
                 src={drawing.imageUrl || drawing.fallbackImageUrl || WEBP_PLACEHOLDER_PATH}
-                alt={drawing.title}
+                alt={drawing.imageAlt || drawing.fallbackImageAlt || drawing.title}
                 priority
                 fill
                 style={{ objectFit: 'contain' }}

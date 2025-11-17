@@ -13,7 +13,7 @@ export const TRANSLATION_CONFIG = {
   SANITY_API_VERSION: '2024-01-13',
 
   // OpenAI configuration
-  OPENAI_MODEL: 'gpt-4o', // Latest GPT-4 model for best translations
+  OPENAI_MODEL: 'gpt-4o-mini', // Cost-effective model with excellent translation quality
   OPENAI_TEMPERATURE: 0.3, // Lower temperature for more consistent translations
   OPENAI_MAX_TOKENS: 2000,
 

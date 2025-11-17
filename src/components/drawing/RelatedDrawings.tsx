@@ -9,6 +9,7 @@ interface RelatedDrawingsProps {
   currentDrawingId: string;
   currentDrawingTitle: string;
   subcategoryTitle: string;
+  locale: string;
 }
 
 // This defines the shape of a drawing object that getRelatedDrawings returns,
@@ -30,6 +31,7 @@ export async function RelatedDrawings({
   currentDrawingId,
   currentDrawingTitle,
   subcategoryTitle,
+  locale,
 }: RelatedDrawingsProps) {
   const relatedDrawings: DrawingForCard[] = await getRelatedDrawings(
     currentDrawingSlug,
@@ -47,23 +49,29 @@ export async function RelatedDrawings({
           Relaterte tegninger i {subcategoryTitle}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {relatedDrawings.map((drawing, index) => (
-            <TrackedDrawingCard
-              key={drawing._id}
-              title={drawing.title}
-              href={`/${categorySlug}/${subcategorySlug}/${drawing.slug}`}
-              imageUrl={drawing.imageUrl}
-              imageAlt={drawing.imageAlt || drawing.title}
-              lqip={drawing.lqip}
-              difficulty={drawing.difficulty}
-              titleClassName="font-display text-lg"
-              drawingId={drawing._id}
-              position={index + 1}
-              fromDrawingId={currentDrawingId}
-              fromDrawingTitle={currentDrawingTitle}
-              subcategory={subcategoryTitle}
-            />
-          ))}
+          {relatedDrawings.map((drawing, index) => {
+            const href = locale === 'no'
+              ? `/${categorySlug}/${subcategorySlug}/${drawing.slug}`
+              : `/${locale}/${categorySlug}/${subcategorySlug}/${drawing.slug}`;
+
+            return (
+              <TrackedDrawingCard
+                key={drawing._id}
+                title={drawing.title}
+                href={href}
+                imageUrl={drawing.imageUrl}
+                imageAlt={drawing.imageAlt || drawing.title}
+                lqip={drawing.lqip}
+                difficulty={drawing.difficulty}
+                titleClassName="font-display text-lg"
+                drawingId={drawing._id}
+                position={index + 1}
+                fromDrawingId={currentDrawingId}
+                fromDrawingTitle={currentDrawingTitle}
+                subcategory={subcategoryTitle}
+              />
+            );
+          })}
         </div>
       </div>
     </aside>

@@ -1,15 +1,69 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/db';
 import { EmailService } from '@/lib/email-service';
 import { v4 as uuidv4 } from 'uuid';
+import { validateTurnstileToken, validateHoneypot } from '@/lib/turnstile';
+import { z } from 'zod';
 
-export async function POST(request: Request) {
+const newsletterSchema = z.object({
+  email: z.string().email({ message: 'Ugyldig e-postadresse' }),
+  'cf-turnstile-response': z.string().min(1, { message: 'CAPTCHA-verifisering er påkrevd' }),
+  honeypot: z.string().optional(),
+  formLoadTime: z.number({ required_error: 'Ugyldig skjemadata' }),
+});
+
+export async function POST(req: NextRequest) {
   try {
-    const { email } = await request.json();
+    const body = await req.json();
+    const parsed = newsletterSchema.safeParse(body);
 
-    if (!email || !email.includes('@')) {
+    if (!parsed.success) {
+      const errorMessages = parsed.error.issues.map(issue => issue.message).join(', ');
       return NextResponse.json(
-        { message: 'Gyldig e-postadresse er påkrevd' },
+        { message: `Ugyldig input: ${errorMessages}` },
+        { status: 400 }
+      );
+    }
+
+    const { email, 'cf-turnstile-response': turnstileToken, honeypot, formLoadTime } = parsed.data;
+
+    // --- TIME-BASED VALIDATION ---
+    const currentTime = Date.now();
+    const timeDiff = (currentTime - formLoadTime) / 1000;
+
+    if (timeDiff < 3) {
+      console.warn(`Newsletter form submitted too quickly: ${timeDiff.toFixed(2)}s - potential bot`);
+      return NextResponse.json(
+        { message: 'Vennligst vent litt før du sender skjemaet' },
+        { status: 400 }
+      );
+    }
+
+    if (timeDiff > 1800) {
+      console.warn(`Newsletter form submission timeout: ${timeDiff.toFixed(2)}s`);
+      return NextResponse.json(
+        { message: 'Skjemaet har utløpt. Vennligst last inn siden på nytt.' },
+        { status: 400 }
+      );
+    }
+
+    // --- HONEYPOT VALIDATION ---
+    if (!validateHoneypot(honeypot)) {
+      console.warn('Newsletter honeypot validation failed - potential bot detected');
+      return NextResponse.json({ message: 'Validering mislyktes' }, { status: 400 });
+    }
+
+    // --- TURNSTILE VALIDATION ---
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0] ||
+                     req.headers.get('x-real-ip') ||
+                     undefined;
+
+    const turnstileResult = await validateTurnstileToken(turnstileToken, clientIp);
+
+    if (!turnstileResult.success) {
+      console.warn('Newsletter Turnstile validation failed:', turnstileResult.message);
+      return NextResponse.json(
+        { message: 'CAPTCHA-verifisering mislyktes. Vennligst prøv igjen.' },
         { status: 400 }
       );
     }

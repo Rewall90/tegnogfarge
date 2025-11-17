@@ -1,8 +1,10 @@
-import { Metadata } from 'next';
 import Link from 'next/link';
 import PageLayout from '@/components/shared/PageLayout';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { AuthorJsonLd } from '@/components/json-ld/AuthorJsonLd';
+import { buildAlternates, getLocaleConfig } from '@/lib/seo-utils';
+import type { Locale } from '@/i18n';
+import { authorTranslations } from '@/i18n/translations/author';
 
 interface PageProps {
   params: Promise<{
@@ -10,20 +12,38 @@ interface PageProps {
   }>;
 }
 
-export const metadata: Metadata = {
-  title: 'Om Skribenten - TegnOgFarge.no',
-  description: 'Bli kjent med skribenten og illustratøren bak TegnOgFarge.no. Lær om lidenskapen for kreativitet og tegning som driver nettstedet.',
-  alternates: {
-    canonical: 'https://tegnogfarge.no/om-skribenten',
-  },
-};
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const t = authorTranslations[locale as Locale] || authorTranslations.no;
+  const pathname = '/om-skribenten';
+  const alternates = buildAlternates(pathname, locale as Locale);
+  const localeConfig = getLocaleConfig(locale as Locale);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
+
+  return {
+    title: t.metadata.title,
+    description: t.metadata.description,
+    metadataBase: new URL(baseUrl),
+    alternates,
+    openGraph: {
+      title: t.metadata.title,
+      description: t.metadata.description,
+      url: alternates.canonical,
+      siteName: 'TegnOgFarge.no',
+      locale: localeConfig.ogLocale,
+      alternateLocale: localeConfig.ogAlternate,
+      type: 'website',
+    },
+  };
+}
 
 export default async function SkribentPage({ params }: PageProps) {
   const { locale } = await params;
+  const t = authorTranslations[locale as Locale] || authorTranslations.no;
 
   const breadcrumbItems = [
-    { label: 'Hjem', href: locale === 'no' ? '/' : `/${locale}` },
-    { label: 'Om Skribenten', href: locale === 'no' ? '/om-skribenten' : `/${locale}/om-skribenten`, active: true }
+    { label: t.breadcrumb.home, href: locale === 'no' ? '/' : `/${locale}` },
+    { label: t.breadcrumb.author, href: locale === 'no' ? '/om-skribenten' : `/${locale}/om-skribenten`, active: true }
   ];
 
   return (
@@ -31,36 +51,32 @@ export default async function SkribentPage({ params }: PageProps) {
       <AuthorJsonLd />
       <div className="max-w-4xl mx-auto">
         <Breadcrumbs items={breadcrumbItems} />
-        <h1 className="text-3xl font-bold mb-8">Om Skribenten</h1>
+        <h1 className="text-3xl font-bold mb-8">{t.heading}</h1>
         <div className="prose lg:prose-xl max-w-none">
           <p>
-            Velkommen til siden om meg, skribenten og illustratøren som står bak alle tegningene du finner på TegnOgFarge.no. 
-            Jeg er utrolig glad for å kunne dele min lidenskap for kunst og kreativitet med dere.
-          </p>
-          
-          <h2 className="text-2xl font-semibold mt-6 mb-4">Min Bakgrunn</h2>
-          <p>
-            Helt siden jeg var liten, har tegning vært min måte å uttrykke meg på. Jeg har tilbrakt utallige timer med blyant og papir, og senere med digitale tegneverktøy, for å skape verdener og karakterer fra fantasien. 
+            {t.content.intro}
           </p>
 
-          <h2 className="text-2xl font-semibold mt-6 mb-4">Min Filosofi</h2>
+          <h2 className="text-2xl font-semibold mt-6 mb-4">{t.content.backgroundHeading}</h2>
           <p>
-            Jeg tror at alle har en kunstner inni seg som bare venter på å slippe ut. Fargelegging er en fantastisk måte å
-            utforske denne siden av seg selv på, uansett alder eller ferdighetsnivå. Det handler ikke om å skape et
-            perfekt mesterverk, men om å ha det gøy, slappe av og la kreativiteten flyte.
+            {t.content.background}
+          </p>
+
+          <h2 className="text-2xl font-semibold mt-6 mb-4">{t.content.philosophyHeading}</h2>
+          <p>
+            {t.content.philosophy}
           </p>
 
           <p>
-            Alle tegningene på denne siden er laget med kjærlighet og et ønske om å inspirere. Jeg håper de gir deg
-            like mye glede å fargelegge som de ga meg å lage.
-          </p>
-          
-          <p>
-            Takk for at du tok deg tid til å bli litt bedre kjent med meg. God fargelegging!
+            {t.content.love}
           </p>
 
           <p>
-            For mer informasjon om hvordan du kan bruke bildene, se vår <Link href={locale === 'no' ? '/lisensieringspolicy' : `/${locale}/lisensieringspolicy`}>lisensieringspolicy</Link>.
+            {t.content.thanks}
+          </p>
+
+          <p>
+            {t.content.licensing} <Link href={locale === 'no' ? '/lisensieringspolicy' : `/${locale}/lisensieringspolicy`}>{t.content.licensingLink}</Link>.
           </p>
         </div>
       </div>
