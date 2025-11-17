@@ -14,7 +14,9 @@ interface AdminGuardProps {
  * Redirects to login if not authenticated or to home if not admin
  */
 export default function AdminGuard({ children, fallback }: AdminGuardProps) {
-  const { data: session, status } = useSession();
+  const sessionData = useSession();
+  const session = sessionData?.data;
+  const status = sessionData?.status || 'loading';
   const router = useRouter();
 
   useEffect(() => {

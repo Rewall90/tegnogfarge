@@ -766,4 +766,93 @@ export async function getDrawingWithFullPath(id: string, locale: string = 'no') 
       isActive
     }
   `, { id, locale });
+}
+
+// Hent en spesifikk underkategori med flagg-tegninger og metadata
+// Spesialisert for flagg-underkategorien som trenger ekstra metadata for filtering
+export async function getSubcategoryWithFlags(
+  categorySlug: string,
+  subcategorySlug: string,
+  locale: string = 'no'
+) {
+  return client.fetch(`
+    *[_type == "subcategory" && slug.current == $subcategorySlug && parentCategory->slug.current == $categorySlug && isActive == true && language == $locale][0] {
+      _id,
+      title,
+      description,
+      seoTitle,
+      seoDescription,
+      difficulty,
+      "slug": slug.current,
+      featuredImage {
+        "url": asset->url,
+        "alt": alt
+      },
+      "parentCategory": parentCategory->{ title, "slug": slug.current },
+      "drawings": *[_type == "drawingImage" && subcategory._ref == ^._id && isActive == true && language == $locale]
+      | order(order asc, title asc) {
+        _id,
+        title,
+        "slug": slug.current,
+        description,
+        seoTitle,
+        "thumbnail": {
+          "url": thumbnailImage.asset->url,
+          "alt": thumbnailImage.alt,
+          "lqip": thumbnailImage.asset->metadata.lqip
+        },
+        "displayImage": {
+          "url": displayImage.asset->url,
+          "alt": displayImage.alt,
+          "lqip": displayImage.asset->metadata.lqip
+        },
+        difficulty,
+        order,
+        isActive,
+        flagMetadata {
+          geography {
+            continent,
+            subRegion,
+            countryName
+          },
+          countryInfo {
+            capital,
+            officialLanguage,
+            population,
+            currency
+          },
+          locationInfo {
+            borderingCountries,
+            coastline,
+            isIsland,
+            hemisphere
+          },
+          flagInfo {
+            flagColors,
+            flagSymbol,
+            flagPattern,
+            colorCount,
+            flagType
+          },
+          nature {
+            climateZone,
+            famousLandmark,
+            nativeAnimal
+          },
+          culture {
+            traditionalFood,
+            famousSport,
+            greeting,
+            localName,
+            whenIndependent,
+            majorFestival,
+            nationalFlower
+          },
+          funLearning {
+            funFact
+          }
+        }
+      }
+    }
+  `, { categorySlug, subcategorySlug, locale });
 } 

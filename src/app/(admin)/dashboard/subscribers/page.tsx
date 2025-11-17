@@ -28,7 +28,9 @@ interface PaginationData {
 }
 
 export default function SubscribersPage() {
-  const { data: session, status } = useSession();
+  const sessionData = useSession();
+  const session = sessionData?.data;
+  const status = sessionData?.status || 'loading';
   const router = useRouter();
 
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);

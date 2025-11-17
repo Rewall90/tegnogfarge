@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   getSubcategoryWithDrawings,
+  getSubcategoryWithFlags,
   getAllCategories,
   getSubcategoriesByCategory,
   getCategoryWithSubcategories,
@@ -14,6 +15,7 @@ import { StartColoringButton } from '@/components/buttons/StartColoringButton';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import { DrawingCard } from '@/components/cards/DrawingCard';
+import { FlagGrid } from '@/components/flags/FlagGrid';
 import { WEBP_PLACEHOLDER_PATH, SVG_BLUR_PLACEHOLDER } from '@/lib/utils';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { RelatedSubcategories } from '@/components/category/RelatedSubcategories';
@@ -21,6 +23,7 @@ import { PageViewTracker } from '@/components/analytics/PageViewTracker';
 import { AppDownloadSidebar } from '@/components/sidebar/AppDownloadSidebar';
 import { buildAlternates, getLocaleConfig } from '@/lib/seo-utils';
 import type { Locale } from '@/i18n';
+import type { FlagDrawing } from '@/types/flags';
 
 export const revalidate = 3600; // Oppdater siden hver time for bedre caching
 
@@ -268,13 +271,18 @@ export async function generateStaticParams() {
 // Main Subcategory Page Component
 export default async function SubcategoryPage({ params: paramsPromise }: PageProps) {
   const { locale, categorySlug, subcategorySlug } = await paramsPromise;
-  const subcategory = await getSubcategoryWithDrawings(categorySlug, subcategorySlug, locale);
+
+  // Check if this is the flags subcategory (adjust slug as needed)
+  const isFlagsSubcategory = subcategorySlug === 'flagg' || subcategorySlug === 'flags';
+
+  // Fetch appropriate data based on subcategory type
+  const subcategory = isFlagsSubcategory
+    ? await getSubcategoryWithFlags(categorySlug, subcategorySlug, locale)
+    : await getSubcategoryWithDrawings(categorySlug, subcategorySlug, locale);
 
   if (!subcategory || !subcategory.drawings) {
     notFound();
   }
-
-  const sortedDrawings = subcategory.drawings.sort((a: Drawing, b: Drawing) => (a.order ?? Infinity) - (b.order ?? Infinity));
 
   const breadcrumbItems = [
     { label: 'Hjem', href: locale === 'no' ? '/' : `/${locale}` },
@@ -295,7 +303,7 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-full mx-auto">
             <Breadcrumbs items={breadcrumbItems} />
-            
+
             <header className="mb-8">
               <h1 id="subcategory-title" className="text-3xl font-bold mb-2 flex items-center font-display text-navy">
                 {subcategory.title}
@@ -304,36 +312,50 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
 
             <p className="w-full text-lg text-gray-600 mb-8">{subcategory.description}</p>
 
-            {/* Two-column layout: Main content + Sidebar */}
-            <div className="flex flex-col md:flex-row gap-8">
-              {/* Main Content */}
-              <div className="flex-grow md:w-3/4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {sortedDrawings.map((drawing: Drawing) => (
-                    <DrawingCard
-                      key={drawing._id}
-                      title={drawing.title}
-                      imageUrl={drawing.thumbnail?.url || WEBP_PLACEHOLDER_PATH}
-                      imageAlt={drawing.thumbnail?.alt || 'Tegning'}
-                      lqip={drawing.thumbnail?.lqip || SVG_BLUR_PLACEHOLDER}
-                      href={locale === 'no' ? `/${categorySlug}/${subcategorySlug}/${drawing.slug}` : `/${locale}/${categorySlug}/${subcategorySlug}/${drawing.slug}`}
-                      difficulty={drawing.difficulty}
-                    />
-                  ))}
-                </div>
-              </div>
+            {/* Conditional rendering: Flags get special grid, others get standard layout */}
+            {isFlagsSubcategory ? (
+              <FlagGrid
+                flags={subcategory.drawings as FlagDrawing[]}
+                categorySlug={categorySlug}
+                subcategorySlug={subcategorySlug}
+                locale={locale as Locale}
+              />
+            ) : (
+              <>
+                {/* Standard Two-column layout: Main content + Sidebar */}
+                <div className="flex flex-col md:flex-row gap-8">
+                  {/* Main Content */}
+                  <div className="flex-grow md:w-3/4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {subcategory.drawings
+                        .sort((a: Drawing, b: Drawing) => (a.order ?? Infinity) - (b.order ?? Infinity))
+                        .map((drawing: Drawing) => (
+                          <DrawingCard
+                            key={drawing._id}
+                            title={drawing.title}
+                            imageUrl={drawing.thumbnail?.url || WEBP_PLACEHOLDER_PATH}
+                            imageAlt={drawing.thumbnail?.alt || 'Tegning'}
+                            lqip={drawing.thumbnail?.lqip || SVG_BLUR_PLACEHOLDER}
+                            href={locale === 'no' ? `/${categorySlug}/${subcategorySlug}/${drawing.slug}` : `/${locale}/${categorySlug}/${subcategorySlug}/${drawing.slug}`}
+                            difficulty={drawing.difficulty}
+                          />
+                        ))}
+                    </div>
+                  </div>
 
-              {/* App Download Sidebar */}
-              <aside className="flex-shrink-0 md:w-1/4">
-                <div className="bg-[#FDF2EC] border border-[#2EC4B6]/20 rounded-lg p-6 shadow-sm">
-                  <AppDownloadSidebar appStoreUrl="https://apps.apple.com/no/app/tegn-farge/id6755291484?l=nb" locale={locale as Locale} />
+                  {/* App Download Sidebar */}
+                  <aside className="flex-shrink-0 md:w-1/4">
+                    <div className="bg-[#FDF2EC] border border-[#2EC4B6]/20 rounded-lg p-6 shadow-sm">
+                      <AppDownloadSidebar appStoreUrl="https://apps.apple.com/no/app/tegn-farge/id6755291484?l=nb" locale={locale as Locale} />
+                    </div>
+                  </aside>
                 </div>
-              </aside>
-            </div>
+              </>
+            )}
           </div>
         </div>
       </main>
-      
+
       {subcategory.parentCategory && (
         <RelatedSubcategories
           categorySlug={categorySlug}

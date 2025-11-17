@@ -10,7 +10,9 @@ interface AuthGuardProps {
 }
 
 export default function AuthGuard({ children, fallback }: AuthGuardProps) {
-  const { data: session, status } = useSession();
+  const sessionData = useSession();
+  const session = sessionData?.data;
+  const status = sessionData?.status || 'loading';
   const router = useRouter();
 
   useEffect(() => {
