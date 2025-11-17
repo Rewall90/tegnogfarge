@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
+import { authStatusTranslations } from '@/i18n/translations/authStatus';
 
 interface MobileMenuProps {
   locale?: string;
@@ -12,12 +13,21 @@ export default function MobileMenu({ locale = 'no' }: MobileMenuProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const sessionData = useSession();
   const session = sessionData?.data;
+  const t = authStatusTranslations[locale as 'no' | 'sv'] || authStatusTranslations.no;
 
   const mobileLinkClasses = "text-[#264653] hover:text-[#FF6F59] text-lg relative inline-block after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-[2px] after:bg-[#FF6F59] after:opacity-0 after:transition-opacity after:duration-300 hover:after:opacity-100 transition-transform duration-200 hover:-translate-y-[2px]";
 
-  // Helper function to create locale-aware hrefs
+  // URL slug mapping for Swedish locale
+  const urlMapping: Record<string, Record<string, string>> = {
+    '/alle-underkategorier': { no: '/alle-underkategorier', sv: '/alla-underkategorier' },
+    '/hoved-kategori': { no: '/hoved-kategori', sv: '/huvudkategori' },
+    '/om-oss': { no: '/om-oss', sv: '/om-oss' },
+  };
+
+  // Helper function to create locale-aware hrefs with correct slugs
   const getLocalizedHref = (path: string) => {
-    return locale === 'no' ? path : `/${locale}${path}`;
+    const localizedPath = urlMapping[path]?.[locale] || path;
+    return locale === 'no' ? localizedPath : `/${locale}${localizedPath}`;
   };
 
   const toggleMenu = () => {
@@ -71,17 +81,17 @@ export default function MobileMenu({ locale = 'no' }: MobileMenuProps) {
 
               {session && session.user ? (
                 <div className="flex flex-col space-y-4">
-                  <span className="text-[#264653] text-lg">Hei, {session.user.name}</span>
+                  <span className="text-[#264653] text-lg">{t.greeting}, {session.user.name}</span>
                   <button
                     onClick={handleSignOut}
                     className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 w-full text-center text-lg"
                   >
-                    Logg ut
+                    {t.logout}
                   </button>
                 </div>
               ) : (
                 <Link href="/login" className="bg-[#EB7060] text-black px-4 py-2 rounded hover:bg-[#EB7060]/90 inline-block w-full text-center text-lg">
-                  Logg inn/Registrer
+                  {t.loginRegister}
                 </Link>
               )}
             </nav>

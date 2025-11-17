@@ -8,6 +8,21 @@ import { locales, defaultLocale, type Locale } from '@/i18n';
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
 
 /**
+ * URL slug mapping for static pages across locales
+ * Maps Norwegian slugs to their Swedish equivalents
+ */
+const urlSlugMapping: Record<string, Record<Locale, string>> = {
+  '/alle-underkategorier': {
+    no: '/alle-underkategorier',
+    sv: '/alla-underkategorier',
+  },
+  '/hoved-kategori': {
+    no: '/hoved-kategori',
+    sv: '/huvudkategori',
+  },
+};
+
+/**
  * Get locale-specific configuration for SEO metadata
  * Returns language codes and labels for structured data and OpenGraph
  */
@@ -41,17 +56,21 @@ export function generateHreflangUrls(pathname: string, currentLocale: Locale = d
   const hreflangUrls: Record<string, string> = {};
 
   for (const locale of locales) {
+    // Check if this path has a locale-specific slug mapping
+    const localizedPath = urlSlugMapping[pathWithoutLocale]?.[locale] || pathWithoutLocale;
+
     if (locale === defaultLocale) {
       // Norwegian (default) - no locale prefix
-      hreflangUrls[locale] = `${baseUrl}${pathWithoutLocale}`;
+      hreflangUrls[locale] = `${baseUrl}${localizedPath}`;
     } else {
       // Other locales - add locale prefix
-      hreflangUrls[locale] = `${baseUrl}/${locale}${pathWithoutLocale}`;
+      hreflangUrls[locale] = `${baseUrl}/${locale}${localizedPath}`;
     }
   }
 
   // Add x-default pointing to default locale (Norwegian)
-  hreflangUrls['x-default'] = `${baseUrl}${pathWithoutLocale}`;
+  const defaultPath = urlSlugMapping[pathWithoutLocale]?.no || pathWithoutLocale;
+  hreflangUrls['x-default'] = `${baseUrl}${defaultPath}`;
 
   return hreflangUrls;
 }
@@ -70,11 +89,14 @@ export function generateCanonicalUrl(pathname: string, locale: Locale = defaultL
   // Remove any existing locale prefix from pathname
   const pathWithoutLocale = cleanPath.replace(/^\/(no|sv)/, '');
 
+  // Check if this path has a locale-specific slug mapping
+  const localizedPath = urlSlugMapping[pathWithoutLocale]?.[locale] || pathWithoutLocale;
+
   if (locale === defaultLocale) {
-    return `${baseUrl}${pathWithoutLocale}`;
+    return `${baseUrl}${localizedPath}`;
   }
 
-  return `${baseUrl}/${locale}${pathWithoutLocale}`;
+  return `${baseUrl}/${locale}${localizedPath}`;
 }
 
 /**

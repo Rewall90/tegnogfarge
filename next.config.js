@@ -86,6 +86,21 @@ const nextConfig = {
 
     ]
   },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        // Swedish URL rewrites - map Swedish slugs to Norwegian route folders
+        {
+          source: '/sv/alla-underkategorier',
+          destination: '/sv/alle-underkategorier',
+        },
+        {
+          source: '/sv/huvudkategori',
+          destination: '/sv/hoved-kategori',
+        },
+      ],
+    };
+  },
   async redirects() {
     return [
       // Videospill → Feiring category rename (301 permanent redirects)
