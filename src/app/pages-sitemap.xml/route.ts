@@ -188,9 +188,9 @@ export async function GET() {
 
     // ✅ FIX: Add categories with proper Norwegian-Swedish matching
     norwegianData.categories?.forEach((noCategory: SitemapCategory) => {
-      // Find matching Swedish category by _id (same document, different language)
+      // Find matching Swedish category by slug
       const svCategory = swedishData.categories?.find(
-        (sv: SitemapCategory) => sv._id === noCategory._id
+        (sv: SitemapCategory) => sv.slug === noCategory.slug
       );
 
       if (svCategory) {
@@ -225,9 +225,11 @@ export async function GET() {
 
     // ✅ FIX: Add subcategories with proper Norwegian-Swedish matching
     norwegianData.subcategories?.forEach((noSubcategory: SitemapSubcategory) => {
-      // Find matching Swedish subcategory by _id
+      // Find matching Swedish subcategory by slug and parent category slug
       const svSubcategory = swedishData.subcategories?.find(
-        (sv: SitemapSubcategory) => sv._id === noSubcategory._id
+        (sv: SitemapSubcategory) =>
+          sv.slug === noSubcategory.slug &&
+          sv.parentCategorySlug === noSubcategory.parentCategorySlug
       );
 
       if (svSubcategory) {
@@ -262,9 +264,12 @@ export async function GET() {
 
     // ✅ FIX: Add drawings with proper Norwegian-Swedish matching
     norwegianData.drawings?.forEach((noDrawing: SitemapDrawing) => {
-      // Find matching Swedish drawing by _id
+      // Find matching Swedish drawing by full URL path (category + subcategory + slug)
       const svDrawing = swedishData.drawings?.find(
-        (sv: SitemapDrawing) => sv._id === noDrawing._id
+        (sv: SitemapDrawing) =>
+          sv.slug === noDrawing.slug &&
+          sv.subcategorySlug === noDrawing.subcategorySlug &&
+          sv.parentCategorySlug === noDrawing.parentCategorySlug
       );
 
       if (svDrawing) {
