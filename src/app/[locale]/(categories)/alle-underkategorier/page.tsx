@@ -26,7 +26,7 @@ interface Subcategory {
     _id: string;
     title: string;
     slug: string;
-  };
+  } | null;
 }
 
 interface PageProps {
@@ -92,14 +92,21 @@ export default async function AllSubcategoriesPage({ params }: PageProps) {
             <section className="category-listing" aria-labelledby="subcategories-heading">
               <h2 id="subcategories-heading" className="sr-only">{t.srOnly.subcategories}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {subcategories.map((subcategory: Subcategory, index: number) => (
-                  <SubcategoryCard 
-                    key={subcategory._id}
-                    subcategory={subcategory} 
-                    categorySlug={subcategory.parentCategory.slug} 
-                    isPriority={index < 8} 
-                  />
-                ))}
+                {subcategories.map((subcategory: Subcategory, index: number) => {
+                  // Skip subcategories without parent category
+                  if (!subcategory.parentCategory) {
+                    return null;
+                  }
+
+                  return (
+                    <SubcategoryCard
+                      key={subcategory._id}
+                      subcategory={subcategory}
+                      categorySlug={subcategory.parentCategory.slug}
+                      isPriority={index < 8}
+                    />
+                  );
+                })}
               </div>
             </section>
           </div>
