@@ -35,9 +35,10 @@ export function FlagCard({
   const imageAlt = flag.thumbnail?.alt || flag.title;
   const lqip = flag.thumbnail?.lqip || SVG_BLUR_PLACEHOLDER;
 
-  const countryName = flag.flagMetadata?.geography.countryName;
-  const continent = flag.flagMetadata?.geography.continent;
-  const flagColors = flag.flagMetadata?.flagInfo.flagColors || [];
+  const countryName = flag.flagMetadata?.geography?.countryName;
+  const continent = flag.flagMetadata?.geography?.continent;
+  const capital = flag.flagMetadata?.countryInfo?.capital;
+  const flagColors = flag.flagMetadata?.flagInfo?.flagColors || [];
 
   // Get first 3 colors for display
   // First normalize from locale-specific (rød/röd) to English (red)
@@ -50,7 +51,7 @@ export function FlagCard({
   return (
     <Link
       href={href}
-      className="group bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 block"
+      className="bg-white border rounded-lg overflow-hidden shadow-sm block"
     >
       {/* Image */}
       <div className="relative w-full bg-gray-100" style={{ paddingTop: '133.33%' }}>
@@ -59,7 +60,7 @@ export function FlagCard({
           alt={imageAlt}
           fill
           sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 25vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-200"
+          className="object-cover"
           isPriority={isPriority}
           rootMargin="300px 0px"
           placeholder="blur"
@@ -71,14 +72,21 @@ export function FlagCard({
       {/* Content */}
       <div className="p-4">
         {/* Title */}
-        <h3 className="font-display font-bold text-lg mb-2 text-navy line-clamp-2 group-hover:text-[#2EC4B6] transition-colors">
+        <h3 className="font-display font-bold text-lg mb-2 text-navy line-clamp-2">
           {flag.title}
         </h3>
 
         {/* Country name */}
         {countryName && (
-          <p className="text-sm text-gray-600 mb-2">
+          <p className="text-sm text-gray-600 mb-1">
             {countryName}
+          </p>
+        )}
+
+        {/* Capital city */}
+        {capital && (
+          <p className="text-xs text-gray-500 mb-2">
+            {locale === 'no' ? 'Hovedstad' : 'Huvudstad'}: {capital}
           </p>
         )}
 

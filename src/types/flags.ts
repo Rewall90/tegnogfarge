@@ -83,6 +83,13 @@ export interface FlagDrawing {
   flagMetadata?: FlagMetadata;
 }
 
+export type FlagSortOption =
+  | 'name-asc'           // Alfabetisk A-Å
+  | 'population-desc'    // Befolkning høy-lav
+  | 'population-asc'     // Befolkning lav-høy
+  | 'continent-asc'      // Kontinent A-Å
+  | 'difficulty-asc';    // Vanskelighetsgrad
+
 export interface FlagFilterState {
   search: string;
   continent: string;
@@ -92,6 +99,7 @@ export interface FlagFilterState {
   region: string;
   hemisphere: string[];
   isIsland?: boolean;
+  sortBy: FlagSortOption;
 }
 
 export interface FlagFilterOptions {

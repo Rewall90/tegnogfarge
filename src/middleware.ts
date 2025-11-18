@@ -129,6 +129,7 @@ export async function middleware(request: NextRequest) {
     '/verify-newsletter',
     '/unsubscribe-confirmation',
     '/api',
+    '/coloring-app',
   ];
 
   const shouldSkipLocale = nonLocalizedRoutes.some(route => pathname.startsWith(route)) || pathname.includes('.');

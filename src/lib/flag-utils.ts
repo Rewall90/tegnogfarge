@@ -3,7 +3,7 @@
  * Handles multilingual color names and filter logic
  */
 
-import type { FlagDrawing, FlagFilterState } from '@/types/flags';
+import type { FlagDrawing, FlagFilterState, FlagSortOption } from '@/types/flags';
 import type { Locale } from '@/i18n';
 
 /**
@@ -71,20 +71,7 @@ export function filterFlags(
   locale: Locale
 ): FlagDrawing[] {
   return flags.filter(flag => {
-    // Skip flags without metadata if any metadata-based filters are active
-    const hasMetadataFilters =
-      filters.continent !== 'all' ||
-      filters.colors.length > 0 ||
-      filters.colorCount !== 'all' ||
-      filters.region !== 'all' ||
-      filters.hemisphere.length > 0 ||
-      filters.isIsland !== undefined;
-
-    if (hasMetadataFilters && !flag.flagMetadata) {
-      return false;
-    }
-
-    // Search filter (country name or title)
+    // Search filter - searches in country name and title
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
       const titleMatch = flag.title?.toLowerCase().includes(searchLower);
@@ -95,81 +82,18 @@ export function filterFlags(
       }
     }
 
-    // Continent filter
+    // Continent filter - supports multiple continents (comma-separated)
     if (filters.continent && filters.continent !== 'all') {
-      const continent = flag.flagMetadata?.geography?.continent;
-      if (!continent || continent !== filters.continent) {
-        return false;
-      }
-    }
-
-    // Color filter (match if flag contains ANY of the selected colors)
-    if (filters.colors && filters.colors.length > 0) {
-      const flagColors = flag.flagMetadata?.flagInfo.flagColors || [];
-      const normalizedFlagColors = normalizeColors(flagColors, locale);
-      const normalizedFilterColors = normalizeColors(filters.colors, locale);
-
-      const hasMatchingColor = normalizedFilterColors.some(filterColor =>
-        normalizedFlagColors.includes(filterColor)
-      );
-
-      if (!hasMatchingColor) {
-        return false;
-      }
-    }
-
-    // Color count filter
-    if (filters.colorCount && filters.colorCount !== 'all') {
-      const colorCount = flag.flagMetadata?.flagInfo.colorCount || 0;
-      const filterCount = parseInt(filters.colorCount);
-
-      if (filterCount === 4) {
-        // "4 or more"
-        if (colorCount < 4) {
-          return false;
-        }
-      } else {
-        if (colorCount !== filterCount) {
-          return false;
-        }
-      }
-    }
-
-    // Difficulty filter
-    if (filters.difficulty && filters.difficulty !== 'all') {
-      if (flag.difficulty !== filters.difficulty) {
-        return false;
-      }
-    }
-
-    // Region filter
-    if (filters.region && filters.region !== 'all') {
-      const subRegion = flag.flagMetadata?.geography?.subRegion;
-      if (!subRegion || subRegion !== filters.region) {
-        return false;
-      }
-    }
-
-    // Hemisphere filter (match if flag is in ANY of the selected hemispheres)
-    if (filters.hemisphere && filters.hemisphere.length > 0) {
-      const flagHemispheres = flag.flagMetadata?.locationInfo?.hemisphere || [];
-      if (flagHemispheres.length === 0) {
+      const flagContinent = flag.flagMetadata?.geography?.continent;
+      if (!flagContinent) {
         return false;
       }
 
-      const hasMatchingHemisphere = filters.hemisphere.some(filterHemi =>
-        flagHemispheres.map(h => h.toLowerCase()).includes(filterHemi.toLowerCase())
-      );
+      // Split comma-separated continents
+      const selectedContinents = filters.continent.split(',').map(c => c.trim());
 
-      if (!hasMatchingHemisphere) {
-        return false;
-      }
-    }
-
-    // Island filter
-    if (filters.isIsland !== undefined) {
-      const isIsland = flag.flagMetadata?.locationInfo?.isIsland;
-      if (isIsland === undefined || isIsland !== filters.isIsland) {
+      // Check if flag's continent matches any of the selected continents
+      if (!selectedContinents.includes(flagContinent)) {
         return false;
       }
     }
@@ -191,12 +115,12 @@ export function extractFilterOptions(flags: FlagDrawing[], locale: Locale) {
   flags.forEach(flag => {
     if (flag.flagMetadata) {
       // Continents
-      if (flag.flagMetadata.geography.continent) {
+      if (flag.flagMetadata.geography?.continent) {
         continents.add(flag.flagMetadata.geography.continent);
       }
 
-      // Colors (normalized to English for consistency)
-      if (flag.flagMetadata.flagInfo.flagColors) {
+      // Colors (normalized to English for consistency) - check if flagInfo exists
+      if (flag.flagMetadata.flagInfo?.flagColors) {
         flag.flagMetadata.flagInfo.flagColors.forEach(color => {
           const normalized = normalizeColor(color, locale);
           colors.add(normalized);
@@ -204,12 +128,12 @@ export function extractFilterOptions(flags: FlagDrawing[], locale: Locale) {
       }
 
       // Regions
-      if (flag.flagMetadata.geography.subRegion) {
+      if (flag.flagMetadata.geography?.subRegion) {
         regions.add(flag.flagMetadata.geography.subRegion);
       }
 
       // Hemispheres
-      if (flag.flagMetadata.locationInfo.hemisphere) {
+      if (flag.flagMetadata.locationInfo?.hemisphere) {
         flag.flagMetadata.locationInfo.hemisphere.forEach(h => {
           hemispheres.add(h);
         });
@@ -260,5 +184,96 @@ export function createEmptyFilterState(): FlagFilterState {
     region: 'all',
     hemisphere: [],
     isIsland: undefined,
+    sortBy: 'name-asc',
   };
+}
+
+/**
+ * Sort flags based on the selected sort option
+ */
+export function sortFlags(
+  flags: FlagDrawing[],
+  sortBy: FlagSortOption,
+  locale: Locale
+): FlagDrawing[] {
+  const sortedFlags = [...flags];
+
+  switch (sortBy) {
+    case 'name-asc':
+      // Sort alphabetically by country name
+      return sortedFlags.sort((a, b) => {
+        const nameA = a.flagMetadata?.geography?.countryName || a.title;
+        const nameB = b.flagMetadata?.geography?.countryName || b.title;
+        return nameA.localeCompare(nameB, locale === 'sv' ? 'sv' : 'no');
+      });
+
+    case 'population-desc':
+      // Sort by population (highest first), null values at the end
+      return sortedFlags.sort((a, b) => {
+        const popA = a.flagMetadata?.countryInfo?.population ?? -1;
+        const popB = b.flagMetadata?.countryInfo?.population ?? -1;
+
+        // Move flags without population to the end
+        if (popA === -1 && popB === -1) return 0;
+        if (popA === -1) return 1;
+        if (popB === -1) return -1;
+
+        return popB - popA;
+      });
+
+    case 'population-asc':
+      // Sort by population (lowest first), null values at the end
+      return sortedFlags.sort((a, b) => {
+        const popA = a.flagMetadata?.countryInfo?.population ?? Number.MAX_SAFE_INTEGER;
+        const popB = b.flagMetadata?.countryInfo?.population ?? Number.MAX_SAFE_INTEGER;
+
+        // Move flags without population to the end
+        if (popA === Number.MAX_SAFE_INTEGER && popB === Number.MAX_SAFE_INTEGER) return 0;
+        if (popA === Number.MAX_SAFE_INTEGER) return 1;
+        if (popB === Number.MAX_SAFE_INTEGER) return -1;
+
+        return popA - popB;
+      });
+
+    case 'continent-asc':
+      // Sort by continent, then by country name within each continent
+      return sortedFlags.sort((a, b) => {
+        const continentA = a.flagMetadata?.geography?.continent || '';
+        const continentB = b.flagMetadata?.geography?.continent || '';
+
+        // First sort by continent
+        const continentCompare = continentA.localeCompare(continentB, locale === 'sv' ? 'sv' : 'no');
+
+        if (continentCompare !== 0) {
+          return continentCompare;
+        }
+
+        // If same continent, sort by country name
+        const nameA = a.flagMetadata?.geography?.countryName || a.title;
+        const nameB = b.flagMetadata?.geography?.countryName || b.title;
+        return nameA.localeCompare(nameB, locale === 'sv' ? 'sv' : 'no');
+      });
+
+    case 'difficulty-asc':
+      // Sort by difficulty (easy -> medium -> hard), then by country name
+      const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
+
+      return sortedFlags.sort((a, b) => {
+        const diffA = difficultyOrder[a.difficulty || 'medium'];
+        const diffB = difficultyOrder[b.difficulty || 'medium'];
+
+        // First sort by difficulty
+        if (diffA !== diffB) {
+          return diffA - diffB;
+        }
+
+        // If same difficulty, sort by country name
+        const nameA = a.flagMetadata?.geography?.countryName || a.title;
+        const nameB = b.flagMetadata?.geography?.countryName || b.title;
+        return nameA.localeCompare(nameB, locale === 'sv' ? 'sv' : 'no');
+      });
+
+    default:
+      return sortedFlags;
+  }
 }

@@ -4,9 +4,10 @@ import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { FlagCard } from './FlagCard';
 import { FlagFilters } from './FlagFilters';
-import type { FlagDrawing, FlagFilterState } from '@/types/flags';
+import { FlagSortMenu } from './FlagSortMenu';
+import type { FlagDrawing, FlagFilterState, FlagSortOption } from '@/types/flags';
 import type { Locale } from '@/i18n';
-import { filterFlags, extractFilterOptions, createEmptyFilterState } from '@/lib/flag-utils';
+import { filterFlags, sortFlags, extractFilterOptions, createEmptyFilterState } from '@/lib/flag-utils';
 import { flagsTranslations } from '@/i18n/translations/flags';
 
 interface FlagGridProps {
@@ -39,6 +40,7 @@ export function FlagGrid({
       region: searchParams.get('region') || 'all',
       hemisphere,
       isIsland: searchParams.get('isIsland') === 'true' ? true : undefined,
+      sortBy: (searchParams.get('sort') as FlagSortOption) || 'name-asc',
     };
   });
 
@@ -47,9 +49,10 @@ export function FlagGrid({
     return extractFilterOptions(flags, locale);
   }, [flags, locale]);
 
-  // Apply filters to get filtered flags
-  const filteredFlags = useMemo(() => {
-    return filterFlags(flags, activeFilters, locale);
+  // Apply filters and sorting to get final flag list
+  const filteredAndSortedFlags = useMemo(() => {
+    const filtered = filterFlags(flags, activeFilters, locale);
+    return sortFlags(filtered, activeFilters.sortBy, locale);
   }, [flags, activeFilters, locale]);
 
   // Generate href for each flag based on locale
@@ -59,19 +62,25 @@ export function FlagGrid({
       : `/${locale}/${categorySlug}/${subcategorySlug}/${flagSlug}`;
   };
 
+  // Handle sort change
+  const handleSortChange = (sortBy: FlagSortOption) => {
+    setActiveFilters(prev => ({ ...prev, sortBy }));
+  };
+
   // Replace {{count}} and {{total}} in translation strings
   const getResultsText = () => {
-    const hasFilters = Object.values(activeFilters).some(v =>
-      Array.isArray(v) ? v.length > 0 : v && v !== 'all'
-    );
+    const hasFilters = Object.entries(activeFilters).some(([key, value]) => {
+      if (key === 'sortBy') return false; // Exclude sortBy from filter check
+      return Array.isArray(value) ? value.length > 0 : value && value !== 'all';
+    });
 
     if (hasFilters) {
       return t.results.showingFiltered
-        .replace('{{count}}', String(filteredFlags.length))
+        .replace('{{count}}', String(filteredAndSortedFlags.length))
         .replace('{{total}}', String(flags.length));
     }
 
-    return t.results.showing.replace('{{count}}', String(filteredFlags.length));
+    return t.results.showing.replace('{{count}}', String(filteredAndSortedFlags.length));
   };
 
   return (
@@ -87,17 +96,22 @@ export function FlagGrid({
 
       {/* Main content area */}
       <div className="flex-grow md:w-3/4">
-        {/* Results header */}
-        <div className="mb-6">
+        {/* Results header with count and sort menu */}
+        <div className="flex items-center justify-between mb-6">
           <p className="text-gray-600 text-sm">
             {getResultsText()}
           </p>
+          <FlagSortMenu
+            currentSort={activeFilters.sortBy}
+            onSortChange={handleSortChange}
+            locale={locale}
+          />
         </div>
 
         {/* Grid of flags */}
-        {filteredFlags.length > 0 ? (
+        {filteredAndSortedFlags.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredFlags.map((flag, index) => (
+            {filteredAndSortedFlags.map((flag, index) => (
               <FlagCard
                 key={flag._id}
                 flag={flag}

@@ -67,6 +67,16 @@ export const flagsTranslations = {
         }
       }
     },
+    sort: {
+      title: "Sorter",
+      options: {
+        nameAsc: "Alfabetisk (A-Å)",
+        populationDesc: "Befolkning (høy-lav)",
+        populationAsc: "Befolkning (lav-høy)",
+        continentAsc: "Kontinent (A-Å)",
+        difficultyAsc: "Vanskelighetsgrad"
+      }
+    },
     results: {
       showing: "Viser {{count}} flagg",
       showingFiltered: "Viser {{count}} av {{total}} flagg",
@@ -147,6 +157,16 @@ export const flagsTranslations = {
           eastern: "Östra",
           western: "Västra"
         }
+      }
+    },
+    sort: {
+      title: "Sortera",
+      options: {
+        nameAsc: "Alfabetisk (A-Ö)",
+        populationDesc: "Befolkning (hög-låg)",
+        populationAsc: "Befolkning (låg-hög)",
+        continentAsc: "Kontinent (A-Ö)",
+        difficultyAsc: "Svårighetsgrad"
       }
     },
     results: {

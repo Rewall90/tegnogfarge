@@ -10,7 +10,7 @@ interface SidebarSubcategory {
   slug: string;
   parentCategory: {
     slug: string;
-  };
+  } | null;
 }
 
 interface SubcategoryListProps {
@@ -39,16 +39,23 @@ export function SubcategoryList({
     <div className="mb-8">
       <h3 className="font-display font-bold text-xl text-[#264653] mb-2">{title}</h3>
       <ul>
-        {visibleSubcategories.map((sub) => (
-          <li key={sub._id} className="mb-2">
-            <Link
-              href={`/${sub.parentCategory.slug}/${sub.slug}`}
-              className="text-lg text-[#264653] hover:text-[#2EC4B6] transition-colors"
-            >
-              {sub.title}
-            </Link>
-          </li>
-        ))}
+        {visibleSubcategories.map((sub) => {
+          // Skip subcategories without parent category
+          if (!sub.parentCategory) {
+            return null;
+          }
+
+          return (
+            <li key={sub._id} className="mb-2">
+              <Link
+                href={`/${sub.parentCategory.slug}/${sub.slug}`}
+                className="text-lg text-[#264653] hover:text-[#2EC4B6] transition-colors"
+              >
+                {sub.title}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
       {canBeExpanded && (
         <button
