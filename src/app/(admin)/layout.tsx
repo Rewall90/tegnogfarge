@@ -1,4 +1,5 @@
 import AdminLayoutClient from '@/components/admin/AdminLayoutClient';
+import SessionProviderWrapper from '@/components/auth/SessionProviderWrapper';
 
 export const metadata = {
   title: 'Admin Dashboard | TegnOgFarge.no',
@@ -10,5 +11,9 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <AdminLayoutClient>{children}</AdminLayoutClient>;
+  return (
+    <SessionProviderWrapper>
+      <AdminLayoutClient>{children}</AdminLayoutClient>
+    </SessionProviderWrapper>
+  );
 }
