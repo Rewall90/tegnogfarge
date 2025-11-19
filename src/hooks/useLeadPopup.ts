@@ -113,9 +113,12 @@ export function useLeadPopup(): UseLeadPopupReturn {
         setIsOpen(true);
 
         // Track event in background (fire and forget - no await)
+        console.log('[useLeadPopup] Tracking popup shown for campaign:', selectedCampaign.campaignId);
         trackPopupShown(selectedCampaign.campaignId, {
           downloadCount: newCount,
           triggerThreshold: selectedCampaign.trigger.threshold,
+        }).catch(error => {
+          console.error('[useLeadPopup] Failed to track popup shown:', error);
         });
       }
     }

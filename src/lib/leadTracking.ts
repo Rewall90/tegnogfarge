@@ -86,6 +86,7 @@ async function trackToAPI(
   if (typeof window === 'undefined') return;
 
   try {
+    console.log('[Lead Tracking] Calling API to track event:', { campaignId, eventType, metadata: options?.metadata });
     const response = await fetch('/api/lead-campaigns/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -97,8 +98,14 @@ async function trackToAPI(
       }),
     });
 
+    console.log('[Lead Tracking] API response status:', response.status, response.ok);
+
     if (!response.ok) {
-      console.error('[Lead Tracking] API tracking failed:', response.statusText);
+      const errorText = await response.text();
+      console.error('[Lead Tracking] API tracking failed:', response.statusText, errorText);
+    } else {
+      const data = await response.json();
+      console.log('[Lead Tracking] API tracking success:', data);
     }
   } catch (error) {
     console.error('[Lead Tracking] API tracking error:', error);
