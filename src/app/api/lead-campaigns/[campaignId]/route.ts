@@ -113,6 +113,74 @@ export async function PUT(
 }
 
 /**
+ * PATCH /api/lead-campaigns/[campaignId]
+ *
+ * Toggle campaign pause/resume (admin only)
+ * This is a lightweight endpoint for quick pause/resume actions
+ */
+export async function PATCH(
+  request: Request,
+  { params }: { params: { campaignId: string } }
+) {
+  try {
+    // Check authentication and admin role
+    const session = await getServerSession(authOptions);
+
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Unauthorized - Admin access required' },
+        { status: 401 }
+      );
+    }
+
+    const { campaignId } = params;
+    const body = await request.json();
+
+    const db = await getDb();
+    const collection = db.collection<Campaign>('lead_campaigns');
+
+    // Check if campaign exists
+    const existing = await collection.findOne({
+      campaignId,
+      deleted: { $ne: true },
+    });
+
+    if (!existing) {
+      return NextResponse.json({ error: 'Campaign not found' }, { status: 404 });
+    }
+
+    // Toggle active state
+    const newActiveState = body.active !== undefined ? body.active : !existing.active;
+
+    const result = await collection.updateOne(
+      { campaignId, deleted: { $ne: true } },
+      {
+        $set: {
+          active: newActiveState,
+          updatedAt: new Date(),
+        },
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json({ error: 'Campaign not found' }, { status: 404 });
+    }
+
+    // Fetch and return updated campaign
+    const updated = await collection.findOne({ campaignId });
+
+    return NextResponse.json({
+      success: true,
+      campaign: updated,
+      message: newActiveState ? 'Campaign resumed' : 'Campaign paused',
+    });
+  } catch (error) {
+    console.error('[API] Error toggling campaign:', error);
+    return NextResponse.json({ error: 'Failed to toggle campaign' }, { status: 500 });
+  }
+}
+
+/**
  * DELETE /api/lead-campaigns/[campaignId]
  *
  * Soft delete a campaign (admin only)
