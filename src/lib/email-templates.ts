@@ -4,6 +4,8 @@ export interface EmailTemplateProps {
   userName?: string;
   emailAddress: string;
   unsubscribeToken?: string;
+  campaignId?: string;
+  campaignName?: string;
 }
 
 export const userVerificationTemplate = ({ verificationCode, baseUrl, userName, emailAddress }: EmailTemplateProps) => {
@@ -92,6 +94,80 @@ export const newsletterVerificationTemplate = ({ verificationCode, baseUrl, emai
             Ønsker du ikke å motta e-poster fra oss? <a href="${unsubscribeUrl}" style="color: #999; text-decoration: underline;">Meld deg av her</a>
           </p>
           ` : ''}
+        </div>
+      </div>
+    `
+  };
+};
+
+export const leadCampaignVerificationTemplate = ({
+  verificationCode,
+  baseUrl,
+  emailAddress,
+  campaignName = 'Kampanje',
+  unsubscribeToken
+}: EmailTemplateProps) => {
+  const verificationUrl = `${baseUrl}/api/lead-campaigns/verify?token=${verificationCode}`;
+  const unsubscribeUrl = unsubscribeToken
+    ? `${baseUrl}/api/lead-campaigns/unsubscribe?token=${unsubscribeToken}`
+    : '';
+
+  return {
+    subject: `Bekreft din e-post - ${campaignName}`,
+    html: `
+      <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; color: #333;">
+        <h1 style="color: #264653; font-size: 24px; margin-bottom: 20px;">Bekreft din e-post</h1>
+
+        <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+          Hei!
+        </p>
+
+        <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+          Takk for at du meldte deg på for å motta gratis fargebilder ukentlig! Vi har registrert e-postadressen <strong>${emailAddress}</strong>.
+        </p>
+
+        <p style="font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+          Klikk på knappen nedenfor for å bekrefte din e-postadresse og begynne å motta nye tegninger hver uke:
+        </p>
+
+        <!-- CTA Button -->
+        <div style="text-align: center; margin: 40px 0;">
+          <a href="${verificationUrl}"
+             style="display: inline-block; background-color: #2EC4B6; color: white; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 18px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            Bekreft og få tilgang
+          </a>
+        </div>
+
+        <!-- Alternative: Copy URL -->
+        <div style="margin: 30px 0; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+          <p style="font-size: 14px; color: #666; margin-bottom: 10px;">
+            Eller kopier denne lenken direkte i nettleseren din:
+          </p>
+          <p style="font-size: 12px; word-break: break-all; color: #2EC4B6; font-family: monospace;">
+            ${verificationUrl}
+          </p>
+        </div>
+
+        <p style="color: #666; font-size: 14px; line-height: 1.6; margin-top: 30px;">
+          Denne lenken utløper om 72 timer. Hvis du ikke meldte deg på, kan du ignorere denne e-posten.
+        </p>
+
+        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+
+        <!-- Footer with unsubscribe link -->
+        <div style="text-align: center;">
+          <p style="color: #999; font-size: 12px; margin-bottom: 10px;">
+            © 2025 TegnOgFarge.no. Alle rettigheter reservert.
+          </p>
+          ${
+            unsubscribeUrl
+              ? `
+          <p style="color: #999; font-size: 11px; margin-top: 10px;">
+            Ønsker du ikke å motta e-poster fra oss? <a href="${unsubscribeUrl}" style="color: #999; text-decoration: underline;">Meld deg av her</a>
+          </p>
+          `
+              : ''
+          }
         </div>
       </div>
     `

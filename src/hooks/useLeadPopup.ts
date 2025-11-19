@@ -61,11 +61,8 @@ export function useLeadPopup(): UseLeadPopupReturn {
 
       // Check if we can show popup at all
       if (!canShowPopup()) {
-        console.log('[useLeadPopup] Cannot show popup (storage rules)');
-
         // No popup, so open PDF directly
         if (customEvent.detail?.downloadUrl) {
-          console.log('[useLeadPopup] Opening PDF directly (no popup)');
           window.open(customEvent.detail.downloadUrl, '_blank');
         }
         return;
@@ -75,17 +72,12 @@ export function useLeadPopup(): UseLeadPopupReturn {
       const newCount = incrementDownloadCount();
       setDownloadCount(newCount);
 
-      console.log('[useLeadPopup] Download count:', newCount);
-
       // Get campaigns that match this trigger
       const downloadCampaigns = await getCampaignsByTrigger('pdf_downloaded');
 
       if (downloadCampaigns.length === 0) {
-        console.log('[useLeadPopup] No active download campaigns found');
-
         // No popup, so open PDF directly
         if (customEvent.detail?.downloadUrl) {
-          console.log('[useLeadPopup] Opening PDF directly (no campaigns)');
           window.open(customEvent.detail.downloadUrl, '_blank');
         }
         return;
@@ -97,14 +89,8 @@ export function useLeadPopup(): UseLeadPopupReturn {
       );
 
       if (triggeredCampaigns.length === 0) {
-        console.log(
-          '[useLeadPopup] No campaigns triggered for count:',
-          newCount
-        );
-
         // No popup, so open PDF directly
         if (customEvent.detail?.downloadUrl) {
-          console.log('[useLeadPopup] Opening PDF directly (threshold not met)');
           window.open(customEvent.detail.downloadUrl, '_blank');
         }
         return;
@@ -114,12 +100,9 @@ export function useLeadPopup(): UseLeadPopupReturn {
       const selectedCampaign = selectCampaign(triggeredCampaigns);
 
       if (selectedCampaign) {
-        console.log('[useLeadPopup] Showing popup for campaign:', selectedCampaign.campaignId);
-
         // Store download URL for later use
         if (customEvent.detail?.downloadUrl) {
           setDownloadUrl(customEvent.detail.downloadUrl);
-          console.log('[useLeadPopup] Download URL stored:', customEvent.detail.downloadUrl);
         }
 
         // Mark as shown in session
@@ -150,8 +133,6 @@ export function useLeadPopup(): UseLeadPopupReturn {
   const handleDismiss = () => {
     if (!campaign) return;
 
-    console.log('[useLeadPopup] Popup dismissed');
-
     // Track dismiss event
     trackPopupDismissed(campaign.campaignId, {
       downloadCount,
@@ -165,7 +146,6 @@ export function useLeadPopup(): UseLeadPopupReturn {
 
     // Open PDF in new tab after popup closes
     if (downloadUrl) {
-      console.log('[useLeadPopup] Opening PDF after dismiss:', downloadUrl);
       window.open(downloadUrl, '_blank');
       setDownloadUrl(null); // Clear for next time
     }
@@ -173,36 +153,70 @@ export function useLeadPopup(): UseLeadPopupReturn {
 
   // Handle email submit
   const handleSubmit = async (email: string) => {
-    if (!campaign) return;
+    console.log('[useLeadPopup] handleSubmit called with email:', email);
 
-    console.log('[useLeadPopup] Email submitted');
+    if (!campaign) {
+      console.error('[useLeadPopup] No campaign available!');
+      return;
+    }
+
+    console.log('[useLeadPopup] Campaign:', campaign.campaignId);
 
     // Track submit event
+    console.log('[useLeadPopup] Tracking email submitted event...');
     await trackEmailSubmitted(campaign.campaignId, email, {
       downloadCount,
     });
+    console.log('[useLeadPopup] Event tracked');
 
-    // Submit to newsletter API (existing endpoint)
+    // Submit to lead campaigns API
     try {
-      const response = await fetch('/api/newsletter/subscribe', {
+      console.log('[useLeadPopup] Making API call to /api/lead-campaigns/submit...');
+      console.log('[useLeadPopup] Request body:', {
+        email,
+        campaignId: campaign.campaignId,
+        metadata: {
+          downloadCount,
+          trigger: campaign.trigger.type,
+          triggerThreshold: campaign.trigger.threshold,
+          campaignName: campaign.name,
+        },
+      });
+
+      const response = await fetch('/api/lead-campaigns/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          campaignId: campaign.campaignId,
+          metadata: {
+            downloadCount,
+            trigger: campaign.trigger.type,
+            triggerThreshold: campaign.trigger.threshold,
+            campaignName: campaign.name,
+          },
+        }),
       });
+
+      console.log('[useLeadPopup] API response status:', response.status);
+      console.log('[useLeadPopup] API response ok:', response.ok);
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message || 'Subscription failed');
+        console.error('[useLeadPopup] API error response:', data);
+        throw new Error(data.message || 'Submission failed');
       }
+
+      const responseData = await response.json();
+      console.log('[useLeadPopup] API success response:', responseData);
 
       // Mark email as submitted (never show popup again)
       markEmailSubmitted();
-
-      console.log('[useLeadPopup] Email submitted successfully');
+      console.log('[useLeadPopup] Email marked as submitted');
 
       // Don't auto-open PDF - user will click download button in thank you page
     } catch (error) {
-      console.error('[useLeadPopup] Newsletter subscription error:', error);
+      console.error('[useLeadPopup] Lead submission error:', error);
       throw error; // Re-throw to let component handle error state
     }
   };

@@ -52,7 +52,6 @@ async function trackToGA(
   }
 
   if (!window.gtag) {
-    console.warn('[Lead Tracking] Google Analytics not available');
     return;
   }
 
@@ -64,8 +63,6 @@ async function trackToGA(
       event_label: campaignId,
       ...options?.metadata,
     });
-
-    console.log('[Lead Tracking] GA4 event tracked:', eventType, campaignId);
   } catch (error) {
     console.error('[Lead Tracking] GA4 tracking error:', error);
   }
@@ -102,8 +99,6 @@ async function trackToAPI(
 
     if (!response.ok) {
       console.error('[Lead Tracking] API tracking failed:', response.statusText);
-    } else {
-      console.log('[Lead Tracking] ✅ MongoDB event tracked:', eventType, campaignId);
     }
   } catch (error) {
     console.error('[Lead Tracking] API tracking error:', error);
@@ -133,8 +128,6 @@ async function trackToPostHog(
       email: options?.email ? '[REDACTED]' : undefined, // Don't send email to PostHog events (only identify)
       ...options?.metadata,
     });
-
-    console.log('[Lead Tracking] ✅ PostHog event tracked:', eventType, campaignId);
   } catch (error) {
     console.error('[Lead Tracking] PostHog tracking error:', error);
     // Don't throw - tracking failures shouldn't break user experience
@@ -155,17 +148,6 @@ export async function trackLeadCampaign(
   eventType: LeadEventType,
   options?: LeadTrackingOptions
 ): Promise<void> {
-  // Log in development
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[Lead Tracking] trackLeadCampaign called:', {
-      campaignId,
-      eventType,
-      email: options?.email ? '[REDACTED]' : undefined,
-      metadata: options?.metadata,
-      timestamp: new Date().toISOString(),
-    });
-  }
-
   // Track to all three systems in parallel
   await Promise.all([
     trackToGA(campaignId, eventType, options),

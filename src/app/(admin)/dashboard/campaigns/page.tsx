@@ -69,6 +69,53 @@ export default function CampaignsListPage() {
     }
   }
 
+  async function handleDuplicate(campaignId: string) {
+    try {
+      // Find the campaign to duplicate
+      const campaign = campaigns.find(c => c.campaignId === campaignId);
+      if (!campaign) {
+        alert('Kunne ikke finne kampanje');
+        return;
+      }
+
+      // Create a copy with a new ID and name
+      const timestamp = Date.now();
+      const newCampaignId = `${campaign.campaignId}-copy-${timestamp}`;
+      const newName = `${campaign.name} (Kopi)`;
+
+      const duplicatedCampaign = {
+        campaignId: newCampaignId,
+        name: newName,
+        type: campaign.type,
+        active: false, // Start as inactive by default
+        trigger: campaign.trigger,
+        content: campaign.content,
+        styling: campaign.styling,
+        weight: campaign.weight,
+        featureFlagKey: campaign.featureFlagKey,
+      };
+
+      const response = await fetch('/api/lead-campaigns', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(duplicatedCampaign),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to duplicate campaign');
+      }
+
+      // Reload campaigns
+      await loadCampaigns();
+      alert(`Kampanje duplisert: "${newName}"`);
+    } catch (err) {
+      console.error('Error duplicating campaign:', err);
+      alert('Kunne ikke duplisere kampanje');
+    }
+  }
+
   async function handleDelete(campaignId: string) {
     if (!confirm('Er du sikker på at du vil slette denne kampanjen? Statistikk vil bli bevart.')) {
       return;
@@ -106,6 +153,18 @@ export default function CampaignsListPage() {
 
     const percentage = calculateCampaignPercentage(campaign, sameThresholdCampaigns);
     return `${percentage}%`;
+  }
+
+  // Format date for display
+  function formatDate(date: Date | undefined): string {
+    if (!date) return '-';
+
+    const dateObj = new Date(date);
+    return dateObj.toLocaleDateString('nb-NO', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
   }
 
   return (
@@ -184,6 +243,9 @@ export default function CampaignsListPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Vekt
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Opprettet
+                  </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Vist
                   </th>
@@ -191,13 +253,7 @@ export default function CampaignsListPage() {
                     Sendt inn
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Avvist
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Konv. %
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Avvis %
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Handlinger
@@ -211,7 +267,18 @@ export default function CampaignsListPage() {
                       <div className="text-sm font-medium text-gray-900">
                         {campaign.name}
                       </div>
-                      <div className="text-sm text-gray-500">{campaign.campaignId}</div>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-sm text-gray-500">{campaign.campaignId}</span>
+                        <button
+                          onClick={() => handleDuplicate(campaign.campaignId)}
+                          className="text-gray-400 hover:text-blue-600 transition-colors"
+                          title="Dupliser kampanje"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
@@ -244,6 +311,11 @@ export default function CampaignsListPage() {
                         ({getWeightPercentage(campaign)})
                       </div>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {formatDate(campaign.createdAt)}
+                      </div>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
                       {campaign.stats.shownCount.toLocaleString('nb-NO')}
                     </td>
@@ -251,42 +323,23 @@ export default function CampaignsListPage() {
                       {campaign.stats.submittedCount.toLocaleString('nb-NO')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
-                      {campaign.stats.dismissedCount.toLocaleString('nb-NO')}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
                       {(campaign.stats.conversionRate ?? 0).toFixed(1)}%
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
-                      {(campaign.stats.dismissRate ?? 0).toFixed(1)}%
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-3">
-                        {/* Pause/Resume Toggle Button */}
+                        {/* Toggle Switch */}
                         <button
                           onClick={() => handleTogglePause(campaign.campaignId, campaign.active)}
-                          className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md font-medium transition-colors ${
-                            campaign.active
-                              ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
-                              : 'bg-green-100 text-green-700 hover:bg-green-200'
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                            campaign.active ? 'bg-green-600' : 'bg-gray-300'
                           }`}
-                          title={campaign.active ? 'Pause kampanje' : 'Fortsett kampanje'}
+                          title={campaign.active ? 'Aktiv - klikk for å pause' : 'Pauset - klikk for å aktivere'}
                         >
-                          {campaign.active ? (
-                            <>
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              Pause
-                            </>
-                          ) : (
-                            <>
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              Fortsett
-                            </>
-                          )}
+                          <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                              campaign.active ? 'translate-x-6' : 'translate-x-1'
+                            }`}
+                          />
                         </button>
                         <Link
                           href={`/dashboard/campaigns/${campaign.campaignId}/edit`}

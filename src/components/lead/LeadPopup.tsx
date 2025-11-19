@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import type { Campaign } from '@/lib/campaignService';
 import { CTAButton } from './CTAButton';

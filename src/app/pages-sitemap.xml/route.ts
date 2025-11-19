@@ -23,8 +23,8 @@ function generateMultilingualHreflangLinks(
 ) {
   let hreflangLinks = '';
 
-  // Norwegian version
-  hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="no" href="${baseUrl}${noSlug}"/>`;
+  // Norwegian version (using ISO 639-1 'nb' for Norwegian Bokmål)
+  hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="nb" href="${baseUrl}${noSlug}"/>`;
 
   // Swedish version
   hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="sv" href="${baseUrl}/sv${svSlug}"/>`;
@@ -39,9 +39,16 @@ function generateMultilingualHreflangLinks(
 function generateHreflangLinks(baseUrl: string, path: string) {
   let hreflangLinks = '';
 
+  // Map internal locale codes to ISO 639-1 compliant hreflang codes
+  const hreflangMapping: Record<string, string> = {
+    'no': 'nb',  // Norwegian Bokmål
+    'sv': 'sv',  // Swedish
+  };
+
   for (const locale of locales) {
     const url = locale === 'no' ? `${baseUrl}${path}` : `${baseUrl}/${locale}${path}`;
-    hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="${locale}" href="${url}"/>`;
+    const hreflangCode = hreflangMapping[locale] || locale;
+    hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="${hreflangCode}" href="${url}"/>`;
   }
 
   // Add x-default pointing to Norwegian (default locale)
@@ -210,7 +217,7 @@ export async function GET() {
         // If no Swedish version exists, only add Norwegian with fallback to self
         const noPath = `/${noCategory.slug}`;
         const hreflangLinks = `
-    <xhtml:link rel="alternate" hreflang="no" href="${baseUrl}${noPath}"/>
+    <xhtml:link rel="alternate" hreflang="nb" href="${baseUrl}${noPath}"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${noPath}"/>`;
 
         xml += generateUrlEntry(
@@ -249,7 +256,7 @@ export async function GET() {
         // If no Swedish version exists, only add Norwegian
         const noPath = `/${noSubcategory.parentCategorySlug}/${noSubcategory.slug}`;
         const hreflangLinks = `
-    <xhtml:link rel="alternate" hreflang="no" href="${baseUrl}${noPath}"/>
+    <xhtml:link rel="alternate" hreflang="nb" href="${baseUrl}${noPath}"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${noPath}"/>`;
 
         xml += generateUrlEntry(
@@ -289,7 +296,7 @@ export async function GET() {
         // If no Swedish version exists, only add Norwegian
         const noPath = `/${noDrawing.parentCategorySlug}/${noDrawing.subcategorySlug}/${noDrawing.slug}`;
         const hreflangLinks = `
-    <xhtml:link rel="alternate" hreflang="no" href="${baseUrl}${noPath}"/>
+    <xhtml:link rel="alternate" hreflang="nb" href="${baseUrl}${noPath}"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${noPath}"/>`;
 
         xml += generateUrlEntry(

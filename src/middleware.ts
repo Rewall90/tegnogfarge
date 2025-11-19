@@ -142,6 +142,10 @@ export async function middleware(request: NextRequest) {
     const locale = pathname.startsWith('/sv') ? 'sv' : 'no';
     response.headers.set('x-locale', locale);
 
+    // Set pathname for hreflang generation (remove locale prefix)
+    const pathWithoutLocale = pathname.replace(/^\/sv/, '') || '/';
+    response.headers.set('x-pathname', pathWithoutLocale);
+
     return response;
   }
 
@@ -149,6 +153,9 @@ export async function middleware(request: NextRequest) {
   // Set locale header for non-localized routes too
   const locale = pathname.startsWith('/sv') ? 'sv' : 'no';
   response.headers.set('x-locale', locale);
+
+  // Set pathname for hreflang generation
+  response.headers.set('x-pathname', pathname);
 
   return response;
 }

@@ -11,6 +11,11 @@ interface Subscriber {
   createdAt: string;
   verifiedAt: string | null;
   unsubscribedAt: string | null;
+  campaignId?: string;
+  metadata?: {
+    campaignName?: string;
+    downloadCount?: number;
+  };
 }
 
 interface Stats {
@@ -40,6 +45,7 @@ export default function SubscribersPage() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchInput, setSearchInput] = useState<string>('');
+  const [sourceType, setSourceType] = useState<'newsletter' | 'leads'>('newsletter');
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -59,11 +65,15 @@ export default function SubscribersPage() {
         ...(search && { search }),
       });
 
-      const response = await fetch(`/api/newsletter/subscribers?${params}`);
+      const endpoint = sourceType === 'newsletter'
+        ? `/api/newsletter/subscribers?${params}`
+        : `/api/lead-campaigns/submissions?${params}`;
+
+      const response = await fetch(endpoint);
       const data = await response.json();
 
       if (response.ok) {
-        setSubscribers(data.subscribers);
+        setSubscribers(sourceType === 'newsletter' ? data.subscribers : data.submissions);
         setStats(data.stats);
         setPagination(data.pagination);
       }
@@ -78,7 +88,7 @@ export default function SubscribersPage() {
     if (status === 'authenticated') {
       fetchSubscribers();
     }
-  }, [status, filterStatus, searchQuery]);
+  }, [status, filterStatus, searchQuery, sourceType]);
 
   // Handle search
   const handleSearch = (e: React.FormEvent) => {
@@ -87,13 +97,20 @@ export default function SubscribersPage() {
   };
 
   // Handle delete
-  const handleDelete = async (email: string) => {
+  const handleDelete = async (email: string, campaignId?: string) => {
     if (!confirm(`Er du sikker på at du vil slette abonnenten: ${email}?`)) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/newsletter/subscribers?email=${encodeURIComponent(email)}`, {
+      let endpoint = '';
+      if (sourceType === 'newsletter') {
+        endpoint = `/api/newsletter/subscribers?email=${encodeURIComponent(email)}`;
+      } else {
+        endpoint = `/api/lead-campaigns/submissions?email=${encodeURIComponent(email)}&campaignId=${encodeURIComponent(campaignId || '')}`;
+      }
+
+      const response = await fetch(endpoint, {
         method: 'DELETE',
       });
 
@@ -171,8 +188,12 @@ export default function SubscribersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Nyhetsbrev-abonnenter</h1>
-          <p className="text-sm text-gray-600 mt-1">Administrer alle nyhetsbrev-abonnenter</p>
+          <h1 className="text-2xl font-bold text-gray-900">E-post abonnenter</h1>
+          <p className="text-sm text-gray-600 mt-1">
+            {sourceType === 'newsletter'
+              ? 'Administrer nyhetsbrev-abonnenter'
+              : 'Administrer lead-kampanje registreringer'}
+          </p>
         </div>
         <button
           onClick={handleExport}
@@ -247,6 +268,19 @@ export default function SubscribersPage() {
       {/* Filters and Search */}
       <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
         <div className="flex flex-col md:flex-row gap-4 items-end">
+          {/* Source Type Filter */}
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+            <select
+              value={sourceType}
+              onChange={(e) => setSourceType(e.target.value as 'newsletter' | 'leads')}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="newsletter">Nyhetsbrev</option>
+              <option value="leads">Lead-kampanjer</option>
+            </select>
+          </div>
+
           {/* Status Filter */}
           <div className="flex-1">
             <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
@@ -306,6 +340,11 @@ export default function SubscribersPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   E-postadresse
                 </th>
+                {sourceType === 'leads' && (
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Kampanje
+                  </th>
+                )}
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
@@ -315,9 +354,11 @@ export default function SubscribersPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Verifisert
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Avmeldt
-                </th>
+                {sourceType === 'leads' && (
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Nedlastinger
+                  </th>
+                )}
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Handlinger
                 </th>
@@ -326,7 +367,7 @@ export default function SubscribersPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {subscribers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={sourceType === 'leads' ? 7 : 6} className="px-6 py-12 text-center text-gray-500">
                     Ingen abonnenter funnet
                   </td>
                 </tr>
@@ -336,6 +377,11 @@ export default function SubscribersPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{subscriber.email}</div>
                     </td>
+                    {sourceType === 'leads' && (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {subscriber.metadata?.campaignName || subscriber.campaignId || '-'}
+                      </td>
+                    )}
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getStatusBadge(subscriber)}
                     </td>
@@ -345,12 +391,14 @@ export default function SubscribersPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {formatDate(subscriber.verifiedAt)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(subscriber.unsubscribedAt)}
-                    </td>
+                    {sourceType === 'leads' && (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {subscriber.metadata?.downloadCount || 0}
+                      </td>
+                    )}
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
-                        onClick={() => handleDelete(subscriber.email)}
+                        onClick={() => handleDelete(subscriber.email, subscriber.campaignId)}
                         className="text-red-600 hover:text-red-900"
                       >
                         Slett

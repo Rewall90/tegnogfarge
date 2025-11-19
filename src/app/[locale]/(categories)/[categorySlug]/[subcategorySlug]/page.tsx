@@ -273,7 +273,7 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
   const { locale, categorySlug, subcategorySlug } = await paramsPromise;
 
   // Check if this is the flags subcategory (adjust slug as needed)
-  const isFlagsSubcategory = subcategorySlug === 'flagg' || subcategorySlug === 'flags';
+  const isFlagsSubcategory = subcategorySlug === 'fargelegge-flagg' || subcategorySlug === 'flags';
 
   // Fetch appropriate data based on subcategory type
   const subcategory = isFlagsSubcategory

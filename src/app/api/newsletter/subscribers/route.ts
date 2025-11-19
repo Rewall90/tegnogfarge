@@ -10,9 +10,9 @@ export async function GET(request: NextRequest) {
     // Check authentication
     const session = await getServerSession(authOptions);
 
-    if (!session || session.user?.email !== process.env.ADMIN_EMAIL) {
+    if (!session || session.user.role !== 'admin') {
       return NextResponse.json(
-        { message: 'Unauthorized' },
+        { error: 'Unauthorized - Admin access required' },
         { status: 401 }
       );
     }
@@ -33,13 +33,10 @@ export async function GET(request: NextRequest) {
     // Filter by status
     if (status === 'verified') {
       query.isVerified = true;
-      query.unsubscribedAt = { $exists: false };
     } else if (status === 'pending') {
       query.isVerified = false;
-      query.unsubscribedAt = { $exists: false };
-    } else if (status === 'unsubscribed') {
-      query.unsubscribedAt = { $exists: true };
     }
+    // Note: Newsletter subscribers don't have unsubscribedAt field
 
     // Search by email
     if (search) {
@@ -50,7 +47,7 @@ export async function GET(request: NextRequest) {
     const subscribers = await db
       .collection('subscribers')
       .find(query)
-      .sort({ createdAt: -1 })
+      .sort({ subscribedAt: -1 })
       .skip(skip)
       .limit(limit)
       .toArray();
@@ -62,16 +59,12 @@ export async function GET(request: NextRequest) {
     const stats = {
       total: await db.collection('subscribers').countDocuments({}),
       verified: await db.collection('subscribers').countDocuments({
-        isVerified: true,
-        unsubscribedAt: { $exists: false }
+        isVerified: true
       }),
       pending: await db.collection('subscribers').countDocuments({
-        isVerified: false,
-        unsubscribedAt: { $exists: false }
+        isVerified: false
       }),
-      unsubscribed: await db.collection('subscribers').countDocuments({
-        unsubscribedAt: { $exists: true }
-      }),
+      unsubscribed: 0, // Newsletter subscribers don't have unsubscribe tracking
     };
 
     return NextResponse.json({
@@ -79,9 +72,9 @@ export async function GET(request: NextRequest) {
         _id: sub._id.toString(),
         email: sub.email,
         isVerified: sub.isVerified,
-        createdAt: sub.createdAt,
-        verifiedAt: sub.verifiedAt || null,
-        unsubscribedAt: sub.unsubscribedAt || null,
+        createdAt: sub.subscribedAt, // Map subscribedAt to createdAt for frontend compatibility
+        verifiedAt: sub.isVerified ? sub.subscribedAt : null, // Use subscribedAt as verifiedAt if verified
+        unsubscribedAt: null, // Newsletter subscribers don't have unsubscribe tracking
       })),
       pagination: {
         page,
@@ -107,9 +100,9 @@ export async function DELETE(request: NextRequest) {
     // Check authentication
     const session = await getServerSession(authOptions);
 
-    if (!session || session.user?.email !== process.env.ADMIN_EMAIL) {
+    if (!session || session.user.role !== 'admin') {
       return NextResponse.json(
-        { message: 'Unauthorized' },
+        { error: 'Unauthorized - Admin access required' },
         { status: 401 }
       );
     }

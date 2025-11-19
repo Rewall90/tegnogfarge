@@ -366,6 +366,253 @@ export default defineType({
       ]
     }),
     defineField({
+      name: 'flagMetadata',
+      title: 'Flagg Metadata (kun for flagg-tegninger)',
+      type: 'object',
+      description: 'Spesiell metadata for flagg-fargeleggingsbilder. Fyll ut dette bare hvis dette er et flagg.',
+      options: {
+        collapsible: true,
+        collapsed: true
+      },
+      fields: [
+        {
+          name: 'geography',
+          title: 'Geografi',
+          type: 'object',
+          fields: [
+            {
+              name: 'continent',
+              title: 'Kontinent',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Europa', value: 'Europe' },
+                  { title: 'Asia', value: 'Asia' },
+                  { title: 'Afrika', value: 'Africa' },
+                  { title: 'Nord-Amerika', value: 'North America' },
+                  { title: 'Sør-Amerika', value: 'South America' },
+                  { title: 'Oseania', value: 'Oceania' },
+                  { title: 'Antarktis', value: 'Antarctica' }
+                ]
+              }
+            },
+            {
+              name: 'subRegion',
+              title: 'Region',
+              type: 'string',
+              description: 'F.eks. "Skandinavia", "Balkan", "Sør-Øst Asia"'
+            },
+            {
+              name: 'countryName',
+              title: 'Landsnavn',
+              type: 'string'
+            }
+          ]
+        },
+        {
+          name: 'flagInfo',
+          title: 'Flagg-informasjon',
+          type: 'object',
+          description: 'Viktig: Dette er påkrevd for at filtreringen skal fungere!',
+          fields: [
+            {
+              name: 'flagColors',
+              title: 'Flaggfarger',
+              type: 'array',
+              of: [{ type: 'string' }],
+              description: 'Liste over farger på flagget (bruk norske navn: rød, blå, hvit, svart, grønn, gul, oransje)',
+              options: {
+                layout: 'tags'
+              },
+              validation: Rule => Rule.required().min(1).error('Minst én farge må oppgis')
+            },
+            {
+              name: 'colorCount',
+              title: 'Antall farger',
+              type: 'number',
+              description: 'Hvor mange farger har flagget? (2, 3, 4, osv.)',
+              validation: Rule => Rule.required().min(1).max(10)
+            },
+            {
+              name: 'flagSymbol',
+              title: 'Flaggsymbol',
+              type: 'string',
+              description: 'F.eks. "Kors", "Stjerne", "Måne", "Dobbeltørn"'
+            },
+            {
+              name: 'flagPattern',
+              title: 'Flaggmønster',
+              type: 'string',
+              description: 'F.eks. "Enkel design", "Striper", "Kors", "Tricolor"'
+            },
+            {
+              name: 'flagType',
+              title: 'Flaggtype',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Nasjonalflagg', value: 'National' },
+                  { title: 'Regionalt flagg', value: 'Regional' },
+                  { title: 'Historisk flagg', value: 'Historical' }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          name: 'countryInfo',
+          title: 'Landinformasjon',
+          type: 'object',
+          fields: [
+            {
+              name: 'capital',
+              title: 'Hovedstad',
+              type: 'string'
+            },
+            {
+              name: 'officialLanguage',
+              title: 'Offisielt språk',
+              type: 'string'
+            },
+            {
+              name: 'population',
+              title: 'Befolkning',
+              type: 'number'
+            },
+            {
+              name: 'currency',
+              title: 'Valuta',
+              type: 'string'
+            }
+          ]
+        },
+        {
+          name: 'locationInfo',
+          title: 'Lokasjon',
+          type: 'object',
+          fields: [
+            {
+              name: 'borderingCountries',
+              title: 'Naboland',
+              type: 'array',
+              of: [{ type: 'string' }],
+              options: { layout: 'tags' }
+            },
+            {
+              name: 'coastline',
+              title: 'Kystlinje',
+              type: 'array',
+              of: [{ type: 'string' }],
+              description: 'Hav/sjø landet grenser til. Skriv "Landlocked" hvis det ikke har kyst.',
+              options: { layout: 'tags' }
+            },
+            {
+              name: 'isIsland',
+              title: 'Er det en øynasjon?',
+              type: 'boolean',
+              initialValue: false
+            },
+            {
+              name: 'hemisphere',
+              title: 'Halvkule',
+              type: 'array',
+              of: [{ type: 'string' }],
+              options: {
+                list: [
+                  { title: 'Nordlig', value: 'Northern' },
+                  { title: 'Sørlig', value: 'Southern' },
+                  { title: 'Østlig', value: 'Eastern' },
+                  { title: 'Vestlig', value: 'Western' }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          name: 'nature',
+          title: 'Natur (valgfritt)',
+          type: 'object',
+          options: { collapsible: true, collapsed: true },
+          fields: [
+            {
+              name: 'climateZone',
+              title: 'Klimasone',
+              type: 'string',
+              description: 'F.eks. "Tropisk", "Temperert", "Arktisk"'
+            },
+            {
+              name: 'famousLandmark',
+              title: 'Kjent landemerke',
+              type: 'string'
+            },
+            {
+              name: 'nativeAnimal',
+              title: 'Nasjonaldyr',
+              type: 'string'
+            }
+          ]
+        },
+        {
+          name: 'culture',
+          title: 'Kultur (valgfritt)',
+          type: 'object',
+          options: { collapsible: true, collapsed: true },
+          fields: [
+            {
+              name: 'traditionalFood',
+              title: 'Tradisjonell mat',
+              type: 'string'
+            },
+            {
+              name: 'famousSport',
+              title: 'Populær sport',
+              type: 'string'
+            },
+            {
+              name: 'greeting',
+              title: 'Hilsen',
+              type: 'string',
+              description: 'Hvordan man sier "hei" på landets språk'
+            },
+            {
+              name: 'localName',
+              title: 'Lokalt navn',
+              type: 'string',
+              description: 'Landets navn på sitt eget språk'
+            },
+            {
+              name: 'whenIndependent',
+              title: 'Uavhengighetsår',
+              type: 'string'
+            },
+            {
+              name: 'majorFestival',
+              title: 'Stor festival/høytid',
+              type: 'string'
+            },
+            {
+              name: 'nationalFlower',
+              title: 'Nasjonalblomst',
+              type: 'string'
+            }
+          ]
+        },
+        {
+          name: 'funLearning',
+          title: 'Moro og læring',
+          type: 'object',
+          fields: [
+            {
+              name: 'funFact',
+              title: 'Morsomt faktum',
+              type: 'text',
+              description: 'En interessant fakta om landet'
+            }
+          ]
+        }
+      ]
+    }),
+    defineField({
       name: 'subcategory',
       title: 'Underkategori',
       type: 'reference',

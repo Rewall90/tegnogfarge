@@ -27,29 +27,53 @@ interface ResendAPIError {
 }
 
 export class EmailService {
-  private static async generateVerificationToken(email: string, type: string): Promise<string> {
-    const token = uuidv4();
-    const expiresAt = new Date();
-    
-    if (type === 'user_verification') {
-      expiresAt.setHours(expiresAt.getHours() + parseInt(process.env.EMAIL_VERIFICATION_TOKEN_EXPIRES_HOURS || '24'));
-    } else {
-      expiresAt.setHours(expiresAt.getHours() + parseInt(process.env.NEWSLETTER_VERIFICATION_TOKEN_EXPIRES_HOURS || '72'));
+  private static async generateVerificationToken(
+    email: string,
+    type: string,
+    metadata?: any
+  ): Promise<string> {
+    try {
+      console.log('[EmailService] Generating verification token for:', email, 'type:', type);
+
+      const token = uuidv4();
+      const expiresAt = new Date();
+
+      if (type === 'user_verification') {
+        expiresAt.setHours(expiresAt.getHours() + parseInt(process.env.EMAIL_VERIFICATION_TOKEN_EXPIRES_HOURS || '24'));
+      } else {
+        expiresAt.setHours(expiresAt.getHours() + parseInt(process.env.NEWSLETTER_VERIFICATION_TOKEN_EXPIRES_HOURS || '72'));
+      }
+
+      console.log('[EmailService] Token expires at:', expiresAt);
+
+      const client = await clientPromise;
+      const db = client.db('fargeleggingsapp');
+
+      console.log('[EmailService] Connected to database, inserting token...');
+
+      await db.collection('verification_tokens').insertOne({
+        email,
+        token,
+        type,
+        expiresAt,
+        used: false,
+        createdAt: new Date(),
+        metadata: metadata || {}
+      });
+
+      console.log('[EmailService] Token inserted successfully');
+
+      return token;
+    } catch (error: unknown) {
+      const typedError = error as Error;
+      console.error('[EmailService] ERROR - Failed to generate verification token:', {
+        email,
+        type,
+        error: typedError.message,
+        stack: typedError.stack
+      });
+      throw error;
     }
-
-    const client = await clientPromise;
-    const db = client.db('fargeleggingsapp');
-    
-    await db.collection('verification_tokens').insertOne({
-      email,
-      token,
-      type,
-      expiresAt,
-      used: false,
-      createdAt: new Date()
-    });
-
-    return token;
   }
 
   static async sendUserVerificationEmail({ email, userName }: { email: string; userName: string }) {
@@ -213,11 +237,111 @@ export class EmailService {
     }
   }
 
-  static async verifyToken(token: string, type: string): Promise<{ valid: boolean; email?: string }> {
+  static async sendLeadCampaignVerificationEmail({
+    email,
+    campaignId,
+    metadata = {}
+  }: {
+    email: string;
+    campaignId: string;
+    metadata?: any;
+  }) {
+    try {
+      console.log('[EmailService] Starting lead campaign verification email for:', email);
+
+      const token = await this.generateVerificationToken(
+        email,
+        'lead_campaign_verification',
+        { campaignId, ...metadata }
+      );
+
+      console.log('[EmailService] Token generated successfully:', token.substring(0, 8) + '...');
+
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000';
+
+      // Fetch the unsubscribeToken from the database
+      const client = await clientPromise;
+      const db = client.db('fargeleggingsapp');
+      const submission = await db.collection('lead_submissions').findOne({
+        email,
+        campaignId
+      });
+      const unsubscribeToken = submission?.unsubscribeToken;
+
+      // Import and use the template
+      const { leadCampaignVerificationTemplate } = await import('./email-templates');
+      const emailTemplate = leadCampaignVerificationTemplate({
+        verificationCode: token,
+        baseUrl,
+        emailAddress: email,
+        campaignId,
+        campaignName: metadata.campaignName || 'Kampanje',
+        unsubscribeToken
+      });
+
+      // In development, use either DEV_TEST_EMAIL or Resend's test email
+      let recipientEmail = email;
+
+      if (process.env.NODE_ENV === 'development') {
+        if (process.env.DEV_TEST_EMAIL) {
+          recipientEmail = process.env.DEV_TEST_EMAIL;
+        } else {
+          recipientEmail = 'delivered@resend.dev';
+        }
+      }
+
+      // Build unsubscribe URL for headers
+      const unsubscribeUrl = unsubscribeToken
+        ? `${baseUrl}/api/lead-campaigns/unsubscribe?token=${unsubscribeToken}`
+        : '';
+
+      // Check if Resend API key is set BEFORE trying to send
+      if (!process.env.RESEND_API_KEY) {
+        console.error('[EmailService] ERROR - RESEND_API_KEY is not set. Cannot send verification email.');
+        throw new Error('RESEND_API_KEY is not configured');
+      }
+
+      console.log('[EmailService] Sending email to:', recipientEmail);
+      console.log('[EmailService] From:', `${process.env.EMAIL_FROM_NAME || 'TegnOgFarge.no'} <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`);
+
+      const result = await resend.emails.send({
+        from: `${process.env.EMAIL_FROM_NAME || 'TegnOgFarge.no'} <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+        to: recipientEmail,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+        // Add List-Unsubscribe headers for Gmail/Outlook unsubscribe button
+        headers: unsubscribeUrl
+          ? {
+              'List-Unsubscribe': `<${unsubscribeUrl}>`,
+              'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
+            }
+          : undefined
+      });
+
+      console.log('[EmailService] Email sent successfully. Message ID:', result.data?.id);
+
+      const verificationUrl = `${baseUrl}/api/lead-campaigns/verify?token=${token}`;
+      return { success: true, messageId: result.data?.id, verificationUrl };
+    } catch (error: unknown) {
+      const typedError = error as Error;
+      console.error('[EmailService] ERROR - Failed to send lead campaign verification email:', {
+        email,
+        campaignId,
+        error: typedError.message,
+        stack: typedError.stack
+      });
+      throw new Error('Failed to send verification email');
+    }
+  }
+
+  static async verifyToken(
+    token: string,
+    type: string
+  ): Promise<{ valid: boolean; email?: string; metadata?: any }> {
     try {
       const client = await clientPromise;
       const db = client.db('fargeleggingsapp');
-      
+
       // Forsøk å finne token i databasen
       const tokenDoc = await db.collection('verification_tokens').findOne({
         token,
@@ -225,18 +349,22 @@ export class EmailService {
         used: false,
         expiresAt: { $gt: new Date() }
       });
-      
+
       if (!tokenDoc) {
         return { valid: false };
       }
-      
+
       // Marker token som brukt
       await db.collection('verification_tokens').updateOne(
         { _id: tokenDoc._id },
         { $set: { used: true, usedAt: new Date() } }
       );
-      
-      return { valid: true, email: tokenDoc.email };
+
+      return {
+        valid: true,
+        email: tokenDoc.email,
+        metadata: tokenDoc.metadata || {}
+      };
     } catch (error: unknown) {
       console.error('Feil ved validering av token:', error);
       return { valid: false };

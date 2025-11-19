@@ -8,6 +8,16 @@ import { locales, defaultLocale, type Locale } from '@/i18n';
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
 
 /**
+ * ISO 639-1 language code mapping for hreflang attributes
+ * Maps internal locale codes to proper ISO 639-1 codes for SEO
+ * Internal 'no' → External 'nb' (Norwegian Bokmål) for Google compliance
+ */
+const hreflangMapping: Record<Locale, string> = {
+  no: 'nb',  // Norwegian Bokmål (ISO 639-1 compliant)
+  sv: 'sv',  // Swedish (already correct)
+};
+
+/**
  * URL slug mapping for static pages across locales
  * Maps Norwegian slugs to their Swedish equivalents
  */
@@ -59,12 +69,15 @@ export function generateHreflangUrls(pathname: string, currentLocale: Locale = d
     // Check if this path has a locale-specific slug mapping
     const localizedPath = urlSlugMapping[pathWithoutLocale]?.[locale] || pathWithoutLocale;
 
+    // Use ISO 639-1 compliant language code for hreflang attribute
+    const hreflangCode = hreflangMapping[locale];
+
     if (locale === defaultLocale) {
       // Norwegian (default) - no locale prefix
-      hreflangUrls[locale] = `${baseUrl}${localizedPath}`;
+      hreflangUrls[hreflangCode] = `${baseUrl}${localizedPath}`;
     } else {
       // Other locales - add locale prefix
-      hreflangUrls[locale] = `${baseUrl}/${locale}${localizedPath}`;
+      hreflangUrls[hreflangCode] = `${baseUrl}/${locale}${localizedPath}`;
     }
   }
 
