@@ -57,6 +57,14 @@ export default function SubscribersPage() {
   // Fetch subscribers
   const fetchSubscribers = async (page = 1, status = filterStatus, search = searchQuery) => {
     setLoading(true);
+    console.log('[DEBUG] fetchSubscribers called with:', {
+      page,
+      status,
+      search,
+      sourceType,
+      timestamp: new Date().toISOString()
+    });
+
     try {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -69,22 +77,50 @@ export default function SubscribersPage() {
         ? `/api/newsletter/subscribers?${params}`
         : `/api/lead-campaigns/submissions?${params}`;
 
+      console.log('[DEBUG] Fetching from endpoint:', endpoint);
+      console.log('[DEBUG] SourceType at fetch time:', sourceType);
+
       const response = await fetch(endpoint);
       const data = await response.json();
 
+      console.log('[DEBUG] Response received:', {
+        ok: response.ok,
+        status: response.status,
+        dataKeys: Object.keys(data),
+        subscribersCount: data.subscribers?.length,
+        submissionsCount: data.submissions?.length,
+        stats: data.stats
+      });
+
       if (response.ok) {
-        setSubscribers(sourceType === 'newsletter' ? data.subscribers : data.submissions);
+        const extractedData = sourceType === 'newsletter' ? data.subscribers : data.submissions;
+        console.log('[DEBUG] Setting subscribers with:', {
+          sourceType,
+          dataType: sourceType === 'newsletter' ? 'subscribers' : 'submissions',
+          count: extractedData?.length,
+          firstEmail: extractedData?.[0]?.email,
+          hasCampaignId: extractedData?.[0]?.campaignId !== undefined
+        });
+
+        setSubscribers(extractedData);
         setStats(data.stats);
         setPagination(data.pagination);
       }
     } catch (error) {
-      console.error('Error fetching subscribers:', error);
+      console.error('[DEBUG] Error fetching subscribers:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    console.log('[DEBUG] useEffect triggered with:', {
+      status,
+      filterStatus,
+      searchQuery,
+      sourceType,
+      timestamp: new Date().toISOString()
+    });
     if (status === 'authenticated') {
       fetchSubscribers();
     }
@@ -194,6 +230,9 @@ export default function SubscribersPage() {
               ? 'Administrer nyhetsbrev-abonnenter'
               : 'Administrer lead-kampanje registreringer'}
           </p>
+          <p className="text-xs text-blue-600 mt-1 font-mono">
+            [DEBUG] Active sourceType: {sourceType}
+          </p>
         </div>
         <button
           onClick={handleExport}
@@ -273,7 +312,11 @@ export default function SubscribersPage() {
             <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
             <select
               value={sourceType}
-              onChange={(e) => setSourceType(e.target.value as 'newsletter' | 'leads')}
+              onChange={(e) => {
+                const newValue = e.target.value as 'newsletter' | 'leads';
+                console.log('[DEBUG] SourceType changed from', sourceType, 'to', newValue);
+                setSourceType(newValue);
+              }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="newsletter">Nyhetsbrev</option>
