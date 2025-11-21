@@ -52,6 +52,15 @@ export async function GET(request: NextRequest) {
       .limit(limit)
       .toArray();
 
+    // DEBUG: Log date information
+    console.log('[Newsletter API DEBUG] Query:', JSON.stringify(query));
+    console.log('[Newsletter API DEBUG] Total found:', subscribers.length);
+    if (subscribers.length > 0) {
+      console.log('[Newsletter API DEBUG] First subscriber date:', subscribers[0].subscribedAt);
+      console.log('[Newsletter API DEBUG] Last subscriber date:', subscribers[subscribers.length - 1].subscribedAt);
+      console.log('[Newsletter API DEBUG] First subscriber:', { email: subscribers[0].email, subscribedAt: subscribers[0].subscribedAt });
+    }
+
     // Get total count for pagination
     const total = await db.collection('subscribers').countDocuments(query);
 
