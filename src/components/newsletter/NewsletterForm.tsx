@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
-import TurnstileWidget, { type TurnstileWidgetRef } from '../contact/TurnstileWidget';
+import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 
 export default function NewsletterForm() {
   const [email, setEmail] = useState('');
@@ -10,7 +10,7 @@ export default function NewsletterForm() {
   const [turnstileToken, setTurnstileToken] = useState<string>('');
   const [honeypot, setHoneypot] = useState(''); // Honeypot field - should remain empty
   const [formLoadTime] = useState(() => Date.now()); // Track when form was loaded for time-based validation
-  const turnstileRef = useRef<TurnstileWidgetRef>(null); // Reference to Turnstile widget for reset
+  const turnstileRef = useRef<TurnstileInstance>(null); // Reference to Turnstile widget for reset
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,16 +124,16 @@ export default function NewsletterForm() {
 
       {/* Cloudflare Turnstile CAPTCHA */}
       <div className="flex justify-center">
-        <TurnstileWidget
+        <Turnstile
           ref={turnstileRef}
-          onVerify={(token) => setTurnstileToken(token)}
+          siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!}
+          onSuccess={(token) => setTurnstileToken(token)}
           onExpire={() => setTurnstileToken('')}
           onError={() => {
             setStatus('error');
             setMessage('CAPTCHA-verifisering mislyktes. Vennligst prøv igjen.');
           }}
-          theme="light"
-          size="normal"
+          options={{ theme: 'light', size: 'normal' }}
         />
       </div>
 

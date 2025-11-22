@@ -3,7 +3,7 @@
 import { useState, Suspense, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import TurnstileWidget, { TurnstileWidgetRef } from '@/components/contact/TurnstileWidget';
+import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 
 // Set page metadata
 function setPageMetadata() {
@@ -48,7 +48,7 @@ function RegisterContent() {
   const [isDevMode, setIsDevMode] = useState(false);
   const [successMessage, setSuccessMessage] = useState<React.ReactNode>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const turnstileRef = useRef<TurnstileWidgetRef>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,7 +103,7 @@ function RegisterContent() {
         // Redirect direkte til verifiseringssiden
         router.push('/verify-email');
       }
-    } catch (error) {
+    } catch {
       setError('En feil oppstod. Prøv igjen senere.');
       // Reset Turnstile on error
       turnstileRef.current?.reset();
@@ -111,19 +111,6 @@ function RegisterContent() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleTurnstileVerify = (token: string) => {
-    setTurnstileToken(token);
-  };
-
-  const handleTurnstileExpire = () => {
-    setTurnstileToken(null);
-  };
-
-  const handleTurnstileError = () => {
-    setTurnstileToken(null);
-    setError('CAPTCHA-verifisering feilet. Prøv igjen.');
   };
 
   return (
@@ -207,12 +194,16 @@ function RegisterContent() {
 
           {/* Cloudflare Turnstile CAPTCHA */}
           <div className="flex justify-center">
-            <TurnstileWidget
+            <Turnstile
               ref={turnstileRef}
-              onVerify={handleTurnstileVerify}
-              onExpire={handleTurnstileExpire}
-              onError={handleTurnstileError}
-              theme="light"
+              siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!}
+              onSuccess={(token) => setTurnstileToken(token)}
+              onExpire={() => setTurnstileToken(null)}
+              onError={() => {
+                setTurnstileToken(null);
+                setError('CAPTCHA-verifisering feilet. Prøv igjen.');
+              }}
+              options={{ theme: 'light' }}
             />
           </div>
 

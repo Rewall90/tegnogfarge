@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from 'react';
-import TurnstileWidget, { type TurnstileWidgetRef } from './TurnstileWidget';
+import React, { useState, useRef } from 'react';
+import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 import type { ContactFormTranslations } from '@/i18n/translations/contact';
 
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -20,21 +20,7 @@ export default function ContactForm({ translations, locale }: ContactFormProps) 
   const [turnstileToken, setTurnstileToken] = useState<string>('');
   const [honeypot, setHoneypot] = useState(''); // Honeypot field - should remain empty
   const [formLoadTime] = useState(() => Date.now()); // Track when form was loaded for time-based validation
-  const turnstileRef = useRef<TurnstileWidgetRef>(null); // Reference to Turnstile widget for reset
-
-  // Memoized callbacks to prevent re-rendering of TurnstileWidget
-  const handleVerify = useCallback((token: string) => {
-    setTurnstileToken(token);
-  }, []);
-
-  const handleExpire = useCallback(() => {
-    setTurnstileToken('');
-  }, []);
-
-  const handleError = useCallback(() => {
-    setStatus('error');
-    setFeedbackMessage(translations.messages.captchaFailed);
-  }, [translations]);
+  const turnstileRef = useRef<TurnstileInstance>(null); // Reference to Turnstile widget for reset
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -161,13 +147,16 @@ export default function ContactForm({ translations, locale }: ContactFormProps) 
 
       {/* Cloudflare Turnstile CAPTCHA */}
       <div>
-        <TurnstileWidget
+        <Turnstile
           ref={turnstileRef}
-          onVerify={handleVerify}
-          onExpire={handleExpire}
-          onError={handleError}
-          theme="light"
-          size="normal"
+          siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!}
+          onSuccess={(token) => setTurnstileToken(token)}
+          onExpire={() => setTurnstileToken('')}
+          onError={() => {
+            setStatus('error');
+            setFeedbackMessage(translations.messages.captchaFailed);
+          }}
+          options={{ theme: 'light', size: 'normal' }}
         />
       </div>
 
