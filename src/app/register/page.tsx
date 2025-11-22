@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, Suspense, useEffect } from 'react';
+import { useState, Suspense, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import TurnstileWidget, { TurnstileWidgetRef } from '@/components/contact/TurnstileWidget';
 
 // Set page metadata
 function setPageMetadata() {
@@ -46,11 +47,19 @@ function RegisterContent() {
   const [verificationUrl, setVerificationUrl] = useState('');
   const [isDevMode, setIsDevMode] = useState(false);
   const [successMessage, setSuccessMessage] = useState<React.ReactNode>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileWidgetRef>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setVerificationUrl('');
+
+    // Valider CAPTCHA
+    if (!turnstileToken) {
+      setError('Vennligst fullfør CAPTCHA-verifiseringen');
+      return;
+    }
 
     // Valider passord
     if (formData.password !== formData.confirmPassword) {
@@ -73,6 +82,7 @@ function RegisterContent() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          turnstileToken,
         }),
       });
 
@@ -80,6 +90,9 @@ function RegisterContent() {
 
       if (!response.ok) {
         setError(data.message || 'Registrering feilet');
+        // Reset Turnstile on error so user can try again
+        turnstileRef.current?.reset();
+        setTurnstileToken(null);
       } else {
         // Lagre verifiseringskode i development mode
         if (window.location.hostname === 'localhost' && data.verificationUrl) {
@@ -92,9 +105,25 @@ function RegisterContent() {
       }
     } catch (error) {
       setError('En feil oppstod. Prøv igjen senere.');
+      // Reset Turnstile on error
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleTurnstileVerify = (token: string) => {
+    setTurnstileToken(token);
+  };
+
+  const handleTurnstileExpire = () => {
+    setTurnstileToken(null);
+  };
+
+  const handleTurnstileError = () => {
+    setTurnstileToken(null);
+    setError('CAPTCHA-verifisering feilet. Prøv igjen.');
   };
 
   return (
@@ -175,10 +204,21 @@ function RegisterContent() {
           {error && (
             <div className="text-red-600 text-sm">{error}</div>
           )}
-          
+
+          {/* Cloudflare Turnstile CAPTCHA */}
+          <div className="flex justify-center">
+            <TurnstileWidget
+              ref={turnstileRef}
+              onVerify={handleTurnstileVerify}
+              onExpire={handleTurnstileExpire}
+              onError={handleTurnstileError}
+              theme="light"
+            />
+          </div>
+
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !turnstileToken}
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
             {isLoading ? 'Oppretter konto...' : 'Opprett konto'}

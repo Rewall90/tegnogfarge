@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, Suspense, useEffect } from 'react';
+import { useState, Suspense, useEffect, useRef } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import TurnstileWidget, { TurnstileWidgetRef } from '@/components/contact/TurnstileWidget';
 
 // Set page metadata
 function setPageMetadata() {
@@ -45,36 +46,67 @@ function LoginContent() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(
-    verified 
-      ? 'E-post bekreftet! Du kan nå logge inn.' 
-      : verify 
-        ? 'Registrering vellykket! Sjekk e-posten din for å bekrefte kontoen før du logger inn.' 
-        : registered 
-          ? 'Registrering vellykket! Du kan nå logge inn.' 
+    verified
+      ? 'E-post bekreftet! Du kan nå logge inn.'
+      : verify
+        ? 'Registrering vellykket! Sjekk e-posten din for å bekrefte kontoen før du logger inn.'
+        : registered
+          ? 'Registrering vellykket! Du kan nå logge inn.'
           : ''
   );
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileWidgetRef>(null);
+
+  const handleTurnstileVerify = (token: string) => {
+    setTurnstileToken(token);
+  };
+
+  const handleTurnstileExpire = () => {
+    setTurnstileToken(null);
+  };
+
+  const handleTurnstileError = () => {
+    setTurnstileToken(null);
+    setError('CAPTCHA-verifisering feilet. Prøv igjen.');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
+
+    // Valider CAPTCHA
+    if (!turnstileToken) {
+      setError('Vennligst fullfør CAPTCHA-verifiseringen');
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       const result = await signIn('credentials', {
         email,
         password,
+        turnstileToken,
         redirect: false,
       });
 
       if (result?.error) {
-        setError(result.error === 'E-post ikke bekreftet. Sjekk innboksen din for bekreftelseslenke.' 
-          ? 'E-post ikke bekreftet. Sjekk innboksen din for bekreftelseslenke.' 
-          : 'Feil e-post eller passord');
+        setError(result.error === 'E-post ikke bekreftet. Sjekk innboksen din for bekreftelseslenke.'
+          ? 'E-post ikke bekreftet. Sjekk innboksen din for bekreftelseslenke.'
+          : result.error === 'CAPTCHA-verifisering feilet. Prøv igjen.'
+            ? 'CAPTCHA-verifisering feilet. Prøv igjen.'
+            : 'Feil e-post eller passord');
+        // Reset Turnstile on error
+        turnstileRef.current?.reset();
+        setTurnstileToken(null);
       } else {
         router.push(redirectUrl);
       }
     } catch (error) {
       setError('En feil oppstod. Prøv igjen senere.');
+      // Reset Turnstile on error
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -125,10 +157,21 @@ function LoginContent() {
           {error && (
             <div className="text-red-600 text-sm">{error}</div>
           )}
-          
+
+          {/* Cloudflare Turnstile CAPTCHA */}
+          <div className="flex justify-center">
+            <TurnstileWidget
+              ref={turnstileRef}
+              onVerify={handleTurnstileVerify}
+              onExpire={handleTurnstileExpire}
+              onError={handleTurnstileError}
+              theme="light"
+            />
+          </div>
+
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !turnstileToken}
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-button text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
             {isLoading ? 'Logger inn...' : 'Logg inn'}

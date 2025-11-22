@@ -3,6 +3,7 @@ import { hash } from 'bcrypt';
 import clientPromise from '@/lib/db';
 import { ObjectId } from 'mongodb';
 import { EmailService } from '@/lib/email-service';
+import { validateTurnstileToken } from '@/lib/turnstile';
 
 // Hjelpefunksjon for å sette timeout på databaseoperasjoner
 const withTimeout = <T>(promise: Promise<T>, timeoutMs = 5000): Promise<T> => {
@@ -34,7 +35,7 @@ export async function POST(request: Request) {
       );
     }
     
-    const { name, email, password } = body;
+    const { name, email, password, turnstileToken } = body;
 
     // Valider input
     if (!name || !email || !password) {
@@ -47,6 +48,23 @@ export async function POST(request: Request) {
     if (password.length < 8) {
       return NextResponse.json(
         { message: 'Passordet må være minst 8 tegn' },
+        { status: 400 }
+      );
+    }
+
+    // Valider Turnstile CAPTCHA token
+    if (!turnstileToken) {
+      return NextResponse.json(
+        { message: 'CAPTCHA-verifisering mangler' },
+        { status: 400 }
+      );
+    }
+
+    const turnstileValidation = await validateTurnstileToken(turnstileToken);
+    if (!turnstileValidation.success) {
+      console.warn('Turnstile validation failed for registration:', email, turnstileValidation.errorCodes);
+      return NextResponse.json(
+        { message: 'CAPTCHA-verifisering feilet. Prøv igjen.' },
         { status: 400 }
       );
     }

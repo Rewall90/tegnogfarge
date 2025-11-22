@@ -3,6 +3,7 @@ import { compare } from 'bcrypt';
 import clientPromise from '@/lib/db';
 import { JWT } from 'next-auth/jwt';
 import { Session } from 'next-auth';
+import { validateTurnstileToken } from '@/lib/turnstile';
 
 type UserType = {
   id: string;
@@ -20,11 +21,27 @@ const authOptions = {
       credentials: {
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
-        isVerified: { label: 'Is Verified', type: 'text' }
+        isVerified: { label: 'Is Verified', type: 'text' },
+        turnstileToken: { label: 'Turnstile Token', type: 'text' }
       },
       async authorize(credentials): Promise<UserType | null> {
         if (!credentials?.email) {
           throw new Error('Email er påkrevd');
+        }
+
+        // Skip CAPTCHA validation for auto-login after email verification
+        const isVerified = credentials.isVerified === 'true';
+        if (!isVerified) {
+          // Validate Turnstile CAPTCHA token for regular logins
+          if (!credentials.turnstileToken) {
+            throw new Error('CAPTCHA-verifisering mangler');
+          }
+
+          const turnstileValidation = await validateTurnstileToken(credentials.turnstileToken);
+          if (!turnstileValidation.success) {
+            console.warn('Turnstile validation failed for login:', credentials.email, turnstileValidation.errorCodes);
+            throw new Error('CAPTCHA-verifisering feilet. Prøv igjen.');
+          }
         }
 
         const client = await clientPromise;
@@ -35,8 +52,7 @@ const authOptions = {
           return null;
         }
 
-        // Check if this is an auto-login after email verification
-        const isVerified = credentials.isVerified === 'true';
+        // Check if this is an auto-login after email verification (isVerified already defined above)
         const skipPasswordCheck = isVerified && user.emailVerified;
 
         if (!skipPasswordCheck) {
