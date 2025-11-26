@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AdSenseScript } from "@/components/ads/AdSenseScript";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://tegnogfarge.no'),
@@ -22,6 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html>
+      <head>
+        <AdSenseScript />
+      </head>
       <body>
         {children}
       </body>
