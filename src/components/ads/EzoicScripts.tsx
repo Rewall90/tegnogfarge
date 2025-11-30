@@ -22,6 +22,22 @@ import Script from 'next/script';
 export function EzoicScripts() {
   return (
     <>
+      {/* Initialize _ezconsent BEFORE Ezoic scripts to prevent their popup */}
+      <Script
+        id="ezoic-consent-init"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window._ezconsent = window._ezconsent || {
+              consent: false,
+              analytics: false,
+              advertising: false,
+              functional: false
+            };
+          `,
+        }}
+      />
+
       {/* Ezoic Header Script - Loads asynchronously */}
       <Script
         async
