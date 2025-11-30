@@ -21,11 +21,31 @@ import Script from 'next/script';
  */
 export function AdSenseScript() {
   return (
-    <Script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2852837430993050"
-      crossOrigin="anonymous"
-      strategy="afterInteractive"
-    />
+    <>
+      {/* Block Google Funding Choices popup by intercepting FC API */}
+      <Script
+        id="block-funding-choices"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            // Block Funding Choices by stubbing out the googlefc object
+            window.googlefc = window.googlefc || {};
+            window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
+            window.googlefc.ccpa = window.googlefc.ccpa || {};
+            window.googlefc.controlledMessagingFunction = () => {};
+
+            // Block TCF API to prevent consent popup
+            window.__tcfapi = () => {};
+            window.__gpp = () => {};
+          `,
+        }}
+      />
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2852837430993050"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
+    </>
   );
 }
