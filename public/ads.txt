@@ -1,1 +1,9 @@
 google.com, pub-2852837430993050, DIRECT, f08c47fec0942fa0
+ezoic.com, 19390, DIRECT
+pubmatic.com, 159110, RESELLER, 5d62403b186f2ace
+rubiconproject.com, 17960, RESELLER, 0bfd66d529a55807
+openx.com, 537153209, RESELLER, 6a698e2ec38604c6
+appnexus.com, 1019, RESELLER, f5ab79cb980f11d1
+districtm.io, 100962, RESELLER
+improvedigital.com, 335, RESELLER
+indexexchange.com, 175407, RESELLER
