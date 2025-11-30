@@ -6,31 +6,22 @@ import Script from 'next/script';
  * Ezoic Integration Scripts
  *
  * Implements Ezoic's JavaScript integration for dual monetization alongside AdSense.
- * Privacy scripts MUST load before header script per Ezoic requirements.
+ * Uses third-party CMP (our custom Norwegian cookie banner) instead of Gatekeeper.
  *
  * Integration benefits:
  * - Works with AdSense via Mediation for split testing
  * - No DNS changes required
  * - Complete control over ad placements
  * - Lightweight client-side integration
+ * - Custom Norwegian cookie consent (not Ezoic's default popup)
+ *
+ * Consent is managed via window._ezconsent set by cookieManager.ts
  *
  * @see https://docs.ezoic.com/docs/ezoicads/integration/
  */
 export function EzoicScripts() {
   return (
     <>
-      {/* Privacy Scripts - MUST load FIRST per Ezoic requirements */}
-      <Script
-        src="https://cmp.gatekeeperconsent.com/min.js"
-        data-cfasync="false"
-        strategy="beforeInteractive"
-      />
-      <Script
-        src="https://the.gatekeeperconsent.com/cmp.min.js"
-        data-cfasync="false"
-        strategy="beforeInteractive"
-      />
-
       {/* Ezoic Header Script - Loads asynchronously */}
       <Script
         async

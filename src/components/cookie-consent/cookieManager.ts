@@ -67,17 +67,23 @@ export const cookieManager = {
 
     try {
       localStorage.setItem(CONSENT_COOKIE_NAME, JSON.stringify(preferences));
-      
+
       // Trigger Google Analytics based on consent
       if (preferences.categories.analytics) {
         this.enableGoogleAnalytics();
       } else {
         this.disableGoogleAnalytics();
       }
-      
+
+      // Update AdSense consent (Google Consent Mode v2)
+      this.updateAdSenseConsent(preferences.categories.advertising);
+
+      // Update Ezoic consent
+      this.updateEzoicConsent(preferences);
+
       // Dispatch event for other parts of the app
-      window.dispatchEvent(new CustomEvent('cookieConsentUpdate', { 
-        detail: preferences 
+      window.dispatchEvent(new CustomEvent('cookieConsentUpdate', {
+        detail: preferences
       }));
     } catch (error) {
       console.error('Error saving cookie preferences:', error);
@@ -123,10 +129,13 @@ export const cookieManager = {
     if (typeof window !== 'undefined' && window.gtag) {
       const preferences = this.getPreferences();
       const analyticsConsent = preferences?.categories.analytics ? 'granted' : 'denied';
-      
+      const adConsent = preferences?.categories.advertising ? 'granted' : 'denied';
+
       window.gtag('consent', 'default', {
         'analytics_storage': analyticsConsent,
-        'ad_storage': 'denied',
+        'ad_storage': adConsent,
+        'ad_user_data': adConsent,
+        'ad_personalization': adConsent,
         'functionality_storage': 'denied',
         'personalization_storage': 'denied',
         'security_storage': 'granted'
@@ -137,12 +146,55 @@ export const cookieManager = {
         'developer_id.dMDhkNz': true
       });
     }
+
+    // Initialize Ezoic consent if preferences exist
+    if (typeof window !== 'undefined') {
+      const preferences = this.getPreferences();
+      if (preferences) {
+        this.updateEzoicConsent(preferences);
+      }
+    }
+  },
+
+  // Update AdSense consent via Google Consent Mode v2
+  updateAdSenseConsent(hasAdConsent: boolean): void {
+    if (typeof window !== 'undefined' && window.gtag) {
+      const consentValue = hasAdConsent ? 'granted' : 'denied';
+
+      window.gtag('consent', 'update', {
+        'ad_storage': consentValue,
+        'ad_user_data': consentValue,
+        'ad_personalization': consentValue,
+      });
+
+      console.log(`[CookieConsent] AdSense consent updated: ${consentValue}`);
+    }
+  },
+
+  // Update Ezoic consent via _ezconsent global variable
+  updateEzoicConsent(preferences: CookiePreferences): void {
+    if (typeof window !== 'undefined') {
+      window._ezconsent = {
+        consent: preferences.consentGiven,
+        analytics: preferences.categories.analytics,
+        advertising: preferences.categories.advertising,
+        functional: preferences.categories.functional,
+      };
+
+      console.log('[CookieConsent] Ezoic consent updated:', window._ezconsent);
+    }
   }
 };
 
-// Type declaration for gtag
+// Type declarations for global variables
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
+    _ezconsent?: {
+      consent: boolean;
+      analytics: boolean;
+      advertising: boolean;
+      functional: boolean;
+    };
   }
 }
