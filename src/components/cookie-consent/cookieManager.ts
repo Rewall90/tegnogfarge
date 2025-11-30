@@ -158,16 +158,25 @@ export const cookieManager = {
 
   // Update AdSense consent via Google Consent Mode v2
   updateAdSenseConsent(hasAdConsent: boolean): void {
-    if (typeof window !== 'undefined' && window.gtag) {
-      const consentValue = hasAdConsent ? 'granted' : 'denied';
+    if (typeof window !== 'undefined') {
+      // Update Google Consent Mode
+      if (window.gtag) {
+        const consentValue = hasAdConsent ? 'granted' : 'denied';
 
-      window.gtag('consent', 'update', {
-        'ad_storage': consentValue,
-        'ad_user_data': consentValue,
-        'ad_personalization': consentValue,
-      });
+        window.gtag('consent', 'update', {
+          'ad_storage': consentValue,
+          'ad_user_data': consentValue,
+          'ad_personalization': consentValue,
+        });
 
-      console.log(`[CookieConsent] AdSense consent updated: ${consentValue}`);
+        console.log(`[CookieConsent] AdSense consent updated: ${consentValue}`);
+      }
+
+      // Unpause AdSense ad requests when consent is granted
+      if (window.adsbygoogle && hasAdConsent) {
+        window.adsbygoogle.pauseAdRequests = 0;
+        console.log('[CookieConsent] AdSense ad requests resumed');
+      }
     }
   },
 
@@ -196,5 +205,8 @@ declare global {
       advertising: boolean;
       functional: boolean;
     };
+    adsbygoogle?: {
+      pauseAdRequests?: number;
+    }[];
   }
 }
