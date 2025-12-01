@@ -71,12 +71,13 @@ export async function GET(request: NextRequest) {
       console.log('[Lead Campaigns API DEBUG] First submission:', { email: submissions[0].email, submittedAt: submissions[0].submittedAt, campaignId: submissions[0].campaignId });
     }
 
-    // Get stats
+    // Get stats - filter by campaign if specified
+    const statsFilter = campaignId && campaignId !== 'all' ? { campaignId } : {};
     const stats = {
-      total: await collection.countDocuments({}),
-      verified: await collection.countDocuments({ isVerified: true, unsubscribedAt: null }),
-      pending: await collection.countDocuments({ isVerified: false, unsubscribedAt: null }),
-      unsubscribed: await collection.countDocuments({ unsubscribedAt: { $ne: null } }),
+      total: await collection.countDocuments(statsFilter),
+      verified: await collection.countDocuments({ ...statsFilter, isVerified: true, unsubscribedAt: null }),
+      pending: await collection.countDocuments({ ...statsFilter, isVerified: false, unsubscribedAt: null }),
+      unsubscribed: await collection.countDocuments({ ...statsFilter, unsubscribedAt: { $ne: null } }),
     };
 
     return NextResponse.json({
