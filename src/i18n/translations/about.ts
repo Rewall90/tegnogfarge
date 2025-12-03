@@ -7,6 +7,7 @@ export const aboutTranslations = {
     breadcrumb: {
       home: 'Hjem',
       about: 'Om Oss',
+      ariaLabel: 'Brødsmulesti',
     },
     heading: 'Om Oss',
     content: {
@@ -30,6 +31,7 @@ export const aboutTranslations = {
     breadcrumb: {
       home: 'Hem',
       about: 'Om Oss',
+      ariaLabel: 'Brödsmulor',
     },
     heading: 'Om Oss',
     content: {
@@ -43,6 +45,30 @@ export const aboutTranslations = {
       heading: 'Kontakta Oss',
       text: 'Har du frågor eller vill komma i kontakt? Besök vår',
       linkText: 'kontaktsida',
+    },
+  },
+  de: {
+    metadata: {
+      title: 'Über Uns - TegnOgFarge.no',
+      description: 'Erfahren Sie mehr über TegnOgFarge.no, unsere Mission und das Team hinter der Website. Entdecken Sie, warum wir leidenschaftlich daran arbeiten, kostenlose Ausmalvorlagen für Kinder anzubieten.',
+    },
+    breadcrumb: {
+      home: 'Startseite',
+      about: 'Über Uns',
+      ariaLabel: 'Breadcrumb-Navigation',
+    },
+    heading: 'Über Uns',
+    content: {
+      intro: 'Bei Tegn & Farge haben wir das Ziel, die Fantasie von Kindern zu inspirieren und kreative Fähigkeiten durch lustige und einfache Ausmalbilder zu entwickeln. Wir glauben, dass Ausmalen mehr ist als eine angenehme Aktivität – es stärkt die Motorik, Farberkennung und Konzentration.',
+      vision: 'Wir haben 2025 angefangen, weil wir einen Ort schaffen wollten, an dem Kinder ausmalen und wirklich kreativ sein können. Unsere Vision ist es, Kindern einen Raum zum Gestalten zu geben – nicht nur zum Nutzen.',
+      mission: 'Wir haben Tegn & Farge mit einer klaren Idee ins Leben gerufen: eine digitale Plattform anzubieten, auf der sich Kinder frei ausdrücken und gleichzeitig Spaß mit einfachen und ansprechenden Motiven haben können. Seit dem Start arbeiten wir daran, unterhaltsame und lehrreiche Inhalte zu liefern, die kleine Köpfe und Hände beschäftigen.',
+      goal: 'Unser Ziel ist es, die kreative Entwicklung von Kindern jeden Alters mit leicht verständlichen und unterhaltsamen Ausmalbildern zu unterstützen. Wir aktualisieren kontinuierlich mit neuen Themen und Ideen, die zu weiterer Erkundung und Neugier anregen.',
+      closing: 'Mit Tegn & Farge wird Ausmalen lustiger und lehrreicher als je zuvor! Begleiten Sie uns auf dieser bunten Reise – lassen Sie die Kreativität erblühen!',
+    },
+    contact: {
+      heading: 'Kontaktieren Sie Uns',
+      text: 'Haben Sie Fragen oder möchten Sie Kontakt aufnehmen? Besuchen Sie unsere',
+      linkText: 'Kontaktseite',
     },
   },
 } as const;

@@ -15,20 +15,23 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
 const hreflangMapping: Record<Locale, string> = {
   no: 'nb',  // Norwegian Bokmål (ISO 639-1 compliant)
   sv: 'sv',  // Swedish (already correct)
+  de: 'de',  // German (already correct)
 };
 
 /**
  * URL slug mapping for static pages across locales
- * Maps Norwegian slugs to their Swedish equivalents
+ * Maps Norwegian slugs to their Swedish and German equivalents
  */
 const urlSlugMapping: Record<string, Record<Locale, string>> = {
   '/alle-underkategorier': {
     no: '/alle-underkategorier',
     sv: '/alla-underkategorier',
+    de: '/alle-unterkategorien',
   },
   '/hoved-kategori': {
     no: '/hoved-kategori',
     sv: '/huvudkategori',
+    de: '/hauptkategorie',
   },
 };
 
@@ -39,13 +42,13 @@ const urlSlugMapping: Record<string, Record<Locale, string>> = {
 export function getLocaleConfig(locale: Locale) {
   return {
     // For JSON-LD structured data (ISO 639-1 + ISO 3166-1)
-    inLanguage: locale === 'sv' ? 'sv-SE' : 'nb-NO',
+    inLanguage: locale === 'sv' ? 'sv-SE' : locale === 'de' ? 'de-DE' : 'nb-NO',
     // For OpenGraph (uses underscore instead of hyphen)
-    ogLocale: locale === 'sv' ? 'sv_SE' : 'nb_NO',
+    ogLocale: locale === 'sv' ? 'sv_SE' : locale === 'de' ? 'de_DE' : 'nb_NO',
     // For OpenGraph alternate locales
-    ogAlternate: locale === 'sv' ? ['nb_NO'] : ['sv_SE'],
+    ogAlternate: locale === 'sv' ? ['nb_NO', 'de_DE'] : locale === 'de' ? ['nb_NO', 'sv_SE'] : ['sv_SE', 'de_DE'],
     // UI labels
-    homeLabel: locale === 'sv' ? 'Hem' : 'Hjem',
+    homeLabel: locale === 'sv' ? 'Hem' : locale === 'de' ? 'Startseite' : 'Hjem',
   };
 }
 
@@ -61,7 +64,7 @@ export function generateHreflangUrls(pathname: string, currentLocale: Locale = d
   const cleanPath = pathname.startsWith('/') ? pathname : `/${pathname}`;
 
   // Remove any existing locale prefix from pathname
-  const pathWithoutLocale = cleanPath.replace(/^\/(no|sv)/, '');
+  const pathWithoutLocale = cleanPath.replace(/^\/(no|sv|de)/, '');
 
   const hreflangUrls: Record<string, string> = {};
 
@@ -100,7 +103,7 @@ export function generateCanonicalUrl(pathname: string, locale: Locale = defaultL
   const cleanPath = pathname.startsWith('/') ? pathname : `/${pathname}`;
 
   // Remove any existing locale prefix from pathname
-  const pathWithoutLocale = cleanPath.replace(/^\/(no|sv)/, '');
+  const pathWithoutLocale = cleanPath.replace(/^\/(no|sv|de)/, '');
 
   // Check if this path has a locale-specific slug mapping
   const localizedPath = urlSlugMapping[pathWithoutLocale]?.[locale] || pathWithoutLocale;

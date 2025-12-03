@@ -2,12 +2,25 @@ export const footerTranslations = {
   no: {
     newsletter: {
       text: 'Bli med på vårt nyhetsbrev for å holde deg oppdatert om funksjoner og nyheter.',
+      form: {
+        emailPlaceholder: 'Skriv inn e-posten din',
+        emailAriaLabel: 'Din e-postadresse',
+        submitButton: 'Abonner',
+        submitAriaLabel: 'Abonner på nyhetsbrevet',
+        submitting: 'Sender...',
+        captchaRequired: 'Vennligst fullfør CAPTCHA-verifiseringen.',
+        captchaFailed: 'CAPTCHA-verifisering mislyktes. Vennligst prøv igjen.',
+        errorGeneric: 'Noe gikk galt. Prøv igjen senere.',
+      },
     },
     sections: {
       information: 'Informasjon',
       popularCategories: 'Populære Kategorier',
       popularPages: 'Populære Sider',
       followUs: 'Følg oss',
+    },
+    ariaLabels: {
+      legalInfo: 'Juridisk informasjon',
     },
     links: {
       about: 'Om TegnOgFarge.no',
@@ -50,12 +63,25 @@ export const footerTranslations = {
   sv: {
     newsletter: {
       text: 'Gå med i vårt nyhetsbrev för att hålla dig uppdaterad om funktioner och nyheter.',
+      form: {
+        emailPlaceholder: 'Ange din e-postadress',
+        emailAriaLabel: 'Din e-postadress',
+        submitButton: 'Prenumerera',
+        submitAriaLabel: 'Prenumerera på nyhetsbrevet',
+        submitting: 'Skickar...',
+        captchaRequired: 'Vänligen slutför CAPTCHA-verifieringen.',
+        captchaFailed: 'CAPTCHA-verifiering misslyckades. Vänligen försök igen.',
+        errorGeneric: 'Något gick fel. Försök igen senare.',
+      },
     },
     sections: {
       information: 'Information',
       popularCategories: 'Populära Kategorier',
       popularPages: 'Populära Sidor',
       followUs: 'Följ oss',
+    },
+    ariaLabels: {
+      legalInfo: 'Juridisk information',
     },
     links: {
       about: 'Om TegnOgFarge.no',
@@ -93,6 +119,67 @@ export const footerTranslations = {
       { title: 'Höstmotiv', slug: 'malarbilder-hostmotiv', parentSlug: 'natur' },
       { title: 'Hundar', slug: 'malarbilder-hundar', parentSlug: 'djur' },
       { title: 'Pumpor', slug: 'malarbilder-pumpor', parentSlug: 'mat' },
+    ],
+  },
+  de: {
+    newsletter: {
+      text: 'Melden Sie sich für unseren Newsletter an, um über Funktionen und Neuigkeiten auf dem Laufenden zu bleiben.',
+      form: {
+        emailPlaceholder: 'Geben Sie Ihre E-Mail-Adresse ein',
+        emailAriaLabel: 'Ihre E-Mail-Adresse',
+        submitButton: 'Abonnieren',
+        submitAriaLabel: 'Newsletter abonnieren',
+        submitting: 'Wird gesendet...',
+        captchaRequired: 'Bitte schließen Sie die CAPTCHA-Verifizierung ab.',
+        captchaFailed: 'CAPTCHA-Verifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.',
+        errorGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut.',
+      },
+    },
+    sections: {
+      information: 'Information',
+      popularCategories: 'Beliebte Kategorien',
+      popularPages: 'Beliebte Seiten',
+      followUs: 'Folgen Sie uns',
+    },
+    ariaLabels: {
+      legalInfo: 'Rechtliche Informationen',
+    },
+    links: {
+      about: 'Über TegnOgFarge.no',
+      aboutAuthor: 'Über den Autor',
+      aboutAuthorSlug: 'ueber-den-autor',
+      contact: 'Kontaktieren Sie Uns',
+      terms: 'Allgemeine Geschäftsbedingungen',
+      termsSlug: 'allgemeine-geschaeftsbedingungen',
+      privacy: 'Datenschutzerklärung',
+      privacySlug: 'datenschutzerklaerung',
+      licensing: 'Lizenzrichtlinien',
+      licensingSlug: 'lizenzrichtlinien',
+      contentRemoval: 'Entfernung von Inhalten',
+      contentRemovalSlug: 'entfernung-von-inhalten',
+    },
+    copyright: 'Alle Rechte vorbehalten.',
+    languageSwitcher: {
+      norwegian: 'Norwegisch',
+      swedish: 'Schwedisch',
+    },
+    popularLinks: [
+      { title: 'Comics', slug: 'comics' },
+      { title: 'Mandala', slug: 'ausmalbilder-mandala' },
+      { title: 'Wissenschaft', slug: 'wissenschaft' },
+      { title: 'Fahrzeuge', slug: 'fahrzeuge' },
+      { title: 'Tiere', slug: 'tiere' },
+      { title: 'Natur', slug: 'natur' },
+      { title: 'Blumen', slug: 'blumen' },
+    ],
+    popularPages: [
+      { title: 'Einhörner', slug: 'ausmalbilder-einhoerner', parentSlug: 'comics' },
+      { title: 'Der Sommer', slug: 'ausmalbilder-sommer', parentSlug: 'natur' },
+      { title: 'Autos', slug: 'ausmalbilder-autos', parentSlug: 'fahrzeuge' },
+      { title: 'Prinzessinnen', slug: 'ausmalbilder-prinzessinnen', parentSlug: 'comics' },
+      { title: 'Herbstmotive', slug: 'ausmalbilder-herbstmotive', parentSlug: 'natur' },
+      { title: 'Hunde', slug: 'ausmalbilder-hunde', parentSlug: 'tiere' },
+      { title: 'Kürbisse', slug: 'ausmalbilder-kuerbisse', parentSlug: 'essen' },
     ],
   },
 } as const;

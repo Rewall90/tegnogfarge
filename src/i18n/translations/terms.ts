@@ -7,6 +7,7 @@ export const termsTranslations = {
     breadcrumb: {
       home: 'Hjem',
       terms: 'Vilkår og betingelser',
+      ariaLabel: 'Brødsmulesti',
     },
     heading: 'Vilkår og betingelser',
     intro: 'Velkommen til Tegn og Farge! Når du besøker eller bruker nettsiden vår på https://tegnogfarge.no, sier du deg enig i reglene som står her. Les dem gjerne nøye – de forklarer hva du har lov til, og hva du ikke har lov til, når du bruker siden vår.',
@@ -62,6 +63,7 @@ export const termsTranslations = {
     breadcrumb: {
       home: 'Hem',
       terms: 'Villkor och Bestämmelser',
+      ariaLabel: 'Brödsmulor',
     },
     heading: 'Villkor och Bestämmelser',
     intro: 'Välkommen till Tegn och Farge! När du besöker eller använder vår webbplats på https://tegnogfarge.no godkänner du reglerna som står här. Läs dem gärna noggrant – de förklarar vad du får göra och vad du inte får göra när du använder vår sida.',
@@ -106,6 +108,62 @@ export const termsTranslations = {
         text: 'Har du frågor om våra villkor?',
         linkText: 'Kontakta oss',
         suffix: ', så hjälper vi dig gärna!',
+      },
+    },
+  },
+  de: {
+    metadata: {
+      title: 'Allgemeine Geschäftsbedingungen - TegnOgFarge.no',
+      description: 'Wenn Sie unsere Website besuchen oder nutzen, stimmen Sie den hier aufgeführten Regeln zu. Bitte lesen Sie diese sorgfältig durch.',
+    },
+    breadcrumb: {
+      home: 'Startseite',
+      terms: 'Allgemeine Geschäftsbedingungen',
+      ariaLabel: 'Breadcrumb-Navigation',
+    },
+    heading: 'Allgemeine Geschäftsbedingungen',
+    intro: 'Willkommen bei Tegn og Farge! Wenn Sie unsere Website auf https://tegnogfarge.no besuchen oder nutzen, stimmen Sie den hier aufgeführten Regeln zu. Bitte lesen Sie diese sorgfältig durch – sie erklären, was Sie tun dürfen und was nicht, wenn Sie unsere Seite nutzen.',
+    sections: {
+      usage: {
+        heading: '1. Nutzung unserer Inhalte',
+        paragraph1: 'Alle Ausmalbilder und andere Inhalte auf Tegn og Farge sind für den persönlichen Gebrauch oder die Nutzung im schulischen Kontext bestimmt. Sie können die Vorlagen zum Spaß herunterladen, ausdrucken und teilen oder sie im Unterricht zu Hause oder in der Schule verwenden.',
+        paragraph2: 'Es ist nicht erlaubt, unsere Inhalte zu nutzen, um Geld zu verdienen, zum Beispiel:',
+        prohibited: [
+          'Die Vorlagen gegen Bezahlung zu verkaufen oder zu teilen',
+          'Sie in Büchern, Zeitschriften, Websites oder Apps zu verwenden, mit denen Sie Geld verdienen',
+          'Unsere Bilder in Werbung, Produkten oder Geschäftsprojekten zu verwenden',
+        ],
+      },
+      copyright: {
+        heading: '2. Urheberrecht und Eigentum',
+        content: 'Alle Inhalte – Bilder, Zeichnungen und Texte – gehören Tegn og Farge und sind gesetzlich geschützt. Sie dürfen sie nicht kopieren, verändern oder als Ihre eigenen verwenden ohne Erlaubnis. Wenn Sie dies dennoch tun, kann dies rechtliche Konsequenzen haben.',
+      },
+      allowedSharing: {
+        heading: '3. Erlaubtes Teilen',
+        content: 'Sie dürfen gerne Ausmalbilder für den persönlichen Gebrauch oder den Unterricht herunterladen und teilen – zum Beispiel mit Freunden, im Klassenzimmer oder auf Ihren eigenen sozialen Medien (solange Sie damit kein Geld verdienen). Sie müssen auch sicherstellen, dass der Inhalt nicht auf eine Weise verändert wird, die das Urheberrecht verletzt.',
+      },
+      subscription: {
+        heading: '4. Zukünftiges Abonnement',
+        content: 'Im Moment ist alles auf Tegn og Farge kostenlos. Aber in Zukunft könnten wir einen Abonnement-Service hinzufügen. Dann werden wir dafür eigene Regeln erstellen.',
+      },
+      prohibited: {
+        heading: '5. Was Sie nicht tun dürfen',
+        intro: 'Wenn Sie unsere Website nutzen, versprechen Sie, nichts zu tun, was:',
+        items: [
+          'Gegen deutsches Recht verstößt',
+          'Unsere Website beschädigt oder stört',
+          'Versucht, ohne Erlaubnis auf unsere Systeme oder Daten zuzugreifen',
+        ],
+      },
+      changes: {
+        heading: '6. Änderungen der Bedingungen',
+        content: 'Wir können diese Bedingungen bei Bedarf ändern. Wenn wir Änderungen vornehmen, veröffentlichen wir dies auf dieser Seite. Wir empfehlen, die Regeln regelmäßig zu überprüfen.',
+      },
+      contact: {
+        heading: 'Kontaktieren Sie uns',
+        text: 'Haben Sie Fragen zu unseren Bedingungen?',
+        linkText: 'Nehmen Sie Kontakt mit uns auf',
+        suffix: ', wir helfen Ihnen gerne!',
       },
     },
   },

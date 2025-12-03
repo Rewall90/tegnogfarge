@@ -182,6 +182,98 @@ export const flagsTranslations = {
       colors: "Färger",
       difficulty: "Svårighetsgrad"
     }
+  },
+  de: {
+    filters: {
+      title: "Flaggen filtern",
+      resetAll: "Alle Filter zurücksetzen",
+      search: {
+        placeholder: "Nach Land suchen...",
+        label: "Suchen",
+        noResults: "Keine Flaggen gefunden",
+      },
+      continent: {
+        label: "Kontinent",
+        all: "Alle Kontinente",
+        options: {
+          europe: "Europa",
+          asia: "Asien",
+          africa: "Afrika",
+          northAmerica: "Nordamerika",
+          southAmerica: "Südamerika",
+          oceania: "Ozeanien",
+          antarctica: "Antarktis"
+        }
+      },
+      colors: {
+        label: "Flaggenfarben",
+        all: "Alle Farben",
+        options: {
+          red: "Rot",
+          blue: "Blau",
+          white: "Weiß",
+          black: "Schwarz",
+          green: "Grün",
+          yellow: "Gelb",
+          orange: "Orange"
+        }
+      },
+      colorCount: {
+        label: "Anzahl der Farben",
+        all: "Alle",
+        options: {
+          "2": "2 Farben",
+          "3": "3 Farben",
+          "4": "4 oder mehr"
+        }
+      },
+      difficulty: {
+        label: "Schwierigkeitsgrad",
+        all: "Alle",
+        options: {
+          easy: "Einfach",
+          medium: "Mittel",
+          hard: "Schwierig"
+        }
+      },
+      region: {
+        label: "Region",
+        all: "Alle Regionen"
+      },
+      hemisphere: {
+        label: "Hemisphäre",
+        all: "Alle Hemisphären",
+        options: {
+          northern: "Nördlich",
+          southern: "Südlich",
+          eastern: "Östlich",
+          western: "Westlich"
+        }
+      }
+    },
+    sort: {
+      title: "Sortieren",
+      options: {
+        nameAsc: "Alphabetisch (A-Z)",
+        populationDesc: "Bevölkerung (hoch-niedrig)",
+        populationAsc: "Bevölkerung (niedrig-hoch)",
+        continentAsc: "Kontinent (A-Z)",
+        difficultyAsc: "Schwierigkeitsgrad"
+      }
+    },
+    results: {
+      showing: "{{count}} Flaggen werden angezeigt",
+      showingFiltered: "{{count}} von {{total}} Flaggen werden angezeigt",
+      noResults: "Keine Flaggen entsprechen Ihren Filtern",
+      tryDifferent: "Versuchen Sie, Ihre Filter anzupassen"
+    },
+    card: {
+      viewDetails: "Details anzeigen",
+      downloadPdf: "PDF herunterladen",
+      continent: "Kontinent",
+      colors: "Farben",
+      difficulty: "Schwierigkeitsgrad"
+    }
   }
 } as const;
 

@@ -43,6 +43,28 @@ export const authorTranslations = {
       licensingLink: 'licenspolicy',
     },
   },
+  de: {
+    metadata: {
+      title: 'Über den Autor - TegnOgFarge.no',
+      description: 'Lernen Sie den Autor und Illustrator hinter TegnOgFarge.no kennen. Erfahren Sie mehr über die Leidenschaft für Kreativität und Zeichnen, die die Website antreibt.',
+    },
+    breadcrumb: {
+      home: 'Startseite',
+      author: 'Über den Autor',
+    },
+    heading: 'Über den Autor',
+    content: {
+      intro: 'Willkommen auf der Seite über mich, den Autor und Illustrator, der hinter allen Zeichnungen steht, die Sie auf TegnOgFarge.no finden. Ich freue mich sehr, meine Leidenschaft für Kunst und Kreativität mit Ihnen teilen zu können.',
+      backgroundHeading: 'Mein Hintergrund',
+      background: 'Seit ich klein war, war das Zeichnen meine Art, mich auszudrücken. Ich habe unzählige Stunden mit Bleistift und Papier und später mit digitalen Zeichenwerkzeugen verbracht, um Welten und Charaktere aus der Fantasie zu erschaffen.',
+      philosophyHeading: 'Meine Philosophie',
+      philosophy: 'Ich glaube, dass jeder einen Künstler in sich trägt, der nur darauf wartet, herauszukommen. Ausmalen ist eine fantastische Möglichkeit, diese Seite von sich selbst zu erkunden, unabhängig von Alter oder Fähigkeitsniveau. Es geht nicht darum, ein perfektes Meisterwerk zu schaffen, sondern darum, Spaß zu haben, sich zu entspannen und die Kreativität fließen zu lassen.',
+      love: 'Alle Zeichnungen auf dieser Seite sind mit Liebe und dem Wunsch zu inspirieren gemacht. Ich hoffe, sie bereiten Ihnen genauso viel Freude beim Ausmalen, wie sie mir beim Erstellen bereitet haben.',
+      thanks: 'Danke, dass Sie sich die Zeit genommen haben, mich ein wenig besser kennenzulernen. Viel Spaß beim Ausmalen!',
+      licensing: 'Für weitere Informationen zur Nutzung der Bilder siehe unsere',
+      licensingLink: 'Lizenzrichtlinien',
+    },
+  },
 } as const;
 
 export type Locale = keyof typeof authorTranslations;

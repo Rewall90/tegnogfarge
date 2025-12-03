@@ -105,6 +105,59 @@ export const licensingTranslations = {
       },
     },
   },
+  de: {
+    metadata: {
+      title: 'Lizenzrichtlinien - TegnOgFarge.no',
+      description: 'Alle Inhalte auf Tegn og Farge sind urheberrechtlich geschützt. Lesen Sie, was Sie mit unseren Inhalten tun dürfen und was nicht erlaubt ist.',
+    },
+    breadcrumb: {
+      home: 'Startseite',
+      licensing: 'Lizenzrichtlinien',
+    },
+    heading: 'Lizenzrichtlinien',
+    intro: 'Alle Inhalte auf Tegn og Farge – wie Ausmalbilder, Bilder und Texte – sind urheberrechtlich geschützt. Das bedeutet, dass wir die Eigentümer sind und dass sie nur für den persönlichen Gebrauch oder die Nutzung im schulischen Kontext bestimmt sind. Wenn Sie unsere Inhalte verwenden, stimmen Sie den folgenden Regeln zu:',
+    sections: {
+      allowed: {
+        heading: '1. Was Sie tun dürfen',
+        intro: 'Sie können unsere Ausmalbilder herunterladen, ausdrucken und teilen, solange dies für privaten oder schulischen Gebrauch ist. Dies gilt zum Beispiel für:',
+        items: [
+          'Nutzung in Schulen durch Lehrer und Schüler, sowohl im Klassenzimmer als auch zu Hause',
+          'Teilen mit Freunden und Familie',
+          'Veröffentlichen von Bildern in sozialen Medien, solange es nicht zum Geldverdienen dient',
+        ],
+      },
+      notAllowed: {
+        heading: '2. Was Sie nicht tun dürfen',
+        intro: 'Sie dürfen unsere Inhalte nicht für irgendetwas verwenden, das mit Geldverdienen zu tun hat. Dies gilt unter anderem für:',
+        items: [
+          'Verkaufen oder Weitergeben unserer Vorlagen, entweder so wie sie sind oder verändert',
+          'Verwendung unserer Inhalte in Büchern, Produkten oder Dingen, für die Menschen bezahlen',
+          'Verwendung unserer Bilder in Werbung oder Projekten, bei denen jemand Geld verdient',
+        ],
+        note: 'Es ist nicht erlaubt, unsere Inhalte ohne Erlaubnis für kommerzielle Zwecke zu verwenden. Dies kann Konsequenzen haben.',
+      },
+      ownership: {
+        heading: '3. Wem die Inhalte gehören',
+        content: 'Alles auf Tegn og Farge wurde von uns erstellt und gehört uns. Sie dürfen nicht behaupten, dass Sie es selbst erstellt haben, oder es als Ihr Eigenes verwenden – weder das Original noch etwas, das Sie verändert haben.',
+      },
+      specialRequests: {
+        heading: '4. Besondere Wünsche?',
+        text: 'Möchten Sie etwas von uns auf eine Weise verwenden, die hier nicht aufgeführt ist – zum Beispiel in einem Projekt oder etwas Kommerziellem – müssen Sie',
+        linkText: 'uns kontaktieren',
+        suffix: '. Wir lesen jede Anfrage und antworten so schnell wie möglich.',
+      },
+      changes: {
+        heading: '5. Änderungen der Regeln',
+        content: 'Wir können diese Regeln jederzeit ändern. Schauen Sie gerne von Zeit zu Zeit vorbei, um zu sehen, was gilt.',
+      },
+      questions: {
+        heading: 'Fragen?',
+        text: 'Haben Sie Fragen zu diesen Regeln?',
+        linkText: 'Nehmen Sie Kontakt mit uns auf',
+        suffix: ' – wir helfen Ihnen gerne!',
+      },
+    },
+  },
 } as const;
 
 export type Locale = keyof typeof licensingTranslations;

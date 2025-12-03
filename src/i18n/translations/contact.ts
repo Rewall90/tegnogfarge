@@ -7,6 +7,7 @@ export const contactTranslations = {
     breadcrumb: {
       home: 'Hjem',
       contact: 'Kontakt Oss',
+      ariaLabel: 'Brødsmulesti',
     },
     heading: 'Kontakt Oss',
     intro: 'Har du spørsmål, innspill eller noe du lurer på? Vi setter alltid pris på å høre fra deg. Enten du har forslag til nye fargeleggingsark, trenger hjelp med noe, eller har lyst til å bidra med ideer – ta kontakt!',
@@ -51,6 +52,7 @@ export const contactTranslations = {
     breadcrumb: {
       home: 'Hem',
       contact: 'Kontakta Oss',
+      ariaLabel: 'Brödsmulor',
     },
     heading: 'Kontakta Oss',
     intro: 'Har du frågor, synpunkter eller något du undrar över? Vi uppskattar alltid att höra från dig. Oavsett om du har förslag på nya målarbilder, behöver hjälp med något eller vill bidra med idéer – kontakta oss!',
@@ -84,6 +86,51 @@ export const contactTranslations = {
         captchaFailed: 'CAPTCHA-verifiering misslyckades. Vänligen försök igen.',
         serverError: 'Kunde inte ansluta till servern. Försök igen senare.',
         genericError: 'Något gick fel.',
+      },
+    },
+  },
+  de: {
+    metadata: {
+      title: 'Kontaktieren Sie Uns - TegnOgFarge.no',
+      description: 'Haben Sie Fragen oder Anregungen? Kontaktieren Sie uns über unser Kontaktformular. Wir freuen uns auf Ihre Nachricht!',
+    },
+    breadcrumb: {
+      home: 'Startseite',
+      contact: 'Kontaktieren Sie Uns',
+      ariaLabel: 'Breadcrumb-Navigation',
+    },
+    heading: 'Kontaktieren Sie Uns',
+    intro: 'Haben Sie Fragen, Anregungen oder etwas, das Sie wissen möchten? Wir freuen uns immer, von Ihnen zu hören. Ob Sie Vorschläge für neue Ausmalbilder haben, Hilfe benötigen oder Ideen einbringen möchten – nehmen Sie Kontakt auf!',
+    list: {
+      heading: 'Sie können uns erreichen, wenn Sie zum Beispiel:',
+      items: [
+        'Fragen zum Inhalt der Website haben',
+        'Vorschläge oder Feedback teilen möchten',
+        'Kooperationsmöglichkeiten suchen',
+        'Technische Hilfe benötigen',
+      ],
+    },
+    form: {
+      labels: {
+        name: 'Name',
+        email: 'E-Mail',
+        message: 'Nachricht',
+      },
+      placeholders: {
+        name: 'Ihr Name hier...',
+        email: 'Ihre E-Mail-Adresse...',
+        message: 'Schreiben Sie hier Ihre Nachricht...',
+      },
+      button: {
+        submit: 'Nachricht Senden',
+        sending: 'Wird gesendet...',
+      },
+      messages: {
+        successTitle: 'Vielen Dank für Ihre Nachricht!',
+        captchaRequired: 'Bitte schließen Sie die CAPTCHA-Verifizierung ab.',
+        captchaFailed: 'CAPTCHA-Verifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.',
+        serverError: 'Verbindung zum Server fehlgeschlagen. Bitte versuchen Sie es später erneut.',
+        genericError: 'Etwas ist schiefgelaufen.',
       },
     },
   },

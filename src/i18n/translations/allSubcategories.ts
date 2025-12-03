@@ -27,6 +27,20 @@ export const allSubcategoriesTranslations = {
       subcategories: 'Underkategorier',
     },
   },
+  de: {
+    metadata: {
+      title: 'Alle Ausmalbilderkategorien - TegnOgFarge.no',
+      description: 'Entdecken Sie alle unsere Ausmalbilderkategorien für Kinder und Erwachsene. Laden Sie kostenlose Ausmalbilder herunter oder verwenden Sie unser Online-Ausmalwerkzeug.',
+    },
+    breadcrumb: {
+      backToHome: 'Zurück zur Startseite',
+    },
+    heading: 'Alle Ausmalbilderkategorien',
+    description: 'Entdecken Sie alle unsere Ausmalbilderkategorien für Kinder und Erwachsene. Wählen Sie eine Kategorie, um Ausmalbilder zu finden.',
+    srOnly: {
+      subcategories: 'Unterkategorien',
+    },
+  },
 } as const;
 
 export type AllSubcategoriesTranslations = typeof allSubcategoriesTranslations;

@@ -21,6 +21,17 @@ export const allCategoriesTranslations = {
     heading: 'Alla Kategorier',
     description: 'Utforska alla våra målarkategorier för barn och vuxna. Välj en kategori för att hitta målarbilder.',
   },
+  de: {
+    metadata: {
+      title: 'Alle Kategorien - TegnOgFarge.no',
+      description: 'Entdecken Sie alle unsere Ausmalbilderkategorien für Kinder und Erwachsene. Wählen Sie eine Kategorie, um Ausmalbilder zu finden.',
+    },
+    breadcrumb: {
+      backToHome: 'Zurück zur Startseite',
+    },
+    heading: 'Alle Kategorien',
+    description: 'Entdecken Sie alle unsere Ausmalbilderkategorien für Kinder und Erwachsene. Wählen Sie eine Kategorie, um Ausmalbilder zu finden.',
+  },
 } as const;
 
 export type AllCategoriesTranslations = typeof allCategoriesTranslations;

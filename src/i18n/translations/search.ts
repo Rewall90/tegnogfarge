@@ -11,6 +11,12 @@ export const searchTranslations = {
     loading: 'Laddar...',
     noResults: 'Inga resultat hittades.',
   },
+  de: {
+    label: 'Nach Ausmalbildern suchen',
+    placeholder: 'Nach Ausmalbildern suchen...',
+    loading: 'Lädt...',
+    noResults: 'Keine Ergebnisse gefunden.',
+  },
 } as const;
 
 export type SearchLocale = keyof typeof searchTranslations;

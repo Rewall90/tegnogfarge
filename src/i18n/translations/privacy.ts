@@ -8,6 +8,7 @@ export const privacyTranslations = {
     breadcrumb: {
       home: 'Hjem',
       privacy: 'Personvernerklæring',
+      ariaLabel: 'Brødsmulesti',
     },
     heading: 'Personvernerklæring',
     lastUpdated: 'Sist oppdatert: 12. desember 2024',
@@ -199,6 +200,7 @@ export const privacyTranslations = {
     breadcrumb: {
       home: 'Hem',
       privacy: 'Sekretesspolicy',
+      ariaLabel: 'Brödsmulor',
     },
     heading: 'Sekretesspolicy',
     lastUpdated: 'Senast uppdaterad: 12 december 2024',
@@ -379,6 +381,198 @@ export const privacyTranslations = {
       text: 'Har du frågor om integritet eller cookies?',
       linkText: 'Kontakta oss',
       suffix: ', så hjälper vi dig gärna!',
+    },
+  },
+  de: {
+    metadata: {
+      title: 'Datenschutzerklärung - TegnOgFarge.no',
+      description: 'Diese Datenschutzerklärung erklärt, wie wir bei Tegn og Farge personenbezogene Daten sammeln, verwenden und schützen, wenn Sie unsere Website nutzen.',
+      keywords: 'Datenschutz, Cookies, Einwilligung, DSGVO, deutsches Datenschutzgesetz, Cookie-Einwilligung',
+    },
+    breadcrumb: {
+      home: 'Startseite',
+      privacy: 'Datenschutzerklärung',
+      ariaLabel: 'Breadcrumb-Navigation',
+    },
+    heading: 'Datenschutzerklärung',
+    lastUpdated: 'Zuletzt aktualisiert: 12. Dezember 2024',
+    intro: {
+      paragraph1: 'Diese Datenschutzerklärung erklärt, wie wir bei Tegn og Farge personenbezogene Daten sammeln, verwenden und schützen, wenn Sie unsere Website nutzen. Sie erklärt auch, welche Rechte Sie haben und wie das Gesetz Sie schützt.',
+      paragraph2: 'Wenn Sie unsere Dienste nutzen, stimmen Sie zu, dass wir Informationen gemäß den hier beschriebenen Bedingungen sammeln und verwenden dürfen.',
+    },
+    definitions: {
+      heading: 'Was bedeuten die verschiedenen Begriffe?',
+      items: [
+        { term: 'Konto:', description: 'Ein Konto, das Sie möglicherweise bei uns erstellen, um bestimmte Funktionen zu nutzen.' },
+        { term: 'Wir / Uns / Unser:', description: 'Bedeutet Tegn og Farge.' },
+        { term: 'Dienst:', description: 'Unsere Website, tegnogfarge.no.' },
+        { term: 'Gerät:', description: 'Das Gerät, das Sie verwenden – z.B. Handy, Tablet oder Computer.' },
+        { term: 'Personenbezogene Daten:', description: 'Informationen, die verwendet werden können, um Sie zu identifizieren, wie Name und E-Mail.' },
+        { term: 'Nutzungsdaten:', description: 'Technische Daten darüber, wie Sie die Seite nutzen, z.B. welche Seiten Sie besuchen und wie lange.' },
+        { term: 'Cookies:', description: 'Kleine Dateien, die in Ihrem Browser gespeichert werden, um das Erlebnis zu verbessern.' },
+      ],
+    },
+    dataCollection: {
+      heading: 'Welche Informationen sammeln wir?',
+      personalData: {
+        title: 'Personenbezogene Daten',
+        intro: 'Wenn Sie unsere Website nutzen, können wir Sie bitten, anzugeben:',
+        items: ['Name', 'E-Mail-Adresse', 'Andere Informationen, die Sie freiwillig angeben'],
+      },
+      usageData: {
+        title: 'Nutzungsdaten',
+        intro: 'Wir sammeln automatisch technische Informationen, zum Beispiel:',
+        items: ['IP-Adresse', 'Browsertyp und -version', 'Uhrzeit und Datum des Besuchs', 'Wie lange Sie auf verschiedenen Seiten sind', 'Welche Art von Gerät Sie verwenden'],
+      },
+      cookies: {
+        title: 'Cookies und Tracking',
+        intro: 'Wir verwenden Cookies und ähnliche Technologien, um:',
+        items: ['Unsere Dienste zu verbessern', 'Ihre Auswahl zu speichern (wie Sprache und Anmeldung)', 'Zu verstehen, wie die Website genutzt wird'],
+        note: 'Sie können Cookies in Ihrem Browser selbst deaktivieren. Dies kann jedoch dazu führen, dass einige Funktionen nicht wie vorgesehen funktionieren.',
+      },
+    },
+    dataUsage: {
+      heading: 'Wie verwenden wir Ihre Informationen?',
+      intro: 'Wir verwenden die Informationen, um:',
+      items: [
+        'Ihnen Zugang zur Website zu gewähren und sie zu verbessern',
+        'Sie bei Bedarf zu kontaktieren (z.B. bei Änderungen)',
+        'Ihnen nützliche Informationen zu senden (wenn Sie dies wünschen)',
+        'Zu verstehen, wie die Website genutzt wird',
+        'Ihre Anfragen zu bearbeiten',
+      ],
+      note: 'Wir können die Informationen auch im Zusammenhang mit technischen Verbesserungen, Statistiken und Sicherheit verwenden.',
+    },
+    dataSharing: {
+      heading: 'Wann teilen wir Informationen?',
+      intro: 'Wir können Ihre Informationen teilen mit:',
+      items: [
+        'Dienstleistern, die uns beim Betrieb helfen',
+        'Kooperationspartnern (z.B. wenn Sie etwas über sie anfordern)',
+        'Bei rechtlichen Anforderungen oder wenn wir Sie oder uns selbst schützen müssen',
+        'Im Zusammenhang mit Eigentumsänderungen des Unternehmens',
+        'Mit Ihrer Einwilligung',
+      ],
+      note: 'Wir verkaufen Ihre Informationen nicht weiter.',
+    },
+    dataRetention: {
+      heading: 'Wie lange speichern wir Informationen?',
+      content: 'Wir speichern Ihre Informationen so lange, wie es für den Zweck, für den sie gesammelt wurden, erforderlich ist. Einige Informationen müssen wir möglicherweise länger speichern, um das Gesetz einzuhalten (z.B. Buchhaltung oder Sicherheit).',
+    },
+    dataLocation: {
+      heading: 'Wo werden die Informationen gespeichert?',
+      content: 'Daten können auf Servern außerhalb Deutschlands gespeichert werden. Wir stellen immer sicher, dass die Informationen sicher und im Einklang mit den Datenschutzgesetzen behandelt werden.',
+    },
+    userRights: {
+      heading: 'Ihre Rechte',
+      intro: 'Sie haben das Recht:',
+      items: [
+        'Zu sehen, welche Daten wir über Sie gespeichert haben',
+        'Informationen korrigieren, aktualisieren oder löschen zu lassen',
+        'Ihre Einwilligung zurückzuziehen (wo zutreffend)',
+      ],
+      note: 'Kontaktieren Sie uns, wenn Sie eines dieser Rechte ausüben möchten.',
+    },
+    children: {
+      heading: 'Kinder unter 13 Jahren',
+      content: 'Unser Dienst ist nicht für Kinder unter 13 Jahren bestimmt. Wir sammeln nicht wissentlich personenbezogene Daten von Kindern. Wenn Sie Elternteil sind und glauben, dass Ihr Kind Informationen mit uns geteilt hat, nehmen Sie Kontakt auf – wir werden sie entfernen.',
+    },
+    externalLinks: {
+      heading: 'Links zu anderen Seiten',
+      content: 'Manchmal verlinken wir zu anderen Websites. Wir sind nicht verantwortlich dafür, wie diese Seiten mit Datenschutz umgehen. Bitte lesen Sie die Datenschutzerklärung auf den Seiten, die Sie besuchen.',
+    },
+    policyChanges: {
+      heading: 'Änderungen der Datenschutzerklärung',
+      content: 'Wir können diesen Text von Zeit zu Zeit aktualisieren. Änderungen werden auf dieser Seite veröffentlicht, und wir benachrichtigen Sie, wenn größere Änderungen vorgenommen werden.',
+    },
+    consentManagement: {
+      heading: 'Einwilligungsverwaltung',
+      paragraph1: 'Wir respektieren Ihre Wahl in Bezug auf Cookies. Sie können Ihre Einwilligungspräferenzen jederzeit ändern, indem Sie auf die Cookie-Einstellungen-Schaltfläche unten links auf der Website klicken.',
+      paragraph2: 'Ihre Einwilligung wird für 12 Monate gespeichert. Danach werden Sie gebeten, Ihre Einwilligung zu erneuern. Sie können Ihre Einwilligung jederzeit widerrufen, ohne dass dies die Rechtmäßigkeit der vor dem Widerruf durchgeführten Verarbeitung beeinträchtigt.',
+    },
+    mobileApp: {
+      mainHeading: 'Mobile App',
+      intro: {
+        heading: 'TegnOgFarge Mobile App',
+        content: 'TegnOgFarge bietet eine mobile App, mit der Benutzer Bilder direkt auf ihrem Handy oder Tablet ausmalen und auf ihrem eigenen Gerät speichern können.',
+      },
+      dataCollected: {
+        heading: 'Informationen, die wir sammeln',
+        photoLibrary: {
+          title: 'Fotobibliothek/Galeriezugriff:',
+          items: [
+            'Die App fordert die Berechtigung an, auf die Fotobibliothek/Galerie des Geräts zuzugreifen',
+            'Dies dient nur dazu, ausgemalte Kunstbilder lokal auf Ihrem Gerät zu speichern',
+            'Wir lesen NICHT vorhandene Bilder aus Ihrer Fotobibliothek',
+            'Wir erhalten nur Zugriff zum Speichern neuer Bilder',
+          ],
+        },
+      },
+      dataNotCollected: {
+        heading: 'Was wir NICHT sammeln',
+        intro: 'Die TegnOgFarge mobile App sammelt KEINE personenbezogenen Daten:',
+        items: [
+          'Wir sammeln NICHT Namen, E-Mail oder Kontaktinformationen',
+          'Wir senden KEINE Bilder oder Zeichnungen an unsere Server',
+          'Wir speichern KEINE Bilder oder Daten extern',
+          'Wir verfolgen NICHT, wie Sie die App verwenden',
+          'Wir sammeln KEINE Analysedaten oder Benutzerstatistiken',
+          'Wir verwenden KEINE Tracking-Dienste oder Analysedienste',
+          'Wir teilen KEINE Daten mit Dritten',
+          'Wir haben KEINE Anzeigen oder Werbepartner',
+        ],
+      },
+      dataUsage: {
+        heading: 'Wie Daten verwendet werden',
+        items: [
+          'Ausgemalte Bilder werden nur lokal auf Ihrem eigenen Gerät in Ihrer Fotobibliothek gespeichert',
+          'Sie haben die volle Kontrolle über alle gespeicherten Bilder',
+          'Sie können Bilder jederzeit direkt aus Ihrer Fotobibliothek löschen',
+          'Alle Bilder bleiben auf Ihrem Gerät und werden niemals über das Internet gesendet',
+        ],
+      },
+      permissions: {
+        heading: 'Berechtigungen, die die App anfordert',
+        photoLibrary: {
+          title: 'Fotobibliothek/Galeriezugriff (iOS) / Speicherzugriff (Android):',
+          items: [
+            { label: 'Zweck:', text: 'Nur zum Speichern Ihrer fertig ausgemalten Bilder in Ihrer Fotobibliothek' },
+            { label: 'Wann:', text: 'Wenn Sie ein ausgemaltes Bild speichern möchten' },
+            { label: 'Erforderlich:', text: 'Optional - Sie können die App ohne Speichern von Bildern verwenden' },
+          ],
+        },
+      },
+      offline: {
+        heading: 'Offline-Funktionalität',
+        intro: 'Die App funktioniert vollständig offline und benötigt keine Internetverbindung:',
+        items: [
+          'Keine Daten werden über das Internet gesendet',
+          'Keine Kommunikation mit externen Servern',
+          'Alles geschieht lokal auf Ihrem Gerät',
+        ],
+      },
+      childPrivacy: {
+        heading: 'Datenschutz für Kinder',
+        intro: 'Die App ist für Kinder und Familien konzipiert. Wir nehmen Datenschutz ernst:',
+        items: [
+          'Keine Datensammlung',
+          'Keine Anzeigen',
+          'Keine In-App-Käufe',
+          'Keine Kommunikationsfunktionen',
+          'Keine externen Links',
+        ],
+      },
+      policyChanges: {
+        heading: 'Änderungen der Datenschutzerklärung für mobile Apps',
+        content: 'Wir behalten uns das Recht vor, diese Datenschutzerklärung zu aktualisieren. Bei wesentlichen Änderungen werden wir Benutzer durch App-Updates informieren.',
+        lastUpdated: 'Zuletzt aktualisiert: 12. Dezember 2024',
+      },
+    },
+    contact: {
+      heading: 'Kontaktieren Sie uns',
+      text: 'Haben Sie Fragen zum Datenschutz oder zu Cookies?',
+      linkText: 'Nehmen Sie Kontakt mit uns auf',
+      suffix: ', wir helfen Ihnen gerne!',
     },
   },
 } as const;

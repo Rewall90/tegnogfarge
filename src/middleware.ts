@@ -130,6 +130,7 @@ export async function middleware(request: NextRequest) {
     '/unsubscribe-confirmation',
     '/api',
     '/coloring-app',
+    '/ukentlige-fargebilder',
   ];
 
   const shouldSkipLocale = nonLocalizedRoutes.some(route => pathname.startsWith(route)) || pathname.includes('.');
@@ -139,11 +140,16 @@ export async function middleware(request: NextRequest) {
     const response = intlMiddleware(request);
 
     // Extract locale from pathname and set it as a header for root layout
-    const locale = pathname.startsWith('/sv') ? 'sv' : 'no';
+    let locale: 'no' | 'sv' | 'de' = 'no';
+    if (pathname.startsWith('/sv')) {
+      locale = 'sv';
+    } else if (pathname.startsWith('/de')) {
+      locale = 'de';
+    }
     response.headers.set('x-locale', locale);
 
     // Set pathname for hreflang generation (remove locale prefix)
-    const pathWithoutLocale = pathname.replace(/^\/sv/, '') || '/';
+    const pathWithoutLocale = pathname.replace(/^\/(sv|de)/, '') || '/';
     response.headers.set('x-pathname', pathWithoutLocale);
 
     return response;
@@ -151,7 +157,12 @@ export async function middleware(request: NextRequest) {
 
   const response = NextResponse.next();
   // Set locale header for non-localized routes too
-  const locale = pathname.startsWith('/sv') ? 'sv' : 'no';
+  let locale: 'no' | 'sv' | 'de' = 'no';
+  if (pathname.startsWith('/sv')) {
+    locale = 'sv';
+  } else if (pathname.startsWith('/de')) {
+    locale = 'de';
+  }
   response.headers.set('x-locale', locale);
 
   // Set pathname for hreflang generation

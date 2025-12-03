@@ -101,6 +101,57 @@ export const contentRemovalTranslations = {
       },
     },
   },
+  de: {
+    metadata: {
+      title: 'Entfernung von Inhalten - TegnOgFarge.no',
+      description: 'Bei Tegn og Farge ist es uns wichtig, die Dinge richtig zu machen. Wir verwenden nur Bilder und Inhalte, die wir verwenden dürfen, und wir hoffen, dass alle, die unsere Seite nutzen, das Gleiche tun.',
+    },
+    breadcrumb: {
+      home: 'Startseite',
+      contentRemoval: 'Entfernung von Inhalten',
+    },
+    heading: 'Richtlinien zur Entfernung von Inhalten',
+    intro: 'Bei Tegn og Farge ist es uns wichtig, die Dinge richtig zu machen. Wir verwenden nur Bilder und Inhalte, die wir verwenden dürfen, und wir hoffen, dass alle, die unsere Seite nutzen, das Gleiche tun.',
+    sections: {
+      report: {
+        heading: '1. Wenn Sie glauben, dass wir etwas verwendet haben, das wir nicht verwenden dürfen',
+        intro: 'Wenn Sie etwas auf unserer Website sehen, von dem Sie glauben, dass wir nicht das Recht haben, es zu verwenden – vielleicht besitzen Sie es selbst – können Sie',
+        linkText: 'uns über das Kontaktformular kontaktieren',
+        suffix: '. Bitte fügen Sie folgende Informationen in Ihrer Nachricht ein:',
+        items: [
+          'Welcher Inhalt Ihrer Meinung nach falsch verwendet wird (z.B. Bild oder Text) und Link zu dem Ort, an dem wir ihn auf der Website finden',
+          'Warum es nicht in Ordnung ist, dass wir ihn verwenden',
+          'Ihr Name, E-Mail und gegebenenfalls Adresse',
+          'Nachweis, dass Sie es besitzen, oder dass Sie berechtigt sind, im Namen desjenigen zu sprechen, der es tut',
+          'Ein Satz, in dem Sie erklären, dass Sie wirklich glauben, dass wir einen Fehler gemacht haben, und dass dies nichts ist, wofür wir eine Erlaubnis haben',
+          'Ein Satz, in dem Sie sagen, dass alles, was Sie schreiben, wahr ist',
+        ],
+      },
+      process: {
+        heading: '2. Was passiert danach?',
+        content: 'Wenn wir Ihre Nachricht erhalten haben, prüfen wir alles so schnell wie möglich. Wenn es so aussieht, als hätten Sie Recht, entfernen wir den Inhalt, auf den Sie hingewiesen haben. Wir können Sie auch kontaktieren, wenn wir weitere Informationen benötigen.',
+      },
+      wrongRemoval: {
+        heading: '3. Wenn wir etwas versehentlich entfernt haben',
+        intro: 'Wenn Sie etwas auf unserer Website hochgeladen haben und es entfernt wurde – aber Sie glauben, dass es ein Fehler war – können Sie uns auch eine E-Mail senden. Schreiben Sie dann:',
+        items: [
+          'Was entfernt wurde und wo es war',
+          'Dass Sie glauben, dass es versehentlich entfernt wurde',
+          'Name, Adresse und Ihre E-Mail-Adresse',
+        ],
+      },
+      changes: {
+        heading: '4. Änderungen der Regeln',
+        content: 'Wir können diese Regeln bei Bedarf ändern. Wenn wir das tun, werden wir es hier auf dieser Seite bekannt geben. Sie können gerne später wiederkommen und sie erneut lesen.',
+      },
+      questions: {
+        heading: 'Fragen?',
+        text: 'Haben Sie Fragen?',
+        linkText: 'Nehmen Sie Kontakt mit uns auf',
+        suffix: ', wir antworten so schnell wie möglich.',
+      },
+    },
+  },
 } as const;
 
 export type Locale = keyof typeof contentRemovalTranslations;
