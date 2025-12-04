@@ -241,13 +241,8 @@ export async function POST(request: NextRequest) {
 }
 
 // ============================================================================
-// CONFIG
+// ROUTE SEGMENT CONFIG
 // ============================================================================
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '15mb', // Allow larger images
-    },
-  },
-};
+// Maximum duration for this route (in seconds)
+export const maxDuration = 30;

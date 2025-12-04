@@ -168,13 +168,12 @@ export async function POST(request: NextRequest) {
 }
 
 // ============================================================================
-// CONFIG
+// ROUTE SEGMENT CONFIG
 // ============================================================================
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '15mb', // Allow larger images
-    },
-  },
-};
+// Maximum duration for this route (in seconds) - needed for AI processing
+export const maxDuration = 60;
+
+// Note: Body size limits in App Router are configured differently.
+// For large file uploads, consider using streaming or multipart form data.
+// The default limit is 4MB which should be sufficient for most images.
