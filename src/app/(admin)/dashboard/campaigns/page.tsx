@@ -138,6 +138,29 @@ export default function CampaignsListPage() {
     }
   }
 
+  async function handleResetStats(campaignId: string, campaignName: string) {
+    if (!confirm(`Er du sikker på at du vil nullstille statistikken for "${campaignName}"? Dette kan ikke angres.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/lead-campaigns/${campaignId}/reset-stats`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to reset stats');
+      }
+
+      // Reload campaigns
+      await loadCampaigns();
+      alert(`Statistikk nullstilt for "${campaignName}"`);
+    } catch (err) {
+      console.error('Error resetting stats:', err);
+      alert('Kunne ikke nullstille statistikk');
+    }
+  }
+
   // Calculate percentages for same-threshold campaigns
   function getWeightPercentage(campaign: Campaign): string {
     const sameThresholdCampaigns = campaigns.filter(
@@ -340,6 +363,13 @@ export default function CampaignsListPage() {
                               campaign.active ? 'translate-x-6' : 'translate-x-1'
                             }`}
                           />
+                        </button>
+                        <button
+                          onClick={() => handleResetStats(campaign.campaignId, campaign.name)}
+                          className="text-amber-600 hover:text-amber-900"
+                          title="Nullstill statistikk"
+                        >
+                          Nullstill
                         </button>
                         <Link
                           href={`/dashboard/campaigns/${campaign.campaignId}/edit`}
