@@ -16,7 +16,7 @@
 export interface Campaign {
   campaignId: string;
   name: string;
-  type: 'download_gate' | 'exit_intent' | 'scroll' | 'other';
+  type: 'download_gate' | 'exit_intent' | 'scroll' | 'photo_to_coloring' | 'other';
   active: boolean;
   trigger: {
     event: 'pdf_downloaded' | 'exit_intent' | 'scroll_50_percent';

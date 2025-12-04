@@ -113,7 +113,6 @@ export function useLeadPopup(): UseLeadPopupReturn {
         setIsOpen(true);
 
         // Track event in background (fire and forget - no await)
-        console.log('[useLeadPopup] Tracking popup shown for campaign:', selectedCampaign.campaignId);
         trackPopupShown(selectedCampaign.campaignId, {
           downloadCount: newCount,
           triggerThreshold: selectedCampaign.trigger.threshold,
@@ -156,36 +155,17 @@ export function useLeadPopup(): UseLeadPopupReturn {
 
   // Handle email submit
   const handleSubmit = async (email: string) => {
-    console.log('[useLeadPopup] handleSubmit called with email:', email);
-
     if (!campaign) {
-      console.error('[useLeadPopup] No campaign available!');
       return;
     }
 
-    console.log('[useLeadPopup] Campaign:', campaign.campaignId);
-
     // Track submit event
-    console.log('[useLeadPopup] Tracking email submitted event...');
     await trackEmailSubmitted(campaign.campaignId, email, {
       downloadCount,
     });
-    console.log('[useLeadPopup] Event tracked');
 
     // Submit to lead campaigns API
     try {
-      console.log('[useLeadPopup] Making API call to /api/lead-campaigns/submit...');
-      console.log('[useLeadPopup] Request body:', {
-        email,
-        campaignId: campaign.campaignId,
-        metadata: {
-          downloadCount,
-          trigger: campaign.trigger.type,
-          triggerThreshold: campaign.trigger.threshold,
-          campaignName: campaign.name,
-        },
-      });
-
       const response = await fetch('/api/lead-campaigns/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -201,25 +181,16 @@ export function useLeadPopup(): UseLeadPopupReturn {
         }),
       });
 
-      console.log('[useLeadPopup] API response status:', response.status);
-      console.log('[useLeadPopup] API response ok:', response.ok);
-
       if (!response.ok) {
         const data = await response.json();
-        console.error('[useLeadPopup] API error response:', data);
         throw new Error(data.message || 'Submission failed');
       }
 
-      const responseData = await response.json();
-      console.log('[useLeadPopup] API success response:', responseData);
-
       // Mark email as submitted (never show popup again)
       markEmailSubmitted();
-      console.log('[useLeadPopup] Email marked as submitted');
 
       // Don't auto-open PDF - user will click download button in thank you page
     } catch (error) {
-      console.error('[useLeadPopup] Lead submission error:', error);
       throw error; // Re-throw to let component handle error state
     }
   };
