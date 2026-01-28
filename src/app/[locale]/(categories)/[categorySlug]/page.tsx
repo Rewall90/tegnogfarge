@@ -10,6 +10,7 @@ import { PageViewTracker } from '@/components/analytics/PageViewTracker';
 import { AppDownloadSidebar } from '@/components/sidebar/AppDownloadSidebar';
 import { buildAlternates, getLocaleConfig } from '@/lib/seo-utils';
 import type { Locale } from '@/i18n';
+import { categoryTranslations } from '@/i18n/translations/category';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -243,7 +244,7 @@ interface Category {
 // Generer statiske paths
 export async function generateStaticParams() {
   try {
-    const locales = ['no', 'sv'];
+    const locales = ['no', 'sv', 'de'];
     const paths = [];
 
     for (const locale of locales) {
@@ -267,11 +268,12 @@ export async function generateStaticParams() {
 export default async function CategoryPage({ params: paramsPromise }: PageProps) {
   const { locale, categorySlug } = await paramsPromise;
   const category = await getCategoryWithSubcategories(categorySlug, locale);
-  
+  const t = categoryTranslations[locale as Locale] || categoryTranslations.no;
+
   if (!category) {
     notFound();
   }
-  
+
   return (
     <div className="flex flex-col min-h-screen bg-[#FEFAF6]">
       <PageViewTracker
@@ -283,12 +285,12 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-8xl mx-auto">
-            <nav aria-label="Breadcrumb">
+            <nav aria-label={t.breadcrumb.ariaLabel}>
               <Link
                 href={locale === 'no' ? '/' : `/${locale}`}
                 className="text-[#264653] hover:underline mb-4 inline-flex items-center gap-2"
               >
-                Tilbake til forsiden
+                {t.breadcrumb.backToHome}
               </Link>
             </nav>
 
@@ -308,15 +310,17 @@ export default async function CategoryPage({ params: paramsPromise }: PageProps)
               <div className="flex-grow md:w-3/4">
                 {category.subcategories && category.subcategories.length > 0 ? (
                   <section className="category-listing" aria-labelledby="subcategories-heading">
-                    <h2 id="subcategories-heading" className="sr-only">Underkategorier</h2>
+                    <h2 id="subcategories-heading" className="sr-only">{t.subcategories.heading}</h2>
                     <CategoryGrid
                       subcategories={category.subcategories}
                       categorySlug={categorySlug}
                       locale={locale}
+                      translations={t.subcategoryCard}
+                      emptyStateTranslations={t.emptyState}
                     />
                   </section>
                 ) : (
-                  <EmptyState />
+                  <EmptyState translations={t.emptyState} />
                 )}
               </div>
 

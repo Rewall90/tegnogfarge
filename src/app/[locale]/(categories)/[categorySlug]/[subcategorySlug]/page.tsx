@@ -24,6 +24,8 @@ import { AppDownloadSidebar } from '@/components/sidebar/AppDownloadSidebar';
 import { buildAlternates, getLocaleConfig } from '@/lib/seo-utils';
 import type { Locale } from '@/i18n';
 import type { FlagDrawing } from '@/types/flags';
+import { subcategoryTranslations } from '@/i18n/translations/subcategory';
+import { categoryTranslations } from '@/i18n/translations/category';
 
 export const revalidate = 3600; // Oppdater siden hver time for bedre caching
 
@@ -241,7 +243,7 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
 // Generer statiske paths
 export async function generateStaticParams() {
   try {
-    const locales = ['no', 'sv'];
+    const locales = ['no', 'sv', 'de'];
     const paths = [];
 
     for (const locale of locales) {
@@ -271,6 +273,8 @@ export async function generateStaticParams() {
 // Main Subcategory Page Component
 export default async function SubcategoryPage({ params: paramsPromise }: PageProps) {
   const { locale, categorySlug, subcategorySlug } = await paramsPromise;
+  const t = subcategoryTranslations[locale as Locale] || subcategoryTranslations.no;
+  const categoryT = categoryTranslations[locale as Locale] || categoryTranslations.no;
 
   // Check if this is the flags subcategory (adjust slug as needed)
   const isFlagsSubcategory = subcategorySlug === 'fargelegge-flagg' || subcategorySlug === 'flags';
@@ -285,7 +289,7 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
   }
 
   const breadcrumbItems = [
-    { label: 'Hjem', href: locale === 'no' ? '/' : `/${locale}` },
+    { label: t.breadcrumb.home, href: locale === 'no' ? '/' : `/${locale}` },
     ...(subcategory.parentCategory ? [{ label: subcategory.parentCategory.title, href: locale === 'no' ? `/${subcategory.parentCategory.slug}` : `/${locale}/${subcategory.parentCategory.slug}` }] : []),
     { label: subcategory.title, href: locale === 'no' ? `/${categorySlug}/${subcategorySlug}` : `/${locale}/${categorySlug}/${subcategorySlug}`, active: true }
   ];
@@ -302,7 +306,7 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-full mx-auto">
-            <Breadcrumbs items={breadcrumbItems} />
+            <Breadcrumbs items={breadcrumbItems} ariaLabel={t.breadcrumb.ariaLabel} />
 
             <header className="mb-8">
               <h1 id="subcategory-title" className="text-3xl font-bold mb-2 flex items-center font-display text-navy">
@@ -362,6 +366,10 @@ export default async function SubcategoryPage({ params: paramsPromise }: PagePro
           currentSubcategorySlug={subcategorySlug}
           categoryTitle={subcategory.parentCategory.title}
           locale={locale}
+          translations={{
+            heading: t.relatedSubcategories.heading,
+            subcategoryCard: categoryT.subcategoryCard,
+          }}
         />
       )}
 

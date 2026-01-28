@@ -23,7 +23,7 @@ const SORT_OPTION_KEYS: Record<FlagSortOption, string> = {
 export function FlagSortMenu({ currentSort, onSortChange, locale }: FlagSortMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const t = flagsTranslations[locale as 'no' | 'sv'];
+  const t = flagsTranslations[locale as 'no' | 'sv' | 'de'];
 
   // Close menu when clicking outside
   useEffect(() => {

@@ -32,7 +32,7 @@ export function FlagFilters({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const t = flagsTranslations[locale as 'no' | 'sv'];
+  const t = flagsTranslations[locale as 'no' | 'sv' | 'de'];
 
   // Initialize filters from URL params
   const [selectedContinents, setSelectedContinents] = useState<string[]>(() => {
@@ -173,12 +173,16 @@ export function FlagFilters({
           <div className="space-y-1">
             {searchQuery && (
               <p className="text-xs text-gray-500">
-                {locale === 'no' ? 'Søker etter' : 'Söker efter'}: "{searchQuery}"
+                {locale === 'de' ? 'Suche nach' : locale === 'sv' ? 'Söker efter' : 'Søker etter'}: &quot;{searchQuery}&quot;
               </p>
             )}
             {selectedContinents.length > 0 && (
               <p className="text-xs text-gray-500">
-                {selectedContinents.length} {selectedContinents.length === 1 ? 'kontinent valgt' : 'kontinenter valgt'}
+                {selectedContinents.length} {locale === 'de'
+                  ? (selectedContinents.length === 1 ? 'Kontinent ausgewählt' : 'Kontinente ausgewählt')
+                  : locale === 'sv'
+                    ? (selectedContinents.length === 1 ? 'kontinent vald' : 'kontinenter valda')
+                    : (selectedContinents.length === 1 ? 'kontinent valgt' : 'kontinenter valgt')}
               </p>
             )}
           </div>

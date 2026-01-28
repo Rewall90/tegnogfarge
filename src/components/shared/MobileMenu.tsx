@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { authStatusTranslations } from '@/i18n/translations/authStatus';
+import { headerTranslations } from '@/i18n/translations/header';
 
 interface MobileMenuProps {
   locale?: string;
@@ -14,6 +15,7 @@ export default function MobileMenu({ locale = 'no' }: MobileMenuProps) {
   const sessionData = useSession();
   const session = sessionData?.data;
   const t = authStatusTranslations[locale as 'no' | 'sv' | 'de'] || authStatusTranslations.no;
+  const ht = headerTranslations[locale as 'no' | 'sv' | 'de'] || headerTranslations.no;
 
   const mobileLinkClasses = "text-[#264653] hover:text-[#FF6F59] text-lg relative inline-block after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-[2px] after:bg-[#FF6F59] after:opacity-0 after:transition-opacity after:duration-300 hover:after:opacity-100 transition-transform duration-200 hover:-translate-y-[2px]";
 
@@ -46,7 +48,7 @@ export default function MobileMenu({ locale = 'no' }: MobileMenuProps) {
           className="text-gray-600 hover:text-gray-900"
           onClick={toggleMenu}
           aria-expanded={isMenuOpen}
-          aria-label={isMenuOpen ? "Lukk meny" : "Åpne meny"}
+          aria-label={isMenuOpen ? (locale === 'de' ? 'Menü schließen' : locale === 'sv' ? 'Stäng meny' : 'Lukk meny') : (locale === 'de' ? 'Menü öffnen' : locale === 'sv' ? 'Öppna meny' : 'Åpne meny')}
           aria-controls="mobile-menu"
         >
           <svg 
@@ -68,14 +70,14 @@ export default function MobileMenu({ locale = 'no' }: MobileMenuProps) {
       {isMenuOpen && (
         <div id="mobile-menu" className="md:hidden absolute top-24 left-0 right-0 bg-[#FEFAF6] shadow-md z-50">
           <div className="container mx-auto px-4 py-4 border-t">
-            <nav className="flex flex-col space-y-4" aria-label="Mobilnavigasjon">
-              <Link href={getLocalizedHref('/alle-underkategorier')} className={mobileLinkClasses}>Fargeleggingsark</Link>
+            <nav className="flex flex-col space-y-4" aria-label={ht.mainNav}>
+              <Link href={getLocalizedHref('/alle-underkategorier')} className={mobileLinkClasses}>{ht.coloringPages}</Link>
               {session && (
                 <Link href="/dashboard" className={mobileLinkClasses}>Dashboard</Link>
               )}
 
-              <Link href={getLocalizedHref('/hoved-kategori')} className={mobileLinkClasses}>Kategorier</Link>
-              <Link href={getLocalizedHref('/om-oss')} className={mobileLinkClasses}>Om Oss</Link>
+              <Link href={getLocalizedHref('/hoved-kategori')} className={mobileLinkClasses}>{ht.categories}</Link>
+              <Link href={getLocalizedHref('/om-oss')} className={mobileLinkClasses}>{ht.aboutUs}</Link>
               
               <div className="border-t my-4"></div>
 

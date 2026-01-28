@@ -23,7 +23,7 @@ export function FlagGrid({
   subcategorySlug,
   locale
 }: FlagGridProps) {
-  const t = flagsTranslations[locale as 'no' | 'sv'];
+  const t = flagsTranslations[locale as 'no' | 'sv' | 'de'];
   const searchParams = useSearchParams();
 
   // Initialize filters from URL params on mount

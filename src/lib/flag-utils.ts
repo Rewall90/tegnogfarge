@@ -28,6 +28,15 @@ export const COLOR_MAPPING = {
     grön: 'green',
     gul: 'yellow',
     orange: 'orange',
+  },
+  de: {
+    rot: 'red',
+    blau: 'blue',
+    weiß: 'white',
+    schwarz: 'black',
+    grün: 'green',
+    gelb: 'yellow',
+    orange: 'orange',
   }
 } as const;
 
@@ -36,7 +45,7 @@ export const COLOR_MAPPING = {
  */
 export function normalizeColor(color: string, locale: Locale): string {
   const lowerColor = color.toLowerCase();
-  const mapping = COLOR_MAPPING[locale as 'no' | 'sv'];
+  const mapping = COLOR_MAPPING[locale as 'no' | 'sv' | 'de'];
 
   if (!mapping) return color;
 
@@ -47,7 +56,7 @@ export function normalizeColor(color: string, locale: Locale): string {
  * Get display name for a normalized color in the current locale
  */
 export function getColorDisplayName(normalizedColor: string, locale: Locale): string {
-  const mapping = COLOR_MAPPING[locale as 'no' | 'sv'];
+  const mapping = COLOR_MAPPING[locale as 'no' | 'sv' | 'de'];
 
   if (!mapping) return normalizedColor;
 
@@ -204,7 +213,7 @@ export function sortFlags(
       return sortedFlags.sort((a, b) => {
         const nameA = a.flagMetadata?.geography?.countryName || a.title;
         const nameB = b.flagMetadata?.geography?.countryName || b.title;
-        return nameA.localeCompare(nameB, locale === 'sv' ? 'sv' : 'no');
+        return nameA.localeCompare(nameB, locale === 'sv' ? 'sv' : locale === 'de' ? 'de' : 'no');
       });
 
     case 'population-desc':
@@ -242,7 +251,7 @@ export function sortFlags(
         const continentB = b.flagMetadata?.geography?.continent || '';
 
         // First sort by continent
-        const continentCompare = continentA.localeCompare(continentB, locale === 'sv' ? 'sv' : 'no');
+        const continentCompare = continentA.localeCompare(continentB, locale === 'sv' ? 'sv' : locale === 'de' ? 'de' : 'no');
 
         if (continentCompare !== 0) {
           return continentCompare;
@@ -251,7 +260,7 @@ export function sortFlags(
         // If same continent, sort by country name
         const nameA = a.flagMetadata?.geography?.countryName || a.title;
         const nameB = b.flagMetadata?.geography?.countryName || b.title;
-        return nameA.localeCompare(nameB, locale === 'sv' ? 'sv' : 'no');
+        return nameA.localeCompare(nameB, locale === 'sv' ? 'sv' : locale === 'de' ? 'de' : 'no');
       });
 
     case 'difficulty-asc':
@@ -270,7 +279,7 @@ export function sortFlags(
         // If same difficulty, sort by country name
         const nameA = a.flagMetadata?.geography?.countryName || a.title;
         const nameB = b.flagMetadata?.geography?.countryName || b.title;
-        return nameA.localeCompare(nameB, locale === 'sv' ? 'sv' : 'no');
+        return nameA.localeCompare(nameB, locale === 'sv' ? 'sv' : locale === 'de' ? 'de' : 'no');
       });
 
     default:
