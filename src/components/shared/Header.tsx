@@ -30,11 +30,11 @@ export default function Header({ locale: localeProp }: HeaderProps = {}) {
 
   const navLinkClasses = "text-[#264653] hover:text-[#FF6F59] text-lg relative after:absolute after:bottom-[-4px] after:left-0 after:right-0 after:h-[3px] after:bg-[#FF6F59] after:opacity-0 after:transition-opacity after:duration-300 hover:after:opacity-100 transition-transform duration-200 hover:-translate-y-[2px]";
 
-  // URL slug mapping for Swedish locale
+  // URL slug mapping for Swedish and German locales
   const urlMapping: Record<string, Record<string, string>> = {
-    '/alle-underkategorier': { no: '/alle-underkategorier', sv: '/alla-underkategorier' },
-    '/hoved-kategori': { no: '/hoved-kategori', sv: '/huvudkategori' },
-    '/om-oss': { no: '/om-oss', sv: '/om-oss' },
+    '/alle-underkategorier': { no: '/alle-underkategorier', sv: '/alla-underkategorier', de: '/alle-unterkategorien' },
+    '/hoved-kategori': { no: '/hoved-kategori', sv: '/huvudkategori', de: '/hauptkategorie' },
+    '/om-oss': { no: '/om-oss', sv: '/om-oss', de: '/om-oss' },
   };
 
   // Helper function to create locale-aware hrefs with correct slugs

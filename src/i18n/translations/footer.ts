@@ -40,6 +40,7 @@ export const footerTranslations = {
     languageSwitcher: {
       norwegian: 'Norsk',
       swedish: 'Svensk',
+      german: 'Tysk',
     },
     popularLinks: [
       { title: 'Tegneserier', slug: 'tegneserier' },
@@ -101,6 +102,7 @@ export const footerTranslations = {
     languageSwitcher: {
       norwegian: 'Norska',
       swedish: 'Svenska',
+      german: 'Tyska',
     },
     popularLinks: [
       { title: 'Tecknade Serier', slug: 'tecknade-serier' },
@@ -162,6 +164,7 @@ export const footerTranslations = {
     languageSwitcher: {
       norwegian: 'Norwegisch',
       swedish: 'Schwedisch',
+      german: 'Deutsch',
     },
     popularLinks: [
       { title: 'Comics', slug: 'comics' },

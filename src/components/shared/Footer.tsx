@@ -39,21 +39,29 @@ export default function Footer({ locale: localeProp }: FooterProps = {}) {
     return locale === 'no' ? path : `/${locale}${path}`;
   };
 
-  // Generate language switcher URL
-  const getAlternateLanguageUrl = () => {
-    // Remove any existing locale prefix from pathname
-    const pathWithoutLocale = pathname.replace(/^\/sv/, '');
-
-    if (locale === 'sv') {
-      // Switch to Norwegian - use path without /sv prefix
+  // Generate language switcher URL for a target locale
+  const getLanguageUrl = (targetLocale: string) => {
+    const pathWithoutLocale = pathname.replace(/^\/(sv|de)/, '');
+    if (targetLocale === 'no') {
       return pathWithoutLocale || '/';
-    } else {
-      // Switch to Swedish - add /sv prefix to path without any existing prefix
-      return `/sv${pathWithoutLocale}`;
     }
+    return `/${targetLocale}${pathWithoutLocale || '/'}`;
   };
 
-  const alternateLanguageLabel = locale === 'sv' ? t.languageSwitcher.norwegian : t.languageSwitcher.swedish;
+  const localeToLangKey: Record<string, 'norwegian' | 'swedish' | 'german'> = {
+    no: 'norwegian',
+    sv: 'swedish',
+    de: 'german',
+  };
+
+  const alternateLanguages = (['no', 'sv', 'de'] as const)
+    .filter(l => l !== locale)
+    .map(l => ({
+      locale: l,
+      label: t.languageSwitcher[localeToLangKey[l]],
+      hrefLang: l === 'no' ? 'nb' : l,
+      url: getLanguageUrl(l),
+    }));
 
   // Get popular categories from translations (locale-specific slugs)
   const popularCategories: Category[] = t.popularLinks.map((link, index) => ({
@@ -79,7 +87,7 @@ export default function Footer({ locale: localeProp }: FooterProps = {}) {
             <p className="mb-4 max-w-md text-body">
               {t.newsletter.text}
             </p>
-            <NewsletterForm />
+            <NewsletterForm translations={t.newsletter.form} />
           </div>
           
           {/* Footer Links */}
@@ -94,14 +102,16 @@ export default function Footer({ locale: localeProp }: FooterProps = {}) {
                 <li><Link href={getLocalizedHref(`/${t.links.privacySlug}`)} className="hover:underline">{t.links.privacy}</Link></li>
                 <li><Link href={getLocalizedHref(`/${t.links.licensingSlug}`)} className="hover:underline">{t.links.licensing}</Link></li>
                 <li><Link href={getLocalizedHref(`/${t.links.contentRemovalSlug}`)} className="hover:underline">{t.links.contentRemoval}</Link></li>
-                <li className="pt-2 border-t border-gray-600">
-                  <Link href={getAlternateLanguageUrl()} className="hover:underline flex items-center gap-2" hrefLang={locale === 'sv' ? 'nb' : 'sv'}>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-                    </svg>
-                    {alternateLanguageLabel}
-                  </Link>
-                </li>
+                {alternateLanguages.map(lang => (
+                  <li key={lang.locale} className="pt-2 border-t border-gray-600">
+                    <Link href={lang.url} className="hover:underline flex items-center gap-2" hrefLang={lang.hrefLang}>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                      </svg>
+                      {lang.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="w-1/2 md:w-auto mb-8 md:mb-0">
@@ -174,7 +184,7 @@ export default function Footer({ locale: localeProp }: FooterProps = {}) {
             <p className="text-sm text-gray-300 mb-4 md:mb-0 md:w-1/4">
               &copy; {currentYear} TegnOgFarge.no. {t.copyright}
             </p>
-            <nav aria-label="Juridisk informasjon" className="md:w-1/2">
+            <nav aria-label={t.ariaLabels.legalInfo} className="md:w-1/2">
               <ul className="flex flex-wrap justify-center space-x-4 text-sm">
               </ul>
             </nav>
