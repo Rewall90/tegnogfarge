@@ -21,6 +21,7 @@ import {
   trackEmailSubmitted,
   trackPopupDismissed,
 } from '@/lib/leadTracking';
+import { triggerRewardedDownload } from '@/lib/rewardedDownload';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -63,7 +64,7 @@ export function useLeadPopup(): UseLeadPopupReturn {
       if (!canShowPopup()) {
         // No popup, so open PDF directly
         if (customEvent.detail?.downloadUrl) {
-          window.open(customEvent.detail.downloadUrl, '_blank');
+          triggerRewardedDownload(customEvent.detail.downloadUrl);
         }
         return;
       }
@@ -78,7 +79,7 @@ export function useLeadPopup(): UseLeadPopupReturn {
       if (downloadCampaigns.length === 0) {
         // No popup, so open PDF directly
         if (customEvent.detail?.downloadUrl) {
-          window.open(customEvent.detail.downloadUrl, '_blank');
+          triggerRewardedDownload(customEvent.detail.downloadUrl);
         }
         return;
       }
@@ -91,7 +92,7 @@ export function useLeadPopup(): UseLeadPopupReturn {
       if (triggeredCampaigns.length === 0) {
         // No popup, so open PDF directly
         if (customEvent.detail?.downloadUrl) {
-          window.open(customEvent.detail.downloadUrl, '_blank');
+          triggerRewardedDownload(customEvent.detail.downloadUrl);
         }
         return;
       }
@@ -148,7 +149,7 @@ export function useLeadPopup(): UseLeadPopupReturn {
 
     // Open PDF in new tab after popup closes
     if (downloadUrl) {
-      window.open(downloadUrl, '_blank');
+      triggerRewardedDownload(downloadUrl);
       setDownloadUrl(null); // Clear for next time
     }
   };

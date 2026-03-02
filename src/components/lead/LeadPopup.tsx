@@ -4,6 +4,7 @@ import { useState, FormEvent, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import type { Campaign } from '@/lib/campaignService';
 import { CTAButton } from './CTAButton';
+import { triggerRewardedDownload } from '@/lib/rewardedDownload';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -66,7 +67,7 @@ export function LeadPopup({
 
   const handleDownload = () => {
     if (downloadUrl) {
-      window.open(downloadUrl, '_blank');
+      triggerRewardedDownload(downloadUrl);
       onClose();
     }
   };

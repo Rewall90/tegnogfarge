@@ -56,6 +56,18 @@ export function EzoicScripts() {
           `,
         }}
       />
+
+      {/* Ezoic Rewarded Ads Initialization */}
+      <Script
+        id="ezoic-rewarded-ads-init"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.ezRewardedAds = window.ezRewardedAds || {};
+            window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || [];
+          `,
+        }}
+      />
     </>
   );
 }

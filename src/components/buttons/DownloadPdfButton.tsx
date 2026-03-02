@@ -3,6 +3,7 @@
 import React from 'react';
 import Button from '../ui/Button';
 import { trackPdfDownload } from '@/lib/analytics';
+import { triggerRewardedDownload } from '@/lib/rewardedDownload';
 
 interface DownloadPdfButtonProps {
   downloadUrl: string;
@@ -49,7 +50,7 @@ export function DownloadPdfButton({
       );
     } else {
       // If no analytics, open PDF directly (no popup gate)
-      window.open(downloadUrl, '_blank');
+      triggerRewardedDownload(downloadUrl);
     }
   };
 

@@ -98,11 +98,26 @@ const nextConfig = {
           source: '/sv/huvudkategori',
           destination: '/sv/hoved-kategori',
         },
+        // German URL rewrites - map German slugs to Norwegian route folders
+        {
+          source: '/de/alle-unterkategorien',
+          destination: '/de/alle-underkategorier',
+        },
+        {
+          source: '/de/hauptkategorie',
+          destination: '/de/hoved-kategori',
+        },
       ],
     };
   },
   async redirects() {
     return [
+      // Ezoic ads.txt manager redirect
+      {
+        source: '/ads.txt',
+        destination: 'https://srv.adstxtmanager.com/19390/tegnogfarge.no',
+        permanent: false,
+      },
       // Videospill → Feiring category rename (301 permanent redirects)
       // Following Google best practices: direct redirects, no chains, kept for 1+ year
       {
