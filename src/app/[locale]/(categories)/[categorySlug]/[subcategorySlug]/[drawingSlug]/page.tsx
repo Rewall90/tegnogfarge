@@ -19,6 +19,7 @@ import { PageViewTracker } from '@/components/analytics/PageViewTracker';
 import { getDownloadCount, getCompletionCount } from '@/lib/analytics';
 import { buildAlternates, getLocaleConfig } from '@/lib/seo-utils';
 import type { Locale } from '@/i18n';
+import { drawingTranslations } from '@/i18n/translations/drawing';
 
 // Increase revalidation time for better caching
 export const revalidate = 3600; // Revalidate every hour instead of 30 minutes
@@ -39,18 +40,20 @@ interface PageProps {
 export async function generateMetadata({ params: paramsPromise }: PageProps) {
   const { locale, categorySlug, subcategorySlug, drawingSlug } = await paramsPromise;
 
+  const t = drawingTranslations[locale as Locale] || drawingTranslations.no;
+
   // Få tak i tegningen (basert på ID eller slug)
   const drawing = await getColoringImage(drawingSlug);
 
   if (!drawing) {
-    return { title: 'Tegning ikke funnet' };
+    return { title: t.metadata.notFound };
   }
 
   // Hent underkategorien for å få tilgang til kategori-info
   const subcategory = await getSubcategoryWithDrawings(categorySlug, subcategorySlug, locale);
-  
+
   if (!subcategory) {
-    return { title: drawing.title || 'Fargeleggingsbilde' };
+    return { title: drawing.title || t.metadata.fallbackTitle };
   }
 
   // Prepare structured data for metadata
@@ -60,14 +63,19 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
   const currentUrl = alternates.canonical;
 
+  const titlePrefix = t.metadata.titlePrefix;
+  const titleSuffix = t.metadata.titleSuffix;
+  const pageTitle = `${titlePrefix} ${drawing.title} - ${titleSuffix}`;
+  const pageDescription = drawing.metaDescription || drawing.description || `${titlePrefix} ${drawing.title} ${t.metadata.descriptionFallback} ${subcategory.parentCategory?.title}`;
+
   return {
-    title: `Fargelegg ${drawing.title} - TegnOgFarge.no`,
-    description: drawing.metaDescription || drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
+    title: pageTitle,
+    description: pageDescription,
     metadataBase: new URL(baseUrl),
     alternates,
     openGraph: {
-      title: `Fargelegg ${drawing.title} - TegnOgFarge.no`,
-      description: drawing.metaDescription || drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
+      title: pageTitle,
+      description: pageDescription,
       url: currentUrl,
       siteName: 'TegnOgFarge.no',
       images: [
@@ -84,8 +92,8 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `Fargelegg ${drawing.title} - TegnOgFarge.no`,
-      description: drawing.metaDescription || drawing.description || `Fargelegg ${drawing.title} fra kategorien ${subcategory.parentCategory?.title}`,
+      title: pageTitle,
+      description: pageDescription,
       images: drawing.thumbnailUrl || drawing.imageUrl,
     },
   };
@@ -131,26 +139,28 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
   if (!subcategory) {
     notFound();
   }
-  
+
+  const t = drawingTranslations[locale as Locale] || drawingTranslations.no;
+
   // Define constants
   const difficultyColors = {
     easy: 'bg-green-100 text-green-800',
-    medium: 'bg-yellow-100 text-yellow-800', 
+    medium: 'bg-yellow-100 text-yellow-800',
     hard: 'bg-red-100 text-red-800'
   };
-  
+
   const difficultyLabels = {
-    easy: 'Enkel',
-    medium: 'Middels',
-    hard: 'Vanskelig'
+    easy: t.difficulty.easy,
+    medium: t.difficulty.medium,
+    hard: t.difficulty.hard,
   };
-  
+
   const ageRangeLabels: Record<string, string> = {
-    '3-5': '3-5 år',
-    '6-8': '6-8 år',
-    '9-12': '9-12 år',
-    '12+': 'Over 12 år',
-    'all': 'Alle aldre'
+    '3-5': t.ageRange['3-5'],
+    '6-8': t.ageRange['6-8'],
+    '9-12': t.ageRange['9-12'],
+    '12+': t.ageRange['12+'],
+    'all': t.ageRange.all,
   };
   
   // Prepare the path for JSON-LD and locale configuration
@@ -181,7 +191,7 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
         type="drawing"
         imageId={drawing._id}
         imageTitle={drawing.title}
-        category={subcategory.parentCategory?.title || 'Ukjent'}
+        category={subcategory.parentCategory?.title || t.unknownCategory}
         subcategory={subcategory.title}
       />
       <Header />
@@ -202,11 +212,11 @@ export default async function DrawingPage({ params: paramsPromise }: PageProps) 
         <div className="w-full bg-cream text-black">
           <div className="max-w-screen-xl mx-auto px-4 py-8">
             {/* Breadcrumbs Navigation */}
-            <nav className="mb-6 text-sm" aria-label="Breadcrumb">
+            <nav className="mb-6 text-sm" aria-label={t.breadcrumb.ariaLabel}>
               <ol className="flex items-center space-x-2">
                 <li>
                   <Link href={locale === 'no' ? '/' : `/${locale}`} className="text-[#264653] hover:underline">
-                    Forsiden
+                    {t.breadcrumb.home}
                   </Link>
                 </li>
                 <li className="flex items-center">
