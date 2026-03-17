@@ -31,8 +31,6 @@ function getLocale(): Locale {
   return 'no';
 }
 
-const SAFETY_TIMEOUT_MS = 15_000;
-
 export function triggerRewardedDownload(url: string): void {
   // No advertising consent — skip ad entirely
   if (!cookieManager.hasConsent('advertising')) {
@@ -40,39 +38,26 @@ export function triggerRewardedDownload(url: string): void {
     return;
   }
 
-  // Ezoic rewarded ads API not available — skip
-  if (!window.ezRewardedAds?.cmd) {
+  // Ezoic rewarded ads API not fully loaded — download directly
+  if (!window.ezRewardedAds?.requestWithOverlay) {
     window.open(url, '_blank');
     return;
   }
 
   const t = rewardedAdTranslations[getLocale()];
-  let downloaded = false;
 
-  const doDownload = () => {
-    if (downloaded) return;
-    downloaded = true;
-    window.open(url, '_blank');
-  };
-
-  // Safety timeout — if callback never fires, download anyway
-  const timeout = setTimeout(doDownload, SAFETY_TIMEOUT_MS);
-
-  const wrappedDownload = () => {
-    clearTimeout(timeout);
-    doDownload();
-  };
-
-  window.ezRewardedAds.cmd.push(() => {
-    window.ezRewardedAds!.requestWithOverlay({
-      header: t.header,
-      body: t.body,
-      acceptButtonText: t.accept,
-      cancelButtonText: t.cancel,
-      rewardOnNoFill: true,
-      alwaysCallback: true,
-      rewardCallback: wrappedDownload,
-      cancelCallback: wrappedDownload,
-    });
+  window.ezRewardedAds.requestWithOverlay({
+    header: t.header,
+    body: t.body,
+    acceptButtonText: t.accept,
+    cancelButtonText: t.cancel,
+    rewardOnNoFill: true,
+    alwaysCallback: false,
+    rewardCallback: () => {
+      window.open(url, '_blank');
+    },
+    cancelCallback: () => {
+      // User cancelled — no download
+    },
   });
 }
