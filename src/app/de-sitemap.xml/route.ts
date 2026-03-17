@@ -75,7 +75,7 @@ export async function GET() {
         priority: 0.8,
       },
       {
-        loc: `${baseUrl}/de/om-oss`,
+        loc: `${baseUrl}/de/ueber-uns`,
         lastmod: "2024-05-20",
         changefreq: "monthly",
         priority: 0.7,

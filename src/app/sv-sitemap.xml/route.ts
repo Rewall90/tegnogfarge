@@ -42,7 +42,7 @@ export async function GET() {
       swedishData.drawings?.[0]?._updatedAt ||
       new Date().toISOString();
 
-    // Static pages that exist in Swedish
+    // Static pages that exist in Swedish (with correct Swedish slugs)
     const staticPages = [
       {
         loc: `${baseUrl}/sv/`,
@@ -51,13 +51,13 @@ export async function GET() {
         priority: 1.0,
       },
       {
-        loc: `${baseUrl}/sv/hoved-kategori`,
+        loc: `${baseUrl}/sv/huvudkategori`,
         lastmod: formatDate(mostRecentUpdate),
         changefreq: "weekly",
         priority: 0.8,
       },
       {
-        loc: `${baseUrl}/sv/alle-underkategorier`,
+        loc: `${baseUrl}/sv/alla-underkategorier`,
         lastmod: formatDate(mostRecentUpdate),
         changefreq: "weekly",
         priority: 0.8,
@@ -87,31 +87,31 @@ export async function GET() {
         priority: 0.7,
       },
       {
-        loc: `${baseUrl}/sv/om-skribenten`,
+        loc: `${baseUrl}/sv/om-forfattaren`,
         lastmod: "2024-05-20",
         changefreq: "monthly",
         priority: 0.7,
       },
       {
-        loc: `${baseUrl}/sv/personvernerklaering`,
+        loc: `${baseUrl}/sv/sekretesspolicy`,
         lastmod: "2024-05-20",
         changefreq: "yearly",
         priority: 0.5,
       },
       {
-        loc: `${baseUrl}/sv/vilkar-og-betingelser`,
+        loc: `${baseUrl}/sv/villkor-och-bestammelser`,
         lastmod: "2024-05-20",
         changefreq: "yearly",
         priority: 0.5,
       },
       {
-        loc: `${baseUrl}/sv/lisensieringspolicy`,
+        loc: `${baseUrl}/sv/licenspolicy`,
         lastmod: "2024-05-20",
         changefreq: "yearly",
         priority: 0.5,
       },
       {
-        loc: `${baseUrl}/sv/fjerning-av-innhold`,
+        loc: `${baseUrl}/sv/borttagning-av-innehall`,
         lastmod: "2024-05-20",
         changefreq: "yearly",
         priority: 0.5,

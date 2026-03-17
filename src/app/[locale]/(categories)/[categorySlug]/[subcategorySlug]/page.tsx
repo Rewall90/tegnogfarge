@@ -7,7 +7,8 @@ import {
   getAllCategories,
   getSubcategoriesByCategory,
   getCategoryWithSubcategories,
-  getAllCategoriesWithSubcategories
+  getAllCategoriesWithSubcategories,
+  getTranslatedSlugs
 } from '@/lib/sanity';
 import { notFound } from 'next/navigation';
 import { DownloadPdfButton } from '@/components/buttons/DownloadPdfButton';
@@ -89,10 +90,22 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     return { title: 'Underkategori ikke funnet' };
   }
 
+  // Fetch translated slugs for correct hreflang (category + subcategory)
+  const nullSlugs = { no: null, sv: null, de: null };
+  const [catSlugs, subSlugs] = await Promise.all([
+    getTranslatedSlugs(categorySlug, 'category', locale).catch(() => nullSlugs),
+    getTranslatedSlugs(subcategorySlug, 'subcategory', locale).catch(() => nullSlugs),
+  ]);
+  const translatedPaths = {
+    no: catSlugs.no && subSlugs.no ? `/${catSlugs.no}/${subSlugs.no}` : undefined,
+    sv: catSlugs.sv && subSlugs.sv ? `/${catSlugs.sv}/${subSlugs.sv}` : undefined,
+    de: catSlugs.de && subSlugs.de ? `/${catSlugs.de}/${subSlugs.de}` : undefined,
+  };
+
   // Prepare the JSON-LD data for this subcategory
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
   const pathname = `/${categorySlug}/${subcategorySlug}`;
-  const alternates = buildAlternates(pathname, locale as Locale);
+  const alternates = buildAlternates(pathname, locale as Locale, translatedPaths);
   const localeConfig = getLocaleConfig(locale as Locale);
   const currentUrl = alternates.canonical;
   const subcategoryId = currentUrl;

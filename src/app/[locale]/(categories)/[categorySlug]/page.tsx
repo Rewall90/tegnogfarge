@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { getCategoryWithSubcategories, getAllCategoriesWithSubcategories } from '@/lib/sanity';
+import { getCategoryWithSubcategories, getAllCategoriesWithSubcategories, getTranslatedSlugs } from '@/lib/sanity';
 import { notFound } from 'next/navigation';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
@@ -26,8 +26,13 @@ interface PageProps {
 export async function generateMetadata({ params: paramsPromise }: PageProps) {
   try {
     const { locale, categorySlug } = await paramsPromise;
-    const category = await getCategoryWithSubcategories(categorySlug, locale);
-    
+
+    // Fetch category data and translated slugs in parallel
+    const [category, translatedSlugs] = await Promise.all([
+      getCategoryWithSubcategories(categorySlug, locale),
+      getTranslatedSlugs(categorySlug, 'category', locale).catch(() => ({ no: null, sv: null, de: null })),
+    ]);
+
     if (!category) {
       return { title: 'Kategori ikke funnet' };
     }
@@ -35,10 +40,16 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     const title = category.seoTitle || category.title;
     const description = category.seoDescription || category.description || `Utforsk ${category.title} fargeleggingsbilder`;
 
+    const translatedPaths = {
+      no: translatedSlugs.no ? `/${translatedSlugs.no}` : undefined,
+      sv: translatedSlugs.sv ? `/${translatedSlugs.sv}` : undefined,
+      de: translatedSlugs.de ? `/${translatedSlugs.de}` : undefined,
+    };
+
     // Prepare the JSON-LD data for this category
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';
     const pathname = `/${categorySlug}`;
-    const alternates = buildAlternates(pathname, locale as Locale);
+    const alternates = buildAlternates(pathname, locale as Locale, translatedPaths);
     const localeConfig = getLocaleConfig(locale as Locale);
     const categoryId = `${baseUrl}/${category.slug}`;
     const currentUrl = alternates.canonical;

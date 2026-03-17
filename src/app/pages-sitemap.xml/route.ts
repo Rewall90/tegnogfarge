@@ -1,13 +1,9 @@
 import { NextResponse } from "next/server";
-import { getSitemapPageData } from "@/lib/sanity";
+import { getSitemapPageData, getTranslatedSlugsForSitemap } from "@/lib/sanity";
 import { STRUCTURED_DATA } from "@/lib/structured-data-constants";
-import { locales } from "@/i18n";
 import type {
   SitemapPageData,
   SitemapPost,
-  SitemapCategory,
-  SitemapSubcategory,
-  SitemapDrawing,
 } from "@/types";
 
 // Helper to format date
@@ -15,51 +11,64 @@ function formatDate(dateString: string) {
   return new Date(dateString).toISOString().split("T")[0];
 }
 
-// Helper to generate hreflang links with actual slugs from all locales
-function generateMultilingualHreflangLinks(
-  baseUrl: string,
-  noSlug: string,
-  svSlug: string,
-  deSlug: string | null = null
-) {
+/**
+ * Static page slug mapping for hreflang in sitemap.
+ * Maps Norwegian paths to their Swedish and German equivalents.
+ */
+const staticPageSlugMap: Record<string, { sv: string; de: string }> = {
+  '/': { sv: '/sv/', de: '/de/' },
+  '/hoved-kategori': { sv: '/sv/huvudkategori', de: '/de/hauptkategorie' },
+  '/alle-underkategorier': { sv: '/sv/alla-underkategorier', de: '/de/alle-unterkategorien' },
+  '/coloring-app': { sv: '/sv/coloring-app', de: '/de/coloring-app' },
+  '/blog': { sv: '/sv/blog', de: '/de/blog' },
+  '/om-oss': { sv: '/sv/om-oss', de: '/de/ueber-uns' },
+  '/kontakt': { sv: '/sv/kontakt', de: '/de/kontakt' },
+  '/om-skribenten': { sv: '/sv/om-forfattaren', de: '/de/ueber-den-autor' },
+  '/personvernerklaering': { sv: '/sv/sekretesspolicy', de: '/de/datenschutzerklaerung' },
+  '/vilkar-og-betingelser': { sv: '/sv/villkor-och-bestammelser', de: '/de/allgemeine-geschaeftsbedingungen' },
+  '/lisensieringspolicy': { sv: '/sv/licenspolicy', de: '/de/lizenzrichtlinien' },
+  '/fjerning-av-innhold': { sv: '/sv/borttagning-av-innehall', de: '/de/entfernung-von-inhalten' },
+};
+
+// Helper to generate hreflang links for static pages with proper translated slugs
+function generateStaticHreflangLinks(baseUrl: string, noPath: string) {
+  const mapping = staticPageSlugMap[noPath];
   let hreflangLinks = '';
 
-  // Norwegian version (using ISO 639-1 'nb' for Norwegian Bokmål)
-  hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="nb" href="${baseUrl}${noSlug}"/>`;
+  // Norwegian (self)
+  hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="nb" href="${baseUrl}${noPath}"/>`;
 
-  // Swedish version
-  hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="sv" href="${baseUrl}/sv${svSlug}"/>`;
-
-  // German version (if exists)
-  if (deSlug) {
-    hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="de" href="${baseUrl}/de${deSlug}"/>`;
+  if (mapping) {
+    hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="sv" href="${baseUrl}${mapping.sv}"/>`;
+    hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="de" href="${baseUrl}${mapping.de}"/>`;
   }
 
   // x-default points to Norwegian
-  hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${noSlug}"/>`;
+  hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${noPath}"/>`;
 
   return hreflangLinks;
 }
 
-// Helper to generate hreflang links for static pages (same slugs in all languages)
-function generateHreflangLinks(baseUrl: string, path: string) {
+// Helper to generate hreflang links with actual slugs from all locales
+function generateMultilingualHreflangLinks(
+  baseUrl: string,
+  noSlug: string,
+  svSlug: string | null,
+  deSlug: string | null
+) {
   let hreflangLinks = '';
 
-  // Map internal locale codes to ISO 639-1 compliant hreflang codes
-  const hreflangMapping: Record<string, string> = {
-    'no': 'nb',  // Norwegian Bokmål
-    'sv': 'sv',  // Swedish
-    'de': 'de',  // German
-  };
+  hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="nb" href="${baseUrl}${noSlug}"/>`;
 
-  for (const locale of locales) {
-    const url = locale === 'no' ? `${baseUrl}${path}` : `${baseUrl}/${locale}${path}`;
-    const hreflangCode = hreflangMapping[locale] || locale;
-    hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="${hreflangCode}" href="${url}"/>`;
+  if (svSlug) {
+    hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="sv" href="${baseUrl}/sv${svSlug}"/>`;
   }
 
-  // Add x-default pointing to Norwegian (default locale)
-  hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${path}"/>`;
+  if (deSlug) {
+    hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="de" href="${baseUrl}/de${deSlug}"/>`;
+  }
+
+  hreflangLinks += `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${noSlug}"/>`;
 
   return hreflangLinks;
 }
@@ -85,10 +94,15 @@ export async function GET() {
   try {
     const baseUrl = STRUCTURED_DATA.ORGANIZATION.URL;
 
-    // ✅ FIX: Fetch Norwegian, Swedish, and German content
+    // Fetch Norwegian posts for blog section
     const norwegianData: SitemapPageData = await getSitemapPageData('no');
-    const swedishData: SitemapPageData = await getSitemapPageData('sv');
-    const germanData: SitemapPageData = await getSitemapPageData('de');
+
+    // Fetch translated slugs via baseDocumentId matching
+    const [translatedCategories, translatedSubcategories, translatedDrawings] = await Promise.all([
+      getTranslatedSlugsForSitemap('category'),
+      getTranslatedSlugsForSitemap('subcategory'),
+      getTranslatedSlugsForSitemap('drawingImage'),
+    ]);
 
     const currentDate = formatDate(new Date().toISOString());
 
@@ -98,92 +112,30 @@ export async function GET() {
       new Date().toISOString();
 
     const staticPages = [
-      {
-        loc: `${baseUrl}/`,
-        lastmod: formatDate(mostRecentUpdate),
-        changefreq: "daily",
-        priority: 1.0,
-      },
-      {
-        loc: `${baseUrl}/hoved-kategori`,
-        lastmod: formatDate(mostRecentUpdate),
-        changefreq: "weekly",
-        priority: 0.8,
-      },
-      {
-        loc: `${baseUrl}/alle-underkategorier`,
-        lastmod: formatDate(mostRecentUpdate),
-        changefreq: "weekly",
-        priority: 0.8,
-      },
-      {
-        loc: `${baseUrl}/coloring-app`,
-        lastmod: currentDate,
-        changefreq: "monthly",
-        priority: 0.8,
-      },
-      {
-        loc: `${baseUrl}/blog`,
-        lastmod: currentDate,
-        changefreq: "weekly",
-        priority: 0.8,
-      },
-      {
-        loc: `${baseUrl}/om-oss`,
-        lastmod: "2024-05-20",
-        changefreq: "monthly",
-        priority: 0.7,
-      },
-      {
-        loc: `${baseUrl}/kontakt`,
-        lastmod: "2024-05-20",
-        changefreq: "monthly",
-        priority: 0.7,
-      },
-      {
-        loc: `${baseUrl}/om-skribenten`,
-        lastmod: "2024-05-20",
-        changefreq: "monthly",
-        priority: 0.7,
-      },
-      {
-        loc: `${baseUrl}/personvernerklaering`,
-        lastmod: "2024-05-20",
-        changefreq: "yearly",
-        priority: 0.5,
-      },
-      {
-        loc: `${baseUrl}/vilkar-og-betingelser`,
-        lastmod: "2024-05-20",
-        changefreq: "yearly",
-        priority: 0.5,
-      },
-      {
-        loc: `${baseUrl}/lisensieringspolicy`,
-        lastmod: "2024-05-20",
-        changefreq: "yearly",
-        priority: 0.5,
-      },
-      {
-        loc: `${baseUrl}/fjerning-av-innhold`,
-        lastmod: "2024-05-20",
-        changefreq: "yearly",
-        priority: 0.5,
-      },
+      { path: '/', lastmod: formatDate(mostRecentUpdate), changefreq: "daily", priority: 1.0 },
+      { path: '/hoved-kategori', lastmod: formatDate(mostRecentUpdate), changefreq: "weekly", priority: 0.8 },
+      { path: '/alle-underkategorier', lastmod: formatDate(mostRecentUpdate), changefreq: "weekly", priority: 0.8 },
+      { path: '/coloring-app', lastmod: currentDate, changefreq: "monthly", priority: 0.8 },
+      { path: '/blog', lastmod: currentDate, changefreq: "weekly", priority: 0.8 },
+      { path: '/om-oss', lastmod: "2024-05-20", changefreq: "monthly", priority: 0.7 },
+      { path: '/kontakt', lastmod: "2024-05-20", changefreq: "monthly", priority: 0.7 },
+      { path: '/om-skribenten', lastmod: "2024-05-20", changefreq: "monthly", priority: 0.7 },
+      { path: '/personvernerklaering', lastmod: "2024-05-20", changefreq: "yearly", priority: 0.5 },
+      { path: '/vilkar-og-betingelser', lastmod: "2024-05-20", changefreq: "yearly", priority: 0.5 },
+      { path: '/lisensieringspolicy', lastmod: "2024-05-20", changefreq: "yearly", priority: 0.5 },
+      { path: '/fjerning-av-innhold', lastmod: "2024-05-20", changefreq: "yearly", priority: 0.5 },
     ];
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">`;
 
-    // Add static pages with hreflang (same slugs for both languages)
+    // Add static pages with correct translated hreflang links
     staticPages.forEach(page => {
-      // Extract path from full URL
-      const path = page.loc.replace(baseUrl, '');
-      const hreflangLinks = generateHreflangLinks(baseUrl, path);
+      const hreflangLinks = generateStaticHreflangLinks(baseUrl, page.path);
 
       xml += generateUrlEntry(
-        page.loc,
+        `${baseUrl}${page.path}`,
         page.lastmod,
         page.changefreq,
         page.priority,
@@ -201,138 +153,57 @@ export async function GET() {
       );
     });
 
-    // ✅ FIX: Add categories with proper Norwegian-Swedish-German matching
-    norwegianData.categories?.forEach((noCategory: SitemapCategory) => {
-      // Find matching Swedish and German categories by slug
-      const svCategory = swedishData.categories?.find(
-        (sv: SitemapCategory) => sv.slug === noCategory.slug
+    // Add categories with baseDocumentId-based matching
+    for (const cat of translatedCategories) {
+      const noPath = `/${cat.slug}`;
+      const svPath = cat.svSlug ? `/${cat.svSlug}` : null;
+      const dePath = cat.deSlug ? `/${cat.deSlug}` : null;
+      const hreflangLinks = generateMultilingualHreflangLinks(baseUrl, noPath, svPath, dePath);
+
+      xml += generateUrlEntry(
+        `${baseUrl}${noPath}`,
+        formatDate(cat._updatedAt),
+        "weekly",
+        0.8,
+        hreflangLinks,
       );
-      const deCategory = germanData.categories?.find(
-        (de: SitemapCategory) => de.slug === noCategory.slug
+    }
+
+    // Add subcategories with baseDocumentId-based matching
+    for (const sub of translatedSubcategories) {
+      const noPath = `/${sub.parentCategorySlug}/${sub.slug}`;
+      const svPath = sub.svDoc ? `/${sub.svDoc.parentCategorySlug}/${sub.svDoc.slug}` : null;
+      const dePath = sub.deDoc ? `/${sub.deDoc.parentCategorySlug}/${sub.deDoc.slug}` : null;
+      const hreflangLinks = generateMultilingualHreflangLinks(baseUrl, noPath, svPath, dePath);
+
+      xml += generateUrlEntry(
+        `${baseUrl}${noPath}`,
+        formatDate(sub._updatedAt),
+        "weekly",
+        0.7,
+        hreflangLinks,
       );
+    }
 
-      if (svCategory) {
-        // Use actual slugs from each language
-        const noPath = `/${noCategory.slug}`;
-        const svPath = `/${svCategory.slug}`;
-        const dePath = deCategory ? `/${deCategory.slug}` : null;
-        const hreflangLinks = generateMultilingualHreflangLinks(baseUrl, noPath, svPath, dePath);
+    // Add drawings with baseDocumentId-based matching
+    for (const drawing of translatedDrawings) {
+      const noPath = `/${drawing.parentCategorySlug}/${drawing.subcategorySlug}/${drawing.slug}`;
+      const svPath = drawing.svDoc
+        ? `/${drawing.svDoc.parentCategorySlug}/${drawing.svDoc.subcategorySlug}/${drawing.svDoc.slug}`
+        : null;
+      const dePath = drawing.deDoc
+        ? `/${drawing.deDoc.parentCategorySlug}/${drawing.deDoc.subcategorySlug}/${drawing.deDoc.slug}`
+        : null;
+      const hreflangLinks = generateMultilingualHreflangLinks(baseUrl, noPath, svPath, dePath);
 
-        xml += generateUrlEntry(
-          `${baseUrl}${noPath}`,
-          formatDate(noCategory._updatedAt),
-          "weekly",
-          0.8,
-          hreflangLinks,
-        );
-      } else {
-        // If no Swedish version exists, only add Norwegian with fallback to self
-        const noPath = `/${noCategory.slug}`;
-        const hreflangLinks = `
-    <xhtml:link rel="alternate" hreflang="nb" href="${baseUrl}${noPath}"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${noPath}"/>`;
-
-        xml += generateUrlEntry(
-          `${baseUrl}${noPath}`,
-          formatDate(noCategory._updatedAt),
-          "weekly",
-          0.8,
-          hreflangLinks,
-        );
-      }
-    });
-
-    // ✅ FIX: Add subcategories with proper Norwegian-Swedish-German matching
-    norwegianData.subcategories?.forEach((noSubcategory: SitemapSubcategory) => {
-      // Find matching Swedish and German subcategories by slug and parent category slug
-      const svSubcategory = swedishData.subcategories?.find(
-        (sv: SitemapSubcategory) =>
-          sv.slug === noSubcategory.slug &&
-          sv.parentCategorySlug === noSubcategory.parentCategorySlug
+      xml += generateUrlEntry(
+        `${baseUrl}${noPath}`,
+        formatDate(drawing._updatedAt),
+        "monthly",
+        0.6,
+        hreflangLinks,
       );
-      const deSubcategory = germanData.subcategories?.find(
-        (de: SitemapSubcategory) =>
-          de.slug === noSubcategory.slug &&
-          de.parentCategorySlug === noSubcategory.parentCategorySlug
-      );
-
-      if (svSubcategory) {
-        // Use actual slugs from each language
-        const noPath = `/${noSubcategory.parentCategorySlug}/${noSubcategory.slug}`;
-        const svPath = `/${svSubcategory.parentCategorySlug}/${svSubcategory.slug}`;
-        const dePath = deSubcategory ? `/${deSubcategory.parentCategorySlug}/${deSubcategory.slug}` : null;
-        const hreflangLinks = generateMultilingualHreflangLinks(baseUrl, noPath, svPath, dePath);
-
-        xml += generateUrlEntry(
-          `${baseUrl}${noPath}`,
-          formatDate(noSubcategory._updatedAt),
-          "weekly",
-          0.7,
-          hreflangLinks,
-        );
-      } else {
-        // If no Swedish version exists, only add Norwegian
-        const noPath = `/${noSubcategory.parentCategorySlug}/${noSubcategory.slug}`;
-        const hreflangLinks = `
-    <xhtml:link rel="alternate" hreflang="nb" href="${baseUrl}${noPath}"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${noPath}"/>`;
-
-        xml += generateUrlEntry(
-          `${baseUrl}${noPath}`,
-          formatDate(noSubcategory._updatedAt),
-          "weekly",
-          0.7,
-          hreflangLinks,
-        );
-      }
-    });
-
-    // ✅ FIX: Add drawings with proper Norwegian-Swedish-German matching
-    norwegianData.drawings?.forEach((noDrawing: SitemapDrawing) => {
-      // Find matching Swedish and German drawings by full URL path (category + subcategory + slug)
-      const svDrawing = swedishData.drawings?.find(
-        (sv: SitemapDrawing) =>
-          sv.slug === noDrawing.slug &&
-          sv.subcategorySlug === noDrawing.subcategorySlug &&
-          sv.parentCategorySlug === noDrawing.parentCategorySlug
-      );
-      const deDrawing = germanData.drawings?.find(
-        (de: SitemapDrawing) =>
-          de.slug === noDrawing.slug &&
-          de.subcategorySlug === noDrawing.subcategorySlug &&
-          de.parentCategorySlug === noDrawing.parentCategorySlug
-      );
-
-      if (svDrawing) {
-        // Use actual slugs from each language
-        const noPath = `/${noDrawing.parentCategorySlug}/${noDrawing.subcategorySlug}/${noDrawing.slug}`;
-        const svPath = `/${svDrawing.parentCategorySlug}/${svDrawing.subcategorySlug}/${svDrawing.slug}`;
-        const dePath = deDrawing ? `/${deDrawing.parentCategorySlug}/${deDrawing.subcategorySlug}/${deDrawing.slug}` : null;
-        const hreflangLinks = generateMultilingualHreflangLinks(baseUrl, noPath, svPath, dePath);
-
-        xml += generateUrlEntry(
-          `${baseUrl}${noPath}`,
-          formatDate(noDrawing._updatedAt),
-          "monthly",
-          0.6,
-          hreflangLinks,
-        );
-      } else {
-        // If no Swedish version exists, only add Norwegian
-        const noPath = `/${noDrawing.parentCategorySlug}/${noDrawing.subcategorySlug}/${noDrawing.slug}`;
-        const hreflangLinks = `
-    <xhtml:link rel="alternate" hreflang="nb" href="${baseUrl}${noPath}"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${noPath}"/>`;
-
-        xml += generateUrlEntry(
-          `${baseUrl}${noPath}`,
-          formatDate(noDrawing._updatedAt),
-          "monthly",
-          0.6,
-          hreflangLinks,
-        );
-      }
-    });
+    }
 
     xml += `
 </urlset>`;

@@ -1,8 +1,13 @@
 import { STRUCTURED_DATA } from '@/lib/structured-data-constants';
 
-export default function BaseJsonLd() {
+interface BaseJsonLdProps {
+  locale?: string;
+}
+
+export default function BaseJsonLd({ locale = 'no' }: BaseJsonLdProps) {
   const baseUrl = STRUCTURED_DATA.ORGANIZATION.URL;
-  
+  const localeConfig = STRUCTURED_DATA.SITE.LOCALE_CONFIG[locale] || STRUCTURED_DATA.SITE.LOCALE_CONFIG['no'];
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -11,8 +16,8 @@ export default function BaseJsonLd() {
         "@id": `${baseUrl}/#website`,
         "url": baseUrl,
         "name": STRUCTURED_DATA.SITE.NAME,
-        "description": STRUCTURED_DATA.SITE.DESCRIPTION,
-        "inLanguage": STRUCTURED_DATA.SITE.LANGUAGE,
+        "description": localeConfig.description,
+        "inLanguage": localeConfig.inLanguage,
         "publisher": {
           "@id": `${baseUrl}/#organization`
         },

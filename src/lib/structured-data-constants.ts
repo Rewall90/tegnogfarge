@@ -28,7 +28,21 @@ export const STRUCTURED_DATA = {
   SITE: {
     NAME: "TegnOgFarge.no",
     DESCRIPTION: "Fargeleggingsark for barn og voksne",
-    LANGUAGE: "nb-NO"
+    LANGUAGE: "nb-NO",
+    LOCALE_CONFIG: {
+      no: {
+        inLanguage: 'nb-NO',
+        description: 'Fargeleggingsark for barn og voksne',
+      },
+      sv: {
+        inLanguage: 'sv-SE',
+        description: 'Målarbilder för barn och vuxna',
+      },
+      de: {
+        inLanguage: 'de-DE',
+        description: 'Ausmalbilder für Kinder und Erwachsene',
+      },
+    } as Record<string, { inLanguage: string; description: string }>,
   },
   
   // Search configuration

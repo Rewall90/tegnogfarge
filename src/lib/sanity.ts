@@ -737,6 +737,114 @@ export async function getSitemapPageData(locale: string = 'no') {
   `, { locale });
 }
 
+/**
+ * Get translated slugs for a document across all locales using baseDocumentId linking.
+ * Uses a single GROQ query to fetch the current document and all its translations.
+ */
+export async function getTranslatedSlugs(
+  slug: string,
+  type: 'category' | 'subcategory' | 'drawingImage',
+  locale: string = 'no'
+): Promise<{ no: string | null; sv: string | null; de: string | null }> {
+  // Single query: fetch current doc with embedded translation lookups
+  const result = await client.fetch(`
+    *[_type == $type && slug.current == $slug && language == $locale][0] {
+      _id,
+      "slug": slug.current,
+      language,
+      baseDocumentId,
+      // If Norwegian: find sv/de translations that reference this doc
+      "svFromNo": *[_type == $type && baseDocumentId == ^._id && language == "sv"][0].slug.current,
+      "deFromNo": *[_type == $type && baseDocumentId == ^._id && language == "de"][0].slug.current,
+      // If non-Norwegian: find the Norwegian original and its other translations
+      "noOriginal": *[_type == $type && _id == ^.baseDocumentId][0] {
+        "slug": slug.current,
+        "svSlug": *[_type == $type && baseDocumentId == ^._id && language == "sv"][0].slug.current,
+        "deSlug": *[_type == $type && baseDocumentId == ^._id && language == "de"][0].slug.current
+      }
+    }
+  `, { slug, type, locale });
+
+  if (!result) {
+    return { no: null, sv: null, de: null };
+  }
+
+  if (result.language === 'no') {
+    return {
+      no: result.slug,
+      sv: result.svFromNo || null,
+      de: result.deFromNo || null,
+    };
+  }
+
+  // Non-Norwegian locale: use the Norwegian original to find all translations
+  return {
+    no: result.noOriginal?.slug || null,
+    sv: result.language === 'sv' ? result.slug : (result.noOriginal?.svSlug || null),
+    de: result.language === 'de' ? result.slug : (result.noOriginal?.deSlug || null),
+  };
+}
+
+/**
+ * Batch fetch all translated slugs for a content type — used by sitemaps.
+ * Returns Norwegian documents with their Swedish and German translation slugs.
+ */
+export async function getTranslatedSlugsForSitemap(
+  type: 'category' | 'subcategory' | 'drawingImage'
+) {
+  if (type === 'category') {
+    return client.fetch(`
+      *[_type == "category" && language == "no" && isActive == true && defined(slug.current) && !(_id in path("drafts.**"))] {
+        _id,
+        "slug": slug.current,
+        _updatedAt,
+        "svSlug": *[_type == "category" && baseDocumentId == ^._id && language == "sv"][0].slug.current,
+        "deSlug": *[_type == "category" && baseDocumentId == ^._id && language == "de"][0].slug.current
+      }
+    `);
+  }
+
+  if (type === 'subcategory') {
+    return client.fetch(`
+      *[_type == "subcategory" && language == "no" && isActive == true && defined(parentCategory->slug.current) && !(_id in path("drafts.**"))] {
+        _id,
+        "slug": slug.current,
+        "parentCategorySlug": parentCategory->slug.current,
+        _updatedAt,
+        "svDoc": *[_type == "subcategory" && baseDocumentId == ^._id && language == "sv"][0] {
+          "slug": slug.current,
+          "parentCategorySlug": parentCategory->slug.current
+        },
+        "deDoc": *[_type == "subcategory" && baseDocumentId == ^._id && language == "de"][0] {
+          "slug": slug.current,
+          "parentCategorySlug": parentCategory->slug.current
+        }
+      }
+    `);
+  }
+
+  // drawingImage
+  return client.fetch(`
+    *[_type == "drawingImage" && language == "no" && isActive == true && defined(slug.current) && defined(subcategory->slug.current) && defined(subcategory->parentCategory->slug.current) && !(_id in path("drafts.**"))] {
+      _id,
+      "slug": slug.current,
+      "subcategorySlug": subcategory->slug.current,
+      "parentCategorySlug": subcategory->parentCategory->slug.current,
+      _updatedAt,
+      "svDoc": *[_type == "drawingImage" && baseDocumentId == ^._id && language == "sv"][0] {
+        "slug": slug.current,
+        "subcategorySlug": subcategory->slug.current,
+        "parentCategorySlug": subcategory->parentCategory->slug.current
+      },
+      "deDoc": *[_type == "drawingImage" && baseDocumentId == ^._id && language == "de"][0] {
+        "slug": slug.current,
+        "subcategorySlug": subcategory->slug.current,
+        "parentCategorySlug": subcategory->parentCategory->slug.current
+      }
+    }
+  `);
+}
+
 export async function getSitemapImageData(locale: string = 'no') {
   return client.fetch(`
     *[_type == "drawingImage" && defined(slug.current) && defined(displayImage.asset) && isActive == true && language == $locale && !(_id in path("drafts.**"))] {
@@ -855,4 +963,72 @@ export async function getSubcategoryWithFlags(
       }
     }
   `, { categorySlug, subcategorySlug, locale });
+}
+
+// =======================
+// Weekly Collections (Ukessamlinger)
+// =======================
+
+// Hent alle ukessamlinger
+export async function getAllWeeklyCollections() {
+  return client.fetch(`
+    *[_type == "weeklyCollection" && isActive == true]
+    | order(publishedDate desc) {
+      _id,
+      title,
+      "slug": slug.current,
+      description,
+      publishedDate,
+      emailSentDate,
+      isActive
+    }
+  `);
+}
+
+// Hent en spesifikk ukessamling med innhold
+export async function getWeeklyCollection(slug: string) {
+  // Create a fresh client without CDN to ensure we get the latest data
+  const freshClient = createClient({
+    ...config,
+    useCdn: false,
+  });
+
+  const result = await freshClient.fetch(`
+    *[_type == "weeklyCollection" && slug.current == $slug && isActive == true][0] {
+      _id,
+      title,
+      "slug": slug.current,
+      description,
+      publishedDate,
+      emailSentDate,
+      isActive,
+      content[] {
+        ...,
+        _type == "reference" => @->{
+          _id,
+          title,
+          "slug": slug.current,
+          description,
+          "thumbnail": {
+            "url": thumbnailImage.asset->url,
+            "alt": thumbnailImage.alt,
+            "lqip": thumbnailImage.asset->metadata.lqip
+          },
+          "pdfUrl": downloadFile.asset->url
+        },
+        _type == "emailColoringImage" => {
+          _type,
+          _key,
+          title,
+          description,
+          "imageUrl": image.asset->url,
+          "imageAlt": image.alt,
+          "imageLqip": image.asset->metadata.lqip,
+          "pdfUrl": pdfFile.asset->url
+        }
+      }
+    }
+  `, { slug });
+
+  return result;
 } 

@@ -14,7 +14,6 @@ import {
   CookieConsentModal,
   CookieSettingsButton
 } from "@/components/cookie-consent";
-import { LeadPopupManager } from "@/components/lead/LeadPopupManager";
 import { PostHogProvider } from "@/components/providers/PostHogProvider";
 
 // Dynamisk import av VisualEditing
@@ -66,7 +65,7 @@ export default async function LocaleLayout({
   const { isEnabled: isDraftMode } = draftMode();
 
   return (
-    <html lang={locale} className={`${inter.variable} ${quicksand.variable}`}>
+    <html lang={locale === 'no' ? 'nb' : locale} className={`${inter.variable} ${quicksand.variable}`}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -82,7 +81,7 @@ export default async function LocaleLayout({
           media="(min-width: 768px)"
         />
 
-        <BaseJsonLd />
+        <BaseJsonLd locale={locale} />
       </head>
       <body className="font-sans bg-white text-gray-900 min-h-screen flex flex-col">
         <CookieConsentProvider>
@@ -102,8 +101,6 @@ export default async function LocaleLayout({
             <CookieConsentBanner />
             <CookieConsentModal />
             <CookieSettingsButton />
-            {/* Lead capture popup */}
-            <LeadPopupManager />
           </PostHogProvider>
         </CookieConsentProvider>
       </body>

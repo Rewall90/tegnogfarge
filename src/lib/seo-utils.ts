@@ -19,21 +19,33 @@ const hreflangMapping: Record<Locale, string> = {
 };
 
 /**
- * URL slug mapping for static pages across locales
- * Maps Norwegian slugs to their Swedish and German equivalents
+ * URL slug mapping for static pages across locales.
+ * Bidirectional: keyed by EVERY locale's slug so lookups work
+ * regardless of which locale's page calls buildAlternates().
+ * Sources: footer.ts translations + static route definitions
  */
-const urlSlugMapping: Record<string, Record<Locale, string>> = {
-  '/alle-underkategorier': {
-    no: '/alle-underkategorier',
-    sv: '/alla-underkategorier',
-    de: '/alle-unterkategorien',
-  },
-  '/hoved-kategori': {
-    no: '/hoved-kategori',
-    sv: '/huvudkategori',
-    de: '/hauptkategorie',
-  },
-};
+const urlSlugMapping: Record<string, Record<Locale, string>> = {};
+
+// Define slug groups — each group links one page across all 3 locales
+const slugGroups: Record<Locale, string>[] = [
+  { no: '/alle-underkategorier', sv: '/alla-underkategorier', de: '/alle-unterkategorien' },
+  { no: '/hoved-kategori', sv: '/huvudkategori', de: '/hauptkategorie' },
+  { no: '/om-skribenten', sv: '/om-forfattaren', de: '/ueber-den-autor' },
+  { no: '/vilkar-og-betingelser', sv: '/villkor-och-bestammelser', de: '/allgemeine-geschaeftsbedingungen' },
+  { no: '/personvernerklaering', sv: '/sekretesspolicy', de: '/datenschutzerklaerung' },
+  { no: '/lisensieringspolicy', sv: '/licenspolicy', de: '/lizenzrichtlinien' },
+  { no: '/fjerning-av-innhold', sv: '/borttagning-av-innehall', de: '/entfernung-von-inhalten' },
+  { no: '/om-oss', sv: '/om-oss', de: '/ueber-uns' },
+  { no: '/kontakt', sv: '/kontakt', de: '/kontakt' },
+];
+
+// Build bidirectional mapping: every slug variant maps to the full group
+for (const group of slugGroups) {
+  const slugs = new Set(Object.values(group));
+  for (const slug of slugs) {
+    urlSlugMapping[slug] = group;
+  }
+}
 
 /**
  * Get locale-specific configuration for SEO metadata
@@ -120,13 +132,48 @@ export function generateCanonicalUrl(pathname: string, locale: Locale = defaultL
  *
  * @param pathname - The path without locale prefix (e.g., "/jul/nisse")
  * @param locale - Current page locale
+ * @param translatedPaths - Optional locale-specific full paths for dynamic content (e.g., { no: '/dyr', sv: '/djur', de: '/ausmalbilder-tiere' })
  * @returns Alternates object for Next.js metadata API with x-default support
  */
-export function buildAlternates(pathname: string, locale: Locale = defaultLocale) {
+export function buildAlternates(
+  pathname: string,
+  locale: Locale = defaultLocale,
+  translatedPaths?: { no?: string; sv?: string; de?: string }
+) {
+  if (translatedPaths) {
+    // Use translated paths for dynamic content pages (categories, subcategories, drawings)
+    const languages: Record<string, string> = {};
+
+    if (translatedPaths.no) {
+      languages['nb'] = `${baseUrl}${translatedPaths.no}`;
+      languages['x-default'] = `${baseUrl}${translatedPaths.no}`;
+    }
+    if (translatedPaths.sv) {
+      languages['sv'] = `${baseUrl}/sv${translatedPaths.sv}`;
+    }
+    if (translatedPaths.de) {
+      languages['de'] = `${baseUrl}/de${translatedPaths.de}`;
+    }
+
+    // Generate canonical for current locale
+    let canonical: string;
+    if (locale === 'no' && translatedPaths.no) {
+      canonical = `${baseUrl}${translatedPaths.no}`;
+    } else if (locale === 'sv' && translatedPaths.sv) {
+      canonical = `${baseUrl}/sv${translatedPaths.sv}`;
+    } else if (locale === 'de' && translatedPaths.de) {
+      canonical = `${baseUrl}/de${translatedPaths.de}`;
+    } else {
+      canonical = generateCanonicalUrl(pathname, locale);
+    }
+
+    return { canonical, languages };
+  }
+
+  // Fall back to static slug mapping for static pages
   const hreflangUrls = generateHreflangUrls(pathname, locale);
   const canonical = generateCanonicalUrl(pathname, locale);
 
-  // Extract language URLs (including x-default for Next.js 14+)
   const languages: Record<string, string> = {};
   for (const [lang, url] of Object.entries(hreflangUrls)) {
     languages[lang] = url;
