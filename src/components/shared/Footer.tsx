@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import NewsletterForm from '../newsletter/NewsletterForm';
 import Image from 'next/image';
@@ -33,6 +34,21 @@ export default function Footer({ locale: localeProp }: FooterProps = {}) {
   const params = useParams();
   const locale = localeProp || (params?.locale as string) || 'no';
   const t = footerTranslations[locale] || footerTranslations.no;
+  const [alternateUrls, setAlternateUrls] = useState<Record<string, string>>({});
+
+  // Read hreflang links from <head> after mount / navigation
+  useEffect(() => {
+    const urls: Record<string, string> = {};
+    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(link => {
+      const hreflang = link.getAttribute('hreflang');
+      const href = link.getAttribute('href');
+      if (hreflang && href && hreflang !== 'x-default') {
+        const loc = hreflang === 'nb' ? 'no' : hreflang;
+        try { urls[loc] = new URL(href).pathname; } catch {}
+      }
+    });
+    if (Object.keys(urls).length > 0) setAlternateUrls(urls);
+  }, [pathname]);
 
   // Helper function to create locale-aware hrefs
   const getLocalizedHref = (path: string) => {
@@ -41,6 +57,8 @@ export default function Footer({ locale: localeProp }: FooterProps = {}) {
 
   // Generate language switcher URL for a target locale
   const getLanguageUrl = (targetLocale: string) => {
+    if (alternateUrls[targetLocale]) return alternateUrls[targetLocale];
+    // Fallback (SSR + pages without hreflang)
     const pathWithoutLocale = pathname.replace(/^\/(sv|de)/, '');
     if (targetLocale === 'no') {
       return pathWithoutLocale || '/';
