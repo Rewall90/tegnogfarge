@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { AdSenseScript } from "@/components/ads/AdSenseScript";
 import { EzoicScripts } from "@/components/ads/EzoicScripts";
 
 export const metadata: Metadata = {
@@ -27,8 +26,25 @@ export default function RootLayout({
       <head>
         {/* Ezoic privacy scripts must load first per Ezoic requirements */}
         <EzoicScripts />
-        {/* AdSense runs alongside Ezoic via Mediation for dual monetization */}
-        <AdSenseScript />
+        {/* Block Google Funding Choices popup by intercepting FC API */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.googlefc = window.googlefc || {};
+              window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
+              window.googlefc.ccpa = window.googlefc.ccpa || {};
+              window.googlefc.controlledMessagingFunction = () => {};
+              window.__tcfapi = () => {};
+              window.__gpp = () => {};
+            `,
+          }}
+        />
+        {/* AdSense runs alongside Ezoic via Mediation — plain script avoids data-nscript warning */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2852837430993050"
+          crossOrigin="anonymous"
+        />
       </head>
       <body>
         {children}
