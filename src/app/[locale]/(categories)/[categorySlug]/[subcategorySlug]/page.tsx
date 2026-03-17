@@ -8,7 +8,7 @@ import {
   getSubcategoriesByCategory,
   getCategoryWithSubcategories,
   getAllCategoriesWithSubcategories,
-  getTranslatedSlugs
+  getTranslatedSubcategoryPaths
 } from '@/lib/sanity';
 import { notFound } from 'next/navigation';
 import { DownloadPdfButton } from '@/components/buttons/DownloadPdfButton';
@@ -90,17 +90,9 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     return { title: 'Underkategori ikke funnet' };
   }
 
-  // Fetch translated slugs for correct hreflang (category + subcategory)
-  const nullSlugs = { no: null, sv: null, de: null };
-  const [catSlugs, subSlugs] = await Promise.all([
-    getTranslatedSlugs(categorySlug, 'category', locale).catch(() => nullSlugs),
-    getTranslatedSlugs(subcategorySlug, 'subcategory', locale).catch(() => nullSlugs),
-  ]);
-  const translatedPaths = {
-    no: catSlugs.no && subSlugs.no ? `/${catSlugs.no}/${subSlugs.no}` : undefined,
-    sv: catSlugs.sv && subSlugs.sv ? `/${catSlugs.sv}/${subSlugs.sv}` : undefined,
-    de: catSlugs.de && subSlugs.de ? `/${catSlugs.de}/${subSlugs.de}` : undefined,
-  };
+  // Fetch translated paths for correct hreflang (single query gets parent+child for all locales)
+  const translatedPaths = await getTranslatedSubcategoryPaths(subcategorySlug, categorySlug, locale)
+    .catch(() => ({}));
 
   // Prepare the JSON-LD data for this subcategory
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tegnogfarge.no';

@@ -786,6 +786,133 @@ export async function getTranslatedSlugs(
 }
 
 /**
+ * Get translated full paths for a subcategory across all locales.
+ * Single GROQ query that fetches parent category slug inline, avoiding the
+ * AND-logic bug where getTranslatedSlugs() drops locales if any segment is null.
+ */
+export async function getTranslatedSubcategoryPaths(
+  subcategorySlug: string,
+  categorySlug: string,
+  locale: string = 'no'
+): Promise<{ no?: string; sv?: string; de?: string }> {
+  const result = await client.fetch(`
+    *[_type == "subcategory" && slug.current == $subcategorySlug && parentCategory->slug.current == $categorySlug && language == $locale][0] {
+      _id,
+      "slug": slug.current,
+      "parentCategorySlug": parentCategory->slug.current,
+      language,
+      baseDocumentId,
+      "svDoc": *[_type == "subcategory" && baseDocumentId == ^._id && language == "sv"][0] {
+        "slug": slug.current,
+        "parentCategorySlug": parentCategory->slug.current
+      },
+      "deDoc": *[_type == "subcategory" && baseDocumentId == ^._id && language == "de"][0] {
+        "slug": slug.current,
+        "parentCategorySlug": parentCategory->slug.current
+      },
+      "noOriginal": *[_type == "subcategory" && _id == ^.baseDocumentId][0] {
+        "slug": slug.current,
+        "parentCategorySlug": parentCategory->slug.current,
+        "svDoc": *[_type == "subcategory" && baseDocumentId == ^._id && language == "sv"][0] {
+          "slug": slug.current,
+          "parentCategorySlug": parentCategory->slug.current
+        },
+        "deDoc": *[_type == "subcategory" && baseDocumentId == ^._id && language == "de"][0] {
+          "slug": slug.current,
+          "parentCategorySlug": parentCategory->slug.current
+        }
+      }
+    }
+  `, { subcategorySlug, categorySlug, locale });
+
+  if (!result) return {};
+
+  const makePath = (doc: { parentCategorySlug?: string; slug?: string } | null) =>
+    doc?.parentCategorySlug && doc?.slug ? `/${doc.parentCategorySlug}/${doc.slug}` : undefined;
+
+  if (result.language === 'no') {
+    return {
+      no: makePath(result),
+      sv: makePath(result.svDoc),
+      de: makePath(result.deDoc),
+    };
+  }
+
+  // Non-Norwegian: resolve via Norwegian original
+  const noDoc = result.noOriginal;
+  return {
+    no: makePath(noDoc),
+    sv: result.language === 'sv' ? makePath(result) : makePath(noDoc?.svDoc),
+    de: result.language === 'de' ? makePath(result) : makePath(noDoc?.deDoc),
+  };
+}
+
+/**
+ * Get translated full paths for a drawing page across all locales.
+ * Single GROQ query that fetches subcategory + parent category slugs inline.
+ */
+export async function getTranslatedDrawingPaths(
+  drawingSlug: string,
+  subcategorySlug: string,
+  categorySlug: string,
+  locale: string = 'no'
+): Promise<{ no?: string; sv?: string; de?: string }> {
+  const result = await client.fetch(`
+    *[_type == "drawingImage" && slug.current == $drawingSlug && subcategory->slug.current == $subcategorySlug && subcategory->parentCategory->slug.current == $categorySlug && language == $locale][0] {
+      _id,
+      "slug": slug.current,
+      "subcategorySlug": subcategory->slug.current,
+      "parentCategorySlug": subcategory->parentCategory->slug.current,
+      language,
+      baseDocumentId,
+      "svDoc": *[_type == "drawingImage" && baseDocumentId == ^._id && language == "sv"][0] {
+        "slug": slug.current,
+        "subcategorySlug": subcategory->slug.current,
+        "parentCategorySlug": subcategory->parentCategory->slug.current
+      },
+      "deDoc": *[_type == "drawingImage" && baseDocumentId == ^._id && language == "de"][0] {
+        "slug": slug.current,
+        "subcategorySlug": subcategory->slug.current,
+        "parentCategorySlug": subcategory->parentCategory->slug.current
+      },
+      "noOriginal": *[_type == "drawingImage" && _id == ^.baseDocumentId][0] {
+        "slug": slug.current,
+        "subcategorySlug": subcategory->slug.current,
+        "parentCategorySlug": subcategory->parentCategory->slug.current,
+        "svDoc": *[_type == "drawingImage" && baseDocumentId == ^._id && language == "sv"][0] {
+          "slug": slug.current,
+          "subcategorySlug": subcategory->slug.current,
+          "parentCategorySlug": subcategory->parentCategory->slug.current
+        },
+        "deDoc": *[_type == "drawingImage" && baseDocumentId == ^._id && language == "de"][0] {
+          "slug": slug.current,
+          "subcategorySlug": subcategory->slug.current,
+          "parentCategorySlug": subcategory->parentCategory->slug.current
+        }
+      }
+    }
+  `, { drawingSlug, subcategorySlug, categorySlug, locale });
+
+  if (!result) return {};
+
+  const makePath = (doc: { parentCategorySlug?: string; subcategorySlug?: string; slug?: string } | null) =>
+    doc?.parentCategorySlug && doc?.subcategorySlug && doc?.slug
+      ? `/${doc.parentCategorySlug}/${doc.subcategorySlug}/${doc.slug}`
+      : undefined;
+
+  if (result.language === 'no') {
+    return { no: makePath(result), sv: makePath(result.svDoc), de: makePath(result.deDoc) };
+  }
+
+  const noDoc = result.noOriginal;
+  return {
+    no: makePath(noDoc),
+    sv: result.language === 'sv' ? makePath(result) : makePath(noDoc?.svDoc),
+    de: result.language === 'de' ? makePath(result) : makePath(noDoc?.deDoc),
+  };
+}
+
+/**
  * Batch fetch all translated slugs for a content type — used by sitemaps.
  * Returns Norwegian documents with their Swedish and German translation slugs.
  */

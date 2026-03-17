@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getSubcategoryWithDrawings, getAllCategories, getSubcategoriesByCategory, getColoringImage, getTranslatedSlugs } from '@/lib/sanity';
+import { getSubcategoryWithDrawings, getAllCategories, getSubcategoriesByCategory, getColoringImage, getTranslatedDrawingPaths } from '@/lib/sanity';
 import { notFound } from 'next/navigation';
 import { DownloadPdfButton } from '@/components/buttons/DownloadPdfButton';
 import { StartColoringButton } from '@/components/buttons/StartColoringButton';
@@ -56,18 +56,9 @@ export async function generateMetadata({ params: paramsPromise }: PageProps) {
     return { title: drawing.title || t.metadata.fallbackTitle };
   }
 
-  // Fetch translated slugs for correct hreflang (category + subcategory + drawing)
-  const nullSlugs = { no: null, sv: null, de: null };
-  const [catSlugs, subSlugs, drawSlugs] = await Promise.all([
-    getTranslatedSlugs(categorySlug, 'category', locale).catch(() => nullSlugs),
-    getTranslatedSlugs(subcategorySlug, 'subcategory', locale).catch(() => nullSlugs),
-    getTranslatedSlugs(drawingSlug, 'drawingImage', locale).catch(() => nullSlugs),
-  ]);
-  const translatedPaths = {
-    no: catSlugs.no && subSlugs.no && drawSlugs.no ? `/${catSlugs.no}/${subSlugs.no}/${drawSlugs.no}` : undefined,
-    sv: catSlugs.sv && subSlugs.sv && drawSlugs.sv ? `/${catSlugs.sv}/${subSlugs.sv}/${drawSlugs.sv}` : undefined,
-    de: catSlugs.de && subSlugs.de && drawSlugs.de ? `/${catSlugs.de}/${subSlugs.de}/${drawSlugs.de}` : undefined,
-  };
+  // Fetch translated paths for correct hreflang (single query gets all 3 path segments for all locales)
+  const translatedPaths = await getTranslatedDrawingPaths(drawingSlug, subcategorySlug, categorySlug, locale)
+    .catch(() => ({}));
 
   // Prepare structured data for metadata
   const pathname = `/${categorySlug}/${subcategorySlug}/${drawingSlug}`;
