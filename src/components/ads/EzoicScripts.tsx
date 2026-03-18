@@ -16,7 +16,7 @@ export function EzoicScripts() {
     }
 
     const ez = (window as any).ezstandalone;
-    if (!ez) return;
+    if (!ez || !ez.enabled) return;
 
     ez.cmd = ez.cmd || [];
     ez.cmd.push(function () {
@@ -89,8 +89,35 @@ export function EzoicScripts() {
             window.ezRewardedAds = window.ezRewardedAds || {};
             window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || [];
             ezstandalone.cmd.push(function () {
+              ezstandalone.setIsSinglePageApplication(true);
               ezstandalone.initRewardedAds();
             });
+          `,
+        }}
+      />
+
+      {/* Reload after first-time Gatekeeper consent so Ezoic pipeline can bootstrap.
+          sa.min.js stalls permanently if consent isn't available at page load.
+          Only fires for first-time visitors (useractioncomplete), not returning users. */}
+      <Script
+        id="ezoic-consent-reload"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              function listenForConsent() {
+                if (typeof window.__tcfapi !== 'function') {
+                  setTimeout(listenForConsent, 500);
+                  return;
+                }
+                window.__tcfapi('addEventListener', 2, function(tcData, success) {
+                  if (success && tcData.eventStatus === 'useractioncomplete') {
+                    window.location.reload();
+                  }
+                });
+              }
+              listenForConsent();
+            })();
           `,
         }}
       />
