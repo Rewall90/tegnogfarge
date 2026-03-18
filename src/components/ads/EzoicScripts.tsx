@@ -109,6 +109,8 @@ export function EzoicScripts() {
               var adPreloaded = false;
               var adRequesting = false;
               var pdfDownloadPending = false;
+              var lastRequestResult = null;
+              var L = '[EzReward]';
 
               // Pre-fetch a rewarded ad in the background
               function prefetchAd() {
@@ -117,19 +119,25 @@ export function EzoicScripts() {
                 if (typeof window.ezRewardedAds.request !== 'function') return;
 
                 adRequesting = true;
+                console.log(L, 'prefetch: calling request()...');
+                var t0 = Date.now();
                 try {
                   window.ezRewardedAds.request(function(result) {
                     adRequesting = false;
+                    lastRequestResult = result;
                     adPreloaded = !!(result && result.status);
+                    console.log(L, 'prefetch: request() callback after ' + (Date.now() - t0) + 'ms', JSON.stringify(result));
                   });
                 } catch(e) {
                   adRequesting = false;
+                  console.log(L, 'prefetch: request() threw error:', e.message);
                 }
               }
 
               // Poll for ezRewardedAds.ready then pre-fetch
               function waitAndPrefetch() {
                 if (window.ezRewardedAds && window.ezRewardedAds.ready) {
+                  console.log(L, 'init: ezRewardedAds.ready=true, prefetching...');
                   prefetchAd();
                 } else {
                   var attempts = 0;
@@ -137,9 +145,11 @@ export function EzoicScripts() {
                     attempts++;
                     if (window.ezRewardedAds && window.ezRewardedAds.ready) {
                       clearInterval(iv);
+                      console.log(L, 'init: ezRewardedAds.ready after ' + attempts + ' polls (' + (attempts * 500) + 'ms)');
                       prefetchAd();
                     } else if (attempts > 60) {
                       clearInterval(iv);
+                      console.log(L, 'init: ezRewardedAds never became ready after 30s');
                     }
                   }, 500);
                 }
@@ -148,8 +158,10 @@ export function EzoicScripts() {
 
               // Re-prefetch on SPA navigation
               window.addEventListener('ezRewardedAdsPrefetch', function() {
+                console.log(L, 'SPA nav: re-prefetching...');
                 adPreloaded = false;
                 adRequesting = false;
+                lastRequestResult = null;
                 setTimeout(prefetchAd, 1000);
               });
 
@@ -189,14 +201,16 @@ export function EzoicScripts() {
                 overlay.appendChild(box);
 
                 cancelBtn.addEventListener('click', function() {
+                  console.log(L, 'overlay: user cancelled');
                   overlay.remove();
                 });
 
                 overlay.addEventListener('click', function(e) {
-                  if (e.target === overlay) overlay.remove();
+                  if (e.target === overlay) { console.log(L, 'overlay: dismissed via backdrop'); overlay.remove(); }
                 });
 
                 acceptBtn.addEventListener('click', function() {
+                  console.log(L, 'overlay: user accepted, adPreloaded=' + adPreloaded + ', lastResult=' + JSON.stringify(lastRequestResult));
                   overlay.remove();
                   showAdAndDownload(pdfUrl);
                 });
@@ -205,6 +219,7 @@ export function EzoicScripts() {
               }
 
               function downloadPdf(url) {
+                console.log(L, 'downloadPdf: opening', url.substring(0, 80) + '...');
                 pdfDownloadPending = true;
                 try {
                   window.open(url, '_blank', 'noopener,noreferrer');
@@ -213,22 +228,32 @@ export function EzoicScripts() {
               }
 
               function showAdAndDownload(pdfUrl) {
+                console.log(L, 'showAdAndDownload: adPreloaded=' + adPreloaded + ', hasShow=' + (typeof window.ezRewardedAds.show === 'function') + ', hasRequestWithOverlay=' + (typeof window.ezRewardedAds.requestWithOverlay === 'function'));
+
                 // If ad is pre-loaded, use show() for instant display
                 if (adPreloaded && typeof window.ezRewardedAds.show === 'function') {
                   adPreloaded = false;
+                  console.log(L, 'show: calling show()...');
+                  var t0 = Date.now();
+                  var showTimedOut = false;
+                  var showTimer = setTimeout(function() {
+                    showTimedOut = true;
+                    console.log(L, 'show: TIMEOUT after 10s - callback never fired, downloading PDF directly');
+                    downloadPdf(pdfUrl);
+                    setTimeout(prefetchAd, 2000);
+                  }, 10000);
                   try {
                     window.ezRewardedAds.show(function(result) {
-                      if (result && result.status && result.reward) {
-                        downloadPdf(pdfUrl);
-                      } else if (result && result.status) {
-                        downloadPdf(pdfUrl);
-                      } else {
-                        downloadPdf(pdfUrl);
-                      }
+                      if (showTimedOut) { console.log(L, 'show: late callback after timeout, ignoring. result=' + JSON.stringify(result)); return; }
+                      clearTimeout(showTimer);
+                      console.log(L, 'show: callback after ' + (Date.now() - t0) + 'ms, result=' + JSON.stringify(result));
+                      downloadPdf(pdfUrl);
                       // Pre-fetch next ad
                       setTimeout(prefetchAd, 2000);
                     }, { rewardName: 'PDF Download - Fargeleggingsark' });
                   } catch(e) {
+                    clearTimeout(showTimer);
+                    console.log(L, 'show: threw error:', e.message);
                     downloadPdf(pdfUrl);
                     setTimeout(prefetchAd, 2000);
                   }
@@ -237,10 +262,24 @@ export function EzoicScripts() {
 
                 // Fallback: ad not pre-loaded, use requestWithOverlay
                 if (typeof window.ezRewardedAds.requestWithOverlay === 'function') {
+                  console.log(L, 'fallback: calling requestWithOverlay()...');
+                  var t0 = Date.now();
+                  var rwoTimedOut = false;
+                  var rwoTimer = setTimeout(function() {
+                    rwoTimedOut = true;
+                    console.log(L, 'fallback: TIMEOUT after 10s - callback never fired, downloading PDF directly');
+                    downloadPdf(pdfUrl);
+                  }, 10000);
                   try {
                     window.ezRewardedAds.requestWithOverlay(
                       function(result) {
+                        if (rwoTimedOut) { console.log(L, 'fallback: late callback after timeout, ignoring. result=' + JSON.stringify(result)); return; }
+                        clearTimeout(rwoTimer);
+                        console.log(L, 'fallback: requestWithOverlay callback after ' + (Date.now() - t0) + 'ms, result=' + JSON.stringify(result));
                         if (result && (result.reward || result.status)) {
+                          downloadPdf(pdfUrl);
+                        } else {
+                          console.log(L, 'fallback: no reward/status, downloading anyway');
                           downloadPdf(pdfUrl);
                         }
                       },
@@ -253,9 +292,12 @@ export function EzoicScripts() {
                       { rewardName: "PDF Download - Fargeleggingsark", rewardOnNoFill: true, alwaysCallback: true }
                     );
                   } catch(e) {
+                    clearTimeout(rwoTimer);
+                    console.log(L, 'fallback: requestWithOverlay threw error:', e.message);
                     downloadPdf(pdfUrl);
                   }
                 } else {
+                  console.log(L, 'fallback: no requestWithOverlay available, direct download');
                   downloadPdf(pdfUrl);
                 }
               }
@@ -272,8 +314,11 @@ export function EzoicScripts() {
                 var pdfUrl = link.getAttribute('href');
                 if (!pdfUrl) return;
 
+                console.log(L, 'click: intercepted download, ezRewardedAds.ready=' + !!(window.ezRewardedAds && window.ezRewardedAds.ready) + ', adPreloaded=' + adPreloaded);
+
                 // No rewarded ads available — direct download
                 if (!window.ezRewardedAds || !window.ezRewardedAds.ready) {
+                  console.log(L, 'click: no rewarded ads available, direct download');
                   downloadPdf(pdfUrl);
                   return;
                 }
