@@ -1,10 +1,9 @@
 import React from 'react';
-import Image from 'next/image';
 import { PortableText, type PortableTextComponents } from '@portabletext/react';
 import { DownloadPdfButton } from '@/components/buttons/DownloadPdfButton';
 import { StartColoringButton } from '@/components/buttons/StartColoringButton';
 import { WEBP_PLACEHOLDER_PATH, formatDate } from '@/lib/utils';
-import { sanityImageLoader } from '@/lib/sanityImageLoader';
+import { SanityImage } from '@/components/ui/SanityImage';
 import type { Drawing } from '@/types';
 
 interface DrawingDetailProps {
@@ -39,8 +38,7 @@ export function DrawingDetail({
         <div className="md:w-1/2 flex justify-center items-center">
           {(drawing.imageUrl || drawing.fallbackImageUrl) && (
             <div className="relative w-full max-w-[450px] min-h-[600px]">
-              <Image
-                loader={sanityImageLoader}
+              <SanityImage
                 src={drawing.imageUrl || drawing.fallbackImageUrl || WEBP_PLACEHOLDER_PATH}
                 alt={drawing.imageAlt || drawing.fallbackImageAlt || drawing.title}
                 priority
