@@ -1,39 +1,60 @@
 'use client';
 
 import Script from 'next/script';
+import { usePathname } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 
-/**
- * Ezoic Integration Scripts
- *
- * Implements Ezoic's JavaScript integration for dual monetization alongside AdSense.
- * Uses third-party CMP (our custom Norwegian cookie banner) instead of Gatekeeper.
- *
- * Integration benefits:
- * - Works with AdSense via Mediation for split testing
- * - No DNS changes required
- * - Complete control over ad placements
- * - Lightweight client-side integration
- * - Custom Norwegian cookie consent (not Ezoic's default popup)
- *
- * Consent is managed via window._ezconsent set by cookieManager.ts
- *
- * @see https://docs.ezoic.com/docs/ezoicads/integration/
- */
 export function EzoicScripts() {
+  const pathname = usePathname();
+  const isFirstLoad = useRef(true);
+
+  // Re-trigger Ezoic ad pipeline on SPA route changes
+  useEffect(() => {
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false;
+      return;
+    }
+
+    const ez = (window as any).ezstandalone;
+    if (!ez) return;
+
+    ez.cmd = ez.cmd || [];
+    ez.cmd.push(function () {
+      if (typeof ez.showAds === 'function') {
+        ez.showAds();
+      }
+      if (typeof ez.initRewardedAds === 'function') {
+        ez.initRewardedAds();
+      }
+    });
+  }, [pathname]);
+
   return (
     <>
-      {/* Initialize _ezconsent BEFORE Ezoic scripts to prevent their popup */}
+      {/* Initialize _ezconsent from stored preferences for returning users.
+          First-time visitors: leave unset so Gatekeeper can handle consent natively.
+          Setting _ezconsent to false before Gatekeeper loads causes a deadlock. */}
       <Script
         id="ezoic-consent-init"
         strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: `
-            window._ezconsent = window._ezconsent || {
-              consent: false,
-              analytics: false,
-              advertising: false,
-              functional: false
-            };
+            (function() {
+              try {
+                var stored = localStorage.getItem('tegnogfarge-cookie-consent');
+                if (stored) {
+                  var prefs = JSON.parse(stored);
+                  if (prefs.consentGiven) {
+                    window._ezconsent = {
+                      consent: true,
+                      analytics: !!(prefs.categories && prefs.categories.analytics),
+                      advertising: !!(prefs.categories && prefs.categories.advertising),
+                      functional: !!(prefs.categories && prefs.categories.functional)
+                    };
+                  }
+                }
+              } catch(e) {}
+            })();
           `,
         }}
       />
