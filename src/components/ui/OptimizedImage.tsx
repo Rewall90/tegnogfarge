@@ -4,6 +4,7 @@ import React, { useState, CSSProperties } from 'react';
 import Image, { ImageProps } from 'next/image';
 import { useOptimizedLazyLoading } from '@/hooks/useOptimizedLazyLoading';
 import { SVG_BLUR_PLACEHOLDER } from '@/lib/utils';
+import { sanityImageLoader } from '@/lib/sanityImageLoader';
 
 /**
  * Props for the OptimizedImage component
@@ -85,6 +86,7 @@ export function OptimizedImage({
   const isSvg = typeof src === 'string' && src.endsWith('.svg');
   const isIcon = typeof src === 'string' && (src.includes('/icon') || src.includes('.ico'));
   const shouldOptimize = !isSvg && !isIcon;
+  const isSanityImage = typeof src === 'string' && src.includes('cdn.sanity.io');
   
   // Use the optimized lazy loading hook
   // Disable it if isPriority is true
@@ -135,6 +137,7 @@ export function OptimizedImage({
           blurDataURL={shouldOptimize ? blurDataURL : undefined}
           priority={isPriority}
           unoptimized={!shouldOptimize}
+          loader={isSanityImage ? sanityImageLoader : undefined}
           onLoad={() => setIsLoaded(true)}
           {...props}
         />

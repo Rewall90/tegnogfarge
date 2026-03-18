@@ -4,6 +4,7 @@ import { PortableText, type PortableTextComponents } from '@portabletext/react';
 import { DownloadPdfButton } from '@/components/buttons/DownloadPdfButton';
 import { StartColoringButton } from '@/components/buttons/StartColoringButton';
 import { WEBP_PLACEHOLDER_PATH, formatDate } from '@/lib/utils';
+import { sanityImageLoader } from '@/lib/sanityImageLoader';
 import type { Drawing } from '@/types';
 
 interface DrawingDetailProps {
@@ -39,6 +40,7 @@ export function DrawingDetail({
           {(drawing.imageUrl || drawing.fallbackImageUrl) && (
             <div className="relative w-full max-w-[450px] min-h-[600px]">
               <Image
+                loader={sanityImageLoader}
                 src={drawing.imageUrl || drawing.fallbackImageUrl || WEBP_PLACEHOLDER_PATH}
                 alt={drawing.imageAlt || drawing.fallbackImageAlt || drawing.title}
                 priority
