@@ -53,6 +53,8 @@ export function EzoicScripts() {
           __html: `
             window.ezstandalone = window.ezstandalone || {};
             ezstandalone.cmd = ezstandalone.cmd || [];
+            window.ezRewardedAds = window.ezRewardedAds || {};
+            window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || [];
             ezstandalone.cmd.push(function () {
               ezstandalone.initRewardedAds();
             });
