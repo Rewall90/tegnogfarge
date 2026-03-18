@@ -69,7 +69,7 @@ export function EzoicScripts() {
         dangerouslySetInnerHTML={{
           __html: `
             (function() {
-              var downloadLinkSelector = 'a[title="Last ned Bilde"]';
+              var downloadLinkSelector = 'a[aria-label="Last ned Bilde"]';
               var pdfDownloadPending = false;
 
               function handlePDFDownload() {
