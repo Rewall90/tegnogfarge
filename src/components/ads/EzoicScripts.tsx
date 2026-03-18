@@ -45,7 +45,7 @@ export function EzoicScripts() {
         strategy="afterInteractive"
       />
 
-      {/* Ezoic Standalone Initialization */}
+      {/* Ezoic Standalone Initialization + Rewarded Ads */}
       <Script
         id="ezoic-standalone-init"
         strategy="afterInteractive"
@@ -53,18 +53,9 @@ export function EzoicScripts() {
           __html: `
             window.ezstandalone = window.ezstandalone || {};
             ezstandalone.cmd = ezstandalone.cmd || [];
-          `,
-        }}
-      />
-
-      {/* Ezoic Rewarded Ads Initialization */}
-      <Script
-        id="ezoic-rewarded-ads-init"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.ezRewardedAds = window.ezRewardedAds || {};
-            window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || [];
+            ezstandalone.cmd.push(function () {
+              ezstandalone.initRewardedAds();
+            });
           `,
         }}
       />
