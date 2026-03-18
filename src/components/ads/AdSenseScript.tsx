@@ -33,10 +33,6 @@ export function AdSenseScript() {
             window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
             window.googlefc.ccpa = window.googlefc.ccpa || {};
             window.googlefc.controlledMessagingFunction = () => {};
-
-            // Block TCF API to prevent consent popup
-            window.__tcfapi = () => {};
-            window.__gpp = () => {};
           `,
         }}
       />

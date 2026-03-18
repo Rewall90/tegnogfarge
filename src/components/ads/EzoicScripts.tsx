@@ -96,32 +96,6 @@ export function EzoicScripts() {
         }}
       />
 
-      {/* Reload after first-time Gatekeeper consent so Ezoic pipeline can bootstrap.
-          sa.min.js stalls permanently if consent isn't available at page load.
-          Only fires for first-time visitors (useractioncomplete), not returning users. */}
-      <Script
-        id="ezoic-consent-reload"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              function listenForConsent() {
-                if (typeof window.__tcfapi !== 'function') {
-                  setTimeout(listenForConsent, 500);
-                  return;
-                }
-                window.__tcfapi('addEventListener', 2, function(tcData, success) {
-                  if (success && tcData.eventStatus === 'useractioncomplete') {
-                    window.location.reload();
-                  }
-                });
-              }
-              listenForConsent();
-            })();
-          `,
-        }}
-      />
-
       {/* Ezoic Rewarded Ads Download Interceptor - uses event delegation to survive React hydration */}
       <Script
         id="ezoic-rewarded-download-interceptor"

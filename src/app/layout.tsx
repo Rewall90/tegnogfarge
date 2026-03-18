@@ -34,8 +34,6 @@ export default function RootLayout({
               window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
               window.googlefc.ccpa = window.googlefc.ccpa || {};
               window.googlefc.controlledMessagingFunction = () => {};
-              window.__tcfapi = () => {};
-              window.__gpp = () => {};
             `,
           }}
         />
