@@ -28,6 +28,13 @@ input[type="search"]::placeholder {
   opacity: 1;
 }
 
+/* Collapse Ezoic-injected adhesion ad wrapper so it doesn't create
+   a white gap below the footer. The actual ad inside is position:fixed. */
+#ezmob-wrapper {
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
 @layer utilities {
   .text-heading {
     @apply font-display font-bold text-4xl;
