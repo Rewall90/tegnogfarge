@@ -99,127 +99,20 @@ export function EzoicScripts() {
         }}
       />
 
-      {/* Ezoic Rewarded Ads: Pre-fetch + Custom Overlay + show() for instant ad display */}
+      {/* Ezoic Rewarded Ads: Pre-fetch via cmd.push() + show()/requestWithOverlay() */}
       <Script
         id="ezoic-rewarded-download-interceptor"
         strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
             (function() {
+              var L = '[EzReward]';
               var adPreloaded = false;
               var adRequesting = false;
               var pdfDownloadPending = false;
-              var lastRequestResult = null;
-              var L = '[EzReward]';
-
-              // Pre-fetch a rewarded ad in the background
-              function prefetchAd() {
-                if (adPreloaded || adRequesting) return;
-                if (!window.ezRewardedAds || !window.ezRewardedAds.ready) return;
-                if (typeof window.ezRewardedAds.request !== 'function') return;
-
-                adRequesting = true;
-                console.log(L, 'prefetch: calling request()...');
-                var t0 = Date.now();
-                try {
-                  window.ezRewardedAds.request(function(result) {
-                    adRequesting = false;
-                    lastRequestResult = result;
-                    adPreloaded = !!(result && result.status);
-                    console.log(L, 'prefetch: request() callback after ' + (Date.now() - t0) + 'ms', JSON.stringify(result));
-                  });
-                } catch(e) {
-                  adRequesting = false;
-                  console.log(L, 'prefetch: request() threw error:', e.message);
-                }
-              }
-
-              // Poll for ezRewardedAds.ready then pre-fetch
-              function waitAndPrefetch() {
-                if (window.ezRewardedAds && window.ezRewardedAds.ready) {
-                  console.log(L, 'init: ezRewardedAds.ready=true, prefetching...');
-                  prefetchAd();
-                } else {
-                  var attempts = 0;
-                  var iv = setInterval(function() {
-                    attempts++;
-                    if (window.ezRewardedAds && window.ezRewardedAds.ready) {
-                      clearInterval(iv);
-                      console.log(L, 'init: ezRewardedAds.ready after ' + attempts + ' polls (' + (attempts * 500) + 'ms)');
-                      prefetchAd();
-                    } else if (attempts > 60) {
-                      clearInterval(iv);
-                      console.log(L, 'init: ezRewardedAds never became ready after 30s');
-                    }
-                  }, 500);
-                }
-              }
-              waitAndPrefetch();
-
-              // Re-prefetch on SPA navigation
-              window.addEventListener('ezRewardedAdsPrefetch', function() {
-                console.log(L, 'SPA nav: re-prefetching...');
-                adPreloaded = false;
-                adRequesting = false;
-                lastRequestResult = null;
-                setTimeout(prefetchAd, 1000);
-              });
-
-              // Custom overlay element
-              function createOverlay(pdfUrl) {
-                var overlay = document.createElement('div');
-                overlay.id = 'ez-reward-overlay';
-                overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);';
-
-                var box = document.createElement('div');
-                box.style.cssText = 'background:#fff;border-radius:12px;padding:32px;max-width:420px;width:90%;text-align:center;font-family:system-ui,sans-serif;box-shadow:0 8px 32px rgba(0,0,0,0.2);';
-
-                var h = document.createElement('h2');
-                h.style.cssText = 'margin:0 0 12px;font-size:20px;font-weight:700;color:#1a1a1a;';
-                h.textContent = 'Se annonse for \\u00e5 laste ned!';
-
-                var p = document.createElement('p');
-                p.style.cssText = 'margin:0 0 24px;font-size:15px;color:#555;line-height:1.5;';
-                p.textContent = 'For \\u00e5 laste ned fargeleggingsarket m\\u00e5 du se en kort annonse. Dette hjelper oss \\u00e5 tilby gratis innhold.';
-
-                var btnRow = document.createElement('div');
-                btnRow.style.cssText = 'display:flex;gap:12px;justify-content:center;';
-
-                var cancelBtn = document.createElement('button');
-                cancelBtn.textContent = 'Avbryt';
-                cancelBtn.style.cssText = 'padding:10px 24px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#555;font-size:15px;cursor:pointer;font-weight:500;';
-
-                var acceptBtn = document.createElement('button');
-                acceptBtn.textContent = 'Se annonse';
-                acceptBtn.style.cssText = 'padding:10px 24px;border:none;border-radius:8px;background:#22c55e;color:#fff;font-size:15px;cursor:pointer;font-weight:600;';
-
-                btnRow.appendChild(cancelBtn);
-                btnRow.appendChild(acceptBtn);
-                box.appendChild(h);
-                box.appendChild(p);
-                box.appendChild(btnRow);
-                overlay.appendChild(box);
-
-                cancelBtn.addEventListener('click', function() {
-                  console.log(L, 'overlay: user cancelled');
-                  overlay.remove();
-                });
-
-                overlay.addEventListener('click', function(e) {
-                  if (e.target === overlay) { console.log(L, 'overlay: dismissed via backdrop'); overlay.remove(); }
-                });
-
-                acceptBtn.addEventListener('click', function() {
-                  console.log(L, 'overlay: user accepted, adPreloaded=' + adPreloaded + ', lastResult=' + JSON.stringify(lastRequestResult));
-                  overlay.remove();
-                  showAdAndDownload(pdfUrl);
-                });
-
-                return overlay;
-              }
 
               function downloadPdf(url) {
-                console.log(L, 'downloadPdf: opening', url.substring(0, 80) + '...');
+                console.log(L, 'downloadPdf:', url.substring(0, 80) + '...');
                 pdfDownloadPending = true;
                 try {
                   window.open(url, '_blank', 'noopener,noreferrer');
@@ -227,80 +120,42 @@ export function EzoicScripts() {
                 setTimeout(function() { pdfDownloadPending = false; }, 1000);
               }
 
-              function showAdAndDownload(pdfUrl) {
-                console.log(L, 'showAdAndDownload: adPreloaded=' + adPreloaded + ', hasShow=' + (typeof window.ezRewardedAds.show === 'function') + ', hasRequestWithOverlay=' + (typeof window.ezRewardedAds.requestWithOverlay === 'function'));
+              // Pre-fetch a rewarded ad in the background using official request()
+              function prefetchAd() {
+                if (adPreloaded || adRequesting) return;
+                if (!window.ezRewardedAds || !window.ezRewardedAds.ready) return;
+                if (typeof window.ezRewardedAds.request !== 'function') return;
 
-                // If ad is pre-loaded, use show() for instant display
-                if (adPreloaded && typeof window.ezRewardedAds.show === 'function') {
-                  adPreloaded = false;
-                  console.log(L, 'show: calling show()...');
-                  var t0 = Date.now();
-                  var showTimedOut = false;
-                  var showTimer = setTimeout(function() {
-                    showTimedOut = true;
-                    console.log(L, 'show: TIMEOUT after 10s - callback never fired, downloading PDF directly');
-                    downloadPdf(pdfUrl);
-                    setTimeout(prefetchAd, 2000);
-                  }, 10000);
-                  try {
-                    window.ezRewardedAds.show(function(result) {
-                      if (showTimedOut) { console.log(L, 'show: late callback after timeout, ignoring. result=' + JSON.stringify(result)); return; }
-                      clearTimeout(showTimer);
-                      console.log(L, 'show: callback after ' + (Date.now() - t0) + 'ms, result=' + JSON.stringify(result));
-                      downloadPdf(pdfUrl);
-                      // Pre-fetch next ad
-                      setTimeout(prefetchAd, 2000);
-                    }, { rewardName: 'PDF Download - Fargeleggingsark' });
-                  } catch(e) {
-                    clearTimeout(showTimer);
-                    console.log(L, 'show: threw error:', e.message);
-                    downloadPdf(pdfUrl);
-                    setTimeout(prefetchAd, 2000);
-                  }
-                  return;
-                }
-
-                // Fallback: ad not pre-loaded, use requestWithOverlay
-                if (typeof window.ezRewardedAds.requestWithOverlay === 'function') {
-                  console.log(L, 'fallback: calling requestWithOverlay()...');
-                  var t0 = Date.now();
-                  var rwoTimedOut = false;
-                  var rwoTimer = setTimeout(function() {
-                    rwoTimedOut = true;
-                    console.log(L, 'fallback: TIMEOUT after 10s - callback never fired, downloading PDF directly');
-                    downloadPdf(pdfUrl);
-                  }, 10000);
-                  try {
-                    window.ezRewardedAds.requestWithOverlay(
-                      function(result) {
-                        if (rwoTimedOut) { console.log(L, 'fallback: late callback after timeout, ignoring. result=' + JSON.stringify(result)); return; }
-                        clearTimeout(rwoTimer);
-                        console.log(L, 'fallback: requestWithOverlay callback after ' + (Date.now() - t0) + 'ms, result=' + JSON.stringify(result));
-                        if (result && (result.reward || result.status)) {
-                          downloadPdf(pdfUrl);
-                        } else {
-                          console.log(L, 'fallback: no reward/status, downloading anyway');
-                          downloadPdf(pdfUrl);
-                        }
-                      },
-                      {
-                        header: "Se annonse for \\u00e5 laste ned!",
-                        body: ["For \\u00e5 laste ned fargeleggingsarket m\\u00e5 du se en kort annonse.\\nDette hjelper oss \\u00e5 tilby gratis innhold."],
-                        accept: "Se annonse",
-                        cancel: "Avbryt"
-                      },
-                      { rewardName: "PDF Download - Fargeleggingsark", rewardOnNoFill: true, alwaysCallback: true }
-                    );
-                  } catch(e) {
-                    clearTimeout(rwoTimer);
-                    console.log(L, 'fallback: requestWithOverlay threw error:', e.message);
-                    downloadPdf(pdfUrl);
-                  }
-                } else {
-                  console.log(L, 'fallback: no requestWithOverlay available, direct download');
-                  downloadPdf(pdfUrl);
+                adRequesting = true;
+                console.log(L, 'prefetch: calling request()...');
+                try {
+                  window.ezRewardedAds.request(function(result) {
+                    adRequesting = false;
+                    adPreloaded = !!(result && result.status);
+                    console.log(L, 'prefetch: result:', JSON.stringify(result));
+                  });
+                } catch(e) {
+                  adRequesting = false;
+                  console.log(L, 'prefetch: error:', e.message);
                 }
               }
+
+              // Official Ezoic pattern: cmd.push() executes when SDK is ready
+              // No polling needed — works even if consent delays SDK initialization
+              window.ezRewardedAds = window.ezRewardedAds || {};
+              window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || [];
+              window.ezRewardedAds.cmd.push(function() {
+                console.log(L, 'SDK ready via cmd.push(), prefetching...');
+                prefetchAd();
+              });
+
+              // Re-prefetch on SPA navigation
+              window.addEventListener('ezRewardedAdsPrefetch', function() {
+                console.log(L, 'SPA nav: re-prefetching...');
+                adPreloaded = false;
+                adRequesting = false;
+                setTimeout(prefetchAd, 1000);
+              });
 
               // Intercept download clicks
               document.addEventListener('click', function(event) {
@@ -314,17 +169,82 @@ export function EzoicScripts() {
                 var pdfUrl = link.getAttribute('href');
                 if (!pdfUrl) return;
 
-                console.log(L, 'click: intercepted download, ezRewardedAds.ready=' + !!(window.ezRewardedAds && window.ezRewardedAds.ready) + ', adPreloaded=' + adPreloaded);
+                console.log(L, 'click: ready=' + !!(window.ezRewardedAds && window.ezRewardedAds.ready) + ', adPreloaded=' + adPreloaded);
 
-                // No rewarded ads available — direct download
+                // Official pattern: check ready property for user-initiated actions
                 if (!window.ezRewardedAds || !window.ezRewardedAds.ready) {
-                  console.log(L, 'click: no rewarded ads available, direct download');
+                  console.log(L, 'SDK not ready, direct download');
                   downloadPdf(pdfUrl);
                   return;
                 }
 
-                // Show custom overlay (ad is already pre-loaded in background)
-                document.body.appendChild(createOverlay(pdfUrl));
+                // Path A: Ad pre-loaded via request() — use show() for instant display
+                if (adPreloaded && typeof window.ezRewardedAds.show === 'function') {
+                  adPreloaded = false;
+                  console.log(L, 'show: calling show()...');
+                  var showTimedOut = false;
+                  var showTimer = setTimeout(function() {
+                    showTimedOut = true;
+                    console.log(L, 'show: TIMEOUT after 10s, downloading directly');
+                    downloadPdf(pdfUrl);
+                    setTimeout(prefetchAd, 2000);
+                  }, 10000);
+                  try {
+                    window.ezRewardedAds.show(function(result) {
+                      if (showTimedOut) return;
+                      clearTimeout(showTimer);
+                      console.log(L, 'show: result:', JSON.stringify(result));
+                      downloadPdf(pdfUrl);
+                      setTimeout(prefetchAd, 2000);
+                    }, { rewardName: 'PDF Download - Fargeleggingsark' });
+                  } catch(e) {
+                    clearTimeout(showTimer);
+                    console.log(L, 'show: error:', e.message);
+                    downloadPdf(pdfUrl);
+                    setTimeout(prefetchAd, 2000);
+                  }
+                  return;
+                }
+
+                // Path B: No pre-loaded ad — use requestWithOverlay (official built-in overlay)
+                if (typeof window.ezRewardedAds.requestWithOverlay === 'function') {
+                  console.log(L, 'requestWithOverlay: calling...');
+                  var rwoTimedOut = false;
+                  var rwoTimer = setTimeout(function() {
+                    rwoTimedOut = true;
+                    console.log(L, 'requestWithOverlay: TIMEOUT after 10s, downloading directly');
+                    downloadPdf(pdfUrl);
+                  }, 10000);
+                  try {
+                    window.ezRewardedAds.requestWithOverlay(
+                      function(result) {
+                        if (rwoTimedOut) return;
+                        clearTimeout(rwoTimer);
+                        console.log(L, 'requestWithOverlay: result:', JSON.stringify(result));
+                        downloadPdf(pdfUrl);
+                        setTimeout(prefetchAd, 2000);
+                      },
+                      {
+                        header: "Se annonse for \\u00e5 laste ned!",
+                        body: ["For \\u00e5 laste ned fargeleggingsarket m\\u00e5 du se en kort annonse.\\nDette hjelper oss \\u00e5 tilby gratis innhold."],
+                        accept: "Se annonse",
+                        cancel: "Avbryt"
+                      },
+                      {
+                        rewardName: "PDF Download - Fargeleggingsark",
+                        rewardOnNoFill: true,
+                        alwaysCallback: true
+                      }
+                    );
+                  } catch(e) {
+                    clearTimeout(rwoTimer);
+                    console.log(L, 'requestWithOverlay: error:', e.message);
+                    downloadPdf(pdfUrl);
+                  }
+                } else {
+                  console.log(L, 'no methods available, direct download');
+                  downloadPdf(pdfUrl);
+                }
               }, true);
             })();
           `,
