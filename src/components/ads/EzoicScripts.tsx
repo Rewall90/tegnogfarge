@@ -38,6 +38,18 @@ export function EzoicScripts() {
         }}
       />
 
+      {/* Ezoic Gatekeeper Consent Scripts - Required for rewarded ads pipeline */}
+      <Script
+        src="https://the.gatekeeperconsent.com/cmp.min.js"
+        data-cfasync="false"
+        strategy="beforeInteractive"
+      />
+      <Script
+        async
+        src="https://the.gatekeeperconsent.com/ccpa/v2/standalone.js"
+        strategy="afterInteractive"
+      />
+
       {/* Ezoic Header Script - Loads asynchronously */}
       <Script
         async
