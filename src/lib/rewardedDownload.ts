@@ -1,3 +1,26 @@
+/**
+ * DEPRECATED: This file is no longer used.
+ *
+ * Rewarded ads are now handled by Ezoic's Page Rules system.
+ * The implementation is managed through the Ezoic dashboard at:
+ * https://pubdash.ezoic.com/ezoicads/rewardedads
+ *
+ * Page Rule Configuration:
+ * - Scope: Directory
+ * - URL Pattern: /tegneserier/
+ * - Script: "Lock PDF Downloads Behind Ads - 18.3.2026"
+ * - Targets: a[title="Last ned Bilde"]
+ *
+ * The Ezoic-injected script handles:
+ * - Click interception on download buttons
+ * - Norwegian disclosure modal display
+ * - Rewarded ad presentation
+ * - Download triggering after ad completion
+ *
+ * This file is kept for reference but all code is commented out.
+ */
+
+/*
 import { cookieManager } from '@/components/cookie-consent/cookieManager';
 import { rewardedAdTranslations } from '@/i18n/translations/rewardedAd';
 
@@ -61,3 +84,4 @@ export function triggerRewardedDownload(url: string): void {
     },
   });
 }
+*/
