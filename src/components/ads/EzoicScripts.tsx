@@ -96,7 +96,7 @@ export function EzoicScripts() {
         }}
       />
 
-      {/* Ezoic Rewarded Ads: Use requestWithOverlay() for download gate */}
+      {/* Ezoic Rewarded Ads: Matches Ezoic AI-generated pattern */}
       <Script
         id="ezoic-rewarded-download-interceptor"
         strategy="lazyOnload"
@@ -104,54 +104,80 @@ export function EzoicScripts() {
           __html: `
             (function() {
               var L = '[EzReward]';
-              var pdfDownloadPending = false;
+              var downloadButton = null;
 
-              function downloadPdf(url) {
-                console.log(L, 'downloadPdf:', url.substring(0, 80) + '...');
-                pdfDownloadPending = true;
-                try {
-                  window.open(url, '_blank', 'noopener,noreferrer');
-                } catch(e) {}
-                setTimeout(function() { pdfDownloadPending = false; }, 1000);
+              function findDownloadButton() {
+                return document.querySelector('a[aria-label="Last ned Bilde"]');
               }
 
-              // Intercept download clicks
-              document.addEventListener('click', function(event) {
-                var link = event.target.closest('a[aria-label="Last ned Bilde"]');
-                if (!link) return;
+              function waitForButton(attempts, maxAttempts) {
+                if (attempts >= maxAttempts) {
+                  console.error(L, 'Download button not found after', maxAttempts, 'attempts');
+                  return;
+                }
+                downloadButton = findDownloadButton();
+                if (!downloadButton) {
+                  setTimeout(function() {
+                    waitForButton(attempts + 1, maxAttempts);
+                  }, 500);
+                  return;
+                }
+                setupRewardedAd();
+              }
 
-                event.preventDefault();
-                event.stopPropagation();
-                if (pdfDownloadPending) return;
-
-                var pdfUrl = link.getAttribute('href');
-                if (!pdfUrl) return;
-
-                console.log(L, 'click: ready=' + !!(window.ezRewardedAds && window.ezRewardedAds.ready));
-
-                // Check if SDK is ready
-                if (!window.ezRewardedAds || !window.ezRewardedAds.ready) {
-                  console.log(L, 'SDK not ready, direct download');
-                  downloadPdf(pdfUrl);
+              function setupRewardedAd() {
+                if (!downloadButton) {
+                  console.error(L, 'Download button is null in setupRewardedAd');
                   return;
                 }
 
-                // Use requestWithOverlay (official built-in overlay)
-                if (typeof window.ezRewardedAds.requestWithOverlay === 'function') {
-                  console.log(L, 'requestWithOverlay: calling...');
-                  var rwoTimedOut = false;
-                  var rwoTimer = setTimeout(function() {
-                    rwoTimedOut = true;
-                    console.log(L, 'requestWithOverlay: TIMEOUT after 10s, downloading directly');
-                    downloadPdf(pdfUrl);
-                  }, 10000);
+                // Fix #1: Add data-google-interstitial attribute (Ezoic backend signal)
+                downloadButton.setAttribute('data-google-interstitial', 'false');
+
+                var originalClickHandlers = [];
+                var originalHref = downloadButton.getAttribute('href');
+
+                // Fix #3: Handler capture/restore pattern (for analytics tracking)
+                function captureOriginalHandlers() {
+                  if (downloadButton.onclick) {
+                    originalClickHandlers.push({type: 'inline', handler: downloadButton.onclick});
+                  }
+                }
+
+                function removeOriginalHandlers() {
+                  downloadButton.onclick = null;
+                }
+
+                function restoreOriginalHandlers() {
+                  originalClickHandlers.forEach(function(item) {
+                    if (item.type === 'inline') {
+                      downloadButton.onclick = item.handler;
+                    }
+                  });
+                }
+
+                function handleDownloadClick(e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  if (!window.ezRewardedAds || !window.ezRewardedAds.ready) {
+                    console.warn(L, 'API not ready, allowing download');
+                    window.open(originalHref, '_blank', 'noopener,noreferrer');
+                    return;
+                  }
+
                   try {
+                    console.log(L, 'requestWithOverlay: calling...');
                     window.ezRewardedAds.requestWithOverlay(
                       function(result) {
-                        if (rwoTimedOut) return;
-                        clearTimeout(rwoTimer);
                         console.log(L, 'requestWithOverlay: result:', JSON.stringify(result));
-                        downloadPdf(pdfUrl);
+                        if (result.status && result.reward) {
+                          console.log(L, 'Ad completed successfully');
+                          window.open(originalHref, '_blank', 'noopener,noreferrer');
+                          restoreOriginalHandlers();
+                        } else {
+                          console.log(L, 'User closed ad early');
+                        }
                       },
                       {
                         header: "Se annonse for \\u00e5 laste ned!",
@@ -161,20 +187,36 @@ export function EzoicScripts() {
                       },
                       {
                         rewardName: "PDF Download - Fargeleggingsark",
-                        rewardOnNoFill: true,
-                        alwaysCallback: true
+                        rewardOnNoFill: true
                       }
                     );
-                  } catch(e) {
-                    clearTimeout(rwoTimer);
-                    console.log(L, 'requestWithOverlay: error:', e.message);
-                    downloadPdf(pdfUrl);
+                  } catch (error) {
+                    console.error(L, 'Error showing rewarded ad:', error);
+                    window.open(originalHref, '_blank', 'noopener,noreferrer');
+                    restoreOriginalHandlers();
                   }
-                } else {
-                  console.log(L, 'no methods available, direct download');
-                  downloadPdf(pdfUrl);
                 }
-              }, true);
+
+                captureOriginalHandlers();
+                removeOriginalHandlers();
+                downloadButton.addEventListener('click', handleDownloadClick, true);
+                console.log(L, 'Download button protection initialized');
+              }
+
+              // Fix #4: Retry logic (20 attempts = 10 seconds)
+              function initRewardedDownloadGate() {
+                waitForButton(0, 20);
+              }
+
+              if (document.readyState === 'interactive' || document.readyState === 'complete') {
+                initRewardedDownloadGate();
+              } else {
+                document.addEventListener('DOMContentLoaded', initRewardedDownloadGate);
+              }
+
+              // Fix #5: Re-initialize on SPA navigation (already handled by parent component)
+              // The useEffect in EzoicScripts.tsx will call ezstandalone.initRewardedAds()
+              // which should trigger this script to run again
             })();
           `,
         }}
