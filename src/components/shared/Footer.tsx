@@ -208,6 +208,11 @@ export default function Footer({ locale: localeProp }: FooterProps = {}) {
             </nav>
           </div>
         </div>
+
+        {/* Ezoic Ad Placeholder - Footer */}
+        <div className="mt-8 flex justify-center">
+          <div id="ezoic-pub-ad-placeholder-102"></div>
+        </div>
       </div>
     </footer>
   );

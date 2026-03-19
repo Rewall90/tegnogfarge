@@ -21,7 +21,7 @@ export function EzoicScripts() {
     ez.cmd = ez.cmd || [];
     ez.cmd.push(function () {
       if (typeof ez.showAds === 'function') {
-        ez.showAds();
+        ez.showAds(102);
       }
       if (typeof ez.initRewardedAds === 'function') {
         ez.initRewardedAds();
@@ -90,7 +90,7 @@ export function EzoicScripts() {
             window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || [];
             ezstandalone.cmd.push(function () {
               ezstandalone.setIsSinglePageApplication(true);
-              ezstandalone.showAds();
+              ezstandalone.showAds(102);
               ezstandalone.initRewardedAds();
             });
           `,
