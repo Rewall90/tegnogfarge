@@ -90,7 +90,7 @@ export function EzoicScripts() {
             window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || [];
             ezstandalone.cmd.push(function () {
               ezstandalone.setIsSinglePageApplication(true);
-              ezstandalone.showAds(102);
+              ezstandalone.showAds(118);
               ezstandalone.initRewardedAds();
             });
           `,
