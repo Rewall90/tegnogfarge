@@ -1,8 +1,0 @@
-- article [ref=e7]:
-  - generic [ref=e8]:
-    - img [ref=e9]
-    - heading "Continue with this account?" [level=1] [ref=e10]
-    - paragraph [ref=e11]: Your Ad Manager parent publisher will manage this account once you continue.
-    - paragraph [ref=e12]: Ad Manager network code 22712188410
-  - button "Continue" [ref=e14]:
-    - generic [ref=e17]: Continue

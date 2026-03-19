@@ -43,6 +43,9 @@ yarn-error.log*
 *.zip
 *.backup
 
+# playwright-cli logs
+.playwright-cli/
+
 # vercel
 .vercel
 
