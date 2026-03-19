@@ -21,7 +21,7 @@ export function EzoicScripts() {
     ez.cmd = ez.cmd || [];
     ez.cmd.push(function () {
       if (typeof ez.showAds === 'function') {
-        ez.showAds(102);
+        ez.showAds(118);
       }
       if (typeof ez.initRewardedAds === 'function') {
         ez.initRewardedAds();
@@ -61,6 +61,11 @@ export function EzoicScripts() {
 
       {/* Ezoic Gatekeeper Consent Scripts - Required for rewarded ads pipeline */}
       <Script
+        src="https://cmp.gatekeeperconsent.com/min.js"
+        data-cfasync="false"
+        strategy="beforeInteractive"
+      />
+      <Script
         src="https://the.gatekeeperconsent.com/cmp.min.js"
         data-cfasync="false"
         strategy="beforeInteractive"
@@ -95,6 +100,12 @@ export function EzoicScripts() {
             });
           `,
         }}
+      />
+
+      {/* Ezoic Analytics Script */}
+      <Script
+        src="//ezoicanalytics.com/analytics.js"
+        strategy="afterInteractive"
       />
 
       {/* Ezoic Rewarded Ads: Matches Ezoic AI-generated pattern */}
