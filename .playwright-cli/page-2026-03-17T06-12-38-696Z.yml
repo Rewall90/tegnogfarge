@@ -1,0 +1,282 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - link "Ezoic" [ref=e10] [cursor=pointer]:
+          - /url: /
+          - img "Ezoic" [ref=e11]
+        - generic [ref=e15]: tegnogfarge.no
+        - generic [ref=e16] [cursor=pointer]: + Add a site
+      - menu [ref=e178]:
+        - menuitem "Home" [ref=e179] [cursor=pointer]:
+          - link [ref=e180]:
+            - /url: /dashboard
+            - img [ref=e181]
+        - menuitem "EzoicAds" [ref=e182] [cursor=pointer]:
+          - link [ref=e183]:
+            - /url: /ezoicads
+            - img [ref=e184]
+        - menuitem "Identity" [ref=e185] [cursor=pointer]:
+          - link [ref=e186]:
+            - /url: /identity
+            - img [ref=e187]
+        - menuitem "Videos" [ref=e188] [cursor=pointer]:
+          - link [ref=e189]:
+            - /url: /video
+            - img [ref=e190]
+        - menuitem "Analytics" [ref=e191] [cursor=pointer]:
+          - link [ref=e192]:
+            - /url: https://analytics.ezoic.com/reports/default
+            - img [ref=e193]
+        - menuitem "Settings" [ref=e194] [cursor=pointer]:
+          - link [ref=e195]:
+            - /url: /settings
+            - img [ref=e196]
+        - menuitem "" [ref=e197] [cursor=pointer]:
+          - generic [ref=e201]: 
+      - generic [ref=e17]:
+        - link "Support Resources" [ref=e20] [cursor=pointer]:
+          - /url: https://support.ezoic.com/
+        - generic [ref=e22] [cursor=pointer]: English
+        - generic [ref=e25]:
+          - textbox "Search..." [ref=e26]
+          - 'generic "icon: search" [ref=e28]':
+            - img [ref=e29]
+        - generic [ref=e34] [cursor=pointer]:
+          - 'generic "icon: bell" [ref=e35]':
+            - img [ref=e36]
+          - superscript [ref=e38]:
+            - generic [ref=e39]:
+              - paragraph [ref=e40]: "0"
+              - paragraph [ref=e41]: "1"
+              - paragraph [ref=e42]: "2"
+              - paragraph [ref=e43]: "3"
+              - paragraph [ref=e44]: "4"
+              - paragraph [ref=e45]: "5"
+              - paragraph [ref=e46]: "6"
+              - paragraph [ref=e47]: "7"
+              - paragraph [ref=e48]: "8"
+              - paragraph [ref=e49]: "9"
+              - paragraph [ref=e50]: "0"
+              - paragraph [ref=e51]: "1"
+              - paragraph [ref=e52]: "2"
+              - paragraph [ref=e53]: "3"
+              - paragraph [ref=e54]: "4"
+              - paragraph [ref=e55]: "5"
+              - paragraph [ref=e56]: "6"
+              - paragraph [ref=e57]: "7"
+              - paragraph [ref=e58]: "8"
+              - paragraph [ref=e59]: "9"
+              - paragraph [ref=e60]: "0"
+              - paragraph [ref=e61]: "1"
+              - paragraph [ref=e62]: "2"
+              - paragraph [ref=e63]: "3"
+              - paragraph [ref=e64]: "4"
+              - paragraph [ref=e65]: "5"
+              - paragraph [ref=e66]: "6"
+              - paragraph [ref=e67]: "7"
+              - paragraph [ref=e68]: "8"
+              - paragraph [ref=e69]: "9"
+        - generic [ref=e72] [cursor=pointer]: 
+    - main [ref=e127]:
+      - generic [ref=e205]:
+        - generic [ref=e207]:
+          - img [ref=e209] [cursor=pointer]
+          - generic [ref=e210] [cursor=pointer]: close
+        - generic [ref=e211]:
+          - complementary [ref=e212]:
+            - menu [ref=e214]:
+              - menuitem "web Ad Positions" [ref=e215] [cursor=pointer]:
+                - generic [ref=e216]:
+                  - generic [ref=e217]: web
+                  - text: Ad Positions
+              - menuitem "settings_applications Ad Types" [ref=e218] [cursor=pointer]:
+                - generic [ref=e219]:
+                  - generic [ref=e220]: settings_applications
+                  - text: Ad Types
+              - menuitem "tune Ad Configuration" [ref=e221] [cursor=pointer]:
+                - generic [ref=e222]:
+                  - generic [ref=e223]: tune
+                  - text: Ad Configuration
+              - menuitem "price_change Ad Campaign" [ref=e224] [cursor=pointer]:
+                - generic [ref=e225]:
+                  - generic [ref=e226]: price_change
+                  - text: Ad Campaign
+              - menuitem "settings_ethernet Ad Integration" [ref=e227] [cursor=pointer]:
+                - generic [ref=e228]:
+                  - generic [ref=e229]: settings_ethernet
+                  - text: Ad Integration
+              - menuitem "border_all Ad Transparency" [ref=e230] [cursor=pointer]:
+                - generic [ref=e231]:
+                  - generic [ref=e232]: border_all
+                  - text: Ad Transparency
+              - menuitem "shield Ad Restrictions" [ref=e233] [cursor=pointer]:
+                - generic [ref=e234]:
+                  - generic [ref=e235]: shield
+                  - text: Ad Restrictions
+              - menuitem "data_usage Optimization Goals" [ref=e236] [cursor=pointer]:
+                - generic [ref=e237]:
+                  - generic [ref=e238]: data_usage
+                  - text: Optimization Goals
+              - menuitem "paid Rev. Opportunities" [ref=e239] [cursor=pointer]:
+                - generic [ref=e240]:
+                  - generic [ref=e241]: paid
+                  - text: Rev. Opportunities
+              - menuitem "redeem Rewarded Ads" [ref=e242] [cursor=pointer]:
+                - generic [ref=e243]:
+                  - generic [ref=e244]: redeem
+                  - text: Rewarded Ads
+              - menuitem "folder_special Resources" [ref=e245] [cursor=pointer]:
+                - generic [ref=e246]:
+                  - generic [ref=e247]: folder_special
+                  - text: Resources
+          - main [ref=e248]:
+            - generic [ref=e249]:
+              - generic [ref=e254]:
+                - generic [ref=e255]: Ezoic Ads
+                - generic [ref=e256]: Ad Positions
+              - generic [ref=e257]:
+                - generic [ref=e259]:
+                  - tablist [ref=e260]:
+                    - generic [ref=e261]:
+                      - generic:
+                        - generic:
+                          - 'generic "icon: left"':
+                            - img
+                      - generic:
+                        - generic:
+                          - 'generic "icon: right"':
+                            - img
+                      - generic [ref=e265]:
+                        - tab "Ad Setup" [selected] [ref=e266] [cursor=pointer]
+                        - tab "Placeholders" [ref=e267] [cursor=pointer]
+                        - tab "Advanced" [ref=e268] [cursor=pointer]
+                  - generic:
+                    - tabpanel
+                - separator [ref=e269]
+                - generic [ref=e270]:
+                  - generic [ref=e271]:
+                    - generic [ref=e272]:
+                      - generic [ref=e276]:
+                        - strong [ref=e278]: EzoicAds
+                        - generic [ref=e279]: Ezoic provides access to sophisticated, yet easy-to-use tools for monetizing your website. This includes artificial intelligence to test and automate experiments that will allow you to find the best locations for ads, while providing access to premium ad partners, ad exchanges, and revenue opportunities.
+                      - separator [ref=e280]
+                      - generic [ref=e283]:
+                        - strong [ref=e286]: Features
+                        - tablist [ref=e288]:
+                          - tablist [ref=e289]:
+                            - 'tab "icon: right Ad Tester Go to App icon: caret-right" [expanded] [ref=e290] [cursor=pointer]':
+                              - 'generic "icon: right" [ref=e291]':
+                                - img [ref=e292]
+                              - generic [ref=e294]:
+                                - strong [ref=e295]: Ad Tester
+                                - separator [ref=e296]
+                                - 'button "Go to App icon: caret-right" [ref=e298]':
+                                  - generic [ref=e300]:
+                                    - text: Go to App
+                                    - 'generic "icon: caret-right" [ref=e301]':
+                                      - img [ref=e302]
+                            - tabpanel [ref=e304]:
+                              - paragraph [ref=e306]: Enables sites using the Ezoic platform to perform automated multivariate ad tests to optimize overall ad earnings. The app also provides access to thousands of ad partners that Ezoic will help publishers test so that they can find the highest earning networks or exchanges. Using a Chrome extension, users can drag-and-drop placeholders on their site and Ezoic will automatically use machine learning technology to identify the combination that works best for each visitor. Ezoic will change ad density, ad locations, and ad types to give each visitor the best one.
+                          - tablist [ref=e307]:
+                            - 'tab "icon: right Mediation Go to App icon: caret-right" [ref=e308] [cursor=pointer]':
+                              - 'generic "icon: right" [ref=e309]':
+                                - img [ref=e310]
+                              - generic [ref=e312]:
+                                - strong [ref=e313]: Mediation
+                                - separator [ref=e314]
+                                - 'button "Go to App icon: caret-right" [ref=e316]':
+                                  - generic [ref=e318]:
+                                    - text: Go to App
+                                    - 'generic "icon: caret-right" [ref=e319]':
+                                      - img [ref=e320]
+                          - tablist [ref=e322]:
+                            - 'tab "icon: right Manage Ads.txt Go to App icon: caret-right" [ref=e323] [cursor=pointer]':
+                              - 'generic "icon: right" [ref=e324]':
+                                - img [ref=e325]
+                              - generic [ref=e327]:
+                                - strong [ref=e328]: Manage Ads.txt
+                                - separator [ref=e329]
+                                - 'button "Go to App icon: caret-right" [ref=e331]':
+                                  - generic [ref=e333]:
+                                    - text: Go to App
+                                    - 'generic "icon: caret-right" [ref=e334]':
+                                      - img [ref=e335]
+                          - tablist [ref=e337]:
+                            - 'tab "icon: right Ad Campaign Go to App icon: caret-right" [ref=e338] [cursor=pointer]':
+                              - 'generic "icon: right" [ref=e339]':
+                                - img [ref=e340]
+                              - generic [ref=e342]:
+                                - strong [ref=e343]: Ad Campaign
+                                - separator [ref=e344]
+                                - 'button "Go to App icon: caret-right" [ref=e346]':
+                                  - generic [ref=e348]:
+                                    - text: Go to App
+                                    - 'generic "icon: caret-right" [ref=e349]':
+                                      - img [ref=e350]
+                          - tablist [ref=e352]:
+                            - 'tab "icon: right Advanced Ad Controls Go to App icon: caret-right" [ref=e353] [cursor=pointer]':
+                              - 'generic "icon: right" [ref=e354]':
+                                - img [ref=e355]
+                              - generic [ref=e357]:
+                                - strong [ref=e358]: Advanced Ad Controls
+                                - separator [ref=e359]
+                                - 'button "Go to App icon: caret-right" [ref=e361]':
+                                  - generic [ref=e363]:
+                                    - text: Go to App
+                                    - 'generic "icon: caret-right" [ref=e364]':
+                                      - img [ref=e365]
+                          - tablist [ref=e367]:
+                            - 'tab "icon: right Integrate A Google Ad Manager or DFP Account Go to App icon: caret-right" [ref=e368] [cursor=pointer]':
+                              - 'generic "icon: right" [ref=e369]':
+                                - img [ref=e370]
+                              - generic [ref=e372]:
+                                - strong [ref=e373]: Integrate A Google Ad Manager or DFP Account
+                                - separator [ref=e374]
+                                - 'button "Go to App icon: caret-right" [ref=e376]':
+                                  - generic [ref=e378]:
+                                    - text: Go to App
+                                    - 'generic "icon: caret-right" [ref=e379]':
+                                      - img [ref=e380]
+                    - separator [ref=e382]
+                    - generic [ref=e385]:
+                      - generic [ref=e388]:
+                        - strong [ref=e390]: Data Collection
+                        - paragraph [ref=e391]: Ezoic will automatically collect and share first-party data, such as emails and phone numbers, from sources like logins and newsletter forms on your website, with our advertising partners. Opting in allows for more personalized advertising experiences for your sites’ visitors and can increase your site’s revenue potential.
+                        - paragraph [ref=e392]: Detailed information on Ezoic’s privacy and data practices is available below.
+                        - generic [ref=e393]:
+                          - separator [ref=e394]:
+                            - generic [ref=e395]: Privacy Policy
+                          - paragraph [ref=e396]:
+                            - link "https://www.ezoic.com/privacy/" [ref=e397] [cursor=pointer]:
+                              - /url: https://www.ezoic.com/privacy/
+                      - generic [ref=e401]:
+                        - strong [ref=e403]: Enable
+                        - switch "Enable" [checked] [ref=e404] [cursor=pointer]:
+                          - 'generic "icon: check" [ref=e406]':
+                            - img [ref=e407]
+                    - separator [ref=e409]
+                    - generic [ref=e412]:
+                      - generic [ref=e415]:
+                        - strong [ref=e417]: AI Ad Optimization
+                        - paragraph [ref=e418]:
+                          - text: "Allow AI to supplement my ad setup where gaps exist. (Examples include: very long pages, pages with different structures and layouts, etc.)"
+                          - link "[Exclusion Filters]" [ref=e419] [cursor=pointer]:
+                            - /url: /ezoicads/adconfiguration?mode=qubit
+                      - generic [ref=e423]:
+                        - strong [ref=e425]: Enable
+                        - switch "Enable" [checked] [ref=e426] [cursor=pointer]:
+                          - 'generic "icon: check" [ref=e428]':
+                            - img [ref=e429]
+                  - separator [ref=e431]
+                  - button "Disable Ad Tester" [ref=e435] [cursor=pointer]:
+                    - generic [ref=e436]: Disable Ad Tester
+                  - separator [ref=e437]
+    - generic [ref=e156]:
+      - img "Ezoic Inc." [ref=e157]
+      - generic [ref=e158]:
+        - text: © 2026
+        - link "Ezoic Inc." [ref=e159] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - generic "Privacy center" [ref=e175] [cursor=pointer]: ⚙

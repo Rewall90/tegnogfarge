@@ -1,0 +1,236 @@
+- generic [ref=e1]:
+  - img [ref=e6]
+  - generic [ref=e14]:
+    - button "Skip to content" [ref=e16]:
+      - generic [ref=e18]: Skip to content
+    - generic [ref=e20]:
+      - banner [ref=e22]:
+        - generic [ref=e24]:
+          - button "Main menu" [ref=e26] [cursor=pointer]:
+            - img [ref=e29]: menu
+          - link "Google AdSense" [ref=e30] [cursor=pointer]:
+            - /url: /adsense/u/0/pub-2852837430993050/home
+        - heading "Home" [level=1] [ref=e33]
+        - generic [ref=e35]:
+          - button "Help" [ref=e37] [cursor=pointer]:
+            - img [ref=e40]: help
+          - button "Notifications" [ref=e44] [cursor=pointer]:
+            - generic [ref=e47]:
+              - img [ref=e49]: notifications
+              - generic [ref=e51]: "1"
+          - button "Google account" [ref=e54] [cursor=pointer]:
+            - img "Google account (ronincarpenter90@gmail.com)" [ref=e56]
+      - generic:
+        - navigation:
+          - menu:
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "AdSense for YouTube":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img: video_youtube
+                      - generic: AdSense for YouTube
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "Home":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img: home
+                      - generic: Home
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "Ads":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img: picture_in_picture
+                      - generic: Ads
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "Sites":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img: drive_site
+                      - generic: Sites
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "Privacy & messaging":
+                    - generic:
+                      - generic:
+                        - img
+                      - generic: Privacy & messaging
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "Brand safety":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img: arrow_right
+                      - generic:
+                        - generic:
+                          - img: not_interested
+                      - generic: Brand safety
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "Reports":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img: assessment
+                      - generic: Reports
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "Optimization":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img: arrow_right
+                      - generic:
+                        - generic:
+                          - img: trending_up
+                      - generic: Optimization
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "Policy center":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img: policy
+                      - generic: Policy center
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "Payments":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img: arrow_right
+                      - generic:
+                        - img
+                      - generic: Payments
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "Account":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img: arrow_right
+                      - generic:
+                        - generic:
+                          - img: settings
+                      - generic: Account
+            - generic:
+              - generic:
+                - generic:
+                  - menuitem "Feedback":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img: feedback
+                      - generic: Feedback
+          - generic:
+            - generic:
+              - generic:
+                - link "Privacy":
+                  - /url: https://www.google.com/intl/en_US/policies/privacy
+                - link "Terms":
+                  - /url: https://adsense.google.com/adsense/terms?rc=NO&ce=2
+      - generic [ref=e57]:
+        - generic:
+          - region "Notifications"
+        - main "Home" [active] [ref=e59]:
+          - generic [ref=e62]:
+            - generic [ref=e63]:
+              - generic [ref=e65]:
+                - article "Estimated earnings" [ref=e71]:
+                  - generic [ref=e73]:
+                    - heading "Estimated earnings" [level=2] [ref=e74]: Estimated earnings
+                    - button "See more options — Estimated earnings" [ref=e78] [cursor=pointer]:
+                      - img [ref=e81]: more_vert
+                  - generic [ref=e85]:
+                    - generic [ref=e86]:
+                      - heading "Today so far" [level=3] [ref=e87]
+                      - generic [ref=e88]:
+                        - generic [ref=e89]: NOK0.00
+                        - generic [ref=e90]: NOK0.00
+                    - generic [ref=e91]:
+                      - heading "Yesterday" [level=3] [ref=e92]
+                      - generic [ref=e93]:
+                        - generic [ref=e94]: NOK0.00
+                        - generic [ref=e95]: NOK0.00
+                      - generic [ref=e96]:
+                        - generic [ref=e98]: +NOK0.00
+                        - generic [ref=e99]: unchanged
+                      - generic [ref=e100]: vs same day last week
+                    - generic [ref=e101]:
+                      - heading "Last 7 days" [level=3] [ref=e102]
+                      - generic [ref=e103]:
+                        - generic [ref=e104]: NOK0.00
+                        - generic [ref=e105]: NOK0.00
+                      - generic [ref=e106]:
+                        - generic [ref=e108]: +NOK0.00
+                        - generic [ref=e109]: unchanged
+                      - generic [ref=e110]: vs previous 7 days
+                    - generic [ref=e111]:
+                      - heading "This month" [level=3] [ref=e112]
+                      - generic [ref=e113]:
+                        - generic [ref=e114]: NOK0.00
+                        - generic [ref=e115]: NOK0.00
+                      - generic [ref=e116]:
+                        - generic [ref=e118]: +NOK0.00
+                        - generic [ref=e119]: unchanged
+                      - generic [ref=e120]: vs same period last year
+                - article "Balance" [ref=e126]:
+                  - generic [ref=e128]:
+                    - heading "Balance" [level=2] [ref=e129]: Balance
+                    - button "See more options — Balance" [ref=e133] [cursor=pointer]:
+                      - img [ref=e136]: more_vert
+                  - generic [ref=e140]:
+                    - generic [ref=e141]: NOK 167.09
+                    - generic [ref=e142]: Last payment
+                    - generic [ref=e143]: NOK0.00
+                - article "Announcements" [ref=e149]:
+                  - generic [ref=e150]:
+                    - generic [ref=e152]:
+                      - img [ref=e154]: new_releases
+                      - generic [ref=e155]: We thought you might find this card interesting
+                    - generic [ref=e158]:
+                      - heading "Announcements" [level=2] [ref=e159]: Announcements
+                      - button "See more options — Announcements" [ref=e163] [cursor=pointer]:
+                        - img [ref=e166]: more_vert
+                  - list [ref=e169]:
+                    - listitem [ref=e170] [cursor=pointer]:
+                      - generic [ref=e171]:
+                        - generic [ref=e172]: "1"
+                        - generic [ref=e173]:
+                          - generic [ref=e174]: Recent transition to IAB TCF v2.3
+                          - generic [ref=e175]: March 2, 2026
+                      - generic [ref=e176]: All publishers and CMPs were required to transition to the IAB Europe's Transparency and Consent ...
+                    - listitem [ref=e177] [cursor=pointer]:
+                      - generic [ref=e178]:
+                        - generic [ref=e179]: "2"
+                        - generic [ref=e180]:
+                          - generic [ref=e181]: "Fixed: issue with dismissing anchor a..."
+                          - generic [ref=e182]: February 19, 2026
+                      - generic [ref=e183]: "Status: Resolved We recently identified an issue where the \"close\" button on anchor ads was not ..."
+                  - generic [ref=e184]:
+                    - button "View announcements — Announcements" [ref=e186] [cursor=pointer]:
+                      - generic [ref=e187]: View announcements
+                    - button "Pin card to top — Announcements" [ref=e190] [cursor=pointer]:
+                      - img [ref=e193]: keep_outline
+              - button "View more cards" [ref=e198] [cursor=pointer]:
+                - img [ref=e201]: expand_more
+            - generic [ref=e203]: © 2026 Google.

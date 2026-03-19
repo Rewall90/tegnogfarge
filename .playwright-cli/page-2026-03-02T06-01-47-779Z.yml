@@ -1,0 +1,106 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - link "Ezoic" [ref=e10] [cursor=pointer]:
+            - /url: /
+            - img "Ezoic" [ref=e11]
+          - generic [ref=e15]: hagefrik.no
+          - generic [ref=e16] [cursor=pointer]: + Add a site
+        - generic [ref=e17]:
+          - link "Support Resources" [ref=e20] [cursor=pointer]:
+            - /url: https://support.ezoic.com/
+          - generic [ref=e22] [cursor=pointer]: English
+          - generic [ref=e25]:
+            - textbox "Search..." [ref=e26]
+            - 'generic "icon: search" [ref=e28]':
+              - img [ref=e29]
+          - generic [ref=e33] [cursor=pointer]: 
+      - menu [ref=e35]:
+        - menuitem "Home" [ref=e36] [cursor=pointer]:
+          - link "Home" [ref=e37]:
+            - /url: /dashboard
+            - img [ref=e38]
+            - generic [ref=e39]: Home
+        - menuitem "EzoicAds" [ref=e40] [cursor=pointer]:
+          - link "EzoicAds" [ref=e41]:
+            - /url: /ezoicads
+            - img [ref=e42]
+            - generic [ref=e43]: EzoicAds
+        - menuitem "Identity" [ref=e44] [cursor=pointer]:
+          - link "Identity" [ref=e45]:
+            - /url: /identity
+            - img [ref=e46]
+            - generic [ref=e47]: Identity
+        - menuitem "Videos" [ref=e48] [cursor=pointer]:
+          - link "Videos" [ref=e49]:
+            - /url: /video
+            - img [ref=e50]
+            - generic [ref=e51]: Videos
+        - menuitem "Analytics" [ref=e52] [cursor=pointer]:
+          - link "Analytics" [ref=e53]:
+            - /url: https://analytics.ezoic.com/reports/default
+            - img [ref=e54]
+            - generic [ref=e55]: Analytics
+        - menuitem "Settings" [ref=e56] [cursor=pointer]:
+          - link "Settings" [ref=e57]:
+            - /url: /settings
+            - img [ref=e58]
+            - generic [ref=e59]: Settings
+        - menuitem " More" [ref=e60] [cursor=pointer]:
+          - generic [ref=e62]:
+            - generic [ref=e64]: 
+            - generic [ref=e65]: More
+        - menuitem "Level 1" [ref=e66] [cursor=pointer]:
+          - generic [ref=e71]: Level 1
+    - main [ref=e79]:
+      - generic [ref=e81]:
+        - button "Back to Dashboard " [ref=e83] [cursor=pointer]:
+          - generic [ref=e84]:
+            - text: Back to Dashboard
+            - generic [ref=e85]: 
+        - generic [ref=e91]:
+          - generic [ref=e92]:
+            - heading "Let's get started!" [level=3] [ref=e93]:
+              - strong [ref=e94]: Let's get started!
+            - paragraph [ref=e95]: Please complete the action items below.
+          - generic [ref=e97]:
+            - generic [ref=e99]:
+              - generic [ref=e101]: 
+              - generic [ref=e102]:
+                - heading "Complete Account Setup" [level=4] [ref=e103]:
+                  - strong [ref=e104]: Complete Account Setup
+                - generic [ref=e105]:
+                  - paragraph [ref=e107]:
+                    - generic [ref=e108]: 
+                    - text: Complete
+                  - text: Manage Account
+            - generic [ref=e110]:
+              - generic [ref=e112]: 
+              - generic [ref=e113]:
+                - heading "Connect Your Site" [level=4] [ref=e114]:
+                  - strong [ref=e115]: Connect Your Site
+                - generic [ref=e116]:
+                  - paragraph [ref=e117]: Completing integration begins the review process for your website with Ezoic.
+                  - button "Get Started" [ref=e119] [cursor=pointer]:
+                    - generic [ref=e120]: Get Started
+            - generic [ref=e122]:
+              - generic [ref=e124]: 
+              - generic [ref=e125]:
+                - heading "Apply for Ad Manager (MCM)" [level=4] [ref=e126]:
+                  - strong [ref=e127]: Apply for Ad Manager (MCM)
+                - generic [ref=e128]:
+                  - paragraph [ref=e129]: Required for ad serving and access to premium demand partners.
+                  - button "Get Started" [ref=e131] [cursor=pointer]:
+                    - generic [ref=e132]: Get Started
+    - generic [ref=e139]:
+      - img "Ezoic Inc." [ref=e140]
+      - generic [ref=e141]:
+        - text: © 2026
+        - link "Ezoic Inc." [ref=e142] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - button [ref=e144] [cursor=pointer]:
+    - img [ref=e145]
+  - generic "Privacy center" [ref=e158] [cursor=pointer]: ⚙

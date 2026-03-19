@@ -1,0 +1,150 @@
+- generic [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - link "Ezoic" [ref=e10] [cursor=pointer]:
+          - /url: /
+          - img "Ezoic" [ref=e11]
+        - generic [ref=e15]: hagefrik.no
+        - generic [ref=e16] [cursor=pointer]: + Add a site
+      - menu [ref=e19]:
+        - menuitem "Home" [ref=e20] [cursor=pointer]:
+          - link [ref=e21]:
+            - /url: /dashboard
+            - img [ref=e22]
+        - menuitem "EzoicAds" [ref=e23] [cursor=pointer]:
+          - link [ref=e24]:
+            - /url: /ezoicads
+            - img [ref=e25]
+        - menuitem "Identity" [ref=e26] [cursor=pointer]:
+          - link [ref=e27]:
+            - /url: /identity
+            - img [ref=e28]
+        - menuitem "Videos" [ref=e29] [cursor=pointer]:
+          - link [ref=e30]:
+            - /url: /video
+            - img [ref=e31]
+        - menuitem "Analytics" [ref=e32] [cursor=pointer]:
+          - link [ref=e33]:
+            - /url: https://analytics.ezoic.com/reports/default
+            - img [ref=e34]
+        - menuitem "Settings" [ref=e35] [cursor=pointer]:
+          - link [ref=e36]:
+            - /url: /settings
+            - img [ref=e37]
+        - menuitem "" [ref=e38] [cursor=pointer]:
+          - generic [ref=e42]: 
+      - generic [ref=e43]:
+        - link "Support Resources" [ref=e46] [cursor=pointer]:
+          - /url: https://support.ezoic.com/
+        - generic [ref=e48] [cursor=pointer]: English
+        - generic [ref=e51]:
+          - textbox "Search..." [ref=e52]
+          - 'generic "icon: search" [ref=e54]':
+            - img [ref=e55]
+        - generic [ref=e59] [cursor=pointer]: 
+    - main [ref=e60]:
+      - generic [ref=e65]:
+        - generic [ref=e67]:
+          - img [ref=e69] [cursor=pointer]
+          - generic [ref=e70] [cursor=pointer]: close
+        - generic [ref=e71]:
+          - complementary [ref=e72]:
+            - menu [ref=e74]:
+              - menuitem "web Ad Positions" [ref=e75] [cursor=pointer]:
+                - generic [ref=e76]:
+                  - generic [ref=e77]: web
+                  - text: Ad Positions
+              - menuitem "warning Rev. Opportunities (2)" [ref=e78] [cursor=pointer]:
+                - generic [ref=e79]:
+                  - generic [ref=e80]: warning
+                  - text: Rev. Opportunities (2)
+              - menuitem "settings_applications Ad Types" [ref=e81] [cursor=pointer]:
+                - generic [ref=e82]:
+                  - generic [ref=e83]: settings_applications
+                  - text: Ad Types
+              - menuitem "tune Ad Configuration" [ref=e84] [cursor=pointer]:
+                - generic [ref=e85]:
+                  - generic [ref=e86]: tune
+                  - text: Ad Configuration
+              - menuitem "price_change Ad Campaign" [ref=e87] [cursor=pointer]:
+                - generic [ref=e88]:
+                  - generic [ref=e89]: price_change
+                  - text: Ad Campaign
+              - menuitem "settings_ethernet Ad Integration" [ref=e90] [cursor=pointer]:
+                - generic [ref=e91]:
+                  - generic [ref=e92]: settings_ethernet
+                  - text: Ad Integration
+              - menuitem "border_all Ad Transparency" [ref=e93] [cursor=pointer]:
+                - generic [ref=e94]:
+                  - generic [ref=e95]: border_all
+                  - text: Ad Transparency
+              - menuitem "shield Ad Restrictions" [ref=e96] [cursor=pointer]:
+                - generic [ref=e97]:
+                  - generic [ref=e98]: shield
+                  - text: Ad Restrictions
+              - menuitem "data_usage Optimization Goals" [ref=e99] [cursor=pointer]:
+                - generic [ref=e100]:
+                  - generic [ref=e101]: data_usage
+                  - text: Optimization Goals
+              - menuitem "redeem Rewarded Ads" [ref=e102] [cursor=pointer]:
+                - generic [ref=e103]:
+                  - generic [ref=e104]: redeem
+                  - text: Rewarded Ads
+              - menuitem "folder_special Resources" [ref=e105] [cursor=pointer]:
+                - generic [ref=e106]:
+                  - generic [ref=e107]: folder_special
+                  - text: Resources
+          - main [ref=e108]:
+            - generic [ref=e109]:
+              - generic [ref=e114]:
+                - generic [ref=e115]: Ezoic Ads
+                - generic [ref=e116]: Rewarded Ads
+              - generic [ref=e117]:
+                - generic [ref=e118]:
+                  - heading "Rewarded Ads" [level=2] [ref=e119]
+                  - paragraph [ref=e120]: Learn about rewarded ads and explore implementation examples.
+                - generic [ref=e122]:
+                  - button "Overview" [ref=e123] [cursor=pointer]
+                  - button "Examples" [ref=e124] [cursor=pointer]
+                  - button "Settings" [ref=e125] [cursor=pointer]
+                  - 'button "icon: robot AI Setup Tools BETA" [ref=e126] [cursor=pointer]':
+                    - 'generic "icon: robot"'
+                    - text: AI Setup Tools BETA
+                - generic [ref=e127]:
+                  - generic [ref=e367]:
+                    - tablist [active] [ref=e368]:
+                      - generic [ref=e369]:
+                        - generic:
+                          - generic:
+                            - 'generic "icon: left"':
+                              - img
+                        - generic:
+                          - generic:
+                            - 'generic "icon: right"':
+                              - img
+                        - generic [ref=e373]:
+                          - tab "AI Assisted Setup" [ref=e374] [cursor=pointer]
+                          - tab "Script Library" [ref=e375] [cursor=pointer]
+                          - tab "Page Rules" [selected] [ref=e376] [cursor=pointer]
+                          - tab "A/B Testing" [ref=e377] [cursor=pointer]
+                    - generic:
+                      - tabpanel
+                  - generic [ref=e427]:
+                    - heading "Page Rules" [level=3] [ref=e429]
+                    - paragraph [ref=e431]: Manage your page rules and exclusions for your rewarded ads scripts.
+                    - generic [ref=e435]:
+                      - heading "No Page Rules" [level=4] [ref=e436]
+                      - paragraph [ref=e437]: You haven't created any page rules for your rewarded ads scripts yet.
+                      - 'button "icon: plus Create Rule" [ref=e438] [cursor=pointer]':
+                        - 'generic "icon: plus" [ref=e439]':
+                          - img [ref=e440]
+                        - text: Create Rule
+    - generic [ref=e290]:
+      - img "Ezoic Inc." [ref=e291]
+      - generic [ref=e292]:
+        - text: © 2026
+        - link "Ezoic Inc." [ref=e293] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - generic "Privacy center" [ref=e294] [cursor=pointer]: ⚙

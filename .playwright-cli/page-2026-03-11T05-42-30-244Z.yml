@@ -1,0 +1,284 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - link "Google" [ref=e6] [cursor=pointer]:
+        - /url: /intl/no_no/start/
+        - img [ref=e7]
+      - link "AdSense" [ref=e10] [cursor=pointer]:
+        - /url: /intl/no_no/start/
+    - navigation [ref=e11]:
+      - list [ref=e12]:
+        - listitem [level=1] [ref=e13]:
+          - link "Startside" [ref=e14] [cursor=pointer]:
+            - /url: /intl/no_no/start/
+        - listitem [level=1] [ref=e15]:
+          - link "Løsninger" [expanded] [ref=e16] [cursor=pointer]:
+            - /url: /intl/no_no/start/solutions/
+        - listitem [level=1] [ref=e17]:
+          - link "Suksesshistorier" [ref=e18] [cursor=pointer]:
+            - /url: /intl/no_no/start/success-stories/
+        - listitem [level=1] [ref=e19]:
+          - link "Ressurser" [ref=e20] [cursor=pointer]:
+            - /url: /intl/no_no/start/resources/
+        - listitem [level=1] [ref=e21]:
+          - link "Blogg" [ref=e22] [cursor=pointer]:
+            - /url: https://blog.google/products/adsense/
+    - list [ref=e24]:
+      - listitem [ref=e25]:
+        - link "Logg på" [ref=e26] [cursor=pointer]:
+          - /url: https://adsense.google.com/adsense/login?subid=in-en-dr-dr-sa-a-dr
+      - listitem [ref=e27]:
+        - link "Kom i gang" [ref=e28] [cursor=pointer]:
+          - /url: https://adsense.google.com/adsense/signup?subid=in-en-dr-dr-sa-a-dr
+  - main [ref=e29]:
+    - generic [ref=e33]:
+      - heading "Vi setter pris på innholdet ditt" [level=1] [ref=e35]
+      - paragraph [ref=e37]: Det tar tid å lage godt innhold, men å tjene penger på det bør være enkelt
+      - link "Kom i gang" [ref=e38] [cursor=pointer]:
+        - /url: https://adsense.google.com/adsense/signup?subid=in-en-dr-dr-sa-a-dr
+    - generic [ref=e40]:
+      - heading "Grunner til at to millioner har valgt AdSense" [level=2] [ref=e41]
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - img "Tjen penger på nettstedet ditt" [ref=e44]
+          - heading "Tjen penger på nettstedet ditt" [level=3] [ref=e45]
+          - paragraph [ref=e46]: Flere millioner annonsører konkurrerer om annonseplassen din. Dette betyr mer penger, mer relevante annonser og færre ledige annonseplasser.
+        - generic [ref=e47]:
+          - img "Få en bedre brukeropplevelse" [ref=e48]
+          - heading "Annonsene optimaliseres for mobilenheter" [level=3] [ref=e49]
+          - paragraph [ref=e50]: Google kan optimalisere størrelsen på annonseenhetene dine, slik at de automatisk tilpasses skjermen på mobilenheter og datamaskiner. Dermed øker sjansen for at folk ser annonsene og klikker på dem.
+        - generic [ref=e51]:
+          - img "Spar tid" [ref=e52]
+          - heading "Spar tid" [level=3] [ref=e53]
+          - paragraph [ref=e54]: Legg til én kodebit på nettstedet ditt, så viser Google automatisk annonser som er skreddersydd etter utformingen av nettstedet. Du slipper dermed å endre annonsekoden selv og sparer tid.
+    - generic [ref=e56]:
+      - paragraph [ref=e57]: Øk inntektene
+      - heading "Se hvor mye du kan tjene på AdSense" [level=2] [ref=e59]
+      - generic [ref=e60]:
+        - paragraph [ref=e61]: Velg en kategori for nettstedet ditt og en region for de besøkende for å se de potensielle inntektene dine.
+        - generic [ref=e62]:
+          - button "Velg en region" [ref=e65] [cursor=pointer]
+          - button "Velg en kategori" [ref=e68] [cursor=pointer]
+        - button "Beregn" [disabled] [ref=e69]
+    - generic [ref=e70]:
+      - generic [ref=e73]:
+        - generic [ref=e74]:
+          - paragraph [ref=e75]: FORDELER
+          - heading "Vi publiserer bare annonsene som gir de høyeste inntektene" [level=2] [ref=e76]
+          - paragraph [ref=e77]: Øk inntektene dine ved å motta bud på annonseplassen din via det største nettverket av nettannonsører.
+        - img "Første fordel" [ref=e79]
+      - generic [ref=e82]:
+        - img "Andre fordel" [ref=e84]
+        - generic [ref=e85]:
+          - paragraph [ref=e86]: FORDELER
+          - heading "Annonsene som passer best for målgruppen din" [level=2] [ref=e87]
+          - paragraph [ref=e88]: Annonsene blir gjennomgått for å sikre at de holder høy kvalitet og er relevante for innholdet ditt eller målgruppen din – også når annonsene vises på smarttelefoner og nettbrett. Hva blir resultatet? Du kan tjene mer på nettannonsering.
+      - generic [ref=e91]:
+        - generic [ref=e92]:
+          - paragraph [ref=e93]: FORDELER
+          - heading "Du har kontrollen" [level=2] [ref=e94]
+          - paragraph [ref=e95]: Blokkér annonser du ikke liker, bestem hvor annonsene skal vises, og velg hvilke annonsetyper som er mest passende for nettstedet ditt.
+        - img "Tredje fordel" [ref=e97]
+    - generic [ref=e101]:
+      - generic [ref=e103]: “
+      - blockquote [ref=e104]: Du behøver bare å plassere den lille AdSense-kodebiten på nettstedet ditt, så fungerer det umiddelbart
+      - generic [ref=e105]: — Jack Herrick, grunnlegger av og administrerende direktør i WikiHow
+      - link "Se suksesshistorien" [ref=e106] [cursor=pointer]:
+        - /url: https://www.youtube.com/watch?v=JFgKma9leYo
+        - img [ref=e107]
+        - text: Se suksesshistorien
+    - generic:
+      - dialog
+    - generic [ref=e110]:
+      - heading "Kom i gang" [level=2] [ref=e111]
+      - paragraph [ref=e112]: For å komme i gang med AdSense trenger du bare tre ting
+      - generic [ref=e113]:
+        - generic [ref=e114]:
+          - img "Tjen penger på nettstedet ditt" [ref=e115]
+          - generic [ref=e117]: "1"
+          - heading "En Google-konto" [level=3] [ref=e118]
+          - paragraph [ref=e119]: Hvis du bruker Gmail eller en annen Google-tjeneste, har du allerede en konto. Hvis ikke klikker du for å registrere deg, så hjelper vi deg med å opprette en ny konto. Da får du tilgang til AdSense og alt det andre Google tilbyr.
+        - generic [ref=e120]:
+          - img "Tjen penger på nettstedet ditt" [ref=e121]
+          - generic [ref=e123]: "2"
+          - heading "Telefonnummer og postadresse" [level=3] [ref=e124]
+          - paragraph [ref=e125]: Oppgi telefonnummeret og postadressen knyttet til bankkontoen din, slik at du kan motta betalinger.
+        - generic [ref=e126]:
+          - img "Tjen penger på nettstedet ditt" [ref=e127]
+          - generic [ref=e129]: "3"
+          - heading "Knytt nettstedet ditt til AdSense" [level=3] [ref=e130]
+          - paragraph [ref=e131]: Legg til én kodebit på nettstedet ditt, så tar Google seg av resten. Dermed kan du konsentrere deg om å skape vekst i bedriften din.
+      - link "Kom i gang" [ref=e133] [cursor=pointer]:
+        - /url: https://adsense.google.com/adsense/signup?subid=in-en-dr-dr-sa-a-dr
+      - generic [ref=e134]:
+        - paragraph [ref=e135]: Kontakt en AdSense-ekspert for å få hjelp tilpasset dine spesifikke behov.
+        - link "Kontakt en ekspert" [ref=e136] [cursor=pointer]:
+          - /url: /intl/no_no/start/contact-form/
+          - text: Kontakt en ekspert
+          - img [ref=e137]
+  - contentinfo [ref=e139]:
+    - generic [ref=e142]:
+      - paragraph [ref=e143]: Følg oss
+      - list [ref=e144]:
+        - listitem [ref=e145]:
+          - link "Follow us on YouTube" [ref=e146] [cursor=pointer]:
+            - /url: https://www.youtube.com/user/InsideAdSense
+            - img [ref=e147]
+        - listitem [ref=e149]:
+          - link "Follow us on Twitter" [ref=e150] [cursor=pointer]:
+            - /url: https://x.com/GforPublishers
+            - img [ref=e151]
+        - listitem [ref=e153]:
+          - link "Follow us on Facebook" [ref=e154] [cursor=pointer]:
+            - /url: https://www.facebook.com/GoogleforPublishers
+            - img [ref=e155]
+        - listitem [ref=e157]:
+          - link "Follow us on Linkedin" [ref=e158] [cursor=pointer]:
+            - /url: https://www.linkedin.com/showcase/google-for-publishers/?viewAsMember=true
+            - img [ref=e159]
+    - navigation [ref=e161]:
+      - generic [ref=e163]:
+        - generic [ref=e164]:
+          - heading "Opplæring og støtte" [level=3] [ref=e165]
+          - list [ref=e167]:
+            - listitem [ref=e168]:
+              - link "Brukerstøtte" [ref=e169] [cursor=pointer]:
+                - /url: https://support.google.com/adsense/?hl=no#topic=3373519
+            - listitem [ref=e170]:
+              - link "Hjelpeforum for AdSense" [ref=e171] [cursor=pointer]:
+                - /url: https://support.google.com/adsense/community/?hl=no&gpf=%23!forum%2Fadsense
+            - listitem [ref=e172]:
+              - link "Certified Publishing Partner" [ref=e173] [cursor=pointer]:
+                - /url: https://www.google.no/intl/no/ads/publisher/partners/find-a-partner/#!?modal_active=none
+        - generic [ref=e174]:
+          - heading "Utviklere" [level=3] [ref=e175]
+          - list [ref=e177]:
+            - listitem [ref=e178]:
+              - link "Google Developers-nettstedet" [ref=e179] [cursor=pointer]:
+                - /url: https://developers.google.com/
+            - listitem [ref=e180]:
+              - link "AdSense Management API" [ref=e181] [cursor=pointer]:
+                - /url: https://developers.google.com/adsense/management/
+            - listitem [ref=e182]:
+              - link "Tilpassede søkeannonser fra AdSense" [ref=e183] [cursor=pointer]:
+                - /url: https://developers.google.com/custom-search-ads/
+        - generic [ref=e184]:
+          - heading "Relaterte produkter" [level=3] [ref=e185]
+          - list [ref=e187]:
+            - listitem [ref=e188]:
+              - link "Google Ads" [ref=e189] [cursor=pointer]:
+                - /url: https://ads.google.com/intl/no_no/home/?sourceid=awo&subid=ww-ww-et-as-rsftr
+            - listitem [ref=e190]:
+              - link "Google Ad Manager" [ref=e191] [cursor=pointer]:
+                - /url: https://admanager.google.com/intl/no/home/
+            - listitem [ref=e192]:
+              - link "Google AdMob" [ref=e193] [cursor=pointer]:
+                - /url: https://admob.google.com/home/
+            - listitem [ref=e194]:
+              - link "AdSense for Shopping" [ref=e195] [cursor=pointer]:
+                - /url: https://support.google.com/adsense/answer/6078274?hl=no
+            - listitem [ref=e196]:
+              - link "Google Site Kit" [ref=e197] [cursor=pointer]:
+                - /url: https://sitekit.withgoogle.com/
+            - listitem [ref=e198]:
+              - link "Blogger" [ref=e199] [cursor=pointer]:
+                - /url: https://www.blogger.com/about/?hl=no
+        - generic [ref=e200]:
+          - heading "Flere løsninger fra Google" [level=3] [ref=e201]
+          - list [ref=e203]:
+            - listitem [ref=e204]:
+              - link "Bedriftsløsninger" [ref=e205] [cursor=pointer]:
+                - /url: https://www.google.no/intl/no/services/#?modal_active=none
+            - listitem [ref=e206]:
+              - link "Google Workspace" [ref=e207] [cursor=pointer]:
+                - /url: https://workspace.google.com/intl/no_no/?utm_source=adsense&utm_medium=et&utm_campaign=adsense-footer
+            - listitem [ref=e208]:
+              - link "Google Analytics" [ref=e209] [cursor=pointer]:
+                - /url: https://marketingplatform.google.com/intl/no/about/analytics/
+            - listitem [ref=e210]:
+              - link "Think with Google" [ref=e211] [cursor=pointer]:
+                - /url: https://www.thinkwithgoogle.com/marketing-strategies/
+            - listitem [ref=e212]:
+              - link "Google Domains" [ref=e213] [cursor=pointer]:
+                - /url: https://domains.google/intl/no_no/?utm_medium=product&utm_source=AdSense&utm_campaign=x-sell
+    - generic [ref=e214]:
+      - link "Google" [ref=e216] [cursor=pointer]:
+        - /url: https://www.google.com
+        - img [ref=e217]
+      - list [ref=e219]:
+        - listitem [ref=e220]:
+          - link "Personvern" [ref=e221] [cursor=pointer]:
+            - /url: https://www.google.com/intl/no/policies/privacy/
+        - listitem [ref=e222]:
+          - link "Vilkår" [ref=e223] [cursor=pointer]:
+            - /url: https://www.google.com/intl/no/policies/terms/
+        - listitem [ref=e224]:
+          - link "Om Google" [ref=e225] [cursor=pointer]:
+            - /url: https://about.google/intl/no/
+        - listitem [ref=e226]:
+          - link "Google-produkter" [ref=e227] [cursor=pointer]:
+            - /url: https://about.google/intl/no/products/
+      - list [ref=e228]:
+        - listitem [ref=e229]:
+          - link "Hjelp" [ref=e230] [cursor=pointer]:
+            - /url: https://support.google.com/adsense/?hl=no#topic=3373519
+            - img [ref=e231]
+            - text: Hjelp
+        - listitem [ref=e233]:
+          - combobox [ref=e234]:
+            - option "Brasil – Português (Brasil)"
+            - option "Česká republika - čeština"
+            - option "Danmark - dansk"
+            - option "Deutschland - Deutsch"
+            - option "English – India"
+            - option "España - Español"
+            - option "France - Français"
+            - option "Hrvatska - Hrvatski"
+            - option "Indonesia – Bahasa Indonesia"
+            - option "Italia - Italiano"
+            - option "Latinoamérica - Español"
+            - option "Latvija - Latvietis"
+            - option "Lietuva - Lietuvis"
+            - option "Magyarország – Magyar"
+            - option "Malaysia - Bahasa Melayu"
+            - option "Nederland - Nederlands"
+            - option "Norge - norsk" [selected]
+            - option "Pilipinas - Pilipino"
+            - option "Polska - polski"
+            - option "Portugal - Português"
+            - option "România - Română"
+            - option "Slovensko - slovenský"
+            - option "Suomi - Suomalainen"
+            - option "Sverige - svenska"
+            - option "Türkiye – Türkçe"
+            - option "United Kingdom - English"
+            - option "United States - English"
+            - option "Việt Nam – Tiếng Việt"
+            - option "Ελλάδα - Ελληνικά"
+            - option "България - български"
+            - option "Россия – Русский"
+            - option "Србија - Српски"
+            - option "Україна - Українська"
+            - option "الأردن – العربية‬"
+            - option "البحرين – العربية‬"
+            - option "العراق – العربية‬"
+            - option "العربية"
+            - option "الكويت – العربية‬"
+            - option "المغرب – العربية‬"
+            - option "لبنان – العربية‬"
+            - option "مصر – العربية‬"
+            - option "ہندوستان - اردو"
+            - option "भारत - मराठी"
+            - option "भारत - हिन्दी"
+            - option "বঙ্গ - বাংলা"
+            - option "இந்தியா - தமிழ்"
+            - option "భారతదేశం - తెలుగు"
+            - option "ไทย – ไทย"
+            - option "대한민국 – 한국어"
+            - option "‫ישראל – עברית‬"
+            - option "‫الإمارات العربية المتحدة – العربية‬"
+            - option "‫المملكة العربية السعودية – العربية‬"
+            - option "‫تونس – العربية‬"
+            - option "日本 – 日本語"
+            - option "简体中文"
+            - option "繁體中文"

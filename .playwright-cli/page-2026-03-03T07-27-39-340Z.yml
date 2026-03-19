@@ -1,0 +1,66 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - link [ref=e5]:
+        - /url: "#"
+        - img [ref=e7]
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - link "Register for an Ezoic account" [ref=e11] [cursor=pointer]:
+            - /url: https://pubdash.ezoic.com/join?redirect_url=https%3A%2F%2Fcommunity.ezoic.com
+            - text: Register
+        - listitem [ref=e12] [cursor=pointer]: English
+    - generic [ref=e17]:
+      - heading "Sign In" [level=4] [ref=e18]
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e22]: "* Email:"
+          - textbox [ref=e24]
+        - generic [ref=e25]:
+          - generic [ref=e27]: "* Password:"
+          - textbox [ref=e29]
+      - generic [ref=e30]:
+        - button "Sign in to your account" [ref=e31] [cursor=pointer]:
+          - generic [ref=e32]: Sign In
+        - generic [ref=e34] [cursor=pointer]:
+          - checkbox "Remember me" [ref=e36]
+          - text: Remember me
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - text: New user?
+          - link "Register for a free Ezoic account here" [ref=e40] [cursor=pointer]:
+            - /url: https://pubdash.ezoic.com/join?redirect_url=https%3A%2F%2Fcommunity.ezoic.com
+            - text: Register now!
+        - generic [ref=e41]:
+          - link "Reset your password if you forgot it" [ref=e42] [cursor=pointer]:
+            - /url: /forgot
+            - text: Forgot password?
+          - link "Having trouble logging in? See our helpful support docs." [ref=e43] [cursor=pointer]:
+            - /url: https://support.ezoic.com/open.php?c=a6c0f7172856059e74fc3ed47bc3db24
+            - text: I cannot login
+      - generic [ref=e44]:
+        - generic [ref=e45]: or
+        - iframe [ref=e66]:
+          - button "Sign in as Petter, ronincarpenter90@gmail.com. Opens in new tab" [ref=f14e3] [cursor=pointer]:
+            - generic [ref=f14e5]:
+              - img "Petter's profile image" [ref=f14e6]
+              - generic [ref=f14e7]:
+                - generic [ref=f14e8]: Sign in as Petter
+                - generic [ref=f14e10]: ronincarpenter90@gmail.com
+              - img [ref=f14e12]
+        - button "Sign in with Microsoft" [ref=e63] [cursor=pointer]:
+          - generic [ref=e65]: Sign in with Microsoft
+  - generic [ref=e70]:
+    - heading "Privacy & Transparency" [level=2] [ref=e71]
+    - paragraph [ref=e73]: login.ezoic.com and our partners ask for your consent to use your personal data, and to store and/or access information on your device. This includes using your personal data for personalised advertising and content, advertising and content measurement, audience research and services development. An example of data being processed may be a unique identifier stored in a cookie. Your personal data may be stored by, accessed by, and shared with 1102 partners, or used specifically by this site. You can change your settings or withdraw consent at any time, the link to do so is in our privacy policy at the bottom of this page. Some vendors may process your personal data on the basis of legitimate interest, which you can object to by managing your settings below.
+    - paragraph [ref=e74]:
+      - generic [ref=e75]:
+        - button "Manage Settings" [ref=e76] [cursor=pointer]
+        - button "Allow Necessary Cookies & Continue" [ref=e77] [cursor=pointer]
+        - button "Continue with Recommended Cookies" [ref=e78] [cursor=pointer]
+    - generic [ref=e79]:
+      - link "Vendor List" [ref=e80] [cursor=pointer]:
+        - /url: javascript:void(0);
+      - generic [ref=e81]: "|"
+      - link "Privacy Policy" [ref=e82] [cursor=pointer]:
+        - /url: https://www.ezoic.com/privacy-policy

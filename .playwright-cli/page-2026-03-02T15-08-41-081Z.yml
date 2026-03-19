@@ -1,0 +1,280 @@
+- generic [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - link "Ezoic" [ref=e10] [cursor=pointer]:
+            - /url: /
+            - img "Ezoic" [ref=e11]
+          - generic [ref=e15]: tegnogfarge.no
+          - generic [ref=e16] [cursor=pointer]: + Add a site
+        - generic [ref=e17]:
+          - link "Support Resources" [ref=e20] [cursor=pointer]:
+            - /url: https://support.ezoic.com/
+          - generic [ref=e22] [cursor=pointer]: English
+          - generic [ref=e25]:
+            - textbox "Search..." [ref=e26]
+            - 'generic "icon: search" [ref=e28]':
+              - img [ref=e29]
+          - generic [ref=e33] [cursor=pointer]: 
+      - menu [ref=e35]:
+        - menuitem "Home" [ref=e36] [cursor=pointer]:
+          - link "Home" [ref=e37]:
+            - /url: /dashboard
+            - img [ref=e38]
+            - generic [ref=e39]: Home
+        - menuitem "EzoicAds" [ref=e40] [cursor=pointer]:
+          - link "EzoicAds" [ref=e41]:
+            - /url: /ezoicads
+            - img [ref=e42]
+            - generic [ref=e43]: EzoicAds
+        - menuitem "Identity" [ref=e44] [cursor=pointer]:
+          - link "Identity" [ref=e45]:
+            - /url: /identity
+            - img [ref=e46]
+            - generic [ref=e47]: Identity
+        - menuitem "Videos" [ref=e48] [cursor=pointer]:
+          - link "Videos" [ref=e49]:
+            - /url: /video
+            - img [ref=e50]
+            - generic [ref=e51]: Videos
+        - menuitem "Analytics" [ref=e52] [cursor=pointer]:
+          - link "Analytics" [ref=e53]:
+            - /url: https://analytics.ezoic.com/reports/default
+            - img [ref=e54]
+            - generic [ref=e55]: Analytics
+        - menuitem "Settings" [ref=e56] [cursor=pointer]:
+          - link "Settings" [ref=e57]:
+            - /url: /settings
+            - img [ref=e58]
+            - generic [ref=e59]: Settings
+        - menuitem " More" [ref=e60] [cursor=pointer]:
+          - generic [ref=e62]:
+            - generic [ref=e64]: 
+            - generic [ref=e65]: More
+        - menuitem "Level 1" [ref=e66] [cursor=pointer]:
+          - generic [ref=e71]: Level 1
+    - main [ref=e79]:
+      - generic [ref=e81]:
+        - button "Back to Dashboard " [ref=e83] [cursor=pointer]:
+          - generic [ref=e84]:
+            - text: Back to Dashboard
+            - generic [ref=e85]: 
+        - generic [ref=e88]:
+          - generic [ref=e90]:
+            - heading "Setup Needs Attention" [level=3] [ref=e91]:
+              - strong [ref=e92]: Setup Needs Attention
+            - paragraph [ref=e93]: Please review and address the issue below
+            - generic [ref=e95]:
+              - generic [ref=e97] [cursor=pointer]:
+                - generic [ref=e99]: 
+                - paragraph [ref=e101]: Connect to Ezoic
+              - generic [ref=e103] [cursor=pointer]:
+                - generic [ref=e105]: 
+                - paragraph [ref=e107]: Ads.txt Setup
+              - generic [ref=e109] [cursor=pointer]:
+                - generic [ref=e111]: 
+                - paragraph [ref=e113]: Ad Setup
+              - generic [ref=e115] [cursor=pointer]:
+                - generic [ref=e117]: 
+                - paragraph [ref=e119]: Ezoic Review
+              - generic [ref=e121] [cursor=pointer]:
+                - generic [ref=e123]: 
+                - paragraph [ref=e125]: Google Ad Manager
+              - generic [ref=e127] [cursor=pointer]:
+                - generic [ref=e129]: 
+                - paragraph [ref=e131]: Privacy Policy
+          - generic [ref=e144]:
+            - generic [ref=e146]:
+              - heading "Google Ad Manager" [level=3] [ref=e148]:
+                - strong [ref=e149]: Google Ad Manager
+              - generic [ref=e151]:
+                - generic [ref=e152]:
+                  - paragraph [ref=e153]:
+                    - strong [ref=e154]: Action Required
+                  - generic [ref=e157]:
+                    - generic [ref=e158]:
+                      - generic [ref=e159]:
+                        - strong [ref=e160]: "Ad Manager Account Status: Invited"
+                        - paragraph [ref=e161]: An invite to set up Ad Manager has been sent to ronincarpenter90@gmail.com. Please complete account setup via email.
+                      - generic [ref=e162]:
+                        - heading "You have been sent an email by Google to setup your AdManager account. Please check your email and click on the link to set up your Ad Manager account. After you have done so, please wait 24 hours for Google to review your account." [level=6] [ref=e163]
+                        - paragraph [ref=e164]:
+                          - text: "*Invitation will be sent to:"
+                          - strong [ref=e165]: ronincarpenter90@gmail.com
+                        - button "Resend Invite" [ref=e166] [cursor=pointer]:
+                          - generic: Resend Invite
+                        - generic [ref=e225]:
+                          - generic [ref=e226]:
+                            - generic "Do you already have an Ad Manager account?" [ref=e228]: "* Do you already have an Ad Manager account?"
+                            - generic [ref=e232]:
+                              - generic [ref=e233] [cursor=pointer]:
+                                - generic:
+                                  - radio "Yes"
+                                - text: "Yes"
+                              - generic [ref=e234] [cursor=pointer]:
+                                - generic:
+                                  - radio "No" [checked] [active]
+                                - text: "No"
+                          - generic [ref=e235]:
+                            - generic "Do you have an active AdSense account?" [ref=e237]: "* Do you have an active AdSense account?"
+                            - generic [ref=e241]:
+                              - generic [ref=e242] [cursor=pointer]:
+                                - generic:
+                                  - radio "Yes"
+                                - text: "Yes"
+                              - generic [ref=e243] [cursor=pointer]:
+                                - generic:
+                                  - radio "No"
+                                - text: "No"
+                    - generic [ref=e169]:
+                      - strong [ref=e170]: "Ad Manager Domain Status: Waiting"
+                      - paragraph [ref=e171]: Your domain will be submitted to Google for review after your account is approved.
+                      - paragraph
+                - link "Learn More" [ref=e173] [cursor=pointer]:
+                  - /url: https://support.ezoic.com/kb/article/applying-to-google-ad-manager-multiple-customer-management
+                  - generic [ref=e174]: Learn More
+            - generic [ref=e176]:
+              - heading "While you wait..." [level=5] [ref=e177]:
+                - strong [ref=e178]: While you wait...
+              - paragraph [ref=e179]: We encourage you to complete the following tasks. While they are not required, they'll help ensure optimal performance when tegnogfarge.no goes live.
+              - generic [ref=e181]:
+                - generic [ref=e183] [cursor=pointer]: 
+                - generic [ref=e185]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: 
+                        - generic:
+                          - paragraph:
+                            - strong: Fill Out Tax Information
+                          - paragraph: Required before receiving payments
+                          - text: Complete!
+                  - generic [ref=e188]:
+                    - generic [ref=e190]: 
+                    - generic [ref=e191]:
+                      - paragraph [ref=e192]:
+                        - strong [ref=e193]: Create Community Profile
+                      - paragraph [ref=e194]: Community is used to get in touch with the Ezoic team
+                      - link "Get Started" [ref=e195] [cursor=pointer]:
+                        - /url: https://community.ezoic.com
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: 
+                        - generic:
+                          - paragraph:
+                            - strong: Help Center
+                          - paragraph: Visit the Help Center for assistance
+                          - link:
+                            - /url: https://support.ezoic.com/
+                            - text: Get Started
+                          - generic:
+                            - generic: 
+                            - text: Watch Tutorial
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: 
+                        - generic:
+                          - paragraph:
+                            - strong: Set Up AdSense Mediation
+                          - paragraph: On average increases revenue by 10%
+                          - text: Get Started
+                          - generic:
+                            - generic: 
+                            - text: Watch Tutorial
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: 
+                        - generic:
+                          - paragraph:
+                            - strong: Select Payment Settings
+                          - paragraph: Choose how you get paid
+                          - text: Complete!
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: 
+                        - generic:
+                          - paragraph:
+                            - strong: Fill Out Tax Information
+                          - paragraph: Required before receiving payments
+                          - text: Complete!
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: 
+                        - generic:
+                          - paragraph:
+                            - strong: Create Community Profile
+                          - paragraph: Community is used to get in touch with the Ezoic team
+                          - link:
+                            - /url: https://community.ezoic.com
+                            - text: Get Started
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: 
+                        - generic:
+                          - paragraph:
+                            - strong: Help Center
+                          - paragraph: Visit the Help Center for assistance
+                          - link:
+                            - /url: https://support.ezoic.com/
+                            - text: Get Started
+                          - generic:
+                            - generic: 
+                            - text: Watch Tutorial
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: 
+                        - generic:
+                          - paragraph:
+                            - strong: Set Up AdSense Mediation
+                          - paragraph: On average increases revenue by 10%
+                          - text: Get Started
+                          - generic:
+                            - generic: 
+                            - text: Watch Tutorial
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: 
+                        - generic:
+                          - paragraph:
+                            - strong: Select Payment Settings
+                          - paragraph: Choose how you get paid
+                          - text: Complete!
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: 
+                        - generic:
+                          - paragraph:
+                            - strong: Fill Out Tax Information
+                          - paragraph: Required before receiving payments
+                          - text: Complete!
+                - generic [ref=e197] [cursor=pointer]: 
+    - generic [ref=e204]:
+      - img "Ezoic Inc." [ref=e205]
+      - generic [ref=e206]:
+        - text: © 2026
+        - link "Ezoic Inc." [ref=e207] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - generic "Privacy center" [ref=e208] [cursor=pointer]: ⚙
+  - button [ref=e210] [cursor=pointer]:
+    - img [ref=e211]

@@ -1,0 +1,241 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e372]:
+      - strong [ref=e374]: Lock PDF Downloads Behind Ads - 18.3.2026
+      - generic [ref=e376]:
+        - generic [ref=e377]:
+          - generic [ref=e378]:
+            - generic [ref=e379]: Script Name
+            - textbox "Enter script name" [ref=e380]: Lock PDF Downloads Behind Ads - 18.3.2026
+          - generic [ref=e381]:
+            - generic [ref=e382]: Description
+            - textbox "Enter a description for your script" [ref=e383]: This script requires users to watch a rewarded ad before they can download a PDF. If the ad is watched successfully, the download will begin; otherwise, it remains locked until the ad is completed.
+            - paragraph [ref=e384]: Add notes or details about this script version for future reference.
+          - generic [ref=e385]:
+            - generic [ref=e386]:
+              - generic [ref=e387]: Script Content
+              - 'button "icon: history Load Previous Version" [ref=e389] [cursor=pointer]':
+                - 'generic "icon: history"'
+                - generic: Load Previous Version
+            - textbox "Enter your JavaScript code here..." [ref=e391]: "(function() { function initRewardedDownloadGate() { var downloadButton = document.querySelector('a[aria-label=\"Last ned Bilde\"]'); if (!downloadButton) { console.warn('[Ezoic Rewarded Ads] Download button not found'); return; } var originalHref = downloadButton.getAttribute('href'); var adTriggered = false; function handleDownloadClick(e) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); if (adTriggered) { return; } adTriggered = true; if (!window.ezRewardedAds || !window.ezRewardedAds.ready) { console.warn('[Ezoic Rewarded Ads] API not ready, allowing download'); window.location.href = originalHref; adTriggered = false; return; } try { window.ezRewardedAds.requestWithOverlay( function(result) { if (result.status) { if (result.reward) { console.log('[Ezoic Rewarded Ads] Ad completed successfully, starting download'); window.location.href = originalHref; } else { console.log('[Ezoic Rewarded Ads] User closed ad early, download blocked'); adTriggered = false; } } else { console.error('[Ezoic Rewarded Ads] Ad system error:', result.msg); console.log('[Ezoic Rewarded Ads] Allowing download due to technical error'); window.location.href = originalHref; adTriggered = false; } }, { cancel: \"Avbryt\", header: \"Se annonse for å laste ned!\", body: [ \"For å laste ned fargeleggingsarket må du se en kort annonse.\\nDette hjelper oss å tilby gratis innhold.\" ], accept: \"Se annonse\" }, { rewardName: \"PDF Download - Fargeleggingsark\", rewardOnNoFill: true, alwaysCallback: true } ); } catch (error) { console.error('[Ezoic Rewarded Ads] Error triggering ad:', error); window.location.href = originalHref; adTriggered = false; } } downloadButton.addEventListener('click', handleDownloadClick, true); console.log('[Ezoic Rewarded Ads] Download gate initialized successfully'); } if (document.readyState === 'interactive' || document.readyState === 'complete') { initRewardedDownloadGate(); } else { document.addEventListener('DOMContentLoaded', initRewardedDownloadGate); } })();"
+            - paragraph [ref=e392]: Enter your JavaScript code. Make sure it's valid, policy compliant, and meets your implementation requirements.
+          - generic [ref=e394] [cursor=pointer]:
+            - 'generic "icon: right" [ref=e395]':
+              - img [ref=e396]
+            - generic [ref=e398]: Need help fixing an issue?
+        - generic [ref=e399]:
+          - button "Cancel" [ref=e400] [cursor=pointer]:
+            - generic: Cancel
+          - button "Save Changes" [ref=e401] [cursor=pointer]:
+            - generic: Save Changes
+    - generic [ref=e4]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - link "Ezoic" [ref=e10] [cursor=pointer]:
+            - /url: /
+            - img "Ezoic" [ref=e11]
+          - generic [ref=e15]: tegnogfarge.no
+          - generic [ref=e16] [cursor=pointer]: + Add a site
+        - menu [ref=e19]:
+          - menuitem "Home" [ref=e20] [cursor=pointer]:
+            - link [ref=e21]:
+              - /url: /dashboard
+              - img [ref=e22]
+          - menuitem "EzoicAds" [ref=e23] [cursor=pointer]:
+            - link [ref=e24]:
+              - /url: /ezoicads
+              - img [ref=e25]
+          - menuitem "Identity" [ref=e26] [cursor=pointer]:
+            - link [ref=e27]:
+              - /url: /identity
+              - img [ref=e28]
+          - menuitem "Videos" [ref=e29] [cursor=pointer]:
+            - link [ref=e30]:
+              - /url: /video
+              - img [ref=e31]
+          - menuitem "Analytics" [ref=e32] [cursor=pointer]:
+            - link [ref=e33]:
+              - /url: https://analytics.ezoic.com/reports/default
+              - img [ref=e34]
+          - menuitem "Settings" [ref=e35] [cursor=pointer]:
+            - link [ref=e36]:
+              - /url: /settings
+              - img [ref=e37]
+          - menuitem "" [ref=e38] [cursor=pointer]:
+            - generic [ref=e42]: 
+        - generic [ref=e43]:
+          - link "Support Resources" [ref=e46] [cursor=pointer]:
+            - /url: https://support.ezoic.com/
+          - generic [ref=e48] [cursor=pointer]: English
+          - generic [ref=e51]:
+            - textbox "Search..." [ref=e52]
+            - 'generic "icon: search" [ref=e54]':
+              - img [ref=e55]
+          - generic [ref=e60] [cursor=pointer]:
+            - 'generic "icon: bell" [ref=e61]':
+              - img [ref=e62]
+            - superscript [ref=e64]:
+              - generic [ref=e65]:
+                - paragraph [ref=e66]: "0"
+                - paragraph [ref=e67]: "1"
+                - paragraph [ref=e68]: "2"
+                - paragraph [ref=e69]: "3"
+                - paragraph [ref=e70]: "4"
+                - paragraph [ref=e71]: "5"
+                - paragraph [ref=e72]: "6"
+                - paragraph [ref=e73]: "7"
+                - paragraph [ref=e74]: "8"
+                - paragraph [ref=e75]: "9"
+                - paragraph [ref=e76]: "0"
+                - paragraph [ref=e77]: "1"
+                - paragraph [ref=e78]: "2"
+                - paragraph [ref=e79]: "3"
+                - paragraph [ref=e80]: "4"
+                - paragraph [ref=e81]: "5"
+                - paragraph [ref=e82]: "6"
+                - paragraph [ref=e83]: "7"
+                - paragraph [ref=e84]: "8"
+                - paragraph [ref=e85]: "9"
+                - paragraph [ref=e86]: "0"
+                - paragraph [ref=e87]: "1"
+                - paragraph [ref=e88]: "2"
+                - paragraph [ref=e89]: "3"
+                - paragraph [ref=e90]: "4"
+                - paragraph [ref=e91]: "5"
+                - paragraph [ref=e92]: "6"
+                - paragraph [ref=e93]: "7"
+                - paragraph [ref=e94]: "8"
+                - paragraph [ref=e95]: "9"
+          - generic [ref=e98] [cursor=pointer]: 
+      - main [ref=e99]:
+        - generic [ref=e104]:
+          - generic [ref=e106]:
+            - img [ref=e108] [cursor=pointer]
+            - generic [ref=e109] [cursor=pointer]: close
+          - generic [ref=e110]:
+            - complementary [ref=e111]:
+              - menu [ref=e113]:
+                - menuitem "web Ad Positions" [ref=e114] [cursor=pointer]:
+                  - generic [ref=e115]:
+                    - generic [ref=e116]: web
+                    - text: Ad Positions
+                - menuitem "settings_applications Ad Types" [ref=e117] [cursor=pointer]:
+                  - generic [ref=e118]:
+                    - generic [ref=e119]: settings_applications
+                    - text: Ad Types
+                - menuitem "tune Ad Configuration" [ref=e120] [cursor=pointer]:
+                  - generic [ref=e121]:
+                    - generic [ref=e122]: tune
+                    - text: Ad Configuration
+                - menuitem "price_change Ad Campaign" [ref=e123] [cursor=pointer]:
+                  - generic [ref=e124]:
+                    - generic [ref=e125]: price_change
+                    - text: Ad Campaign
+                - menuitem "settings_ethernet Ad Integration" [ref=e126] [cursor=pointer]:
+                  - generic [ref=e127]:
+                    - generic [ref=e128]: settings_ethernet
+                    - text: Ad Integration
+                - menuitem "border_all Ad Transparency" [ref=e129] [cursor=pointer]:
+                  - generic [ref=e130]:
+                    - generic [ref=e131]: border_all
+                    - text: Ad Transparency
+                - menuitem "shield Ad Restrictions" [ref=e132] [cursor=pointer]:
+                  - generic [ref=e133]:
+                    - generic [ref=e134]: shield
+                    - text: Ad Restrictions
+                - menuitem "data_usage Optimization Goals" [ref=e135] [cursor=pointer]:
+                  - generic [ref=e136]:
+                    - generic [ref=e137]: data_usage
+                    - text: Optimization Goals
+                - menuitem "paid Rev. Opportunities" [ref=e138] [cursor=pointer]:
+                  - generic [ref=e139]:
+                    - generic [ref=e140]: paid
+                    - text: Rev. Opportunities
+                - menuitem "redeem Rewarded Ads" [ref=e141] [cursor=pointer]:
+                  - generic [ref=e142]:
+                    - generic [ref=e143]: redeem
+                    - text: Rewarded Ads
+                - menuitem "folder_special Resources" [ref=e144] [cursor=pointer]:
+                  - generic [ref=e145]:
+                    - generic [ref=e146]: folder_special
+                    - text: Resources
+            - main [ref=e147]:
+              - generic [ref=e148]:
+                - generic [ref=e153]:
+                  - generic [ref=e154]: Ezoic Ads
+                  - generic [ref=e155]: Rewarded Ads
+                - generic [ref=e156]:
+                  - generic [ref=e157]:
+                    - heading "Rewarded Ads" [level=2] [ref=e158]
+                    - paragraph [ref=e159]: Learn about rewarded ads and explore implementation examples.
+                  - generic [ref=e161]:
+                    - button "Overview" [ref=e162] [cursor=pointer]
+                    - button "Examples" [ref=e163] [cursor=pointer]
+                    - button "Settings" [ref=e164] [cursor=pointer]
+                    - 'button "icon: robot AI Setup Tools BETA" [ref=e165] [cursor=pointer]':
+                      - 'generic "icon: robot"'
+                      - text: AI Setup Tools BETA
+                  - generic [ref=e166]:
+                    - generic [ref=e168]:
+                      - tablist [ref=e169]:
+                        - generic [ref=e170]:
+                          - generic:
+                            - generic:
+                              - 'generic "icon: left"':
+                                - img
+                          - generic:
+                            - generic:
+                              - 'generic "icon: right"':
+                                - img
+                          - generic [ref=e174]:
+                            - tab "AI Assisted Setup" [ref=e175] [cursor=pointer]
+                            - tab "Script Library" [selected] [ref=e176] [cursor=pointer]
+                            - tab "Page Rules" [ref=e177] [cursor=pointer]
+                            - tab "A/B Testing" [ref=e178] [cursor=pointer]
+                      - generic:
+                        - tabpanel
+                    - generic [ref=e180]:
+                      - generic [ref=e241]:
+                        - heading "Script Library" [level=3] [ref=e242]
+                        - paragraph [ref=e243]: Manage your saved rewarded ads script versions and activate versions on your site.
+                      - generic [ref=e244]:
+                        - generic [ref=e245]:
+                          - generic [ref=e246]:
+                            - textbox "Search by script name..." [ref=e247]
+                            - 'generic "icon: search" [ref=e249] [cursor=pointer]':
+                              - img [ref=e250]
+                          - combobox [ref=e253] [cursor=pointer]:
+                            - generic "All Scripts" [ref=e255]
+                            - 'generic "icon: down" [ref=e257]':
+                              - img [ref=e258]
+                        - 'button "icon: reload Refresh" [ref=e260] [cursor=pointer]':
+                          - 'generic "icon: reload" [ref=e261]':
+                            - img [ref=e262]
+                          - text: Refresh
+                      - generic [ref=e267]:
+                        - switch [checked] [ref=e269] [cursor=pointer]
+                        - generic [ref=e270]:
+                          - heading "Lock PDF Downloads Behind Ads - 18.3.2026" [level=5] [ref=e272]
+                          - generic [ref=e275]: "Active: Sitewide"
+                          - generic [ref=e277]: This script requires users to watch a rewarded ad before they can download a PDF. If the ad is watched successfully, the download will begin; otherwise, it remains locked until the ad is completed.
+                        - generic [ref=e280]:
+                          - 'button "icon: eye" [ref=e281] [cursor=pointer]':
+                            - 'generic "icon: eye" [ref=e282]':
+                              - img [ref=e283]
+                          - 'button "icon: edit" [ref=e285] [cursor=pointer]':
+                            - 'generic "icon: edit" [ref=e286]':
+                              - img [ref=e287]
+                          - 'button "icon: setting" [ref=e289] [cursor=pointer]':
+                            - 'generic "icon: setting" [ref=e290]':
+                              - img [ref=e291]
+                          - 'button "icon: ellipsis" [ref=e293] [cursor=pointer]':
+                            - 'generic "icon: ellipsis" [ref=e294]':
+                              - img [ref=e295]
+      - generic [ref=e235]:
+        - img "Ezoic Inc." [ref=e236]
+        - generic [ref=e237]:
+          - text: © 2026
+          - link "Ezoic Inc." [ref=e238] [cursor=pointer]:
+            - /url: https://www.ezoic.com/
+          - text: All rights reserved
+  - generic "Privacy center" [ref=e239] [cursor=pointer]: ⚙

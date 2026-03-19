@@ -1,0 +1,121 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - link "Ezoic" [ref=e10] [cursor=pointer]:
+            - /url: /
+            - img "Ezoic" [ref=e11]
+          - generic [ref=e15]: tegnogfarge.no
+          - generic [ref=e16] [cursor=pointer]: + Add a site
+        - generic [ref=e17]:
+          - link "Support Resources" [ref=e20] [cursor=pointer]:
+            - /url: https://support.ezoic.com/
+          - generic [ref=e22] [cursor=pointer]: English
+          - generic [ref=e25]:
+            - textbox "Search..." [ref=e26]
+            - 'generic "icon: search" [ref=e28]':
+              - img [ref=e29]
+          - generic [ref=e34] [cursor=pointer]:
+            - 'generic "icon: bell" [ref=e35]':
+              - img [ref=e36]
+            - superscript [ref=e38]:
+              - generic [ref=e39]:
+                - paragraph [ref=e40]: "0"
+                - paragraph [ref=e41]: "1"
+                - paragraph [ref=e42]: "2"
+                - paragraph [ref=e43]: "3"
+                - paragraph [ref=e44]: "4"
+                - paragraph [ref=e45]: "5"
+                - paragraph [ref=e46]: "6"
+                - paragraph [ref=e47]: "7"
+                - paragraph [ref=e48]: "8"
+                - paragraph [ref=e49]: "9"
+                - paragraph [ref=e50]: "0"
+                - paragraph [ref=e51]: "1"
+                - paragraph [ref=e52]: "2"
+                - paragraph [ref=e53]: "3"
+                - paragraph [ref=e54]: "4"
+                - paragraph [ref=e55]: "5"
+                - paragraph [ref=e56]: "6"
+                - paragraph [ref=e57]: "7"
+                - paragraph [ref=e58]: "8"
+                - paragraph [ref=e59]: "9"
+                - paragraph [ref=e60]: "0"
+                - paragraph [ref=e61]: "1"
+                - paragraph [ref=e62]: "2"
+                - paragraph [ref=e63]: "3"
+                - paragraph [ref=e64]: "4"
+                - paragraph [ref=e65]: "5"
+                - paragraph [ref=e66]: "6"
+                - paragraph [ref=e67]: "7"
+                - paragraph [ref=e68]: "8"
+                - paragraph [ref=e69]: "9"
+          - generic [ref=e72] [cursor=pointer]: 
+      - menu [ref=e74]:
+        - menuitem "Home" [ref=e75] [cursor=pointer]:
+          - link "Home" [ref=e76]:
+            - /url: /dashboard
+            - img [ref=e77]
+            - generic [ref=e78]: Home
+        - menuitem "EzoicAds" [ref=e79] [cursor=pointer]:
+          - link "EzoicAds" [ref=e80]:
+            - /url: /ezoicads
+            - img [ref=e81]
+            - generic [ref=e82]: EzoicAds
+        - menuitem "Identity" [ref=e83] [cursor=pointer]:
+          - link "Identity" [ref=e84]:
+            - /url: /identity
+            - img [ref=e85]
+            - generic [ref=e86]: Identity
+        - menuitem "Videos" [ref=e87] [cursor=pointer]:
+          - link "Videos" [ref=e88]:
+            - /url: /video
+            - img [ref=e89]
+            - generic [ref=e90]: Videos
+        - menuitem "Analytics" [ref=e91] [cursor=pointer]:
+          - link "Analytics" [ref=e92]:
+            - /url: https://analytics.ezoic.com/reports/default
+            - img [ref=e93]
+            - generic [ref=e94]: Analytics
+        - menuitem "Settings" [ref=e95] [cursor=pointer]:
+          - link "Settings" [ref=e96]:
+            - /url: /settings
+            - img [ref=e97]
+            - generic [ref=e98]: Settings
+        - menuitem " More" [ref=e99] [cursor=pointer]:
+          - generic [ref=e101]:
+            - generic [ref=e103]: 
+            - generic [ref=e104]: More
+        - 'menuitem "icon: mail Level 1" [ref=e105] [cursor=pointer]':
+          - generic [ref=e109]:
+            - 'generic "icon: mail" [ref=e111]':
+              - img [ref=e112]
+            - generic [ref=e114]: Level 1
+        - menuitem "Trailblazer Trailblazer" [ref=e121] [cursor=pointer]:
+          - link "Trailblazer Trailblazer" [ref=e122]:
+            - /url: /trailblazer
+            - img "Trailblazer" [ref=e124]
+            - generic [ref=e125]: Trailblazer
+    - main [ref=e127]:
+      - generic [ref=e132]:
+        - heading "Setup Complete" [level=3] [ref=e135]:
+          - strong [ref=e136]: Setup Complete
+        - generic [ref=e141]:
+          - generic [ref=e143]: 
+          - generic [ref=e144]:
+            - heading "Ezoic Dashboard Available" [level=4] [ref=e145]:
+              - strong [ref=e146]: Ezoic Dashboard Available
+            - paragraph [ref=e147]: You will start to see visits and revenue on your Ezoic dashboard in the next 24 hours.
+            - button "View Dashboard" [ref=e148] [cursor=pointer]:
+              - generic [ref=e149]: View Dashboard
+    - generic [ref=e156]:
+      - img "Ezoic Inc." [ref=e157]
+      - generic [ref=e158]:
+        - text: © 2026
+        - link "Ezoic Inc." [ref=e159] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - button [ref=e161] [cursor=pointer]:
+    - img [ref=e162]
+  - generic "Privacy center" [ref=e175] [cursor=pointer]: ⚙

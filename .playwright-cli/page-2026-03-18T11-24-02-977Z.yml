@@ -1,0 +1,219 @@
+- generic [ref=e1]:
+  - generic [ref=e444]:
+    - generic [ref=e447]:
+      - generic [ref=e448]:
+        - link "Ezoic" [ref=e450] [cursor=pointer]:
+          - /url: /
+          - img "Ezoic" [ref=e451]
+        - generic [ref=e455]: tegnogfarge.no
+        - generic [ref=e456] [cursor=pointer]: + Add a site
+      - menu [ref=e459]:
+        - menuitem "Home" [ref=e460] [cursor=pointer]:
+          - link [ref=e461]:
+            - /url: /dashboard
+            - img [ref=e462]
+        - menuitem "EzoicAds" [ref=e463] [cursor=pointer]:
+          - link [ref=e464]:
+            - /url: /ezoicads
+            - img [ref=e465]
+        - menuitem "Identity" [ref=e466] [cursor=pointer]:
+          - link [ref=e467]:
+            - /url: /identity
+            - img [ref=e468]
+        - menuitem "Videos" [ref=e469] [cursor=pointer]:
+          - link [ref=e470]:
+            - /url: /video
+            - img [ref=e471]
+        - menuitem "Analytics" [ref=e472] [cursor=pointer]:
+          - link [ref=e473]:
+            - /url: https://analytics.ezoic.com/reports/default
+            - img [ref=e474]
+        - menuitem "Settings" [ref=e475] [cursor=pointer]:
+          - link [ref=e476]:
+            - /url: /settings
+            - img [ref=e477]
+        - menuitem "" [ref=e478] [cursor=pointer]:
+          - generic [ref=e482]: 
+      - generic [ref=e483]:
+        - link "Support Resources" [ref=e486] [cursor=pointer]:
+          - /url: https://support.ezoic.com/
+        - generic [ref=e488] [cursor=pointer]: English
+        - generic [ref=e491]:
+          - textbox "Search..." [ref=e492]
+          - 'generic "icon: search" [ref=e494]':
+            - img [ref=e495]
+        - generic [ref=e500] [cursor=pointer]:
+          - 'generic "icon: bell" [ref=e501]':
+            - img [ref=e502]
+          - superscript [ref=e504]:
+            - generic [ref=e505]:
+              - paragraph [ref=e506]: "0"
+              - paragraph [ref=e507]: "1"
+              - paragraph [ref=e508]: "2"
+              - paragraph [ref=e509]: "3"
+              - paragraph [ref=e510]: "4"
+              - paragraph [ref=e511]: "5"
+              - paragraph [ref=e512]: "6"
+              - paragraph [ref=e513]: "7"
+              - paragraph [ref=e514]: "8"
+              - paragraph [ref=e515]: "9"
+              - paragraph [ref=e516]: "0"
+              - paragraph [ref=e517]: "1"
+              - paragraph [ref=e518]: "2"
+              - paragraph [ref=e519]: "3"
+              - paragraph [ref=e520]: "4"
+              - paragraph [ref=e521]: "5"
+              - paragraph [ref=e522]: "6"
+              - paragraph [ref=e523]: "7"
+              - paragraph [ref=e524]: "8"
+              - paragraph [ref=e525]: "9"
+              - paragraph [ref=e526]: "0"
+              - paragraph [ref=e527]: "1"
+              - paragraph [ref=e528]: "2"
+              - paragraph [ref=e529]: "3"
+              - paragraph [ref=e530]: "4"
+              - paragraph [ref=e531]: "5"
+              - paragraph [ref=e532]: "6"
+              - paragraph [ref=e533]: "7"
+              - paragraph [ref=e534]: "8"
+              - paragraph [ref=e535]: "9"
+        - generic [ref=e538] [cursor=pointer]: 
+    - main [ref=e539]:
+      - generic [ref=e544]:
+        - generic [ref=e546]:
+          - img [ref=e548] [cursor=pointer]
+          - generic [ref=e549] [cursor=pointer]: close
+        - generic [ref=e550]:
+          - complementary [ref=e551]:
+            - menu [ref=e553]:
+              - menuitem "web Ad Positions" [ref=e554] [cursor=pointer]:
+                - generic [ref=e555]:
+                  - generic [ref=e556]: web
+                  - text: Ad Positions
+              - menuitem "settings_applications Ad Types" [ref=e557] [cursor=pointer]:
+                - generic [ref=e558]:
+                  - generic [ref=e559]: settings_applications
+                  - text: Ad Types
+              - menuitem "tune Ad Configuration" [ref=e560] [cursor=pointer]:
+                - generic [ref=e561]:
+                  - generic [ref=e562]: tune
+                  - text: Ad Configuration
+              - menuitem "price_change Ad Campaign" [ref=e563] [cursor=pointer]:
+                - generic [ref=e564]:
+                  - generic [ref=e565]: price_change
+                  - text: Ad Campaign
+              - menuitem "settings_ethernet Ad Integration" [ref=e566] [cursor=pointer]:
+                - generic [ref=e567]:
+                  - generic [ref=e568]: settings_ethernet
+                  - text: Ad Integration
+              - menuitem "border_all Ad Transparency" [ref=e569] [cursor=pointer]:
+                - generic [ref=e570]:
+                  - generic [ref=e571]: border_all
+                  - text: Ad Transparency
+              - menuitem "shield Ad Restrictions" [ref=e572] [cursor=pointer]:
+                - generic [ref=e573]:
+                  - generic [ref=e574]: shield
+                  - text: Ad Restrictions
+              - menuitem "data_usage Optimization Goals" [ref=e575] [cursor=pointer]:
+                - generic [ref=e576]:
+                  - generic [ref=e577]: data_usage
+                  - text: Optimization Goals
+              - menuitem "paid Rev. Opportunities" [ref=e578] [cursor=pointer]:
+                - generic [ref=e579]:
+                  - generic [ref=e580]: paid
+                  - text: Rev. Opportunities
+              - menuitem "redeem Rewarded Ads" [ref=e581] [cursor=pointer]:
+                - generic [ref=e582]:
+                  - generic [ref=e583]: redeem
+                  - text: Rewarded Ads
+              - menuitem "folder_special Resources" [ref=e584] [cursor=pointer]:
+                - generic [ref=e585]:
+                  - generic [ref=e586]: folder_special
+                  - text: Resources
+          - main [ref=e587]:
+            - generic [ref=e588]:
+              - generic [ref=e593]:
+                - generic [ref=e594]: Ezoic Ads
+                - generic [ref=e595]: Rewarded Ads
+              - generic [ref=e596]:
+                - generic [ref=e597]:
+                  - heading "Rewarded Ads" [level=2] [ref=e598]
+                  - paragraph [ref=e599]: Learn about rewarded ads and explore implementation examples.
+                - generic [ref=e601]:
+                  - button "Overview" [ref=e602] [cursor=pointer]
+                  - button "Examples" [ref=e603] [cursor=pointer]
+                  - button "Settings" [ref=e604] [cursor=pointer]
+                  - 'button "icon: robot AI Setup Tools BETA" [ref=e605] [cursor=pointer]':
+                    - 'generic "icon: robot"'
+                    - text: AI Setup Tools BETA
+                - generic [ref=e606]:
+                  - generic [ref=e608]:
+                    - tablist [active] [ref=e609]:
+                      - generic [ref=e610]:
+                        - generic:
+                          - generic:
+                            - 'generic "icon: left"':
+                              - img
+                        - generic:
+                          - generic:
+                            - 'generic "icon: right"':
+                              - img
+                        - generic [ref=e614]:
+                          - tab "AI Assisted Setup" [ref=e615] [cursor=pointer]
+                          - tab "Script Library" [ref=e616] [cursor=pointer]
+                          - tab "Page Rules" [selected] [ref=e617] [cursor=pointer]
+                          - tab "A/B Testing" [ref=e618] [cursor=pointer]
+                    - generic:
+                      - tabpanel
+                  - generic [ref=e679]:
+                    - heading "Page Rules" [level=3] [ref=e681]
+                    - paragraph [ref=e683]: Manage your page rules and exclusions for your rewarded ads scripts.
+                    - generic [ref=e686]:
+                      - generic [ref=e687]:
+                        - generic [ref=e688]:
+                          - generic [ref=e689]:
+                            - textbox "Search by URL pattern..." [ref=e690]
+                            - 'generic "icon: search" [ref=e692] [cursor=pointer]':
+                              - img [ref=e693]
+                          - combobox [ref=e696] [cursor=pointer]:
+                            - generic "All Scopes" [ref=e698]
+                            - 'generic "icon: down" [ref=e700]':
+                              - img [ref=e701]
+                        - button "Create New Rule" [ref=e703] [cursor=pointer]
+                      - table [ref=e710]:
+                        - rowgroup [ref=e718]:
+                          - row "Scope URL Pattern Type Devices Linked Scripts Actions" [ref=e719]:
+                            - columnheader "Scope" [ref=e720]:
+                              - generic [ref=e722]: Scope
+                            - columnheader "URL Pattern" [ref=e723]:
+                              - generic [ref=e725]: URL Pattern
+                            - columnheader "Type" [ref=e726]:
+                              - generic [ref=e728]: Type
+                            - columnheader "Devices" [ref=e729]:
+                              - generic [ref=e731]: Devices
+                            - columnheader "Linked Scripts" [ref=e732]:
+                              - generic [ref=e734]: Linked Scripts
+                            - columnheader "Actions" [ref=e735]:
+                              - generic [ref=e737]: Actions
+                        - rowgroup [ref=e738]:
+                          - row "Directory /tegneserier/ Include Mobile, Tablet, Desktop Lock PDF Downloads Behind Ads - 18.3.2026  " [ref=e739]:
+                            - cell "Directory" [ref=e740]
+                            - cell /tegneserier/ [ref=e741]
+                            - cell "Include" [ref=e742]
+                            - cell "Mobile, Tablet, Desktop" [ref=e743]
+                            - cell "Lock PDF Downloads Behind Ads - 18.3.2026" [ref=e744]:
+                              - generic [ref=e746]: Lock PDF Downloads Behind Ads - 18.3.2026
+                            - cell " " [ref=e747]:
+                              - generic [ref=e749]:
+                                - generic "Edit Rule" [ref=e750]:
+                                  - generic [ref=e751] [cursor=pointer]: 
+                                - generic "Delete Rule" [ref=e752]:
+                                  - generic [ref=e753] [cursor=pointer]: 
+    - generic [ref=e675]:
+      - img "Ezoic Inc." [ref=e676]
+      - generic [ref=e677]:
+        - text: © 2026
+        - link "Ezoic Inc." [ref=e678] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - generic "Privacy center" [ref=e294] [cursor=pointer]: ⚙

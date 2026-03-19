@@ -1,0 +1,353 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - link "Ezoic" [ref=e10] [cursor=pointer]:
+          - /url: /
+          - img "Ezoic" [ref=e11]
+        - generic [ref=e15]: tegnogfarge.no
+        - generic [ref=e16] [cursor=pointer]: + Add a site
+      - menu [ref=e178]:
+        - menuitem "Home" [ref=e179] [cursor=pointer]:
+          - link [ref=e180]:
+            - /url: /dashboard
+            - img [ref=e181]
+        - menuitem "EzoicAds" [ref=e182] [cursor=pointer]:
+          - link [ref=e183]:
+            - /url: /ezoicads
+            - img [ref=e184]
+        - menuitem "Identity" [ref=e185] [cursor=pointer]:
+          - link [ref=e186]:
+            - /url: /identity
+            - img [ref=e187]
+        - menuitem "Videos" [ref=e188] [cursor=pointer]:
+          - link [ref=e189]:
+            - /url: /video
+            - img [ref=e190]
+        - menuitem "Analytics" [ref=e191] [cursor=pointer]:
+          - link [ref=e192]:
+            - /url: https://analytics.ezoic.com/reports/default
+            - img [ref=e193]
+        - menuitem "Settings" [ref=e194] [cursor=pointer]:
+          - link [ref=e195]:
+            - /url: /settings
+            - img [ref=e196]
+        - menuitem "" [ref=e197] [cursor=pointer]:
+          - generic [ref=e201]: 
+      - generic [ref=e17]:
+        - link "Support Resources" [ref=e20] [cursor=pointer]:
+          - /url: https://support.ezoic.com/
+        - generic [ref=e22] [cursor=pointer]: English
+        - generic [ref=e25]:
+          - textbox "Search..." [ref=e26]
+          - 'generic "icon: search" [ref=e28]':
+            - img [ref=e29]
+        - generic [ref=e34] [cursor=pointer]:
+          - 'generic "icon: bell" [ref=e35]':
+            - img [ref=e36]
+          - superscript [ref=e38]:
+            - generic [ref=e39]:
+              - paragraph [ref=e40]: "0"
+              - paragraph [ref=e41]: "1"
+              - paragraph [ref=e42]: "2"
+              - paragraph [ref=e43]: "3"
+              - paragraph [ref=e44]: "4"
+              - paragraph [ref=e45]: "5"
+              - paragraph [ref=e46]: "6"
+              - paragraph [ref=e47]: "7"
+              - paragraph [ref=e48]: "8"
+              - paragraph [ref=e49]: "9"
+              - paragraph [ref=e50]: "0"
+              - paragraph [ref=e51]: "1"
+              - paragraph [ref=e52]: "2"
+              - paragraph [ref=e53]: "3"
+              - paragraph [ref=e54]: "4"
+              - paragraph [ref=e55]: "5"
+              - paragraph [ref=e56]: "6"
+              - paragraph [ref=e57]: "7"
+              - paragraph [ref=e58]: "8"
+              - paragraph [ref=e59]: "9"
+              - paragraph [ref=e60]: "0"
+              - paragraph [ref=e61]: "1"
+              - paragraph [ref=e62]: "2"
+              - paragraph [ref=e63]: "3"
+              - paragraph [ref=e64]: "4"
+              - paragraph [ref=e65]: "5"
+              - paragraph [ref=e66]: "6"
+              - paragraph [ref=e67]: "7"
+              - paragraph [ref=e68]: "8"
+              - paragraph [ref=e69]: "9"
+        - generic [ref=e72] [cursor=pointer]: 
+    - main [ref=e127]:
+      - generic [ref=e205]:
+        - generic [ref=e207]:
+          - img [ref=e209] [cursor=pointer]
+          - generic [ref=e210] [cursor=pointer]: close
+        - generic [ref=e211]:
+          - complementary [ref=e212]:
+            - menu [ref=e214]:
+              - menuitem "web Ad Positions" [ref=e215] [cursor=pointer]:
+                - generic [ref=e216]:
+                  - generic [ref=e217]: web
+                  - text: Ad Positions
+              - menuitem "settings_applications Ad Types" [ref=e218] [cursor=pointer]:
+                - generic [ref=e219]:
+                  - generic [ref=e220]: settings_applications
+                  - text: Ad Types
+              - menuitem "tune Ad Configuration" [ref=e221] [cursor=pointer]:
+                - generic [ref=e222]:
+                  - generic [ref=e223]: tune
+                  - text: Ad Configuration
+              - menuitem "price_change Ad Campaign" [ref=e224] [cursor=pointer]:
+                - generic [ref=e225]:
+                  - generic [ref=e226]: price_change
+                  - text: Ad Campaign
+              - menuitem "settings_ethernet Ad Integration" [ref=e227] [cursor=pointer]:
+                - generic [ref=e228]:
+                  - generic [ref=e229]: settings_ethernet
+                  - text: Ad Integration
+              - menuitem "border_all Ad Transparency" [ref=e230] [cursor=pointer]:
+                - generic [ref=e231]:
+                  - generic [ref=e232]: border_all
+                  - text: Ad Transparency
+              - menuitem "shield Ad Restrictions" [ref=e233] [cursor=pointer]:
+                - generic [ref=e234]:
+                  - generic [ref=e235]: shield
+                  - text: Ad Restrictions
+              - menuitem "data_usage Optimization Goals" [ref=e236] [cursor=pointer]:
+                - generic [ref=e237]:
+                  - generic [ref=e238]: data_usage
+                  - text: Optimization Goals
+              - menuitem "paid Rev. Opportunities" [ref=e239] [cursor=pointer]:
+                - generic [ref=e240]:
+                  - generic [ref=e241]: paid
+                  - text: Rev. Opportunities
+              - menuitem "redeem Rewarded Ads" [ref=e242] [cursor=pointer]:
+                - generic [ref=e243]:
+                  - generic [ref=e244]: redeem
+                  - text: Rewarded Ads
+              - menuitem "folder_special Resources" [ref=e245] [cursor=pointer]:
+                - generic [ref=e246]:
+                  - generic [ref=e247]: folder_special
+                  - text: Resources
+          - main [ref=e248]:
+            - generic [ref=e249]:
+              - generic [ref=e254]:
+                - generic [ref=e255]: Ezoic Ads
+                - generic [ref=e256]: Rewarded Ads
+              - generic [ref=e843]:
+                - generic [ref=e844]:
+                  - heading "Rewarded Ads" [level=2] [ref=e845]
+                  - paragraph [ref=e846]: Learn about rewarded ads and explore implementation examples.
+                - generic [ref=e848]:
+                  - button "Overview" [ref=e849] [cursor=pointer]
+                  - button "Examples" [ref=e850] [cursor=pointer]
+                  - button "Settings" [ref=e851] [cursor=pointer]
+                  - 'button "icon: robot AI Setup Tools BETA" [ref=e852] [cursor=pointer]':
+                    - 'generic "icon: robot"'
+                    - text: AI Setup Tools BETA
+                - generic [ref=e854]:
+                  - generic [ref=e855]:
+                    - heading [level=3]
+                    - paragraph
+                  - generic [ref=e856]:
+                    - heading "Rewarded Ads Overview" [level=1] [ref=e857]
+                    - paragraph [ref=e858]: Rewarded ads are a powerful monetization tool that allows publishers to offer value to their users while generating revenue. These ads provide users with incentives (rewards) in exchange for engaging with advertisements.
+                    - heading "What are Rewarded Ads?" [level=2] [ref=e859]
+                    - paragraph [ref=e860]: Rewarded ads are video or interactive advertisements that users voluntarily watch or engage with in exchange for in-app rewards, premium content access, or other benefits. Unlike traditional display ads, rewarded ads create a positive user experience by providing immediate value.
+                    - heading "Key Benefits" [level=2] [ref=e861]
+                    - heading "For Publishers" [level=3] [ref=e862]
+                    - list [ref=e863]:
+                      - listitem [ref=e864]:
+                        - strong [ref=e865]: Higher engagement rates
+                        - text: "- Users actively choose to view ads"
+                      - listitem [ref=e866]:
+                        - strong [ref=e867]: Increased revenue
+                        - text: "- Premium CPMs due to high engagement"
+                      - listitem [ref=e868]:
+                        - strong [ref=e869]: Better user retention
+                        - text: "- Positive ad experience keeps users coming back"
+                      - listitem [ref=e870]:
+                        - strong [ref=e871]: Flexible implementation
+                        - text: "- Can be integrated into various content strategies"
+                    - heading "For Users" [level=3] [ref=e872]
+                    - list [ref=e873]:
+                      - listitem [ref=e874]:
+                        - strong [ref=e875]: Control over ad experience
+                        - text: "- Users decide when to view ads"
+                      - listitem [ref=e876]:
+                        - strong [ref=e877]: Immediate value
+                        - text: "- Receive rewards or access to premium content"
+                      - listitem [ref=e878]:
+                        - strong [ref=e879]: Non-intrusive
+                        - text: "- Ads don't interrupt the browsing experience"
+                      - listitem [ref=e880]:
+                        - strong [ref=e881]: Optional engagement
+                        - text: "- No forced ad viewing"
+                    - heading "Common Use Cases" [level=2] [ref=e882]
+                    - paragraph [ref=e883]:
+                      - text: See the
+                      - strong [ref=e884]: Examples
+                      - text: tab above for detailed implementation patterns including content unlocking, gaming integration, e-commerce benefits, and educational content access.
+                    - heading "How Rewarded Ads Work" [level=2] [ref=e885]
+                    - list [ref=e886]:
+                      - listitem [ref=e887]:
+                        - strong [ref=e888]: User triggers
+                        - text: "- User clicks a button or reaches a point where they can earn a reward"
+                      - listitem [ref=e889]:
+                        - strong [ref=e890]: Ad request
+                        - text: "- System requests a rewarded ad from the ad network"
+                      - listitem [ref=e891]:
+                        - strong [ref=e892]: User choice
+                        - text: "- User decides whether to proceed with watching the ad"
+                      - listitem [ref=e893]:
+                        - strong [ref=e894]: Ad completion
+                        - text: "- User watches/completes the ad experience"
+                      - listitem [ref=e895]:
+                        - strong [ref=e896]: Reward delivery
+                        - text: "- User receives the promised reward or access"
+                    - heading "Getting Started" [level=2] [ref=e897]
+                    - paragraph [ref=e898]: "To implement rewarded ads on your site, you'll need to:"
+                    - list [ref=e899]:
+                      - listitem [ref=e900]:
+                        - strong [ref=e901]: Integrate the JavaScript SDK
+                        - text: on your pages
+                      - listitem [ref=e902]:
+                        - strong [ref=e903]: Define reward triggers
+                        - text: and user actions
+                      - listitem [ref=e904]:
+                        - strong [ref=e905]: Configure reward types
+                        - text: and values
+                      - listitem [ref=e906]:
+                        - strong [ref=e907]: Test the implementation
+                        - text: before going live
+                    - heading "JavaScript Setup" [level=3] [ref=e908]
+                    - paragraph [ref=e909]: "Add this boilerplate code to initialize the Ezoic Rewarded Ads system on your pages:"
+                    - generic [ref=e910]:
+                      - generic [ref=e911]:
+                        - generic [ref=e912]: javascript
+                        - button "Copy Code" [ref=e913] [cursor=pointer]
+                      - code [ref=e915]: "// Initialize Ezoic Rewarded Ads window.ezRewardedAds = window.ezRewardedAds || {}; window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || []; // Example: Request a rewarded ad with overlay window.ezRewardedAds.cmd.push(function () { window.ezRewardedAds.requestWithOverlay(function (result) { if (result.status) { console.log(\"Ad loaded successfully\"); if (result.reward) { // User completed the ad and earned reward console.log(\"User earned reward!\"); // Add your reward logic here } } else { console.log(\"Ad failed to load:\", result.msg); } }); });"
+                    - paragraph [ref=e916]: This simple setup enables rewarded ads on your site with proper callback handling for when users complete ads and earn rewards.
+                    - heading "Monitoring Performance" [level=2] [ref=e917]
+                    - paragraph [ref=e918]:
+                      - text: Track your rewarded ads performance and optimize your implementation using the
+                      - strong [ref=e919]: Rewarded Ads Report
+                      - text: in your dashboard.
+                    - paragraph [ref=e920]:
+                      - link "View Rewarded Ads Report" [ref=e921] [cursor=pointer]:
+                        - /url: https://analytics.ezoic.com/reports/rewarded/rewardedOverview
+                        - strong [ref=e922]: View Rewarded Ads Report
+                    - paragraph [ref=e923]: "The report provides insights into:"
+                    - list [ref=e924]:
+                      - listitem [ref=e925]: Ad completion rates
+                      - listitem [ref=e926]: Revenue performance
+                      - listitem [ref=e927]: User engagement metrics
+                      - listitem [ref=e928]: Popular reward types
+                      - listitem [ref=e929]: Optimization opportunities
+                    - heading "Policy Guidelines" [level=2] [ref=e930]
+                    - paragraph [ref=e931]: "Before implementing rewarded ads, ensure your rewards comply with these important policy requirements:"
+                    - heading "Allowed Rewards" [level=3] [ref=e932]
+                    - list [ref=e933]:
+                      - listitem [ref=e934]:
+                        - strong [ref=e935]: Platform-specific benefits
+                        - text: ": Extra lives, in-game currency, loyalty points"
+                      - listitem [ref=e936]:
+                        - strong [ref=e937]: Content access
+                        - text: ": Premium articles, videos, courses, or features"
+                      - listitem [ref=e938]:
+                        - strong [ref=e939]: Limited discounts
+                        - text: ": Up to 25% off products (non-transferrable, platform-only)"
+                      - listitem [ref=e940]:
+                        - strong [ref=e941]: Free trials
+                        - text: ": Access to premium features or services"
+                    - heading "Prohibited Rewards" [level=3] [ref=e942]
+                    - list [ref=e943]:
+                      - listitem [ref=e944]:
+                        - strong [ref=e945]: Direct cash payments
+                        - text: or monetary compensation
+                      - listitem [ref=e946]:
+                        - strong [ref=e947]: Gift cards
+                        - text: or transferrable monetary items
+                      - listitem [ref=e948]:
+                        - strong [ref=e949]: Excessive discounts
+                        - text: over 25% of item value
+                    - heading "Random Reward Requirements" [level=3] [ref=e950]
+                    - paragraph [ref=e951]: "If offering random rewards (like loot boxes), you must:"
+                    - list [ref=e952]:
+                      - listitem [ref=e953]:
+                        - strong [ref=e954]: Disclose odds
+                        - text: before users view ads
+                      - listitem [ref=e955]:
+                        - strong [ref=e956]: Make reward details
+                        - text: easily accessible
+                      - listitem [ref=e957]:
+                        - strong [ref=e958]: Ensure meaningful chances
+                        - text: (odds must be greater than 0)
+                    - heading "User Experience Requirements" [level=3] [ref=e959]
+                    - list [ref=e960]:
+                      - listitem [ref=e961]:
+                        - strong [ref=e962]: Always ask permission
+                        - text: before showing ads
+                      - listitem [ref=e963]:
+                        - strong [ref=e964]: Never mislead users
+                        - text: about rewards or force ad viewing
+                      - listitem [ref=e965]:
+                        - strong [ref=e966]: Clearly communicate
+                        - text: what reward users will receive
+                      - listitem [ref=e967]:
+                        - strong [ref=e968]: Honor all promises
+                        - text: made about rewards
+                    - paragraph [ref=e969]:
+                      - text: For complete policy details, visit the
+                      - link "Ezoic Rewarded Ads Documentation" [ref=e970] [cursor=pointer]:
+                        - /url: https://docs.ezoic.com/docs/ezoicadsadvanced/rewarded/
+                      - text: .
+                    - heading "Best Practices" [level=2] [ref=e971]
+                    - heading "User Experience" [level=3] [ref=e972]
+                    - list [ref=e973]:
+                      - listitem [ref=e974]: Make rewards valuable and relevant to your audience
+                      - listitem [ref=e975]: Clearly communicate what users will receive
+                      - listitem [ref=e976]: Ensure smooth ad loading and playback
+                      - listitem [ref=e977]: Provide fallback options if ads fail to load
+                    - heading "Implementation" [level=3] [ref=e978]
+                    - list [ref=e979]:
+                      - listitem [ref=e980]: Test thoroughly across different devices and browsers
+                      - listitem [ref=e981]: Monitor performance metrics regularly
+                      - listitem [ref=e982]: A/B test different reward types and values
+                      - listitem [ref=e983]: Ensure proper error handling
+                    - heading "Content Strategy" [level=3] [ref=e984]
+                    - list [ref=e985]:
+                      - listitem [ref=e986]: Integrate rewards naturally into your content flow
+                      - listitem [ref=e987]: Balance rewarded and traditional monetization
+                      - listitem [ref=e988]: Consider user journey and engagement patterns
+                      - listitem [ref=e989]: Respect user choice and preferences
+                    - heading "Technical Considerations" [level=2] [ref=e990]
+                    - heading "Load Times" [level=3] [ref=e991]
+                    - paragraph [ref=e992]: Ensure rewarded ads load quickly to maintain user engagement and prevent abandonment.
+                    - heading "Error Handling" [level=3] [ref=e993]
+                    - paragraph [ref=e994]: Implement proper fallback mechanisms when ads fail to load or complete.
+                    - heading "Analytics Tracking" [level=3] [ref=e995]
+                    - paragraph [ref=e996]: Track key metrics to understand user behavior and optimize performance.
+                    - heading "Mobile Optimization" [level=3] [ref=e997]
+                    - paragraph [ref=e998]: Ensure rewarded ads work seamlessly across all device types and screen sizes.
+                    - heading "Next Steps" [level=2] [ref=e999]
+                    - paragraph [ref=e1000]:
+                      - text: Ready to implement rewarded ads? Check out our
+                      - strong [ref=e1001]: JavaScript Examples
+                      - text: section for detailed code samples and implementation patterns for common use cases.
+                    - paragraph [ref=e1002]: "The examples cover:"
+                    - list [ref=e1003]:
+                      - listitem [ref=e1004]: Basic reward implementation
+                      - listitem [ref=e1005]: Game integration patterns
+                      - listitem [ref=e1006]: E-commerce discount systems
+                      - listitem [ref=e1007]: Content unlock mechanisms
+                    - paragraph [ref=e1008]: Start with the basic implementation and gradually add more sophisticated features as you become comfortable with the rewarded ads system.
+    - generic [ref=e156]:
+      - img "Ezoic Inc." [ref=e157]
+      - generic [ref=e158]:
+        - text: © 2026
+        - link "Ezoic Inc." [ref=e159] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - generic "Privacy center" [ref=e175] [cursor=pointer]: ⚙

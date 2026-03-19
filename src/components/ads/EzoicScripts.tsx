@@ -89,15 +89,23 @@ export function EzoicScripts() {
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
+            console.log('[Ezoic Init] Starting initialization...');
             window.ezstandalone = window.ezstandalone || {};
             ezstandalone.cmd = ezstandalone.cmd || [];
             window.ezRewardedAds = window.ezRewardedAds || {};
             window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || [];
+            console.log('[Ezoic Init] Objects created, ezstandalone.enabled:', window.ezstandalone.enabled);
             ezstandalone.cmd.push(function () {
+              console.log('[Ezoic Init] CMD callback executing...');
+              console.log('[Ezoic Init] Calling setIsSinglePageApplication(true)');
               ezstandalone.setIsSinglePageApplication(true);
+              console.log('[Ezoic Init] Calling showAds(118)');
               ezstandalone.showAds(118);
+              console.log('[Ezoic Init] Calling initRewardedAds()');
               ezstandalone.initRewardedAds();
+              console.log('[Ezoic Init] All calls complete. ezstandalone.enabled:', window.ezstandalone.enabled);
             });
+            console.log('[Ezoic Init] CMD pushed to queue. Queue length:', ezstandalone.cmd.length);
           `,
         }}
       />

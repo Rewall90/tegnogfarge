@@ -1,0 +1,14 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - heading "Ezoic Community" [level=1] [ref=e5]:
+      - link "Ezoic Community" [ref=e6] [cursor=pointer]:
+        - /url: https://community.ezoic.com
+        - img "Ezoic Community" [ref=e7]
+  - main [ref=e8]
+  - generic [ref=e10]:
+    - img "Ezoic Inc." [ref=e11]
+    - generic [ref=e12]:
+      - text: © 2021
+      - link "Ezoic Inc." [ref=e13] [cursor=pointer]:
+        - /url: https://www.ezoic.com/
+      - text: All rights reserved

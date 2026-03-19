@@ -1,0 +1,312 @@
+- generic [ref=e15]:
+  - button "Skip to content" [ref=e17]:
+    - generic [ref=e19]: Skip to content
+  - generic [ref=e21]:
+    - banner [ref=e23]:
+      - generic [ref=e25]:
+        - button "Main menu" [ref=e27] [cursor=pointer]:
+          - img [ref=e30]: menu
+        - link "Google AdSense" [ref=e31] [cursor=pointer]:
+          - /url: /adsense/u/0/pub-2852837430993050/home
+      - heading "Sites" [level=1] [ref=e201]
+      - generic [ref=e36]:
+        - button "Help" [ref=e38] [cursor=pointer]:
+          - img [ref=e41]: help
+        - button "Notifications" [ref=e45] [cursor=pointer]:
+          - img [ref=e50]: notifications
+        - button "Google account" [ref=e53] [cursor=pointer]:
+          - img "Google account (ronincarpenter90@gmail.com)" [ref=e55]
+    - generic:
+      - navigation:
+        - menu:
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "AdSense for YouTube":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: video_youtube
+                    - generic: AdSense for YouTube
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Home":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: home
+                    - generic: Home
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Ads":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: picture_in_picture
+                    - generic: Ads
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Sites":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: drive_site
+                    - generic: Sites
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Privacy & messaging":
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Privacy & messaging
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Brand safety":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: arrow_right
+                    - generic:
+                      - generic:
+                        - img: not_interested
+                    - generic: Brand safety
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Reports":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: assessment
+                    - generic: Reports
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Optimization":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: arrow_right
+                    - generic:
+                      - generic:
+                        - img: trending_up
+                    - generic: Optimization
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Policy center":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: policy
+                    - generic: Policy center
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Payments":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: arrow_right
+                    - generic:
+                      - img
+                    - generic: Payments
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Account":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: arrow_right
+                    - generic:
+                      - generic:
+                        - img: settings
+                    - generic: Account
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Feedback":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: feedback
+                    - generic: Feedback
+        - generic:
+          - generic:
+            - generic:
+              - link "Privacy":
+                - /url: https://www.google.com/intl/en_US/policies/privacy
+              - link "Terms":
+                - /url: https://adsense.google.com/adsense/terms?rc=NO&ce=2
+    - generic [ref=e56]:
+      - region "Notifications" [ref=e153]:
+        - generic [ref=e156]:
+          - img [ref=e158]: error_outline
+          - generic [ref=e159]: Alert
+          - generic [ref=e160]:
+            - status [ref=e161]:
+              - generic [ref=e163]: Earnings at risk - You need to fix some ads.txt file issues to avoid severe impact to your revenue.
+            - generic [ref=e165]:
+              - button "Go to site management to fix issues" [ref=e167] [cursor=pointer]:
+                - generic [ref=e168]: Fix now
+              - link "Learn more about the ads.txt file, Opens in a new tab" [ref=e172] [cursor=pointer]:
+                - generic [ref=e173]:
+                  - text: Learn more
+                  - img [ref=e175]: open_in_new
+        - generic [ref=e178]:
+          - generic [ref=e179]:
+            - button "Previous warning notification" [disabled] [ref=e180]:
+              - generic:
+                - generic:
+                  - img: chevron_left
+            - generic "Notification 1 of 2" [ref=e181]: 1 / 2
+            - button "Next warning notification" [ref=e182] [cursor=pointer]:
+              - img [ref=e185]: chevron_right
+          - generic [ref=e187]:
+            - img [ref=e189]: warning_amber
+            - generic [ref=e190]: Warning
+            - generic [ref=e191]:
+              - status [ref=e192]:
+                - generic [ref=e194]: Due to the war in Ukraine, we will pause monetization of content that exploits, dismisses, or condones the war
+              - button "Dismiss" [ref=e198] [cursor=pointer]:
+                - generic [ref=e199]: Dismiss
+      - main "Sites" [active] [ref=e202]:
+        - generic [ref=e206]:
+          - generic [ref=e207]:
+            - generic [ref=e208]:
+              - heading "Manage your sites" [level=1] [ref=e209]
+              - paragraph [ref=e210]:
+                - text: Add sites you want to monetize with AdSense.
+                - link "Learn more about monetizing your site, Opens in a new tab" [ref=e212] [cursor=pointer]:
+                  - /url: https://support.google.com/adsense/answer/9130898?hl=en_US
+                  - text: Learn more about monetizing your site
+            - img "Site management" [ref=e213]
+          - button "Add new site" [ref=e214]:
+            - img [ref=e218]: add
+            - generic [ref=e219]: New site
+          - generic [ref=e220]:
+            - generic [ref=e222]:
+              - generic:
+                - img: search
+              - generic: Search
+              - textbox "Search" [ref=e223]
+              - button "Open filter panel" [expanded] [ref=e225] [cursor=pointer]:
+                - generic [ref=e227]: filter_list
+            - region [ref=e230]:
+              - generic [ref=e234]:
+                - generic [ref=e235]: "Filters:"
+                - grid "Filters:" [ref=e236]:
+                  - row "Ready Getting ready Requires review Needs attention" [ref=e237]:
+                    - gridcell "Ready" [ref=e238] [cursor=pointer]:
+                      - generic [ref=e239]: Ready
+                    - gridcell "Getting ready" [ref=e240] [cursor=pointer]:
+                      - generic [ref=e241]: Getting ready
+                    - gridcell "Requires review" [ref=e242] [cursor=pointer]:
+                      - generic [ref=e243]: Requires review
+                    - gridcell "Needs attention" [ref=e244] [cursor=pointer]:
+                      - generic [ref=e245]: Needs attention
+            - grid [ref=e249]:
+              - row "Site URL Approval status Learn more about Approval status. Status details Ads.txt status Last updated Action" [ref=e250]:
+                - columnheader "Site URL" [ref=e251] [cursor=pointer]:
+                  - generic [ref=e252]: Site URL
+                - columnheader "Approval status Learn more about Approval status." [ref=e253] [cursor=pointer]:
+                  - generic [ref=e254]: Approval status
+                  - button "Learn more about Approval status." [ref=e255]:
+                    - img [ref=e257]: help_outline
+                - columnheader "Status details" [ref=e258] [cursor=pointer]
+                - columnheader "Ads.txt status" [ref=e259] [cursor=pointer]:
+                  - generic [ref=e260]: Ads.txt status
+                  - button "Learn more about Ads.txt status." [ref=e261]:
+                    - img [ref=e263]: help_outline
+                - columnheader "Last updated" [ref=e264] [cursor=pointer]:
+                  - generic [ref=e265]: Last updated
+                  - button "Learn more about Last updated." [ref=e266]:
+                    - img [ref=e268]: help_outline
+                - columnheader "Action" [ref=e269]:
+                  - generic [ref=e270]: Action
+              - row "teksttips.no Requires review — Not found Nov 13, 2025 8:14 AM | PST Delete site" [ref=e271]:
+                - gridcell "teksttips.no" [ref=e272]:
+                  - link "teksttips.no" [ref=e274] [cursor=pointer]:
+                    - /url: /adsense/u/0/pub-2852837430993050/sites/detail/url=teksttips.no
+                - gridcell "Requires review" [ref=e275]:
+                  - generic [ref=e277]: Requires review
+                - gridcell "—" [ref=e278]:
+                  - generic [ref=e279]: —
+                - gridcell "Not found" [ref=e280]:
+                  - generic [ref=e282]: Not found
+                - gridcell "Nov 13, 2025 8:14 AM | PST" [ref=e283]:
+                  - generic [ref=e284]:
+                    - generic [ref=e285]: Nov 13, 2025
+                    - generic [ref=e286]: 8:14 AM | PST
+                - gridcell "Delete site" [ref=e287]:
+                  - button "Delete site" [ref=e290] [cursor=pointer]:
+                    - img [ref=e293]: delete
+              - row "hagefrik.no Requires review — Not found Nov 13, 2025 8:14 AM | PST Delete site" [ref=e294]:
+                - gridcell "hagefrik.no" [ref=e295]:
+                  - link "hagefrik.no" [ref=e297] [cursor=pointer]:
+                    - /url: /adsense/u/0/pub-2852837430993050/sites/detail/url=hagefrik.no
+                - gridcell "Requires review" [ref=e298]:
+                  - generic [ref=e300]: Requires review
+                - gridcell "—" [ref=e301]:
+                  - generic [ref=e302]: —
+                - gridcell "Not found" [ref=e303]:
+                  - generic [ref=e305]: Not found
+                - gridcell "Nov 13, 2025 8:14 AM | PST" [ref=e306]:
+                  - generic [ref=e307]:
+                    - generic [ref=e308]: Nov 13, 2025
+                    - generic [ref=e309]: 8:14 AM | PST
+                - gridcell "Delete site" [ref=e310]:
+                  - button "Delete site" [ref=e313] [cursor=pointer]:
+                    - img [ref=e316]: delete
+              - row "tegnogfarge.no Ready — Not found Nov 29, 2025 6:51 AM | PST Delete site" [ref=e317]:
+                - gridcell "tegnogfarge.no" [ref=e318]:
+                  - link "tegnogfarge.no" [ref=e320] [cursor=pointer]:
+                    - /url: /adsense/u/0/pub-2852837430993050/sites/detail/url=tegnogfarge.no
+                - gridcell "Ready" [ref=e321]:
+                  - generic [ref=e323]: Ready
+                - gridcell "—" [ref=e324]:
+                  - generic [ref=e325]: —
+                - gridcell "Not found" [ref=e326]:
+                  - generic [ref=e328]: Not found
+                - gridcell "Nov 29, 2025 6:51 AM | PST" [ref=e329]:
+                  - generic [ref=e330]:
+                    - generic [ref=e331]: Nov 29, 2025
+                    - generic [ref=e332]: 6:51 AM | PST
+                - gridcell "Delete site" [ref=e333]:
+                  - button "Delete site" [ref=e336] [cursor=pointer]:
+                    - img [ref=e339]: delete
+            - generic [ref=e342]:
+              - generic [ref=e343]:
+                - generic [ref=e344]: "Go to page:"
+                - combobox "Enter a page number to go to" [ref=e350]
+                - text: of 1
+              - generic [ref=e351]:
+                - generic [ref=e352]: "Show rows:"
+                - 'button "Show rows: 50 selected." [ref=e355] [cursor=pointer]':
+                  - generic [ref=e356]: "50"
+                  - img [ref=e358]: arrow_drop_down
+              - generic [ref=e359]:
+                - generic [ref=e361]: 1 - 3 of 3
+                - generic [ref=e362]:
+                  - button "Go to the first page" [disabled] [ref=e363]:
+                    - generic:
+                      - generic:
+                        - img: first_page
+                  - button "Go to the previous page" [disabled] [ref=e364]:
+                    - generic:
+                      - generic:
+                        - img: chevron_left
+                  - button "Go to the next page" [disabled] [ref=e365]:
+                    - generic:
+                      - generic:
+                        - img: chevron_right
+                  - button "Go to the last page" [disabled] [ref=e366]:
+                    - generic:
+                      - generic:
+                        - img: last_page

@@ -1,0 +1,283 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - button "Main menu" [ref=e7] [cursor=pointer]:
+            - img [ref=e8]
+          - link "Google Search Console" [ref=e12] [cursor=pointer]:
+            - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+            - img [ref=e13]
+        - generic [ref=e14]:
+          - search [ref=e16]:
+            - generic [ref=e22]:
+              - textbox [disabled] [ref=e23]: Inspect any URL in "https://tegnogfarge.no/de/"
+              - combobox "Inspect any URL in https://tegnogfarge.no/de/" [ref=e24]
+            - button "Search" [ref=e25] [cursor=pointer]:
+              - img [ref=e26]
+          - generic [ref=e29]:
+            - generic [ref=e31]:
+              - button "Help" [ref=e33] [cursor=pointer]:
+                - generic [ref=e36]: 
+              - button "User settings" [ref=e38] [cursor=pointer]:
+                - img [ref=e41]
+            - 'button "Unread messages: 12" [ref=e45] [cursor=pointer]':
+              - generic [ref=e47]:
+                - generic [ref=e48]: 
+                - generic [ref=e831]: "12"
+        - generic [ref=e52]:
+          - button "Google apps" [ref=e56] [cursor=pointer]:
+            - img [ref=e57]
+          - 'button "Google Account: Petter Lund (ronincarpenter90@gmail.com)" [ref=e62] [cursor=pointer]':
+            - img [ref=e64]
+    - dialog "navigational drawer" [ref=e68]:
+      - navigation "Primary" [ref=e71]:
+        - button "Search property" [ref=e75] [cursor=pointer]:
+          - img [ref=e77]
+          - combobox "https://tegnogfarge.no/de/" [ref=e84]
+          - generic [ref=e85]: 
+        - generic [ref=e86]:
+          - generic [ref=e87]:
+            - generic [ref=e88]:
+              - link "Overview" [ref=e90] [cursor=pointer]:
+                - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e92]: home
+                - generic [ref=e94]: Overview
+              - link "Insights" [ref=e97] [cursor=pointer]:
+                - /url: ./search-console/performance/insights?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e99]: lightbulb_2
+                - generic [ref=e101]: Insights
+              - link "Performance" [ref=e104] [cursor=pointer]:
+                - /url: ./search-console/performance/search-analytics?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e106]: trending_up
+                - generic [ref=e108]: Performance
+              - button "URL inspection" [ref=e111] [cursor=pointer]:
+                - generic [ref=e113]: search
+                - generic [ref=e115]: URL inspection
+            - generic [ref=e119]:
+              - button "Indexing report section" [expanded] [ref=e120] [cursor=pointer]:
+                - generic [ref=e121]:
+                  - generic [ref=e124]: Indexing
+                  - img [ref=e128]
+              - generic [ref=e133]:
+                - link "Pages" [ref=e135] [cursor=pointer]:
+                  - /url: ./search-console/index?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e137]: file_copy
+                  - generic [ref=e139]: Pages
+                - link "Sitemaps" [ref=e142] [cursor=pointer]:
+                  - /url: ./search-console/sitemaps?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e144]: account_tree
+                  - generic [ref=e146]: Sitemaps
+                - link "Removals" [ref=e149] [cursor=pointer]:
+                  - /url: ./search-console/removals?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e151]: visibility_off
+                  - generic [ref=e153]: Removals
+            - generic [ref=e157]:
+              - button "Experience report section" [expanded] [ref=e158] [cursor=pointer]:
+                - generic [ref=e159]:
+                  - generic [ref=e162]: Experience
+                  - img [ref=e166]
+              - generic [ref=e171]:
+                - link "Core Web Vitals" [ref=e173] [cursor=pointer]:
+                  - /url: ./search-console/core-web-vitals?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e175]: speed
+                  - generic [ref=e177]: Core Web Vitals
+                - link "HTTPS" [ref=e180] [cursor=pointer]:
+                  - /url: ./search-console/https?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e182]: lock
+                  - generic [ref=e184]: HTTPS
+            - generic [ref=e188]:
+              - button "Enhancements report section" [expanded] [ref=e189] [cursor=pointer]:
+                - generic [ref=e190]:
+                  - generic [ref=e193]: Enhancements
+                  - img [ref=e197]
+              - generic [ref=e202]:
+                - link "Breadcrumbs" [ref=e204] [cursor=pointer]:
+                  - /url: ./search-console/r/breadcrumbs?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e206]: layers
+                  - generic [ref=e208]: Breadcrumbs
+                - link "Image Metadata" [ref=e211] [cursor=pointer]:
+                  - /url: ./search-console/r/image-licenses?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e213]: layers
+                  - generic [ref=e215]: Image Metadata
+            - button "Security & Manual Actions report section" [ref=e220] [cursor=pointer]:
+              - generic [ref=e221]:
+                - generic [ref=e224]: Security & Manual Actions
+                - img [ref=e228]
+            - generic [ref=e230]:
+              - link "Links report" [ref=e232] [cursor=pointer]:
+                - /url: ./search-console/links?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e234]: link_2
+                - generic [ref=e236]: Links
+              - link "Achievements" [ref=e239] [cursor=pointer]:
+                - /url: ./search-console/achievements?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e241]: trophy
+                - generic [ref=e243]: Achievements
+              - link "Settings" [ref=e246] [cursor=pointer]:
+                - /url: ./search-console/settings?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e248]: settings
+                - generic [ref=e250]: Settings
+          - generic [ref=e252]:
+            - generic [ref=e254]:
+              - button "Submit feedback" [ref=e256] [cursor=pointer]:
+                - generic [ref=e258]: feedback
+                - generic [ref=e260]: Submit feedback
+              - button "About Search Console" [ref=e263] [cursor=pointer]:
+                - generic [ref=e265]: info
+                - generic [ref=e267]: About Search Console
+            - generic [ref=e271]:
+              - link "Privacy" [ref=e272] [cursor=pointer]:
+                - /url: https://myaccount.google.com/privacypolicy?hl=en
+              - link "Terms" [ref=e273] [cursor=pointer]:
+                - /url: https://myaccount.google.com/termsofservice?hl=en
+    - generic [ref=e834]:
+      - generic [ref=e837]:
+        - navigation "Breadcrumbs" [ref=e839]:
+          - link "Page indexing" [ref=e841] [cursor=pointer]:
+            - /url: ./search-console/index?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F&pages=ALL_URLS
+          - generic [ref=e842]: 
+          - heading "Crawled - currently not indexed" [level=1] [ref=e845]
+        - button "EXPORT" [ref=e848] [cursor=pointer]:
+          - generic [ref=e851]:
+            - generic [ref=e852]: 
+            - generic [ref=e853]: EXPORT
+        - button "Get shareable link." [ref=e857] [cursor=pointer]:
+          - generic [ref=e861]:
+            - generic [ref=e862]: 
+            - generic [ref=e863]: SHARE
+      - generic [ref=e869]:
+        - generic [ref=e871]:
+          - listbox [disabled] [ref=e874]:
+            - option "All known pages" [disabled] [selected] [ref=e875]
+          - generic [ref=e878]: "Last update: 2/24/26"
+        - main [ref=e880]:
+          - generic [ref=e881]:
+            - generic [ref=e883]:
+              - generic [ref=e884]:
+                - generic [ref=e885]: info
+                - generic [ref=e886]:
+                  - generic [ref=e887]: Crawled - currently not indexed
+                  - generic [ref=e888]: These pages aren't indexed or served on Google
+                  - link "Link to more extensive documentation" [ref=e890] [cursor=pointer]:
+                    - /url: https://support.google.com/webmasters/answer/7440203#crawled
+                    - generic [ref=e893]: Learn more
+              - generic [ref=e895]:
+                - generic [ref=e896]: "First detected: 2/7/26"
+                - generic [ref=e897]: Done fixing?
+                - button "validate fix" [ref=e898] [cursor=pointer]:
+                  - generic [ref=e901]: validate fix
+            - generic [ref=e904]:
+              - generic [ref=e907]:
+                - generic "Affected pages" [ref=e908]
+                - generic "41" [ref=e909]
+              - img [ref=e913]:
+                - generic [ref=e914]:
+                  - generic [ref=e915]:
+                    - generic [ref=e917]: 12/2/25
+                    - generic [ref=e919]: 12/13/25
+                    - generic [ref=e921]: 12/24/25
+                    - generic [ref=e923]: 1/4/26
+                    - generic [ref=e925]: 1/15/26
+                    - generic [ref=e927]: 1/26/26
+                    - generic [ref=e929]: 2/6/26
+                    - generic [ref=e931]: 2/17/26
+                  - generic [ref=e932]:
+                    - generic [ref=e934]: "75"
+                    - generic [ref=e936]: "50"
+                    - generic [ref=e938]: "25"
+                    - generic [ref=e940]: "0"
+            - generic [ref=e1040]:
+              - generic [ref=e1042]:
+                - generic [ref=e1043]:
+                  - generic [ref=e1044]: Examples
+                  - button "null" [ref=e1048] [cursor=pointer]:
+                    - generic [ref=e1049]: 
+                - button "Filter table rows" [ref=e1054] [cursor=pointer]:
+                  - generic [ref=e1057]: 
+              - table [ref=e1060]:
+                - rowgroup [ref=e1061]:
+                  - row "URL Last crawled" [ref=e1062]:
+                    - columnheader "URL" [ref=e1063]:
+                      - generic [ref=e1065]: URL
+                      - img [ref=e1067] [cursor=pointer]
+                    - columnheader "Last crawled" [ref=e1069]:
+                      - img [ref=e1071] [cursor=pointer]
+                      - generic [ref=e1074]: Last crawled
+                - rowgroup [ref=e1075]:
+                  - row "https://tegnogfarge.no/de/tegneserier/fargelegg-enhjorninger/to-enhjorninger-og-et-hjerte Feb 18, 2026" [ref=e1076]:
+                    - cell "https://tegnogfarge.no/de/tegneserier/fargelegg-enhjorninger/to-enhjorninger-og-et-hjerte" [ref=e1077]:
+                      - generic "https://tegnogfarge.no/de/tegneserier/fargelegg-enhjorninger/to-enhjorninger-og-et-hjerte" [ref=e1079]:
+                        - generic [ref=e1080]: https://tegnogfarge.no/de/tegneserier/fargelegg-enhjorninger/to-enhjorninger-og-et-hjerte
+                    - cell "Feb 18, 2026" [ref=e1081]:
+                      - generic [ref=e1083]: Feb 18, 2026
+                  - row "https://tegnogfarge.no/de/vitenskap/fargelegge-flagg/flagget-til-ungarn Feb 15, 2026" [ref=e1084]:
+                    - cell "https://tegnogfarge.no/de/vitenskap/fargelegge-flagg/flagget-til-ungarn" [ref=e1085]:
+                      - generic "https://tegnogfarge.no/de/vitenskap/fargelegge-flagg/flagget-til-ungarn" [ref=e1087]:
+                        - generic [ref=e1088]: https://tegnogfarge.no/de/vitenskap/fargelegge-flagg/flagget-til-ungarn
+                    - cell "Feb 15, 2026" [ref=e1089]:
+                      - generic [ref=e1091]: Feb 15, 2026
+                  - row "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-krabbe/ausmalbild-krabbe-am-meeresboden Feb 11, 2026" [ref=e1092]:
+                    - cell "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-krabbe/ausmalbild-krabbe-am-meeresboden" [ref=e1093]:
+                      - generic "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-krabbe/ausmalbild-krabbe-am-meeresboden" [ref=e1095]:
+                        - generic [ref=e1096]: https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-krabbe/ausmalbild-krabbe-am-meeresboden
+                    - cell "Feb 11, 2026" [ref=e1097]:
+                      - generic [ref=e1099]: Feb 11, 2026
+                  - row "https://tegnogfarge.no/de/ausmalbilder-feiertage/ausmalbilder-weihnachtskugeln/ausmalbild-weihnachtskugel-mit-streifen Feb 10, 2026" [ref=e1100]:
+                    - cell "https://tegnogfarge.no/de/ausmalbilder-feiertage/ausmalbilder-weihnachtskugeln/ausmalbild-weihnachtskugel-mit-streifen" [ref=e1101]:
+                      - generic "https://tegnogfarge.no/de/ausmalbilder-feiertage/ausmalbilder-weihnachtskugeln/ausmalbild-weihnachtskugel-mit-streifen" [ref=e1103]:
+                        - generic [ref=e1104]: https://tegnogfarge.no/de/ausmalbilder-feiertage/ausmalbilder-weihnachtskugeln/ausmalbild-weihnachtskugel-mit-streifen
+                    - cell "Feb 10, 2026" [ref=e1105]:
+                      - generic [ref=e1107]: Feb 10, 2026
+                  - row "https://tegnogfarge.no/de/ausmalbilder-natur/ausmalbilder-sommer/ausmalbilder-erdbeere-auf-wellenausflug Feb 10, 2026" [ref=e1108]:
+                    - cell "https://tegnogfarge.no/de/ausmalbilder-natur/ausmalbilder-sommer/ausmalbilder-erdbeere-auf-wellenausflug" [ref=e1109]:
+                      - generic "https://tegnogfarge.no/de/ausmalbilder-natur/ausmalbilder-sommer/ausmalbilder-erdbeere-auf-wellenausflug" [ref=e1111]:
+                        - generic [ref=e1112]: https://tegnogfarge.no/de/ausmalbilder-natur/ausmalbilder-sommer/ausmalbilder-erdbeere-auf-wellenausflug
+                    - cell "Feb 10, 2026" [ref=e1113]:
+                      - generic [ref=e1115]: Feb 10, 2026
+                  - row "https://tegnogfarge.no/de/ausmalbilder-essen/ausmalbild-muffin Dec 18, 2025" [ref=e1116]:
+                    - cell "https://tegnogfarge.no/de/ausmalbilder-essen/ausmalbild-muffin" [ref=e1117]:
+                      - generic "https://tegnogfarge.no/de/ausmalbilder-essen/ausmalbild-muffin" [ref=e1119]:
+                        - generic [ref=e1120]: https://tegnogfarge.no/de/ausmalbilder-essen/ausmalbild-muffin
+                    - cell "Dec 18, 2025" [ref=e1121]:
+                      - generic [ref=e1123]: Dec 18, 2025
+                  - row "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-drache Dec 18, 2025" [ref=e1124]:
+                    - cell "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-drache" [ref=e1125]:
+                      - generic "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-drache" [ref=e1127]:
+                        - generic [ref=e1128]: https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-drache
+                    - cell "Dec 18, 2025" [ref=e1129]:
+                      - generic [ref=e1131]: Dec 18, 2025
+                  - row "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-katzen Dec 18, 2025" [ref=e1132]:
+                    - cell "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-katzen" [ref=e1133]:
+                      - generic "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-katzen" [ref=e1135]:
+                        - generic [ref=e1136]: https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-katzen
+                    - cell "Dec 18, 2025" [ref=e1137]:
+                      - generic [ref=e1139]: Dec 18, 2025
+                  - row "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-schlangen Dec 18, 2025" [ref=e1140]:
+                    - cell "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-schlangen" [ref=e1141]:
+                      - generic "https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-schlangen" [ref=e1143]:
+                        - generic [ref=e1144]: https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-schlangen
+                    - cell "Dec 18, 2025" [ref=e1145]:
+                      - generic [ref=e1147]: Dec 18, 2025
+                  - row "https://tegnogfarge.no/de/wissenschaft/ausmalbilder-haus Dec 18, 2025" [ref=e1148]:
+                    - cell "https://tegnogfarge.no/de/wissenschaft/ausmalbilder-haus" [ref=e1149]:
+                      - generic "https://tegnogfarge.no/de/wissenschaft/ausmalbilder-haus" [ref=e1151]:
+                        - generic [ref=e1152]: https://tegnogfarge.no/de/wissenschaft/ausmalbilder-haus
+                    - cell "Dec 18, 2025" [ref=e1153]:
+                      - generic [ref=e1155]: Dec 18, 2025
+              - generic [ref=e1158]:
+                - generic [ref=e1160]:
+                  - generic [ref=e1161]: "Rows per page:"
+                  - listbox "Number of rows per page" [ref=e1162] [cursor=pointer]:
+                    - option "5"
+                    - option "10" [selected] [ref=e1163]
+                    - option "25"
+                    - option "50"
+                    - option "100"
+                    - option "250"
+                    - option "500"
+                - generic [ref=e1164]:
+                  - generic [ref=e1165]: 1-10 of 41
+                  - generic [ref=e1166]:
+                    - generic [ref=e1168]: 
+                    - generic [ref=e1170] [cursor=pointer]: 
+  - generic [ref=e1172]: Page indexing

@@ -1,0 +1,441 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e976]:
+      - strong [ref=e978]: Ad Placeholder Code
+      - generic [ref=e979]:
+        - text: Please copy the following code onto your page. It should be placed in the location you specified. For example, if you selected the 'sidebar' position, you should place this code into your sidebar.
+        - paragraph [ref=e980]:
+          - strong [ref=e981]: "Note:"
+          - text: Pages with multiple placeholders should ideally pass all of their placeholder IDs into a single
+          - code [ref=e982]: showAds
+          - text: call.
+        - code [ref=e984]:
+          - generic [ref=e985]:
+            - generic [ref=e986]: <div
+            - text: id
+            - generic [ref=e987]: ="ezoic-pub-ad-placeholder-118"
+            - text: ">"
+          - generic [ref=e988]:
+            - generic [ref=e989]: </div
+            - text: ">"
+          - generic [ref=e990]:
+            - generic [ref=e991]: <script
+            - text: ">"
+          - generic [ref=e993]: "ezstandalone.cmd.push(function() { ezstandalone.showAds(118); });"
+          - generic [ref=e994]:
+            - generic [ref=e995]: </script
+            - text: ">"
+        - link "Copy code to clipboard" [ref=e997] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - text: Copy code to clipboard
+          - generic [ref=e998]: 
+      - generic [ref=e999]:
+        - link "View Instructions" [ref=e1000] [cursor=pointer]:
+          - /url: https://docs.ezoic.com/docs/ezoicads/implementation/
+          - button "View Instructions" [ref=e1001]:
+            - generic [ref=e1002]:
+              - text: View Instructions
+              - generic [ref=e1003]: 
+        - button "Close" [ref=e1004] [cursor=pointer]:
+          - generic [ref=e1005]: Close
+    - generic [ref=e478]:
+      - generic [ref=e481]:
+        - generic [ref=e482]:
+          - link "Ezoic" [ref=e484] [cursor=pointer]:
+            - /url: /
+            - img "Ezoic" [ref=e485]
+          - generic [ref=e489]: tegnogfarge.no
+          - generic [ref=e490] [cursor=pointer]: + Add a site
+        - menu [ref=e493]:
+          - menuitem "Home" [ref=e494] [cursor=pointer]:
+            - link [ref=e495]:
+              - /url: /dashboard
+              - img [ref=e496]
+          - menuitem "EzoicAds" [ref=e497] [cursor=pointer]:
+            - link [ref=e498]:
+              - /url: /ezoicads
+              - img [ref=e499]
+          - menuitem "Identity" [ref=e500] [cursor=pointer]:
+            - link [ref=e501]:
+              - /url: /identity
+              - img [ref=e502]
+          - menuitem "Videos" [ref=e503] [cursor=pointer]:
+            - link [ref=e504]:
+              - /url: /video
+              - img [ref=e505]
+          - menuitem "Analytics" [ref=e506] [cursor=pointer]:
+            - link [ref=e507]:
+              - /url: https://analytics.ezoic.com/reports/default
+              - img [ref=e508]
+          - menuitem "Settings" [ref=e509] [cursor=pointer]:
+            - link [ref=e510]:
+              - /url: /settings
+              - img [ref=e511]
+          - menuitem "" [ref=e512] [cursor=pointer]:
+            - generic [ref=e516]: 
+        - generic [ref=e517]:
+          - link "Support Resources" [ref=e520] [cursor=pointer]:
+            - /url: https://support.ezoic.com/
+          - generic [ref=e522] [cursor=pointer]: English
+          - generic [ref=e525]:
+            - textbox "Search..." [ref=e526]
+            - 'generic "icon: search" [ref=e528]':
+              - img [ref=e529]
+          - generic [ref=e534] [cursor=pointer]:
+            - 'generic "icon: bell" [ref=e535]':
+              - img [ref=e536]
+            - superscript [ref=e538]:
+              - generic [ref=e539]:
+                - paragraph [ref=e540]: "0"
+                - paragraph [ref=e541]: "1"
+                - paragraph [ref=e542]: "2"
+                - paragraph [ref=e543]: "3"
+                - paragraph [ref=e544]: "4"
+                - paragraph [ref=e545]: "5"
+                - paragraph [ref=e546]: "6"
+                - paragraph [ref=e547]: "7"
+                - paragraph [ref=e548]: "8"
+                - paragraph [ref=e549]: "9"
+                - paragraph [ref=e550]: "0"
+                - paragraph [ref=e551]: "1"
+                - paragraph [ref=e552]: "2"
+                - paragraph [ref=e553]: "3"
+                - paragraph [ref=e554]: "4"
+                - paragraph [ref=e555]: "5"
+                - paragraph [ref=e556]: "6"
+                - paragraph [ref=e557]: "7"
+                - paragraph [ref=e558]: "8"
+                - paragraph [ref=e559]: "9"
+                - paragraph [ref=e560]: "0"
+                - paragraph [ref=e561]: "1"
+                - paragraph [ref=e562]: "2"
+                - paragraph [ref=e563]: "3"
+                - paragraph [ref=e564]: "4"
+                - paragraph [ref=e565]: "5"
+                - paragraph [ref=e566]: "6"
+                - paragraph [ref=e567]: "7"
+                - paragraph [ref=e568]: "8"
+                - paragraph [ref=e569]: "9"
+          - generic [ref=e572] [cursor=pointer]: 
+      - main [ref=e573]:
+        - generic [ref=e578]:
+          - generic [ref=e580]:
+            - img [ref=e582] [cursor=pointer]
+            - generic [ref=e583] [cursor=pointer]: close
+          - generic [ref=e584]:
+            - complementary [ref=e585]:
+              - menu [ref=e587]:
+                - menuitem "web Ad Positions" [ref=e588] [cursor=pointer]:
+                  - generic [ref=e589]:
+                    - generic [ref=e590]: web
+                    - text: Ad Positions
+                - menuitem "settings_applications Ad Types" [ref=e591] [cursor=pointer]:
+                  - generic [ref=e592]:
+                    - generic [ref=e593]: settings_applications
+                    - text: Ad Types
+                - menuitem "tune Ad Configuration" [ref=e594] [cursor=pointer]:
+                  - generic [ref=e595]:
+                    - generic [ref=e596]: tune
+                    - text: Ad Configuration
+                - menuitem "price_change Ad Campaign" [ref=e597] [cursor=pointer]:
+                  - generic [ref=e598]:
+                    - generic [ref=e599]: price_change
+                    - text: Ad Campaign
+                - menuitem "settings_ethernet Ad Integration" [ref=e600] [cursor=pointer]:
+                  - generic [ref=e601]:
+                    - generic [ref=e602]: settings_ethernet
+                    - text: Ad Integration
+                - menuitem "border_all Ad Transparency" [ref=e603] [cursor=pointer]:
+                  - generic [ref=e604]:
+                    - generic [ref=e605]: border_all
+                    - text: Ad Transparency
+                - menuitem "shield Ad Restrictions" [ref=e606] [cursor=pointer]:
+                  - generic [ref=e607]:
+                    - generic [ref=e608]: shield
+                    - text: Ad Restrictions
+                - menuitem "data_usage Optimization Goals" [ref=e609] [cursor=pointer]:
+                  - generic [ref=e610]:
+                    - generic [ref=e611]: data_usage
+                    - text: Optimization Goals
+                - menuitem "paid Rev. Opportunities" [ref=e612] [cursor=pointer]:
+                  - generic [ref=e613]:
+                    - generic [ref=e614]: paid
+                    - text: Rev. Opportunities
+                - menuitem "redeem Rewarded Ads" [ref=e615] [cursor=pointer]:
+                  - generic [ref=e616]:
+                    - generic [ref=e617]: redeem
+                    - text: Rewarded Ads
+                - menuitem "folder_special Resources" [ref=e618] [cursor=pointer]:
+                  - generic [ref=e619]:
+                    - generic [ref=e620]: folder_special
+                    - text: Resources
+            - main [ref=e621]:
+              - generic [ref=e622]:
+                - generic [ref=e627]:
+                  - generic [ref=e628]: Ezoic Ads
+                  - generic [ref=e629]: Ad Positions
+                - generic [ref=e630]:
+                  - generic [ref=e632]:
+                    - tablist [ref=e633]:
+                      - generic [ref=e634]:
+                        - generic:
+                          - generic:
+                            - 'generic "icon: left"':
+                              - img
+                        - generic:
+                          - generic:
+                            - 'generic "icon: right"':
+                              - img
+                        - generic [ref=e638]:
+                          - tab "Ad Setup" [ref=e639] [cursor=pointer]
+                          - tab "Placeholders" [selected] [ref=e640] [cursor=pointer]
+                          - tab "Advanced" [ref=e641] [cursor=pointer]
+                    - generic:
+                      - tabpanel
+                  - separator [ref=e642]
+                  - generic [ref=e646]:
+                    - tablist [ref=e647]:
+                      - generic [ref=e648]:
+                        - generic:
+                          - generic:
+                            - 'generic "icon: left"':
+                              - img
+                        - generic:
+                          - generic:
+                            - 'generic "icon: right"':
+                              - img
+                        - generic [ref=e652]:
+                          - tab "Placeholders" [selected] [ref=e653] [cursor=pointer]
+                          - tab "Generated Placeholders" [ref=e654] [cursor=pointer]
+                    - tabpanel [ref=e657]:
+                      - generic [ref=e660]:
+                        - generic [ref=e661]:
+                          - combobox [ref=e664] [cursor=pointer]:
+                            - generic "Display Placeholders" [ref=e666]
+                            - 'generic "icon: down" [ref=e668]':
+                              - img [ref=e669]
+                          - generic [ref=e672]:
+                            - textbox "Search Placeholders" [ref=e673]
+                            - 'generic "icon: search" [ref=e675] [cursor=pointer]':
+                              - img [ref=e676]
+                          - button "New Placeholder" [ref=e680] [cursor=pointer]:
+                            - generic [ref=e681]: New Placeholder
+                        - generic [ref=e687]:
+                          - table [ref=e691]:
+                            - rowgroup [ref=e699]:
+                              - 'row "ID icon: caret-up icon: caret-down Name icon: caret-up icon: caret-down Position Type Device Type Page Type Action" [ref=e700]':
+                                - 'columnheader "ID icon: caret-up icon: caret-down" [ref=e701] [cursor=pointer]':
+                                  - generic [ref=e703]:
+                                    - generic [ref=e704]: ID
+                                    - generic "Sort" [ref=e706]:
+                                      - 'generic "icon: caret-up" [ref=e707]': 
+                                      - 'generic "icon: caret-down" [ref=e708]': 
+                                - 'columnheader "Name icon: caret-up icon: caret-down" [ref=e709] [cursor=pointer]':
+                                  - generic [ref=e711]:
+                                    - generic [ref=e712]: Name
+                                    - generic "Sort" [ref=e714]:
+                                      - 'generic "icon: caret-up" [ref=e715]': 
+                                      - 'generic "icon: caret-down" [ref=e716]': 
+                                - columnheader "Position Type" [ref=e717]:
+                                  - generic [ref=e719]: Position Type
+                                - columnheader "Device Type" [ref=e720]:
+                                  - generic [ref=e722]: Device Type
+                                - columnheader "Page Type" [ref=e723]:
+                                  - generic [ref=e725]: Page Type
+                                - columnheader "Action" [ref=e726]:
+                                  - generic [ref=e728]: Action
+                            - rowgroup [ref=e729]:
+                              - row "118 bottom_of_page bottom_of_page Desktop, Mobile, Tablet Auto-Detect" [ref=e730]:
+                                - cell "118" [ref=e731]
+                                - cell "bottom_of_page" [ref=e732]:
+                                  - generic [ref=e733]: bottom_of_page
+                                - cell "bottom_of_page" [ref=e734]
+                                - cell "Desktop, Mobile, Tablet" [ref=e735]
+                                - cell "Auto-Detect" [ref=e736]:
+                                  - generic [ref=e737]: Auto-Detect
+                                - cell [ref=e738]:
+                                  - generic [ref=e739]:
+                                    - generic [ref=e741] [cursor=pointer]: 
+                                    - separator [ref=e742]
+                                    - generic [ref=e744] [cursor=pointer]: 
+                                    - separator [ref=e745]
+                                    - generic [ref=e747] [cursor=pointer]: 
+                                    - separator [ref=e748]
+                                    - generic [ref=e750] [cursor=pointer]: 
+                              - row "115 incontent_5 incontent_5 Desktop, Mobile, Tablet Auto-Detect" [ref=e751]:
+                                - cell "115" [ref=e752]
+                                - cell "incontent_5" [ref=e753]:
+                                  - generic [ref=e754]: incontent_5
+                                - cell "incontent_5" [ref=e755]
+                                - cell "Desktop, Mobile, Tablet" [ref=e756]
+                                - cell "Auto-Detect" [ref=e757]:
+                                  - generic [ref=e758]: Auto-Detect
+                                - cell [ref=e759]:
+                                  - generic [ref=e760]:
+                                    - generic [ref=e762] [cursor=pointer]: 
+                                    - separator [ref=e763]
+                                    - generic [ref=e765] [cursor=pointer]: 
+                                    - separator [ref=e766]
+                                    - generic [ref=e768] [cursor=pointer]: 
+                                    - separator [ref=e769]
+                                    - generic [ref=e771] [cursor=pointer]: 
+                              - row "114 longest_content longest_content Desktop, Mobile, Tablet Auto-Detect" [ref=e772]:
+                                - cell "114" [ref=e773]
+                                - cell "longest_content" [ref=e774]:
+                                  - generic [ref=e775]: longest_content
+                                - cell "longest_content" [ref=e776]
+                                - cell "Desktop, Mobile, Tablet" [ref=e777]
+                                - cell "Auto-Detect" [ref=e778]:
+                                  - generic [ref=e779]: Auto-Detect
+                                - cell [ref=e780]:
+                                  - generic [ref=e781]:
+                                    - generic [ref=e783] [cursor=pointer]: 
+                                    - separator [ref=e784]
+                                    - generic [ref=e786] [cursor=pointer]: 
+                                    - separator [ref=e787]
+                                    - generic [ref=e789] [cursor=pointer]: 
+                                    - separator [ref=e790]
+                                    - generic [ref=e792] [cursor=pointer]: 
+                              - row "113 longer_content longer_content Desktop, Mobile, Tablet Auto-Detect" [ref=e793]:
+                                - cell "113" [ref=e794]
+                                - cell "longer_content" [ref=e795]:
+                                  - generic [ref=e796]: longer_content
+                                - cell "longer_content" [ref=e797]
+                                - cell "Desktop, Mobile, Tablet" [ref=e798]
+                                - cell "Auto-Detect" [ref=e799]:
+                                  - generic [ref=e800]: Auto-Detect
+                                - cell [ref=e801]:
+                                  - generic [ref=e802]:
+                                    - generic [ref=e804] [cursor=pointer]: 
+                                    - separator [ref=e805]
+                                    - generic [ref=e807] [cursor=pointer]: 
+                                    - separator [ref=e808]
+                                    - generic [ref=e810] [cursor=pointer]: 
+                                    - separator [ref=e811]
+                                    - generic [ref=e813] [cursor=pointer]: 
+                              - row "112 long_content long_content Desktop, Mobile, Tablet Auto-Detect" [ref=e814]:
+                                - cell "112" [ref=e815]
+                                - cell "long_content" [ref=e816]:
+                                  - generic [ref=e817]: long_content
+                                - cell "long_content" [ref=e818]
+                                - cell "Desktop, Mobile, Tablet" [ref=e819]
+                                - cell "Auto-Detect" [ref=e820]:
+                                  - generic [ref=e821]: Auto-Detect
+                                - cell [ref=e822]:
+                                  - generic [ref=e823]:
+                                    - generic [ref=e825] [cursor=pointer]: 
+                                    - separator [ref=e826]
+                                    - generic [ref=e828] [cursor=pointer]: 
+                                    - separator [ref=e829]
+                                    - generic [ref=e831] [cursor=pointer]: 
+                                    - separator [ref=e832]
+                                    - generic [ref=e834] [cursor=pointer]: 
+                              - row "111 mid_content mid_content Desktop, Mobile, Tablet Auto-Detect" [ref=e835]:
+                                - cell "111" [ref=e836]
+                                - cell "mid_content" [ref=e837]:
+                                  - generic [ref=e838]: mid_content
+                                - cell "mid_content" [ref=e839]
+                                - cell "Desktop, Mobile, Tablet" [ref=e840]
+                                - cell "Auto-Detect" [ref=e841]:
+                                  - generic [ref=e842]: Auto-Detect
+                                - cell [ref=e843]:
+                                  - generic [ref=e844]:
+                                    - generic [ref=e846] [cursor=pointer]: 
+                                    - separator [ref=e847]
+                                    - generic [ref=e849] [cursor=pointer]: 
+                                    - separator [ref=e850]
+                                    - generic [ref=e852] [cursor=pointer]: 
+                                    - separator [ref=e853]
+                                    - generic [ref=e855] [cursor=pointer]: 
+                              - row "110 under_second_paragraph under_second_paragraph Desktop, Mobile, Tablet Auto-Detect" [ref=e856]:
+                                - cell "110" [ref=e857]
+                                - cell "under_second_paragraph" [ref=e858]:
+                                  - generic [ref=e859]: under_second_paragraph
+                                - cell "under_second_paragraph" [ref=e860]
+                                - cell "Desktop, Mobile, Tablet" [ref=e861]
+                                - cell "Auto-Detect" [ref=e862]:
+                                  - generic [ref=e863]: Auto-Detect
+                                - cell [ref=e864]:
+                                  - generic [ref=e865]:
+                                    - generic [ref=e867] [cursor=pointer]: 
+                                    - separator [ref=e868]
+                                    - generic [ref=e870] [cursor=pointer]: 
+                                    - separator [ref=e871]
+                                    - generic [ref=e873] [cursor=pointer]: 
+                                    - separator [ref=e874]
+                                    - generic [ref=e876] [cursor=pointer]: 
+                              - row "109 under_first_paragraph under_first_paragraph Desktop, Mobile, Tablet Auto-Detect" [ref=e877]:
+                                - cell "109" [ref=e878]
+                                - cell "under_first_paragraph" [ref=e879]:
+                                  - generic [ref=e880]: under_first_paragraph
+                                - cell "under_first_paragraph" [ref=e881]
+                                - cell "Desktop, Mobile, Tablet" [ref=e882]
+                                - cell "Auto-Detect" [ref=e883]:
+                                  - generic [ref=e884]: Auto-Detect
+                                - cell [ref=e885]:
+                                  - generic [ref=e886]:
+                                    - generic [ref=e888] [cursor=pointer]: 
+                                    - separator [ref=e889]
+                                    - generic [ref=e891] [cursor=pointer]: 
+                                    - separator [ref=e892]
+                                    - generic [ref=e894] [cursor=pointer]: 
+                                    - separator [ref=e895]
+                                    - generic [ref=e897] [cursor=pointer]: 
+                              - row "108 sidebar_floating_2 sidebar_floating_2 Desktop Auto-Detect" [ref=e898]:
+                                - cell "108" [ref=e899]
+                                - cell "sidebar_floating_2" [ref=e900]:
+                                  - generic [ref=e901]: sidebar_floating_2
+                                - cell "sidebar_floating_2" [ref=e902]
+                                - cell "Desktop" [ref=e903]
+                                - cell "Auto-Detect" [ref=e904]:
+                                  - generic [ref=e905]: Auto-Detect
+                                - cell [ref=e906]:
+                                  - generic [ref=e907]:
+                                    - generic [ref=e909] [cursor=pointer]: 
+                                    - separator [ref=e910]
+                                    - generic [ref=e912] [cursor=pointer]: 
+                                    - separator [ref=e913]
+                                    - generic [ref=e915] [cursor=pointer]: 
+                                    - separator [ref=e916]
+                                    - generic [ref=e918] [cursor=pointer]: 
+                              - row "107 sidebar_floating_1 sidebar_floating_1 Desktop Auto-Detect" [ref=e919]:
+                                - cell "107" [ref=e920]
+                                - cell "sidebar_floating_1" [ref=e921]:
+                                  - generic [ref=e922]: sidebar_floating_1
+                                - cell "sidebar_floating_1" [ref=e923]
+                                - cell "Desktop" [ref=e924]
+                                - cell "Auto-Detect" [ref=e925]:
+                                  - generic [ref=e926]: Auto-Detect
+                                - cell [ref=e927]:
+                                  - generic [ref=e928]:
+                                    - generic [ref=e930] [cursor=pointer]: 
+                                    - separator [ref=e931]
+                                    - generic [ref=e933] [cursor=pointer]: 
+                                    - separator [ref=e934]
+                                    - generic [ref=e936] [cursor=pointer]: 
+                                    - separator [ref=e937]
+                                    - generic [ref=e939] [cursor=pointer]: 
+                          - list [ref=e940]:
+                            - listitem "Previous Page" [ref=e941]:
+                              - 'generic "icon: left" [ref=e943]':
+                                - img [ref=e944]
+                            - listitem "1" [ref=e946] [cursor=pointer]:
+                              - generic [ref=e947]: "1"
+                            - listitem "2" [ref=e948] [cursor=pointer]:
+                              - generic [ref=e949]: "2"
+                            - listitem "Next Page" [ref=e950] [cursor=pointer]:
+                              - 'generic "icon: right" [ref=e952]':
+                                - img [ref=e953]
+                            - listitem [ref=e955]:
+                              - combobox [ref=e957] [cursor=pointer]:
+                                - generic "10 per page" [ref=e959]
+                                - 'generic "icon: down" [ref=e961]':
+                                  - img [ref=e962]
+      - generic [ref=e971]:
+        - img "Ezoic Inc." [ref=e972]
+        - generic [ref=e973]:
+          - text: © 2026
+          - link "Ezoic Inc." [ref=e974] [cursor=pointer]:
+            - /url: https://www.ezoic.com/
+          - text: All rights reserved
+  - generic "Privacy center" [ref=e466] [cursor=pointer]: ⚙

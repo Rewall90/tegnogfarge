@@ -1,0 +1,158 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e311]:
+      - generic [ref=e313]:
+        - progressbar [ref=e314]:
+          - img [ref=e315]
+        - heading "Checking website compatibility..." [level=4] [ref=e319]
+      - button "Cancel" [ref=e321] [cursor=pointer]:
+        - generic [ref=e322]: Cancel
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - link "Ezoic" [ref=e12] [cursor=pointer]:
+              - /url: /
+              - img "Ezoic" [ref=e13]
+            - generic [ref=e17]: hagefrik.no
+            - generic [ref=e18] [cursor=pointer]: + Add a site
+          - generic [ref=e19]:
+            - link "Support Resources" [ref=e22] [cursor=pointer]:
+              - /url: https://support.ezoic.com/
+            - generic [ref=e24] [cursor=pointer]: English
+            - generic [ref=e27]:
+              - textbox "Search..." [ref=e28]
+              - 'generic "icon: search" [ref=e30]':
+                - img [ref=e31]
+            - generic [ref=e35] [cursor=pointer]: 
+        - menu [ref=e37]:
+          - menuitem "Home" [ref=e38] [cursor=pointer]:
+            - link "Home" [ref=e39]:
+              - /url: /dashboard
+              - img [ref=e40]
+              - generic [ref=e41]: Home
+          - menuitem "EzoicAds" [ref=e42] [cursor=pointer]:
+            - link "EzoicAds" [ref=e43]:
+              - /url: /ezoicads
+              - img [ref=e44]
+              - generic [ref=e45]: EzoicAds
+          - menuitem "Identity" [ref=e46] [cursor=pointer]:
+            - link "Identity" [ref=e47]:
+              - /url: /identity
+              - img [ref=e48]
+              - generic [ref=e49]: Identity
+          - menuitem "Videos" [ref=e50] [cursor=pointer]:
+            - link "Videos" [ref=e51]:
+              - /url: /video
+              - img [ref=e52]
+              - generic [ref=e53]: Videos
+          - menuitem "Analytics" [ref=e54] [cursor=pointer]:
+            - link "Analytics" [ref=e55]:
+              - /url: https://analytics.ezoic.com/reports/default
+              - img [ref=e56]
+              - generic [ref=e57]: Analytics
+          - menuitem "Settings" [ref=e58] [cursor=pointer]:
+            - link "Settings" [ref=e59]:
+              - /url: /settings
+              - img [ref=e60]
+              - generic [ref=e61]: Settings
+          - menuitem " More" [ref=e62] [cursor=pointer]:
+            - generic [ref=e64]:
+              - generic [ref=e66]: 
+              - generic [ref=e67]: More
+          - menuitem "Level 1" [ref=e68] [cursor=pointer]:
+            - generic [ref=e73]: Level 1
+      - main [ref=e81]:
+        - generic [ref=e184]:
+          - complementary [ref=e185]:
+            - menu [ref=e187]:
+              - menuitem "cloud Connection" [ref=e188] [cursor=pointer]:
+                - generic [ref=e189]:
+                  - generic [ref=e190]: cloud
+                  - text: Connection
+              - menuitem "cached Caching" [ref=e191] [cursor=pointer]:
+                - generic [ref=e192]:
+                  - generic [ref=e193]: cached
+                  - text: Caching
+              - menuitem "lock Privacy" [ref=e194] [cursor=pointer]:
+                - generic [ref=e195]:
+                  - generic [ref=e196]: lock
+                  - text: Privacy
+              - menuitem "folder_copy Content" [ref=e197] [cursor=pointer]:
+                - generic [ref=e198]:
+                  - generic [ref=e199]: folder_copy
+                  - text: Content
+              - menuitem "cable API" [ref=e200] [cursor=pointer]:
+                - generic [ref=e201]:
+                  - generic [ref=e202]: cable
+                  - text: API
+              - menuitem "manage_accounts Manage Sites" [ref=e203] [cursor=pointer]:
+                - generic [ref=e204]:
+                  - generic [ref=e205]: manage_accounts
+                  - text: Manage Sites
+              - menuitem "edit_document Writio" [ref=e206] [cursor=pointer]:
+                - generic [ref=e207]:
+                  - generic [ref=e208]: edit_document
+                  - text: Writio
+          - main [ref=e209]:
+            - generic [ref=e210]:
+              - generic [ref=e215]:
+                - generic [ref=e216]: Settings
+                - generic [ref=e217]: Troubleshooting
+              - generic [ref=e218]:
+                - generic [ref=e219]:
+                  - tablist [ref=e220]:
+                    - generic [ref=e221]:
+                      - generic:
+                        - generic:
+                          - 'generic "icon: left"':
+                            - img
+                      - generic:
+                        - generic:
+                          - 'generic "icon: right"':
+                            - img
+                      - generic [ref=e225]:
+                        - tab "Site Integration" [ref=e226] [cursor=pointer]
+                        - tab "Troubleshooting" [selected] [ref=e227] [cursor=pointer]:
+                          - generic [ref=e228]:
+                            - generic [ref=e229]: 
+                            - text: Troubleshooting
+                  - generic:
+                    - tabpanel
+                - separator [ref=e230]
+                - generic [ref=e268]:
+                  - generic [ref=e271]:
+                    - generic [ref=e274]:
+                      - strong [ref=e276]: Test Your Ezoic Connection
+                      - generic [ref=e277]: Aspects such as outdated DNS settings, errors on your origin server, and blocks on Ezoic requests can disrupt the connection with Ezoic or cause errors on your website. This tool runs a health check to diagnose any connection issues and help you fix them.
+                    - button "Run Tests" [ref=e281] [cursor=pointer]:
+                      - generic [ref=e282]: Run Tests
+                  - separator [ref=e283]
+                  - generic [ref=e285]:
+                    - generic [ref=e286]:
+                      - generic [ref=e287]:
+                        - generic [ref=e289]:
+                          - strong [ref=e291]: Ezoic IP Whitelist
+                          - generic [ref=e292]:
+                            - text: In some instances a website may receive errors such as '403 Access Forbidden' error, 520, or 'Origin Error' after integrating with Ezoic. This typically is due to a hosting provider blocking requests coming through Ezoic's proxy, and can be resolved by whitelisting the IPs below with the hosting provider. Once you have done this with your host, please confirm by clicking 'Confirm Whitelisting'. More information can be found
+                            - link "here" [ref=e293] [cursor=pointer]:
+                              - /url: https://support.ezoic.com/kb/article/how-to-fix-origin-errors?id=how-to-fix-origin-errors&lang=en-US
+                            - text: .
+                        - button "Show IPs" [ref=e295] [cursor=pointer]:
+                          - generic [ref=e296]: Show IPs
+                      - generic [ref=e300]:
+                        - generic [ref=e301]: 
+                        - text: Whitelisting confirmed
+                    - generic [ref=e304]:
+                      - separator [ref=e305]
+                      - link "Help" [ref=e308] [cursor=pointer]:
+                        - /url: https://support.ezoic.com/kb/article/how-to-fix-origin-errors?id=how-to-fix-origin-errors
+                        - generic [ref=e309]: Help
+      - generic [ref=e162]:
+        - img "Ezoic Inc." [ref=e163]
+        - generic [ref=e164]:
+          - text: © 2026
+          - link "Ezoic Inc." [ref=e165] [cursor=pointer]:
+            - /url: https://www.ezoic.com/
+          - text: All rights reserved
+  - generic "Privacy center" [ref=e3] [cursor=pointer]: ⚙

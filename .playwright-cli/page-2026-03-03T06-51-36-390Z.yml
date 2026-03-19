@@ -1,0 +1,358 @@
+- generic [ref=e19]:
+  - banner [ref=e20]:
+    - generic [ref=e21]:
+      - link "Skip to main content" [ref=e24] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=e27]: Skip to main content
+      - generic [ref=e28]:
+        - button "Collapse navigation menu" [ref=e29] [cursor=pointer]:
+          - img [ref=e32]: menu
+        - heading "Ad Manager" [level=2] [ref=e34]:
+          - link "Ad Manager" [ref=e35] [cursor=pointer]:
+            - /url: /22712188410?authuser=0
+            - generic [ref=e36]: Ad Manager
+      - search [ref=e37]:
+        - generic [ref=e42]:
+          - img [ref=e45]: search
+          - generic [ref=e46]:
+            - generic:
+              - generic: Search for tools, features, and more
+            - combobox "Search for tools, features, and more" [ref=e47]
+      - generic [ref=e48]:
+        - button "Help" [ref=e50] [cursor=pointer]:
+          - img [ref=e53]: help_outline
+        - generic [ref=e58]:
+          - button "Notifications, 2 new alerts" [ref=e59] [cursor=pointer]:
+            - img [ref=e62]: notifications
+          - generic [ref=e65]: "2"
+        - button "More options" [ref=e67] [cursor=pointer]:
+          - img [ref=e70]: more_vert
+        - button "Google account" [ref=e74] [cursor=pointer]:
+          - img "Google account (ronincarpenter90@gmail.com)" [ref=e75]
+  - generic [ref=e76]:
+    - navigation "Sidebar" [ref=e78]:
+      - list [ref=e80]:
+        - listitem [ref=e81]:
+          - button "Petter Maurtveten Lund 22712188410" [ref=e82] [cursor=pointer]:
+            - img [ref=e86]: business
+            - generic [ref=e87]:
+              - generic [ref=e88]: Petter Maurtveten Lund
+              - generic [ref=e89]: "22712188410"
+      - heading "Main navigation" [level=2] [ref=e91]
+      - list [ref=e92]:
+        - listitem [ref=e94]:
+          - link "Home" [ref=e95] [cursor=pointer]:
+            - /url: "#home"
+            - img [ref=e99]: home
+            - generic [ref=e101]: Home
+        - listitem [ref=e104]:
+          - button "Delivery" [ref=e105] [cursor=pointer]:
+            - img [ref=e108]: arrow_right
+            - img [ref=e111]: local_shipping
+            - generic [ref=e113]: Delivery
+        - listitem [ref=e116]:
+          - button "Inventory" [ref=e117] [cursor=pointer]:
+            - img [ref=e120]: arrow_right
+            - img [ref=e123]: picture_in_picture
+            - generic [ref=e125]: Inventory
+        - listitem [ref=e128]:
+          - link "Protections" [ref=e129] [cursor=pointer]:
+            - /url: "#protections/list"
+            - img [ref=e133]: verified_user
+            - generic [ref=e135]: Protections
+        - listitem [ref=e138]:
+          - button "Reporting" [ref=e139] [cursor=pointer]:
+            - img [ref=e142]: arrow_right
+            - img [ref=e145]: insert_chart
+            - generic [ref=e147]: Reporting
+        - listitem [ref=e150]:
+          - button "Optimization" [ref=e151] [cursor=pointer]:
+            - img [ref=e154]: arrow_right
+            - img [ref=e157]: insights
+            - generic [ref=e159]: Optimization
+        - listitem [ref=e162]:
+          - link "Privacy & messaging" [ref=e163] [cursor=pointer]:
+            - /url: "#privacy_and_messaging"
+            - img [ref=e166]
+            - generic [ref=e168]: Privacy & messaging
+        - listitem [ref=e171]:
+          - button "Payments" [ref=e172] [cursor=pointer]:
+            - img [ref=e175]: arrow_right
+            - img [ref=e178]: payments
+            - generic [ref=e180]: Payments
+        - listitem [ref=e183]:
+          - button "Admin" [ref=e184] [cursor=pointer]:
+            - img [ref=e187]: arrow_right
+            - img [ref=e190]: build
+            - generic [ref=e192]: Admin
+    - main "Main content" [ref=e194]:
+      - generic [ref=e199]:
+        - generic [ref=e201]:
+          - generic [ref=e202]:
+            - generic [ref=e204]:
+              - generic [ref=e206]:
+                - heading "Home" [level=1] [ref=e207]
+                - generic [ref=e208]:
+                  - generic [ref=e209]: Workspace
+                  - generic [ref=e210]:
+                    - paragraph [ref=e211]: Overview
+                    - button "Select workspace" [ref=e214] [cursor=pointer]:
+                      - img [ref=e216]: arrow_drop_down
+                - button "Learn more about how to select a Home dashboard." [ref=e217] [cursor=pointer]:
+                  - img [ref=e219]: help_outline
+              - generic "New workspace"
+              - generic "Copy workspace"
+              - generic "Name your workspace"
+            - generic [ref=e220]:
+              - generic [ref=e221]:
+                - button "Customize" [ref=e222] [cursor=pointer]:
+                  - generic [ref=e223]:
+                    - img [ref=e225]: add_chart
+                    - text: Customize
+                - button "Add data card" [ref=e227] [cursor=pointer]:
+                  - generic [ref=e228]:
+                    - img [ref=e230]: add
+                    - text: Add data card
+                - button "Clear workspace" [ref=e232] [cursor=pointer]:
+                  - generic [ref=e233]: Clear workspace
+              - generic [ref=e236]:
+                - button "For you" [pressed] [ref=e237] [cursor=pointer]:
+                  - generic [ref=e238]:
+                    - generic [ref=e239]: "2"
+                    - img [ref=e241]: lightbulb_tips
+                - dialog "Feature discoveries" [ref=e243]:
+                  - generic [ref=e245]:
+                    - generic [ref=e247]:
+                      - tablist [ref=e251]:
+                        - tab "New feature discoveries" [selected] [ref=e252] [cursor=pointer]:
+                          - generic [ref=e253]: New feature discoveries
+                        - tab "Pinned feature discoveries" [ref=e255] [cursor=pointer]:
+                          - generic [ref=e256]: Pinned feature discoveries
+                      - button "Close" [ref=e259] [cursor=pointer]:
+                        - img [ref=e262]: close
+                    - generic [ref=e270]:
+                      - generic [ref=e272]:
+                        - generic [ref=e273]:
+                          - generic [ref=e274]:
+                            - img [ref=e279]: science
+                            - generic [ref=e280]: Size settings in inventory rules
+                          - generic [ref=e282]: Experiment with controlling the inventory eligible for various ad modifications to optimize revenue
+                        - generic [ref=e284]:
+                          - button "View size settings" [ref=e285] [cursor=pointer]:
+                            - generic [ref=e286]: View size settings
+                          - button "Dismiss" [ref=e288] [cursor=pointer]:
+                            - generic [ref=e289]: Dismiss
+                        - generic [ref=e291]:
+                          - button "Pin" [ref=e292] [cursor=pointer]:
+                            - img [ref=e295]: keep
+                          - button "Button to learn more about this feature. Usually opens a help center article." [ref=e297] [cursor=pointer]:
+                            - img [ref=e300]: help_outline
+                      - generic [ref=e303]:
+                        - generic [ref=e304]:
+                          - generic [ref=e305]:
+                            - img [ref=e310]: science
+                            - generic [ref=e311]: Override bidder groups in a demand channel
+                          - generic [ref=e313]: Experiment with creating exceptions for a selected group of bidders in a demand channel to optimize revenue
+                        - generic [ref=e315]:
+                          - button "View override groups" [ref=e316] [cursor=pointer]:
+                            - generic [ref=e317]: View override groups
+                          - button "Dismiss" [ref=e319] [cursor=pointer]:
+                            - generic [ref=e320]: Dismiss
+                        - generic [ref=e322]:
+                          - button "Pin" [ref=e323] [cursor=pointer]:
+                            - img [ref=e326]: keep
+                          - button "Button to learn more about this feature. Usually opens a help center article." [ref=e328] [cursor=pointer]:
+                            - img [ref=e331]: help_outline
+                    - button "Dismiss all" [ref=e335] [cursor=pointer]:
+                      - generic [ref=e336]: Dismiss all
+          - generic "Clear workspace?"
+        - generic [ref=e343]:
+          - generic [ref=e348]:
+            - generic [ref=e349]:
+              - generic [ref=e352] [cursor=pointer]:
+                - generic [ref=e353]: Last 30 days
+                - button "Feb 1 – Mar 2, 2026 Select a date range" [ref=e357]:
+                  - generic [ref=e358]: Feb 1 – Mar 2, 2026
+                  - img [ref=e360]: arrow_drop_down
+              - button "Mouseover or press enter on this icon to learn more about custom date ranges." [ref=e361] [cursor=pointer]:
+                - img [ref=e363]: help_outline
+            - group [ref=e369]:
+              - generic [ref=e370]:
+                - generic [ref=e371] [cursor=pointer]:
+                  - generic:
+                    - img: filter_alt
+                - grid [ref=e372]:
+                  - row [ref=e373]:
+                    - gridcell [ref=e374]:
+                      - combobox "Add filter" [ref=e375]
+                      - status [ref=e376]
+          - generic [ref=e377]:
+            - generic [ref=e379]:
+              - generic [ref=e384]:
+                - img [ref=e386]: info_outline
+                - generic [ref=e388]:
+                  - status [ref=e389]:
+                    - generic [ref=e391]: New data card is available. If you dismiss, you can add the card later from the "Customize" panel.
+                  - generic [ref=e393]:
+                    - button "Dismiss card" [ref=e395] [cursor=pointer]:
+                      - generic [ref=e396]: Dismiss card
+                    - button "Add card" [ref=e399] [cursor=pointer]:
+                      - generic [ref=e400]: Add card
+              - generic [ref=e403]:
+                - text: Peer benchmarks
+                - button "Learn more about peer benchmarks." [ref=e404] [cursor=pointer]:
+                  - img [ref=e406]: help_outline
+              - generic [ref=e410]:
+                - img "An image of a cat pawing at an empty fishbowl." [ref=e411]
+                - generic [ref=e412]: There's not enough available data for us to select peers for your peer set. Please try again later.
+            - generic [ref=e414]:
+              - generic [ref=e415]:
+                - generic [ref=e416]:
+                  - text: Anomalies
+                  - button "Learn more about the Anomaly insights card." [ref=e417] [cursor=pointer]:
+                    - img [ref=e419]: help_outline
+                - button "Metric select, All metrics" [ref=e422] [cursor=pointer]:
+                  - generic [ref=e423]: All metrics
+                  - img [ref=e425]: arrow_drop_down
+              - generic [ref=e428]:
+                - img "An image showing adjustments to data visualizations." [ref=e429]
+                - generic [ref=e431]:
+                  - text: No results from the selected filters and dates.
+                  - text: Try adjusting your selections.
+            - generic [ref=e433]:
+              - generic [ref=e435]:
+                - generic [ref=e438]:
+                  - text: Overview
+                  - button "Mouseover or press enter on this icon for more information on the overview card." [ref=e439] [cursor=pointer]:
+                    - img [ref=e441]: help_outline
+                - generic [ref=e446]:
+                  - img "An image showing adjustments to data visualizations." [ref=e447]
+                  - generic [ref=e449]:
+                    - text: No results from the selected filters and dates.
+                    - text: Try adjusting your selections.
+              - generic [ref=e453]:
+                - generic [ref=e455]: Looking for insights
+                - generic [ref=e456]:
+                  - text: We’re watching for significant changes and trends in your network over the last 30 days. Check again tomorrow for updates.
+                  - link "About this dashboard" [ref=e458] [cursor=pointer]:
+                    - /url: https://support.google.com/admanager/answer/7552070
+                    - text: About this dashboard
+                    - img [ref=e460]: launch
+                  - link "What's new in Ad Manager" [ref=e462] [cursor=pointer]:
+                    - /url: https://support.google.com/admanager/answer/179039
+                    - text: What's new in Ad Manager
+                    - img [ref=e464]: launch
+            - generic [ref=e470]:
+              - text: Industry benchmarks
+              - button "Learn more about industry benchmarks." [ref=e471] [cursor=pointer]:
+                - img [ref=e473]: help_outline
+            - generic [ref=e482]:
+              - generic [ref=e483]:
+                - generic [ref=e484]:
+                  - generic [ref=e485]: Programmatic video signals
+                  - button "Learn more about programmatic video signals" [ref=e486] [cursor=pointer]:
+                    - img [ref=e488]: help_outline
+                - button "Platform type All video platforms" [ref=e492] [cursor=pointer]:
+                  - generic [ref=e493]: All video platforms
+                  - img [ref=e495]: arrow_drop_down
+              - generic [ref=e500]:
+                - img "An image showing adjustments to data visualizations." [ref=e501]
+                - generic [ref=e503]:
+                  - text: No results from the selected filters and dates.
+                  - text: Try adjusting your selections.
+            - generic [ref=e505]:
+              - generic [ref=e507]:
+                - generic [ref=e508]: VAST errors
+                - button "Label for help icon which opens a help center tooltip." [ref=e509] [cursor=pointer]:
+                  - img [ref=e511]: help_outline
+              - generic [ref=e512]:
+                - generic [ref=e513]:
+                  - generic [ref=e514]: Select view
+                  - button "Label for help icon which opens a help center tooltip." [ref=e515] [cursor=pointer]:
+                    - img [ref=e517]: help_outline
+                  - radiogroup [ref=e518]:
+                    - radio "Overview" [checked] [ref=e519] [cursor=pointer]:
+                      - img [ref=e522]: radio_button_checked
+                      - generic [ref=e524]: Overview
+                    - radio "Line item view" [ref=e525] [cursor=pointer]:
+                      - img [ref=e528]: radio_button_unchecked
+                      - generic [ref=e530]: Line item view
+                - generic [ref=e536]:
+                  - img "An image showing adjustments to data visualizations." [ref=e537]
+                  - generic [ref=e539]:
+                    - text: No results from the selected filters and dates.
+                    - text: Try adjusting your selections.
+            - generic [ref=e541]:
+              - generic [ref=e542]:
+                - generic [ref=e545]:
+                  - text: Top pricing rules
+                  - button "Learn more about top pricing rules" [ref=e546] [cursor=pointer]:
+                    - img [ref=e548]: help_outline
+                - generic [ref=e552]:
+                  - img [ref=e555]: search
+                  - generic [ref=e556]:
+                    - generic:
+                      - generic: Search pricing rules
+                    - textbox "Search pricing rules" [ref=e557]
+              - generic [ref=e560]:
+                - img "An image showing adjustments to data visualizations." [ref=e561]
+                - generic [ref=e563]:
+                  - text: No results from the selected filters and dates.
+                  - text: Try adjusting your selections.
+            - generic [ref=e566]:
+              - generic [ref=e568]:
+                - text: Performance summary
+                - button "Learn more about performance insights." [ref=e569] [cursor=pointer]:
+                  - img [ref=e571]: help_outline
+              - generic [ref=e572]:
+                - generic [ref=e573]: Break down by
+                - generic "Select breakdown dimension" [ref=e575]:
+                  - button "App" [ref=e577] [cursor=pointer]:
+                    - generic [ref=e578]: App
+                    - img [ref=e580]: arrow_drop_down
+            - generic [ref=e592]:
+              - text: Demand comparison
+              - button "Learn more about demand comparison" [ref=e593] [cursor=pointer]:
+                - img [ref=e595]: help_outline
+            - generic [ref=e606]:
+              - generic [ref=e609]:
+                - text: Top classified advertisers
+                - button "Learn more about top classified advertisers" [ref=e610] [cursor=pointer]:
+                  - img [ref=e612]: help_outline
+              - generic [ref=e615]:
+                - img "An image showing adjustments to data visualizations." [ref=e616]
+                - generic [ref=e618]:
+                  - text: No results from the selected filters and dates.
+                  - text: Try adjusting your selections.
+            - generic [ref=e625]:
+              - text: Top detected yield partners
+              - button "Learn more about top detected yield partners" [ref=e626] [cursor=pointer]:
+                - img [ref=e628]: help_outline
+        - generic [ref=e636]:
+          - text: © 2026 Google -
+          - link "Privacy Policy" [ref=e637] [cursor=pointer]:
+            - /url: https://policies.google.com/privacy
+          - text: "-"
+          - link "Help" [ref=e638] [cursor=pointer]:
+            - /url: http://support.google.com/admanager?utm_source=dfp_fe&utm_medium=et&utm_campaign=in-product_link
+          - text: "-"
+          - link "Release notes" [ref=e639] [cursor=pointer]:
+            - /url: https://support.google.com/admanager/answer/179039
+          - text: "-"
+          - link "Blog" [ref=e640] [cursor=pointer]:
+            - /url: https://www.blog.google/products/admanager/
+          - text: "-"
+          - link "Ads Status Dashboard" [ref=e641] [cursor=pointer]:
+            - /url: http://ads.google.com/status#hl=en-US&v=status
+    - contentinfo "Footer" [ref=e643]:
+      - generic [ref=e645]:
+        - text: © 2026 Google -
+        - generic [ref=e646]: Privacy Policy
+        - text: "-"
+        - generic [ref=e647]: Help
+        - text: "-"
+        - generic [ref=e648]: Release notes
+        - text: "-"
+        - generic [ref=e649]: Blog
+        - text: "-"
+        - generic [ref=e650]: Ads Status Dashboard

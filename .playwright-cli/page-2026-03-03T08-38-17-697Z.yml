@@ -1,0 +1,321 @@
+- generic [ref=e2]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - button "Main menu" [ref=e7] [cursor=pointer]:
+          - img [ref=e8]
+        - link "Google Search Console" [ref=e12] [cursor=pointer]:
+          - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+          - img [ref=e13]
+      - generic [ref=e14]:
+        - search [ref=e16]:
+          - generic [ref=e22]:
+            - textbox [disabled] [ref=e23]: Inspect any URL in "https://tegnogfarge.no/"
+            - combobox "Inspect any URL in https://tegnogfarge.no/" [ref=e24]
+          - button "Search" [ref=e25] [cursor=pointer]:
+            - img [ref=e26]
+        - generic [ref=e29]:
+          - generic [ref=e31]:
+            - button "Help" [ref=e33] [cursor=pointer]:
+              - generic [ref=e36]: 
+            - button "User settings" [ref=e38] [cursor=pointer]:
+              - img [ref=e41]
+          - 'button "Unread messages: 45" [ref=e45] [cursor=pointer]':
+            - generic [ref=e47]:
+              - generic [ref=e48]: 
+              - generic [ref=e50]: "45"
+      - generic [ref=e52]:
+        - button "Google apps" [ref=e56] [cursor=pointer]:
+          - img [ref=e57]
+        - 'button "Google Account: Petter Lund (ronincarpenter90@gmail.com)" [ref=e62] [cursor=pointer]':
+          - img [ref=e64]
+  - dialog "navigational drawer" [ref=e68]:
+    - navigation "Primary" [ref=e71]:
+      - button "Search property" [ref=e75] [cursor=pointer]:
+        - img [ref=e77]
+        - combobox "https://tegnogfarge.no/" [ref=e84]
+        - generic [ref=e85]: 
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - generic [ref=e88]:
+            - link "Overview" [ref=e90] [cursor=pointer]:
+              - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e92]: home
+              - generic [ref=e94]: Overview
+            - link "Insights" [ref=e97] [cursor=pointer]:
+              - /url: ./search-console/performance/insights?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e99]: lightbulb_2
+              - generic [ref=e101]: Insights
+            - button "URL inspection" [ref=e104] [cursor=pointer]:
+              - generic [ref=e106]: search
+              - generic [ref=e108]: URL inspection
+          - generic [ref=e112]:
+            - button "Performance report section" [expanded] [ref=e113] [cursor=pointer]:
+              - generic [ref=e114]:
+                - generic [ref=e117]: Performance
+                - img [ref=e121]
+            - generic [ref=e126]:
+              - link "Search results" [ref=e128] [cursor=pointer]:
+                - /url: ./search-console/performance/search-analytics?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e130]: google
+                - generic [ref=e132]: Search results
+              - link "Discover" [ref=e135] [cursor=pointer]:
+                - /url: ./search-console/performance/discover?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - img [ref=e137]
+                - generic [ref=e143]: Discover
+          - generic [ref=e147]:
+            - button "Indexing report section" [expanded] [ref=e148] [cursor=pointer]:
+              - generic [ref=e149]:
+                - generic [ref=e152]: Indexing
+                - img [ref=e156]
+            - generic [ref=e161]:
+              - link "Pages" [ref=e163] [cursor=pointer]:
+                - /url: ./search-console/index?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e165]: file_copy
+                - generic [ref=e167]: Pages
+              - link "Sitemaps" [ref=e170] [cursor=pointer]:
+                - /url: ./search-console/sitemaps?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e172]: account_tree
+                - generic [ref=e174]: Sitemaps
+              - link "Removals" [ref=e177] [cursor=pointer]:
+                - /url: ./search-console/removals?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e179]: visibility_off
+                - generic [ref=e181]: Removals
+          - generic [ref=e185]:
+            - button "Experience report section" [expanded] [ref=e186] [cursor=pointer]:
+              - generic [ref=e187]:
+                - generic [ref=e190]: Experience
+                - img [ref=e194]
+            - generic [ref=e199]:
+              - link "Core Web Vitals" [ref=e201] [cursor=pointer]:
+                - /url: ./search-console/core-web-vitals?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e203]: speed
+                - generic [ref=e205]: Core Web Vitals
+              - link "HTTPS" [ref=e208] [cursor=pointer]:
+                - /url: ./search-console/https?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e210]: lock
+                - generic [ref=e212]: HTTPS
+          - generic [ref=e216]:
+            - button "Enhancements report section" [expanded] [ref=e217] [cursor=pointer]:
+              - generic [ref=e218]:
+                - generic [ref=e221]: Enhancements
+                - img [ref=e225]
+            - generic [ref=e230]:
+              - link "Breadcrumbs" [ref=e232] [cursor=pointer]:
+                - /url: ./search-console/r/breadcrumbs?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e234]: layers
+                - generic [ref=e236]: Breadcrumbs
+              - link "Image Metadata" [ref=e239] [cursor=pointer]:
+                - /url: ./search-console/r/image-licenses?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e241]: layers
+                - generic [ref=e243]: Image Metadata
+          - button "Security & Manual Actions report section" [ref=e248] [cursor=pointer]:
+            - generic [ref=e249]:
+              - generic [ref=e252]: Security & Manual Actions
+              - img [ref=e256]
+          - generic [ref=e258]:
+            - link "Links report" [ref=e260] [cursor=pointer]:
+              - /url: ./search-console/links?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e262]: link_2
+              - generic [ref=e264]: Links
+            - link "Achievements" [ref=e267] [cursor=pointer]:
+              - /url: ./search-console/achievements?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e269]: trophy
+              - generic [ref=e271]: Achievements
+            - link "Settings" [ref=e274] [cursor=pointer]:
+              - /url: ./search-console/settings?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e276]: settings
+              - generic [ref=e278]: Settings
+        - generic [ref=e280]:
+          - generic [ref=e282]:
+            - button "Submit feedback" [ref=e284] [cursor=pointer]:
+              - generic [ref=e286]: feedback
+              - generic [ref=e288]: Submit feedback
+            - button "About Search Console" [ref=e291] [cursor=pointer]:
+              - generic [ref=e293]: info
+              - generic [ref=e295]: About Search Console
+          - generic [ref=e299]:
+            - link "Privacy" [ref=e300] [cursor=pointer]:
+              - /url: https://myaccount.google.com/privacypolicy?hl=en
+            - link "Terms" [ref=e301] [cursor=pointer]:
+              - /url: https://myaccount.google.com/termsofservice?hl=en
+  - generic [ref=e303]:
+    - navigation "Breadcrumbs" [ref=e308]:
+      - heading "Sitemaps" [level=1] [ref=e311]
+    - main [ref=e315]:
+      - generic [ref=e318]:
+        - generic [ref=e319]: Add a new sitemap
+        - generic [ref=e320]:
+          - generic [ref=e321]:
+            - generic [ref=e322]: https://tegnogfarge.no/
+            - textbox "Enter sitemap URL" [active] [ref=e328]: de-sitemap.xml
+          - button "Submit" [ref=e332] [cursor=pointer]:
+            - generic [ref=e335]: Submit
+      - generic [ref=e339]:
+        - generic [ref=e340]:
+          - heading "Submitted sitemaps" [level=1] [ref=e341]:
+            - generic [ref=e342]: Submitted sitemaps
+          - button "Filter table rows" [ref=e345] [cursor=pointer]:
+            - generic [ref=e348]: 
+        - table [ref=e350]:
+          - rowgroup [ref=e351]:
+            - row "Sitemap Type Submitted Last read Status Discovered pages Discovered videos" [ref=e352]:
+              - columnheader "Sitemap" [ref=e353]:
+                - text: Sitemap
+                - img [ref=e355] [cursor=pointer]
+              - columnheader "Type" [ref=e357]:
+                - text: Type
+                - img [ref=e359] [cursor=pointer]
+              - columnheader "Submitted" [ref=e361]:
+                - text: Submitted
+                - img [ref=e363] [cursor=pointer]
+              - columnheader "Last read" [ref=e365]:
+                - text: Last read
+                - img [ref=e367] [cursor=pointer]
+              - columnheader "Status" [ref=e369] [cursor=pointer]:
+                - text: Status
+                - img [ref=e371]
+              - columnheader "Discovered pages" [ref=e373]:
+                - img [ref=e375] [cursor=pointer]
+                - text: Discovered pages
+              - columnheader "Discovered videos" [ref=e377]:
+                - img [ref=e379] [cursor=pointer]
+                - text: Discovered videos
+              - columnheader [ref=e381]
+          - rowgroup [ref=e382]:
+            - row "/de-sitemap.xml Sitemap Dec 3, 2025 Feb 23, 2026 Success 3,415 0" [ref=e383] [cursor=pointer]:
+              - cell "/de-sitemap.xml" [ref=e384]
+              - cell "Sitemap" [ref=e385]
+              - cell "Dec 3, 2025" [ref=e386]
+              - cell "Feb 23, 2026" [ref=e387]
+              - cell "Success" [ref=e388]:
+                - generic [ref=e389]: Success
+              - cell "3,415" [ref=e390]
+              - cell "0" [ref=e391]
+              - cell [ref=e392]:
+                - button [ref=e394]:
+                  - generic [ref=e397]: 
+            - row "/sv/sv-sitemap.xml Unknown Nov 27, 2025 Mar 3, 2026 1 error 0 0" [ref=e398] [cursor=pointer]:
+              - cell "/sv/sv-sitemap.xml" [ref=e399]
+              - cell "Unknown" [ref=e400]
+              - cell "Nov 27, 2025" [ref=e401]
+              - cell "Mar 3, 2026" [ref=e402]
+              - cell "1 error" [ref=e403]:
+                - generic [ref=e404]: 1 error
+              - cell "0" [ref=e405]
+              - cell "0" [ref=e406]
+              - cell [ref=e407]:
+                - button [ref=e409]:
+                  - generic [ref=e412]: 
+            - row "/sv-sitemap.xml Sitemap Nov 27, 2025 Mar 1, 2026 Success 3,462 0" [ref=e413] [cursor=pointer]:
+              - cell "/sv-sitemap.xml" [ref=e414]
+              - cell "Sitemap" [ref=e415]
+              - cell "Nov 27, 2025" [ref=e416]
+              - cell "Mar 1, 2026" [ref=e417]
+              - cell "Success" [ref=e418]:
+                - generic [ref=e419]: Success
+              - cell "3,462" [ref=e420]
+              - cell "0" [ref=e421]
+              - cell [ref=e422]:
+                - button [ref=e424]:
+                  - generic [ref=e427]: 
+            - row "/sv/pages-sitemap.xml Unknown Nov 25, 2025 Feb 26, 2026 1 error 0 0" [ref=e428] [cursor=pointer]:
+              - cell "/sv/pages-sitemap.xml" [ref=e429]
+              - cell "Unknown" [ref=e430]
+              - cell "Nov 25, 2025" [ref=e431]
+              - cell "Feb 26, 2026" [ref=e432]
+              - cell "1 error" [ref=e433]:
+                - generic [ref=e434]: 1 error
+              - cell "0" [ref=e435]
+              - cell "0" [ref=e436]
+              - cell [ref=e437]:
+                - button [ref=e439]:
+                  - generic [ref=e442]: 
+            - row "/sv/image-sitemap.xml Unknown Nov 25, 2025 Feb 27, 2026 1 error 0 0" [ref=e443] [cursor=pointer]:
+              - cell "/sv/image-sitemap.xml" [ref=e444]
+              - cell "Unknown" [ref=e445]
+              - cell "Nov 25, 2025" [ref=e446]
+              - cell "Feb 27, 2026" [ref=e447]
+              - cell "1 error" [ref=e448]:
+                - generic [ref=e449]: 1 error
+              - cell "0" [ref=e450]
+              - cell "0" [ref=e451]
+              - cell [ref=e452]:
+                - button [ref=e454]:
+                  - generic [ref=e457]: 
+            - row "/sv/sitemap.xml Unknown Nov 25, 2025 Mar 1, 2026 1 error 0 0" [ref=e458] [cursor=pointer]:
+              - cell "/sv/sitemap.xml" [ref=e459]
+              - cell "Unknown" [ref=e460]
+              - cell "Nov 25, 2025" [ref=e461]
+              - cell "Mar 1, 2026" [ref=e462]
+              - cell "1 error" [ref=e463]:
+                - generic [ref=e464]: 1 error
+              - cell "0" [ref=e465]
+              - cell "0" [ref=e466]
+              - cell [ref=e467]:
+                - button [ref=e469]:
+                  - generic [ref=e472]: 
+            - row "/sitemap.xml Sitemap index Sep 17, 2025 Mar 1, 2026 Success 13,667 0" [ref=e473] [cursor=pointer]:
+              - cell "/sitemap.xml" [ref=e474]
+              - cell "Sitemap index" [ref=e475]
+              - cell "Sep 17, 2025" [ref=e476]
+              - cell "Mar 1, 2026" [ref=e477]
+              - cell "Success" [ref=e478]:
+                - generic [ref=e479]: Success
+              - cell "13,667" [ref=e480]
+              - cell "0" [ref=e481]
+              - cell [ref=e482]:
+                - button [ref=e484]:
+                  - generic [ref=e487]: 
+            - row "/image-sitemap.xml Sitemap Sep 17, 2025 Feb 22, 2026 Success 3,328 0" [ref=e488] [cursor=pointer]:
+              - cell "/image-sitemap.xml" [ref=e489]
+              - cell "Sitemap" [ref=e490]
+              - cell "Sep 17, 2025" [ref=e491]
+              - cell "Feb 22, 2026" [ref=e492]
+              - cell "Success" [ref=e493]:
+                - generic [ref=e494]: Success
+              - cell "3,328" [ref=e495]
+              - cell "0" [ref=e496]
+              - cell [ref=e497]:
+                - button [ref=e499]:
+                  - generic [ref=e502]: 
+            - row "/pages-sitemap.xml Sitemap Sep 17, 2025 Feb 28, 2026 Success 3,462 0" [ref=e503] [cursor=pointer]:
+              - cell "/pages-sitemap.xml" [ref=e504]
+              - cell "Sitemap" [ref=e505]
+              - cell "Sep 17, 2025" [ref=e506]
+              - cell "Feb 28, 2026" [ref=e507]
+              - cell "Success" [ref=e508]:
+                - generic [ref=e509]: Success
+              - cell "3,462" [ref=e510]
+              - cell "0" [ref=e511]
+              - cell [ref=e512]:
+                - button [ref=e514]:
+                  - generic [ref=e517]: 
+            - row "/sitemap-pages.xml Unknown Sep 17, 2025 Nov 8, 2025 Couldn't fetch 0 0" [ref=e518] [cursor=pointer]:
+              - cell "/sitemap-pages.xml" [ref=e519]
+              - cell "Unknown" [ref=e520]
+              - cell "Sep 17, 2025" [ref=e521]
+              - cell "Nov 8, 2025" [ref=e522]
+              - cell "Couldn't fetch" [ref=e523]:
+                - generic [ref=e524]: Couldn't fetch
+              - cell "0" [ref=e525]
+              - cell "0" [ref=e526]
+              - cell [ref=e527]:
+                - button [ref=e529]:
+                  - generic [ref=e532]: 
+        - generic [ref=e535]:
+          - generic [ref=e537]:
+            - generic [ref=e538]: "Rows per page:"
+            - listbox "Number of rows per page" [ref=e539] [cursor=pointer]:
+              - option "5"
+              - option "10" [selected] [ref=e540]
+              - option "25"
+              - option "50"
+              - option "100"
+              - option "250"
+              - option "500"
+          - generic [ref=e541]:
+            - generic [ref=e542]: 1-10 of 10
+            - generic [ref=e543]:
+              - generic [ref=e545]: 
+              - generic [ref=e547]: 

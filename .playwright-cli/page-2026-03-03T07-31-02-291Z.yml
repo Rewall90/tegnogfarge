@@ -1,0 +1,292 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - text: 
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - heading "Ezoic Community" [level=1] [ref=e5]:
+          - link "Ezoic Community" [ref=e6] [cursor=pointer]:
+            - /url: https://community.ezoic.com
+            - img "Ezoic Community" [ref=e7]
+        - list [ref=e15]:
+          - listitem [ref=e16]:
+            - link "Help Center" [ref=e17] [cursor=pointer]:
+              - /url: https://support.ezoic.com
+              - generic [ref=e18]: Help Center
+        - list [ref=e20]:
+          - listitem: 
+          - listitem [ref=e21]:
+            - button "View notifications" [ref=e23] [cursor=pointer]:
+              - generic [ref=e24]: 
+              - generic [ref=e25]: "1"
+          - listitem [ref=e26]:
+            - generic [ref=e27]:
+              - button "Toggle session options dropdown menu" [ref=e28] [cursor=pointer]:
+                - generic [ref=e29]: P
+                - text: PetterML
+              - text:   
+    - main [ref=e8]:
+      - generic [ref=e32]:
+        - list [ref=e35]:
+          - listitem [ref=e36]:
+            - list [ref=e37]:
+              - listitem [ref=e38]:
+                - generic "Following" [ref=e39]:
+                  - generic [ref=e40]: 
+          - listitem [ref=e41]:
+            - link "New Site Onboarding" [ref=e43] [cursor=pointer]:
+              - /url: /t/new-site-onboarding
+              - generic [ref=e44]: New Site Onboarding
+          - listitem [ref=e45]:
+            - heading "MCM Invitation Deactivated by Ad Manager - Seeking Reactivation Assistance" [level=2] [ref=e46]
+        - generic [ref=e47]:
+          - navigation:
+            - list [ref=e48]:
+              - listitem [ref=e49]:
+                - generic [ref=e50]:
+                  - button "Reply" [ref=e51] [cursor=pointer]:  Reply
+                  - text:   
+              - listitem [ref=e52]:
+                - generic [ref=e53]:
+                  - button " Following" [ref=e54] [cursor=pointer]:
+                    - generic [ref=e55]: 
+                    - text: Following
+                  - button "" [ref=e56] [cursor=pointer]:
+                    - generic [ref=e57]: 
+                  - text:    
+              - listitem [ref=e58]:
+                - generic [ref=e59]:
+                  - text: 
+                  - generic [ref=e61]:
+                    - generic [ref=e62] [cursor=pointer]:
+                      - generic [ref=e63]: 
+                      - text: Original Post
+                    - generic [ref=e64] [cursor=pointer]:
+                      - generic [ref=e68]:
+                        - strong [ref=e69]: 4 of 4 posts
+                        - text: March 2026
+                      - generic: 0 unread
+                    - generic [ref=e70] [cursor=pointer]:
+                      - generic [ref=e71]: 
+                      - text: Now
+          - generic [ref=e73]:
+            - article [ref=e75]:
+              - generic [ref=e76]:
+                - list [ref=e78]:
+                  - listitem [ref=e79]:
+                    - generic [ref=e80]:
+                      - heading "P  PetterML" [level=3] [ref=e81]:
+                        - link "P  PetterML" [ref=e82] [cursor=pointer]:
+                          - /url: /u/PetterML
+                          - generic [ref=e83]: P
+                          - generic [ref=e85]: 
+                          - text: PetterML
+                      - list
+                  - listitem [ref=e86]:
+                    - time [ref=e89] [cursor=pointer]: 8 hours ago
+                - generic [ref=e90]:
+                  - paragraph [ref=e91]: MCM Invitation Stuck on "Deactivated by Ad Manager" - Need Help Reactivating
+                  - paragraph [ref=e92]: Hi Ezoic team,
+                  - paragraph [ref=e93]: I am trying to complete the Google Ad Manager (MCM) setup for my site, but the MCM invitation from Ezoic is showing "Deactivated by Ad Manager" in my Google Ad Manager account.
+                  - paragraph [ref=e94]: "Here is what I have tried so far:"
+                  - list [ref=e95]:
+                    - listitem [ref=e96]: Clicked the "View request" link from the Google invitation email - it redirected me to the MCM page but the status remained "Deactivated by Ad Manager"
+                    - listitem [ref=e97]: Used the "Update Info" option on the Ezoic dashboard to re-submit my Ad Manager email and network code, and clicked "Send Invite" - still shows deactivated
+                    - listitem [ref=e98]: Clicked "Resend Invite" on the Ezoic dashboard - received a new email from Google but the issue persists
+                    - listitem [ref=e99]: My Ad Manager account is active and I can navigate it fully - it is only the MCM relationship that is deactivated
+                  - paragraph [ref=e100]: "My Ezoic dashboard still shows:"
+                  - list [ref=e101]:
+                    - listitem [ref=e102]: "Ad Manager Account Status: Invited"
+                    - listitem [ref=e103]: "Ad Manager Domain Status: Waiting"
+                  - paragraph [ref=e104]: It seems like the old MCM relationship was deactivated (possibly due to inactivity) and new invitations are not going through because of this.
+                  - paragraph [ref=e105]: Could someone from the Ezoic team please look into this and help reactivate or reset the MCM invitation for my account? I would really appreciate any assistance.
+                  - paragraph [ref=e106]: Thank you!
+                - complementary [ref=e107]:
+                  - list [ref=e108]:
+                    - listitem [ref=e109]:
+                      - button "Reply" [ref=e110] [cursor=pointer]
+                - generic:
+                  - list
+            - article [ref=e112]:
+              - generic [ref=e113]:
+                - list [ref=e115]:
+                  - listitem [ref=e116]:
+                    - generic [ref=e117]:
+                      - heading "Ezoic_Auto_Mod" [level=3] [ref=e118]:
+                        - link "Ezoic_Auto_Mod" [ref=e119] [cursor=pointer]:
+                          - /url: /u/Ezoic_Auto_Mod
+                      - list:
+                        - listitem:
+                          - generic "Ezoic Team" [ref=e120]:
+                            - generic [ref=e121]: 
+                  - listitem [ref=e122]:
+                    - time [ref=e125] [cursor=pointer]: 8 hours ago
+                - generic [ref=e126]:
+                  - paragraph [ref=e127]:
+                    - strong [ref=e128]: Initial Account / Domain Review for Google MCM
+                    - text: Due to the high volume of requests, we're unable to provide individual site feedback within the Ezoic community. However, you can find relevant information on the review process via the Dashboard, community posts, and our support site.
+                    - link "Applying to Google AdManager MCM" [ref=e129] [cursor=pointer]:
+                      - /url: https://support.ezoic.com/kb/article/applying-to-google-ad-manager-multiple-customer-management
+                  - paragraph [ref=e130]:
+                    - strong [ref=e131]: Please refer to our MCM guide for insights on Google MCM account and domain denial definitions, and strategies for improving approval chances.
+                    - link "MCM Disapproved Guide" [ref=e132] [cursor=pointer]:
+                      - /url: https://support.ezoic.com/kb/article/my-account-or-domain-was-disapproved-by-google-mcm-how-do-i-fix-this
+                  - paragraph [ref=e133]:
+                    - strong [ref=e134]: Domain Escalation / Additional Google Review
+                    - text: When a domain is disapproved, we conduct a content review and escalate the site directly to Google if it meets their criteria. You'll receive notification in your dashboard if your site is escalated.
+                    - link "Escalation Review Process" [ref=e135] [cursor=pointer]:
+                      - /url: https://community.ezoic.com/d/27805-domain-escalation-review-process-for-admanager-mcm
+                  - paragraph [ref=e136]:
+                    - strong [ref=e137]: "Timeline:"
+                    - text: The Ad Manager domain review is completed by Google and typically takes up to two weeks. We're unable to expedite this process, but you'll be automatically informed of Google's decision via the Dashboard. If there is a domain denial, please allow 3-4 business days for our escalation review before re-applying via your Dashboard.
+                  - paragraph [ref=e138]:
+                    - strong [ref=e139]: "Notes:"
+                  - list [ref=e140]:
+                    - listitem [ref=e141]: "'Ready' status in AdManager is not an approval - it indicates that the account is ready to be reviewd."
+                    - listitem [ref=e142]: If your domain is being denied quickly, it means you're reapplying the site too frequently without making the required changes to the site content.
+                    - listitem [ref=e143]: Admanager MCM Account and Domain approval are required for ads to show through Ezoic.
+                    - listitem [ref=e144]:
+                      - text: "ID and PIN verification may be required on new Google accounts, see details here:"
+                      - link "ID / PIN Verification Process" [ref=e145] [cursor=pointer]:
+                        - /url: https://support.ezoic.com/kb/article/google-ad-manager-id-and-address-verification-guide
+                  - paragraph [ref=e146]: If your query is not about the AdManager review process, or these answers did not address the issue you're facing, simply reply to this message for further assistance from our staff. Thank you for your patience and cooperation.
+                - complementary [ref=e147]:
+                  - list [ref=e148]:
+                    - listitem [ref=e149]:
+                      - button "Reply" [ref=e150] [cursor=pointer]
+                - generic:
+                  - list
+            - article [ref=e152]:
+              - generic [ref=e153]:
+                - list [ref=e155]:
+                  - listitem [ref=e156]:
+                    - generic [ref=e157]:
+                      - heading "P  PetterML" [level=3] [ref=e158]:
+                        - link "P  PetterML" [ref=e159] [cursor=pointer]:
+                          - /url: /u/PetterML
+                          - generic [ref=e160]: P
+                          - generic [ref=e162]: 
+                          - text: PetterML
+                      - list
+                  - listitem [ref=e163]:
+                    - time [ref=e166] [cursor=pointer]: 8 hours ago
+                - generic [ref=e167]:
+                  - paragraph [ref=e168]: Hi, this is not about the standard AdManager review process. My issue is specifically that the MCM relationship between my Ad Manager account and Ezoic shows "Deactivated by Ad Manager" status. My Ad Manager account itself is active and functional - it is only the MCM parent-child relationship that has been deactivated, likely due to past inactivity.
+                  - paragraph [ref=e169]: Because of this, new invitations from Ezoic are not being accepted properly. I have tried resending the invite and updating my info through the Ezoic dashboard, but the deactivated MCM relationship persists.
+                  - paragraph [ref=e170]: Could a staff member please look into my account and help reset or reactivate the MCM invitation? Thank you.
+                - complementary [ref=e171]:
+                  - list [ref=e172]:
+                    - listitem [ref=e173]:
+                      - button "Reply" [ref=e174] [cursor=pointer]
+                - list [ref=e175]:
+                  - listitem [ref=e176]:
+                    - generic [ref=e178] [cursor=pointer]:
+                      - generic [ref=e179]: 
+                      - link "Mohammad2306" [ref=e180]:
+                        - /url: /d/51846-mcm-invitation-deactivated-by-ad-manager-seeking-reactivation-assistance/5
+                      - text: replied to this.
+            - article [ref=e182]:
+              - generic [ref=e183]:
+                - list [ref=e185]:
+                  - listitem [ref=e186]:
+                    - generic [ref=e187]:
+                      - heading "Mohammad2306" [level=3] [ref=e188]:
+                        - link "Mohammad2306" [ref=e189] [cursor=pointer]:
+                          - /url: /u/Mohammad2306
+                      - list:
+                        - listitem:
+                          - generic "Ezoic Team" [ref=e190]:
+                            - generic [ref=e191]: 
+                  - listitem [ref=e192]:
+                    - time [ref=e195] [cursor=pointer]: 5 hours ago
+                  - listitem [ref=e196]:
+                    - generic [ref=e197]:
+                      - img "Staff Icon" [ref=e198]
+                      - heading "Ezoic Employee" [level=3] [ref=e199]
+                  - listitem [ref=e200]: Edited
+                - paragraph [ref=e202]:
+                  - link " PetterML" [ref=e203] [cursor=pointer]:
+                    - /url: https://community.ezoic.com/d/51846/4
+                  - text: Google deactivated your Ad Manager account. Why is your current AdSense account email different from the original Ad Manager email?
+                - complementary [ref=e204]:
+                  - list [ref=e205]:
+                    - listitem [ref=e206]:
+                      - button "Reply" [ref=e207] [cursor=pointer]
+                - generic:
+                  - list
+            - article [ref=e209]:
+              - generic [ref=e227]:
+                - heading "P PetterML" [level=3] [ref=e228]:
+                  - generic [ref=e229]: P
+                  - text: PetterML
+                - list
+              - generic [ref=e294]:
+                - paragraph [ref=e295]: Hi Mohammad,
+                - paragraph [ref=e296]: Thank you for looking into this.
+      - generic [ref=e230]:
+        - list [ref=e232]:
+          - listitem [ref=e233]:
+            - button "" [ref=e234] [cursor=pointer]:
+              - generic [ref=e235]: 
+          - listitem [ref=e236]:
+            - button "" [ref=e237] [cursor=pointer]:
+              - generic [ref=e238]: 
+          - listitem [ref=e239]:
+            - button "" [ref=e240] [cursor=pointer]:
+              - generic [ref=e241]: 
+        - generic [ref=e243]:
+          - generic [ref=e244]: P
+          - generic [ref=e245]:
+            - list [ref=e246]:
+              - listitem [ref=e247]:
+                - heading " MCM Invitation Deactivated by Ad Manager - Seeking Reactivation Assistance" [level=3] [ref=e248]:
+                  - generic [ref=e249]: 
+                  - link "MCM Invitation Deactivated by Ad Manager - Seeking Reactivation Assistance" [ref=e250] [cursor=pointer]:
+                    - /url: /d/51846-mcm-invitation-deactivated-by-ad-manager-seeking-reactivation-assistance
+            - generic [ref=e252]:
+              - textbox "Write a Reply..." [active] [ref=e256]: Hi Mohammad, Thank you for looking into this.
+              - list [ref=e257]:
+                - listitem [ref=e258]:
+                  - button "Send" [ref=e259] [cursor=pointer]:  Send
+                - listitem [ref=e260]:
+                  - button "Preview" [ref=e261] [cursor=pointer]:
+                    - generic [ref=e262]: 
+                - listitem [ref=e263]:
+                  - button "Upload" [ref=e264] [cursor=pointer]:
+                    - generic [ref=e265]: 
+                - listitem [ref=e266]:
+                  - generic [ref=e267]:
+                    - button "Add header text" [ref=e268] [cursor=pointer]:
+                      - generic [ref=e269]: 
+                    - button "Add bold text <ctrl-b>" [ref=e270] [cursor=pointer]:
+                      - generic [ref=e271]: 
+                    - button "Add italic text <ctrl-i>" [ref=e272] [cursor=pointer]:
+                      - generic [ref=e273]: 
+                    - button "Add strikethrough text" [ref=e274] [cursor=pointer]:
+                      - generic [ref=e275]: 
+                    - button "Insert a quote" [ref=e276] [cursor=pointer]:
+                      - generic [ref=e277]: 
+                    - button "Insert a spoiler" [ref=e278] [cursor=pointer]:
+                      - generic [ref=e279]: 
+                    - button "Insert code" [ref=e280] [cursor=pointer]:
+                      - generic [ref=e281]: 
+                    - button "Add a link" [ref=e282] [cursor=pointer]:
+                      - generic [ref=e283]: 
+                    - button "Add an image" [ref=e284] [cursor=pointer]:
+                      - generic [ref=e285]: 
+                    - button "Add a bulleted list" [ref=e286] [cursor=pointer]:
+                      - generic [ref=e287]: 
+                    - button "Add a numbered list" [ref=e288] [cursor=pointer]:
+                      - generic [ref=e289]: 
+                  - button "Insert emoji" [ref=e290] [cursor=pointer]:
+                    - generic [ref=e291]: 
+                  - button "Mention a user or post" [ref=e292] [cursor=pointer]:
+                    - generic [ref=e293]: 
+    - generic [ref=e10]:
+      - img "Ezoic Inc." [ref=e11]
+      - generic [ref=e12]:
+        - text: © 2021
+        - link "Ezoic Inc." [ref=e13] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - button [ref=e213] [cursor=pointer]:
+    - img [ref=e214]

@@ -1,0 +1,50 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - link [ref=e5]:
+        - /url: "#"
+        - img [ref=e7]
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - link "Register for an Ezoic account" [ref=e11] [cursor=pointer]:
+            - /url: https://pubdash.ezoic.com/join?redirect_url=https%3A%2F%2Fpubdash.ezoic.com%2Fezoicads%2Frewardedads
+            - text: Register
+        - listitem [ref=e12] [cursor=pointer]: English
+    - generic [ref=e17]:
+      - heading "Sign In" [level=4] [ref=e18]
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e22]: "* Email:"
+          - textbox [active] [ref=e24]: petter
+        - generic [ref=e25]:
+          - generic [ref=e27]: "* Password:"
+          - textbox [ref=e29]
+      - generic [ref=e30]:
+        - button "Sign in to your account" [ref=e31] [cursor=pointer]:
+          - generic [ref=e32]: Sign In
+        - generic [ref=e34] [cursor=pointer]:
+          - checkbox "Remember me" [ref=e36]
+          - text: Remember me
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - text: New user?
+          - link "Register for a free Ezoic account here" [ref=e40] [cursor=pointer]:
+            - /url: https://pubdash.ezoic.com/join?redirect_url=https%3A%2F%2Fpubdash.ezoic.com%2Fezoicads%2Frewardedads
+            - text: Register now!
+        - generic [ref=e41]:
+          - link "Reset your password if you forgot it" [ref=e42] [cursor=pointer]:
+            - /url: /forgot
+            - text: Forgot password?
+          - link "Having trouble logging in? See our helpful support docs." [ref=e43] [cursor=pointer]:
+            - /url: https://support.ezoic.com/open.php?c=a6c0f7172856059e74fc3ed47bc3db24
+            - text: I cannot login
+      - generic [ref=e44]:
+        - generic [ref=e45]: or
+        - iframe [ref=e49]:
+          - button "Logg på med Google. Åpnes i en ny fane" [ref=f4e3] [cursor=pointer]:
+            - generic [ref=f4e5]:
+              - img [ref=f4e7]
+              - generic [ref=f4e14]: Logg på med Google
+        - button "Sign in with Microsoft" [ref=e51] [cursor=pointer]:
+          - generic [ref=e53]: Sign in with Microsoft
+  - generic "Privacy center" [ref=e54] [cursor=pointer]: ⚙

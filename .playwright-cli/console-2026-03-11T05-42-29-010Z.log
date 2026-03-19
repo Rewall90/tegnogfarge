@@ -1,0 +1,4 @@
+[  184729ms] Uncaught SecurityError: Failed to read a named property 'a-yxu9qjb0qvzw' from 'Window': Blocked a frame with origin "https://www.google.com" from accessing a frame with origin "https://accounts.google.com". Protocols, domains, and ports must match.
+    at kg.init (https://www.gstatic.com/recaptcha/releases/QvLuXwupqtKMva7GIh5eGl3U/recaptcha__no.js:1659:306)
+    at <anonymous> (https://www.gstatic.com/recaptcha/releases/QvLuXwupqtKMva7GIh5eGl3U/recaptcha__no.js:1669:259)
+    at <anonymous> (https://www.google.com/recaptcha/enterprise/bframe?hl=no&v=QvLuXwupqtKMva7GIh5eGl3U&k=6LeyfJsrAAAAABWwSCCGzNb9d1fiBnrAd_hJuNyO&bft=0dAFcWeA5HMgTUZ0ZP9Oh6yQRqpnmpATL3s_ge0wQg5W2VMsJbDuWEk1d9cU5xEVniRuMnA-usHnGyKeZZn8iynfPcCBkuseWOsg&ca=true:258:29)

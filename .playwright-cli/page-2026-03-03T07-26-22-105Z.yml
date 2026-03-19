@@ -1,0 +1,5 @@
+- generic [ref=e2]:
+  - paragraph [ref=e3]: The page you requested could not be found.
+  - paragraph [ref=e4]:
+    - link "Return to Ezoic Community" [ref=e5] [cursor=pointer]:
+      - /url: https://community.ezoic.com

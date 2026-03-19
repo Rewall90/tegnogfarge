@@ -1,0 +1,234 @@
+- generic [ref=e2]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - button [ref=e1337] [cursor=pointer]:
+          - img [ref=e8]
+        - link [ref=e1338] [cursor=pointer]:
+          - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+          - img [ref=e13]
+      - generic [ref=e14]:
+        - search [ref=e16]:
+          - generic [ref=e22]:
+            - textbox [disabled] [ref=e23]: Inspect any URL in "https://tegnogfarge.no/"
+            - combobox [ref=e1339]
+          - button [ref=e1340] [cursor=pointer]:
+            - img [ref=e26]
+        - generic [ref=e29]:
+          - generic [ref=e31]:
+            - button [ref=e1341] [cursor=pointer]:
+              - generic [ref=e36]: 
+            - button [ref=e1342] [cursor=pointer]:
+              - img [ref=e41]
+          - button [ref=e1343] [cursor=pointer]:
+            - generic [ref=e47]:
+              - generic [ref=e48]: 
+              - generic [ref=e1182]: "45"
+      - generic [ref=e52]:
+        - button [ref=e1344] [cursor=pointer]:
+          - img [ref=e57]
+        - button [ref=e1345] [cursor=pointer]:
+          - img [ref=e64]
+  - dialog [ref=e1346]:
+    - navigation [ref=e1347]:
+      - button [ref=e1348] [cursor=pointer]:
+        - img [ref=e77]
+        - combobox [ref=e1349]: https://tegnogfarge.no/
+        - generic [ref=e85]: 
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - generic [ref=e88]:
+            - link [ref=e1350] [cursor=pointer]:
+              - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e92]: home
+              - generic [ref=e94]: Overview
+            - link [ref=e1351] [cursor=pointer]:
+              - /url: ./search-console/performance/insights?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e99]: lightbulb_2
+              - generic [ref=e101]: Insights
+            - button [ref=e1352] [cursor=pointer]:
+              - generic [ref=e106]: search
+              - generic [ref=e108]: URL inspection
+          - generic [ref=e112]:
+            - button [expanded] [ref=e1353] [cursor=pointer]:
+              - generic [ref=e114]:
+                - generic [ref=e117]: Performance
+                - img [ref=e121]
+            - generic [ref=e126]:
+              - link [ref=e1354] [cursor=pointer]:
+                - /url: ./search-console/performance/search-analytics?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e130]: google
+                - generic [ref=e132]: Search results
+              - link [ref=e1355] [cursor=pointer]:
+                - /url: ./search-console/performance/discover?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - img [ref=e137]
+                - generic [ref=e143]: Discover
+          - generic [ref=e147]:
+            - button [expanded] [ref=e1356] [cursor=pointer]:
+              - generic [ref=e149]:
+                - generic [ref=e152]: Indexing
+                - img [ref=e156]
+            - generic [ref=e161]:
+              - link [ref=e1357] [cursor=pointer]:
+                - /url: ./search-console/index?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e165]: file_copy
+                - generic [ref=e167]: Pages
+              - link [ref=e1358] [cursor=pointer]:
+                - /url: ./search-console/sitemaps?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e172]: account_tree
+                - generic [ref=e174]: Sitemaps
+              - link [ref=e1359] [cursor=pointer]:
+                - /url: ./search-console/removals?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e179]: visibility_off
+                - generic [ref=e181]: Removals
+          - generic [ref=e185]:
+            - button [expanded] [ref=e1360] [cursor=pointer]:
+              - generic [ref=e187]:
+                - generic [ref=e190]: Experience
+                - img [ref=e194]
+            - generic [ref=e199]:
+              - link [ref=e1361] [cursor=pointer]:
+                - /url: ./search-console/core-web-vitals?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e203]: speed
+                - generic [ref=e205]: Core Web Vitals
+              - link [ref=e1362] [cursor=pointer]:
+                - /url: ./search-console/https?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e210]: lock
+                - generic [ref=e212]: HTTPS
+          - generic [ref=e216]:
+            - button [expanded] [ref=e1363] [cursor=pointer]:
+              - generic [ref=e218]:
+                - generic [ref=e221]: Enhancements
+                - img [ref=e225]
+            - generic [ref=e230]:
+              - link [ref=e1364] [cursor=pointer]:
+                - /url: ./search-console/r/breadcrumbs?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e234]: layers
+                - generic [ref=e236]: Breadcrumbs
+              - link [ref=e1365] [cursor=pointer]:
+                - /url: ./search-console/r/image-licenses?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e241]: layers
+                - generic [ref=e243]: Image Metadata
+          - button [ref=e1366] [cursor=pointer]:
+            - generic [ref=e249]:
+              - generic [ref=e252]: Security & Manual Actions
+              - img [ref=e256]
+          - generic [ref=e258]:
+            - link [ref=e1367] [cursor=pointer]:
+              - /url: ./search-console/links?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e262]: link_2
+              - generic [ref=e264]: Links
+            - link [ref=e1368] [cursor=pointer]:
+              - /url: ./search-console/achievements?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e269]: trophy
+              - generic [ref=e271]: Achievements
+            - link [ref=e1369] [cursor=pointer]:
+              - /url: ./search-console/settings?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e276]: settings
+              - generic [ref=e278]: Settings
+        - generic [ref=e280]:
+          - generic [ref=e282]:
+            - button [ref=e1370] [cursor=pointer]:
+              - generic [ref=e286]: feedback
+              - generic [ref=e288]: Submit feedback
+            - button [ref=e1371] [cursor=pointer]:
+              - generic [ref=e293]: info
+              - generic [ref=e295]: About Search Console
+          - generic [ref=e299]:
+            - link [ref=e1372] [cursor=pointer]:
+              - /url: https://myaccount.google.com/privacypolicy?hl=en
+              - text: Privacy
+            - link [ref=e1373] [cursor=pointer]:
+              - /url: https://myaccount.google.com/termsofservice?hl=en
+              - text: Terms
+  - generic [ref=e1184]:
+    - generic [ref=e1192]: https://tegnogfarge.no/de/ausmalbilder-tiere/ausmalbilder-fuchs/ausmalbilder-fuchs-und-bienen-rund-um-den-baum
+    - generic [ref=e1193]:
+      - generic [ref=e1195]:
+        - navigation [ref=e1374]:
+          - heading [level=1] [ref=e1375]: URL Inspection
+        - button [ref=e1376] [cursor=pointer]:
+          - generic [ref=e1208]: Test live URL
+      - main [ref=e1210]:
+        - generic [ref=e1211]:
+          - generic [ref=e1213]:
+            - generic [ref=e1214]:
+              - generic [ref=e1215]: info
+              - generic [ref=e1216]:
+                - generic [ref=e1217]: URL is not on Google
+                - generic [ref=e1218]:
+                  - text: This page is not indexed. Pages that aren't indexed can't be served on Google. See the details below to learn why it wasn't indexed.
+                  - link [ref=e1377] [cursor=pointer]:
+                    - /url: https://support.google.com/webmasters/answer/9012289#url_not_on_google
+                    - text: Learn more
+            - generic [ref=e1222]:
+              - button [disabled] [ref=e1378]:
+                - generic [ref=e1231]: View crawled page
+              - generic [ref=e1232]:
+                - generic [ref=e1233]: Page changed?
+                - button [ref=e1379] [cursor=pointer]:
+                  - generic [ref=e1242]: Request indexing
+          - generic [ref=e1247]:
+            - button [expanded] [ref=e1380] [cursor=pointer]:
+              - generic [ref=e1249]:
+                - generic [ref=e1251]:
+                  - generic [ref=e1253]: info
+                  - generic [ref=e1254]:
+                    - generic [ref=e1255]: Page indexing
+                    - generic [ref=e1256]: "Page is not indexed: Not found (404)"
+                - generic [ref=e1259]: 
+            - generic [ref=e1263]:
+              - generic [ref=e1264]:
+                - generic [ref=e1265]:
+                  - generic [ref=e1266]: Discovery
+                  - generic [ref=e1267]:
+                    - generic [ref=e1268]: Sitemaps
+                    - generic [ref=e1270]: Temporary processing error
+                  - generic [ref=e1271]:
+                    - generic [ref=e1272]: Referring page
+                    - generic [ref=e1275]: https://tegnogfarge.no/de-sitemap.xml
+                - generic [ref=e1276]:
+                  - generic [ref=e1277]: Crawl
+                  - generic [ref=e1278]:
+                    - generic [ref=e1279]: Last crawl
+                    - generic [ref=e1281]: Jan 25, 2026, 1:05:05 AM
+                  - generic [ref=e1282]:
+                    - generic [ref=e1283]: Crawled as
+                    - generic [ref=e1285]: Googlebot smartphone
+                  - generic [ref=e1286]:
+                    - generic [ref=e1287]: Crawl allowed?
+                    - generic [ref=e1289]: "Yes"
+                  - generic [ref=e1290]:
+                    - generic [ref=e1291]: Page fetch
+                    - generic [ref=e1293]: info
+                    - generic [ref=e1295]: "Failed: Not found (404)"
+                  - generic [ref=e1296]:
+                    - generic [ref=e1297]: Indexing allowed?
+                    - generic [ref=e1299]: N/A
+                - generic [ref=e1300]:
+                  - generic [ref=e1301]: Indexing
+                  - generic [ref=e1302]:
+                    - generic [ref=e1303]: User-declared canonical
+                    - generic [ref=e1305]: N/A
+                  - generic [ref=e1306]:
+                    - generic [ref=e1308]:
+                      - generic [ref=e1309]: Google-selected canonical
+                      - button [ref=e1381] [cursor=pointer]:
+                        - generic [ref=e1313]: 
+                    - generic [ref=e1315]: N/A
+              - generic [ref=e1316]:
+                - link [ref=e1382] [cursor=pointer]:
+                  - /url: https://support.google.com/webmasters/answer/7440203#not_found_404
+                  - generic [ref=e1324]: Learn More
+                - link [ref=e1383] [cursor=pointer]:
+                  - /url: ./search-console/index/drilldown?resource_id=https%3A%2F%2Ftegnogfarge.no%2F&item_key=CAMYDSAC
+                  - generic [ref=e1331]: open report
+          - generic [ref=e1332]: Enhancements & Experience
+          - generic [ref=e1336]: Only indexed URLs can have enhancements
+  - dialog "Testing live URL" [ref=e1385]:
+    - generic [ref=e1387]:
+      - generic [ref=e1388]: Testing live URL
+      - progressbar "Testing live URL" [ref=e1390]
+      - generic [ref=e1396]: This might take a minute or two
+      - button "Cancel" [active] [ref=e1398] [cursor=pointer]:
+        - generic [ref=e1400]: Cancel

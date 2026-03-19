@@ -1,0 +1,301 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e2]: Fargelegg kjøretøy – biler, tog, fly, brannbil og skolebuss! Tegn online eller last ned gratis ark til utskrift. Moro for barn og voksne.
+  - generic [ref=e406]:
+    - banner [ref=e407]:
+      - generic [ref=e409]:
+        - link "Til forsiden" [ref=e411] [cursor=pointer]:
+          - /url: /
+          - img "TegnOgFarge.no Logo" [ref=e412]
+        - navigation "Hovednavigasjon" [ref=e413]:
+          - link "Fargeleggingsark" [ref=e414] [cursor=pointer]:
+            - /url: /alle-underkategorier
+          - link "Kategorier" [ref=e415] [cursor=pointer]:
+            - /url: /hoved-kategori
+          - link "Om Oss" [ref=e416] [cursor=pointer]:
+            - /url: /om-oss
+        - link "Logg inn/Registrer" [ref=e418] [cursor=pointer]:
+          - /url: /login
+    - main [ref=e419]:
+      - generic [ref=e421]:
+        - navigation "Brødsmulesti" [ref=e422]:
+          - link "Tilbake til forsiden" [ref=e423] [cursor=pointer]:
+            - /url: /
+        - generic [ref=e424]:
+          - heading "Kjøretøy" [level=1] [ref=e425]
+          - paragraph [ref=e426]: Velkommen til Kjøretøy, en kategori full av action, fart og motorbrøl! Her kan barna fargelegge alt fra raske racerbiler og monstertrucker til helikoptre, busser, fly og traktorer. Motivene er tilpasset ulike aldersgrupper og passer like godt for de yngste som nettopp har begynt å fargelegge, som for de litt eldre som liker flere detaljer. Alle tegningene er helt gratis og kan enten lastes ned som høyoppløselige PDF-er til utskrift, eller fargelegges direkte i nettleseren – enkelt og tilgjengelig for alle. Dette er en perfekt aktivitet for bilglade barn, skoleprosjekter med transporttema, eller bare en kreativ pause hjemme.
+        - generic [ref=e427]:
+          - region "Underkategorier" [ref=e429]:
+            - heading "Underkategorier" [level=2] [ref=e430]
+            - generic [ref=e431]:
+              - article [ref=e432]:
+                - link "Gå til Fargelegg Biler fargeleggingsark" [ref=e433] [cursor=pointer]:
+                  - /url: /kjoretoy/fargelegg-biler
+                  - figure [ref=e434]:
+                    - img "underkategori som representerer biler. Her finner du mange fargetegninger av biler" [ref=e436]
+                - generic [ref=e437]:
+                  - link "Gå til Fargelegg Biler fargeleggingsark" [ref=e438] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegg-biler
+                    - heading "Fargelegg Biler" [level=2] [ref=e439]
+                  - generic [ref=e440]:
+                    - generic [ref=e441]: Enkel
+                    - generic [ref=e442]: 37 tegninger
+              - article [ref=e443]:
+                - link "Gå til Fargelegg Monster Truck fargeleggingsark" [ref=e444] [cursor=pointer]:
+                  - /url: /kjoretoy/fargelegg-monster-truck
+                  - figure [ref=e445]:
+                    - img "forskjellige motiver av Monster Truck for å illustrerer underkategorien Monster Truck" [ref=e447]
+                - generic [ref=e448]:
+                  - link "Gå til Fargelegg Monster Truck fargeleggingsark" [ref=e449] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegg-monster-truck
+                    - heading "Fargelegg Monster Truck" [level=2] [ref=e450]
+                  - generic [ref=e451]:
+                    - generic [ref=e452]: Enkel
+                    - generic [ref=e453]: 22 tegninger
+              - article [ref=e454]:
+                - link "Gå til Fargelegg Traktorer fargeleggingsark" [ref=e455] [cursor=pointer]:
+                  - /url: /kjoretoy/fargelegg-traktorer
+                  - figure [ref=e456]:
+                    - img "underkategori som representerer traktorer. Her finner du mange fargetegninger av forskjellige traktorer" [ref=e458]
+                - generic [ref=e459]:
+                  - link "Gå til Fargelegg Traktorer fargeleggingsark" [ref=e460] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegg-traktorer
+                    - heading "Fargelegg Traktorer" [level=2] [ref=e461]
+                  - generic [ref=e462]:
+                    - generic [ref=e463]: Enkel
+                    - generic [ref=e464]: 25 tegninger
+              - article [ref=e465]:
+                - link "Gå til Fargelegge Brannbil fargeleggingsark" [ref=e466] [cursor=pointer]:
+                  - /url: /kjoretoy/fargelegge-brannbil
+                  - figure [ref=e467]:
+                    - img "Brannbil med stige og to brannmenn som redder en katt ned fra et tre." [ref=e469]
+                - generic [ref=e470]:
+                  - link "Gå til Fargelegge Brannbil fargeleggingsark" [ref=e471] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegge-brannbil
+                    - heading "Fargelegge Brannbil" [level=2] [ref=e472]
+                  - generic [ref=e473]:
+                    - generic [ref=e474]: Enkel
+                    - generic [ref=e475]: 30 tegninger
+              - article [ref=e476]:
+                - link "Gå til Fargelegge Båt fargeleggingsark" [ref=e477] [cursor=pointer]:
+                  - /url: /kjoretoy/fargelegge-bat
+                  - figure [ref=e478]:
+                    - img "fargelegge båt som ser ut som en piratbåt" [ref=e480]
+                - generic [ref=e481]:
+                  - link "Gå til Fargelegge Båt fargeleggingsark" [ref=e482] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegge-bat
+                    - heading "Fargelegge Båt" [level=2] [ref=e483]
+                  - generic [ref=e484]:
+                    - generic [ref=e485]: Enkel
+                    - generic [ref=e486]: 35 tegninger
+              - article [ref=e487]:
+                - link "Gå til Fargelegge Fly fargeleggingsark" [ref=e488] [cursor=pointer]:
+                  - /url: /kjoretoy/fargelegge-fly
+                  - figure [ref=e489]:
+                    - img "fly med skjerf og solbriller flyr blant stjernene" [ref=e491]
+                - generic [ref=e492]:
+                  - link "Gå til Fargelegge Fly fargeleggingsark" [ref=e493] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegge-fly
+                    - heading "Fargelegge Fly" [level=2] [ref=e494]
+                  - generic [ref=e495]:
+                    - generic [ref=e496]: Enkel
+                    - generic [ref=e497]: 37 tegninger
+              - article [ref=e498]:
+                - link "Gå til Fargelegge Gravemaskin fargeleggingsark" [ref=e499] [cursor=pointer]:
+                  - /url: /kjoretoy/fargelegge-gravemaskin
+                  - figure [ref=e500]:
+                    - img "Gravemaskin med hydraulisk hammer som river ned en murvegg." [ref=e502]
+                - generic [ref=e503]:
+                  - link "Gå til Fargelegge Gravemaskin fargeleggingsark" [ref=e504] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegge-gravemaskin
+                    - heading "Fargelegge Gravemaskin" [level=2] [ref=e505]
+                  - generic [ref=e506]:
+                    - generic [ref=e507]: Enkel
+                    - generic [ref=e508]: 38 tegninger
+              - article [ref=e509]:
+                - link "Gå til Fargelegge Lastebil fargeleggingsark" [ref=e510] [cursor=pointer]:
+                  - /url: /kjoretoy/fargelegge-lastebil
+                  - figure [ref=e511]:
+                    - img "forskjellige fargeleggingsark av lastebiler for å illustrerer underkategorien lastebil" [ref=e513]
+                - generic [ref=e514]:
+                  - link "Gå til Fargelegge Lastebil fargeleggingsark" [ref=e515] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegge-lastebil
+                    - heading "Fargelegge Lastebil" [level=2] [ref=e516]
+                  - generic [ref=e517]:
+                    - generic [ref=e518]: Enkel
+                    - generic [ref=e519]: 44 tegninger
+              - article [ref=e520]:
+                - link "Gå til Fargelegging Politibil fargeleggingsark" [ref=e521] [cursor=pointer]:
+                  - /url: /kjoretoy/fargelegging-politibil
+                  - figure [ref=e522]:
+                    - img "Politibil som møter en elg - representerer kategorien fargelegge politibil" [ref=e524]
+                - generic [ref=e525]:
+                  - link "Gå til Fargelegging Politibil fargeleggingsark" [ref=e526] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegging-politibil
+                    - heading "Fargelegging Politibil" [level=2] [ref=e527]
+                  - generic [ref=e528]:
+                    - generic [ref=e529]: Enkel
+                    - generic [ref=e530]: 36 tegninger
+              - article [ref=e531]:
+                - link "Gå til fargelegge racerbil fargeleggingsark" [ref=e532] [cursor=pointer]:
+                  - /url: /kjoretoy/fargelegge-racerbil
+                  - figure [ref=e533]:
+                    - img "racerbil i full skrens klar til fargelegging" [ref=e535]
+                - generic [ref=e536]:
+                  - link "Gå til fargelegge racerbil fargeleggingsark" [ref=e537] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegge-racerbil
+                    - heading "fargelegge racerbil" [level=2] [ref=e538]
+                  - generic [ref=e539]:
+                    - generic [ref=e540]: Enkel
+                    - generic [ref=e541]: 40 tegninger
+          - complementary [ref=e542]:
+            - generic [ref=e543]:
+              - generic [ref=e544]:
+                - heading "Prøv appen vår!" [level=3] [ref=e545]
+                - paragraph [ref=e546]: Scan QR-koden for å laste ned appen
+              - link "Last ned Tegn og Farge appen fra App Store - Scan QR kode" [ref=e549] [cursor=pointer]:
+                - /url: https://apps.apple.com/no/app/tegn-farge/id6755291484?l=nb
+                - img "QR kode for å laste ned Tegn og Farge app fra App Store - scan med mobilkamera for å åpne appen direkte" [ref=e550]
+              - generic [ref=e551]:
+                - heading "Hjelp oss teste!" [level=4] [ref=e552]
+                - paragraph [ref=e553]: Vi utvikler appen sammen med deg
+                - list [ref=e554]:
+                  - listitem [ref=e555]:
+                    - generic [ref=e556]: ✓
+                    - generic [ref=e557]: Bli testbruker
+                  - listitem [ref=e558]:
+                    - generic [ref=e559]: ✓
+                    - generic [ref=e560]: Gi tilbakemelding
+                  - listitem [ref=e561]:
+                    - generic [ref=e562]: ✓
+                    - generic [ref=e563]: Påvirk utviklingen
+              - link "Besøk App Store" [ref=e565] [cursor=pointer]:
+                - /url: https://apps.apple.com/no/app/tegn-farge/id6755291484?l=nb
+    - contentinfo [ref=e566]:
+      - generic [ref=e567]:
+        - generic [ref=e568]:
+          - generic [ref=e569]:
+            - paragraph [ref=e570]: Bli med på vårt nyhetsbrev for å holde deg oppdatert om funksjoner og nyheter.
+            - generic [ref=e571]:
+              - generic [ref=e572]:
+                - textbox "Din e-postadresse" [ref=e573]:
+                  - /placeholder: Skriv inn e-posten din
+                - button "Abonner på nyhetsbrevet" [disabled] [ref=e574]: Abonner
+              - generic:
+                - text: Phone (optional)
+                - textbox
+          - generic [ref=e578]:
+            - generic [ref=e579]:
+              - heading "Informasjon" [level=3] [ref=e580]
+              - list [ref=e581]:
+                - listitem [ref=e582]:
+                  - link "Om TegnOgFarge.no" [ref=e583] [cursor=pointer]:
+                    - /url: /om-oss
+                - listitem [ref=e584]:
+                  - link "Om Skribenten" [ref=e585] [cursor=pointer]:
+                    - /url: /om-skribenten
+                - listitem [ref=e586]:
+                  - link "Kontakt Oss" [ref=e587] [cursor=pointer]:
+                    - /url: /kontakt
+                - listitem [ref=e588]:
+                  - link "Vilkår og Betingelser" [ref=e589] [cursor=pointer]:
+                    - /url: /vilkar-og-betingelser
+                - listitem [ref=e590]:
+                  - link "Personvernerklæring" [ref=e591] [cursor=pointer]:
+                    - /url: /personvernerklaering
+                - listitem [ref=e592]:
+                  - link "Lisensieringspolicy" [ref=e593] [cursor=pointer]:
+                    - /url: /lisensieringspolicy
+                - listitem [ref=e594]:
+                  - link "Fjerning av Innhold" [ref=e595] [cursor=pointer]:
+                    - /url: /fjerning-av-innhold
+                - listitem [ref=e596]:
+                  - link "Svensk" [ref=e597] [cursor=pointer]:
+                    - /url: /sv/fordon
+                    - img [ref=e598]
+                    - text: Svensk
+                - listitem [ref=e600]:
+                  - link "Tysk" [ref=e601] [cursor=pointer]:
+                    - /url: /de/fahrzeuge
+                    - img [ref=e602]
+                    - text: Tysk
+            - generic [ref=e604]:
+              - heading "Populære Kategorier" [level=3] [ref=e605]
+              - list [ref=e606]:
+                - listitem [ref=e607]:
+                  - link "Tegneserier" [ref=e608] [cursor=pointer]:
+                    - /url: /tegneserier
+                - listitem [ref=e609]:
+                  - link "Mandala" [ref=e610] [cursor=pointer]:
+                    - /url: /fargelegg-mandala
+                - listitem [ref=e611]:
+                  - link "Vitenskap" [ref=e612] [cursor=pointer]:
+                    - /url: /vitenskap
+                - listitem [ref=e613]:
+                  - link "Kjøretøy" [ref=e614] [cursor=pointer]:
+                    - /url: /kjoretoy
+                - listitem [ref=e615]:
+                  - link "Dyr" [ref=e616] [cursor=pointer]:
+                    - /url: /dyr
+                - listitem [ref=e617]:
+                  - link "Natur" [ref=e618] [cursor=pointer]:
+                    - /url: /natur
+                - listitem [ref=e619]:
+                  - link "Blomster" [ref=e620] [cursor=pointer]:
+                    - /url: /blomster
+            - generic [ref=e621]:
+              - heading "Populære Sider" [level=3] [ref=e622]
+              - list [ref=e623]:
+                - listitem [ref=e624]:
+                  - link "Enhjørninger" [ref=e625] [cursor=pointer]:
+                    - /url: /tegneserier/fargelegg-enhjorninger
+                - listitem [ref=e626]:
+                  - link "Sommeren" [ref=e627] [cursor=pointer]:
+                    - /url: /natur/fargelegg-sommeren
+                - listitem [ref=e628]:
+                  - link "Biler" [ref=e629] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegg-biler
+                - listitem [ref=e630]:
+                  - link "Prinsesser" [ref=e631] [cursor=pointer]:
+                    - /url: /tegneserier/fargelegg-prinsesser
+                - listitem [ref=e632]:
+                  - link "Høstens Motiver" [ref=e633] [cursor=pointer]:
+                    - /url: /natur/fargelegg-hostens-motiver
+                - listitem [ref=e634]:
+                  - link "Hunder" [ref=e635] [cursor=pointer]:
+                    - /url: /dyr/fargelegg-hunder
+                - listitem [ref=e636]:
+                  - link "Gresskar" [ref=e637] [cursor=pointer]:
+                    - /url: /mat/fargelegg-gresskar
+            - generic [ref=e638]:
+              - heading "Følg oss" [level=3] [ref=e639]
+              - list [ref=e640]:
+                - listitem [ref=e641]:
+                  - img [ref=e643]
+                  - link "Facebook" [ref=e645] [cursor=pointer]:
+                    - /url: https://www.facebook.com/profile.php?id=61577707270746
+                - listitem [ref=e646]:
+                  - img [ref=e648]
+                  - link "Instagram" [ref=e650] [cursor=pointer]:
+                    - /url: https://www.instagram.com/tegnogfarge.no/
+                - listitem [ref=e651]:
+                  - img [ref=e653]
+                  - link "YouTube" [ref=e655] [cursor=pointer]:
+                    - /url: /#
+                - listitem [ref=e656]:
+                  - img [ref=e658]
+                  - link "Pinterest" [ref=e660] [cursor=pointer]:
+                    - /url: https://no.pinterest.com/TegnOgFarge/
+        - generic [ref=e662]:
+          - paragraph [ref=e663]: © 2026 TegnOgFarge.no. Alle rettigheter reservert.
+          - navigation "Juridisk informasjon":
+            - list
+  - generic [ref=e381]:
+    - generic [ref=e382]:
+      - heading "Vi respekterer personvernet ditt" [level=2] [ref=e383]
+      - paragraph [ref=e384]: Vi bruker informasjonskapsler for å forbedre nettleseropplevelsen din, vise personlig tilpassede annonser eller innhold, og analysere trafikken vår. Ved å klikke på "Godta alle", samtykker du til vår bruk av informasjonskapsler.
+    - generic [ref=e385]:
+      - button "Aksepter alle informasjonskapsler" [ref=e386] [cursor=pointer]: Aksepter alt
+      - generic [ref=e387]:
+        - button "Tilpass samtykkepreferanser" [ref=e388] [cursor=pointer]: Tilpass
+        - button "Avvis alle informasjonskapsler" [ref=e389] [cursor=pointer]: Avvis
+  - generic "Privacy center" [ref=e405] [cursor=pointer]: ⚙

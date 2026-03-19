@@ -1,0 +1,53 @@
+- generic [ref=e2]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - button "Main menu" [ref=e7] [cursor=pointer]:
+          - img [ref=e8]
+        - link "Google Search Console" [ref=e12] [cursor=pointer]:
+          - /url: ./search-console
+          - img [ref=e13]
+      - generic [ref=e17]:
+        - button "Help" [ref=e19] [cursor=pointer]:
+          - generic [ref=e22]: 
+        - button "User settings" [ref=e24] [cursor=pointer]:
+          - img [ref=e27]
+      - generic [ref=e30]:
+        - button "Google apps" [ref=e34] [cursor=pointer]:
+          - img [ref=e35]
+        - 'button "Google Account: Petter Lund (ronincarpenter90@gmail.com)" [ref=e40] [cursor=pointer]':
+          - img [ref=e42]
+  - dialog "navigational drawer" [ref=e46]:
+    - navigation "Primary" [ref=e49]:
+      - button "Search property" [ref=e53] [cursor=pointer]:
+        - generic [ref=e59]:
+          - combobox "Search property" [ref=e60]
+          - generic: Search property
+        - generic [ref=e61]: 
+      - generic [ref=e63]:
+        - generic [ref=e65]:
+          - button "Submit feedback" [ref=e67] [cursor=pointer]:
+            - generic [ref=e69]: feedback
+            - generic [ref=e71]: Submit feedback
+          - button "About Search Console" [ref=e74] [cursor=pointer]:
+            - generic [ref=e76]: info
+            - generic [ref=e78]: About Search Console
+        - generic [ref=e82]:
+          - link "Privacy" [ref=e83] [cursor=pointer]:
+            - /url: https://myaccount.google.com/privacypolicy?hl=en
+          - link "Terms" [ref=e84] [cursor=pointer]:
+            - /url: https://myaccount.google.com/termsofservice?hl=en
+  - generic [ref=e87]:
+    - generic [ref=e89]: 
+    - generic [ref=e90]: Oops, you don't have access to this property
+    - generic [ref=e91]:
+      - generic [ref=e92]:
+        - text: "Signed in as:"
+        - generic [ref=e93]: ronincarpenter90@gmail.com
+      - generic [ref=e94]:
+        - text: "Property:"
+        - generic [ref=e95]: tegnogfarge.no
+      - generic [ref=e96]: Sign in with an account that can access this property, or request access from a property owner.
+      - generic [ref=e97]: Otherwise
+      - button "Verify your ownership" [ref=e99] [cursor=pointer]:
+        - generic [ref=e103]: Verify your ownership

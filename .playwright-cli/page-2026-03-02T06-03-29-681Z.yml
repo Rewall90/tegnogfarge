@@ -1,0 +1,326 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e490]:
+    - generic [ref=e493]:
+      - generic [ref=e494]:
+        - link "Ezoic" [ref=e496] [cursor=pointer]:
+          - /url: /
+          - img "Ezoic" [ref=e497]
+        - generic [ref=e501]: tegnogfarge.no
+        - generic [ref=e502] [cursor=pointer]: + Add a site
+      - menu [ref=e505]:
+        - menuitem "Home" [ref=e506] [cursor=pointer]:
+          - link [ref=e507]:
+            - /url: /dashboard
+            - img [ref=e508]
+        - menuitem "EzoicAds" [ref=e509] [cursor=pointer]:
+          - link [ref=e510]:
+            - /url: /ezoicads
+            - img [ref=e511]
+        - menuitem "Identity" [ref=e512] [cursor=pointer]:
+          - link [ref=e513]:
+            - /url: /identity
+            - img [ref=e514]
+        - menuitem "Videos" [ref=e515] [cursor=pointer]:
+          - link [ref=e516]:
+            - /url: /video
+            - img [ref=e517]
+        - menuitem "Analytics" [ref=e518] [cursor=pointer]:
+          - link [ref=e519]:
+            - /url: https://analytics.ezoic.com/reports/default
+            - img [ref=e520]
+        - menuitem "Settings" [ref=e521] [cursor=pointer]:
+          - link [ref=e522]:
+            - /url: /settings
+            - img [ref=e523]
+        - menuitem "" [ref=e524] [cursor=pointer]:
+          - generic [ref=e528]: 
+      - generic [ref=e529]:
+        - link "Support Resources" [ref=e532] [cursor=pointer]:
+          - /url: https://support.ezoic.com/
+        - generic [ref=e534] [cursor=pointer]: English
+        - generic [ref=e537]:
+          - textbox "Search..." [ref=e538]
+          - 'generic "icon: search" [ref=e540]':
+            - img [ref=e541]
+        - generic [ref=e545] [cursor=pointer]: 
+    - main [ref=e546]:
+      - generic [ref=e551]:
+        - generic [ref=e553]:
+          - img [ref=e555] [cursor=pointer]
+          - generic [ref=e556] [cursor=pointer]: close
+        - generic [ref=e557]:
+          - complementary [ref=e558]:
+            - menu [ref=e560]:
+              - menuitem "web Ad Positions" [ref=e561] [cursor=pointer]:
+                - generic [ref=e562]:
+                  - generic [ref=e563]: web
+                  - text: Ad Positions
+              - menuitem "settings_applications Ad Types" [ref=e564] [cursor=pointer]:
+                - generic [ref=e565]:
+                  - generic [ref=e566]: settings_applications
+                  - text: Ad Types
+              - menuitem "tune Ad Configuration" [ref=e567] [cursor=pointer]:
+                - generic [ref=e568]:
+                  - generic [ref=e569]: tune
+                  - text: Ad Configuration
+              - menuitem "price_change Ad Campaign" [ref=e570] [cursor=pointer]:
+                - generic [ref=e571]:
+                  - generic [ref=e572]: price_change
+                  - text: Ad Campaign
+              - menuitem "settings_ethernet Ad Integration" [ref=e573] [cursor=pointer]:
+                - generic [ref=e574]:
+                  - generic [ref=e575]: settings_ethernet
+                  - text: Ad Integration
+              - menuitem "border_all Ad Transparency" [ref=e576] [cursor=pointer]:
+                - generic [ref=e577]:
+                  - generic [ref=e578]: border_all
+                  - text: Ad Transparency
+              - menuitem "shield Ad Restrictions" [ref=e579] [cursor=pointer]:
+                - generic [ref=e580]:
+                  - generic [ref=e581]: shield
+                  - text: Ad Restrictions
+              - menuitem "data_usage Optimization Goals" [ref=e582] [cursor=pointer]:
+                - generic [ref=e583]:
+                  - generic [ref=e584]: data_usage
+                  - text: Optimization Goals
+              - menuitem "paid Rev. Opportunities" [ref=e585] [cursor=pointer]:
+                - generic [ref=e586]:
+                  - generic [ref=e587]: paid
+                  - text: Rev. Opportunities
+              - menuitem "redeem Rewarded Ads" [ref=e588] [cursor=pointer]:
+                - generic [ref=e589]:
+                  - generic [ref=e590]: redeem
+                  - text: Rewarded Ads
+              - menuitem "folder_special Resources" [ref=e591] [cursor=pointer]:
+                - generic [ref=e592]:
+                  - generic [ref=e593]: folder_special
+                  - text: Resources
+          - main [ref=e594]:
+            - generic [ref=e595]:
+              - generic [ref=e600]:
+                - generic [ref=e601]: Ezoic Ads
+                - generic [ref=e602]: Rewarded Ads
+              - generic [ref=e795]:
+                - generic [ref=e796]:
+                  - heading "Rewarded Ads" [level=2] [ref=e797]
+                  - paragraph [ref=e798]: Learn about rewarded ads and explore implementation examples.
+                - generic [ref=e800]:
+                  - button "Overview" [ref=e801] [cursor=pointer]
+                  - button "Examples" [ref=e802] [cursor=pointer]
+                  - button "Settings" [ref=e803] [cursor=pointer]
+                  - 'button "icon: robot AI Setup Tools BETA" [ref=e804] [cursor=pointer]':
+                    - 'generic "icon: robot"'
+                    - text: AI Setup Tools BETA
+                - generic [ref=e968]:
+                  - button "← Back" [ref=e1236] [cursor=pointer]:
+                    - generic [ref=e1237]: ←
+                    - text: Back
+                  - generic [ref=e1239]:
+                    - generic [ref=e1240]:
+                      - heading "Digital Downloads" [level=3] [ref=e1241]
+                      - paragraph [ref=e1242]: Unlock digital downloads through rewarded video ads.
+                      - generic [ref=e1243]:
+                        - generic [ref=e1244]: downloads
+                        - generic [ref=e1245]: icons
+                        - generic [ref=e1246]: assets
+                    - generic [ref=e1247]:
+                      - heading "Download Rewards" [level=1] [ref=e1248]
+                      - paragraph [ref=e1249]: This example shows how to use rewarded ads to unlock premium icon pack downloads.
+                      - heading "Interactive Simulation" [level=2] [ref=e1250]
+                      - paragraph [ref=e1251]: "Try the interactive simulation below to see how users can unlock an icon pack download:"
+                      - generic [ref=e1253]:
+                        - generic [ref=e1254]: "Icon Pack: Plants and Flowers"
+                        - generic [ref=e1256]:
+                          - generic [ref=e1257]:
+                            - generic [ref=e1258]: 🌲
+                            - generic [ref=e1259]: Pine Tree
+                            - generic: PREVIEW
+                          - generic [ref=e1260]:
+                            - generic [ref=e1261]: 🌸
+                            - generic [ref=e1262]: Cherry Blossom
+                            - generic: PREVIEW
+                          - generic [ref=e1263]:
+                            - generic [ref=e1264]: 🍃
+                            - generic [ref=e1265]: Leaves
+                            - generic: PREVIEW
+                          - generic [ref=e1266]:
+                            - generic [ref=e1267]: 🌺
+                            - generic [ref=e1268]: Hibiscus
+                            - generic: PREVIEW
+                          - generic [ref=e1269]:
+                            - generic [ref=e1270]: 🍀
+                            - generic [ref=e1271]: Clover
+                            - generic: PREVIEW
+                          - generic [ref=e1272]:
+                            - generic [ref=e1273]: 🌵
+                            - generic [ref=e1274]: Cactus
+                            - generic: PREVIEW
+                        - generic [ref=e1275]:
+                          - generic [ref=e1276]:
+                            - generic [ref=e1277]:
+                              - img [ref=e1278]
+                              - text: Premium Download
+                            - paragraph [ref=e1283]: Get the complete icon pack with commercial license
+                            - generic [ref=e1284]:
+                              - generic [ref=e1285]:
+                                - img [ref=e1286]
+                                - strong [ref=e1288]: 6 icons
+                                - text: in SVG, PNG formats
+                              - generic [ref=e1289]:
+                                - img [ref=e1290]
+                                - strong [ref=e1293]: Commercial license
+                                - text: included
+                              - generic [ref=e1294]:
+                                - img [ref=e1295]
+                                - strong [ref=e1298]: 2.1MB
+                                - text: ZIP file
+                          - button "Watch Ad to Download" [ref=e1299] [cursor=pointer]:
+                            - img
+                            - text: Watch Ad to Download
+                      - paragraph [ref=e1301]:
+                        - strong [ref=e1302]: "How to interact with the simulation:"
+                      - list [ref=e1303]:
+                        - listitem [ref=e1304]: Browse the Plants and Flowers icon pack with detailed specifications
+                        - listitem [ref=e1305]: See preview icons with watermarks showing the style and content
+                        - listitem [ref=e1306]: Click "Watch Ad to Download" to unlock the full icon pack
+                        - listitem [ref=e1307]: Confirm you want to watch the video in the dialog
+                        - listitem [ref=e1308]: Watch the 5-second ad simulation with countdown timer
+                        - listitem [ref=e1309]: Click "X" when the ad finishes to unlock your download
+                        - listitem [ref=e1310]: The overlay disappears and button changes to "Download Icon Pack"
+                        - listitem [ref=e1311]: Click the download button to simulate the file download
+                      - paragraph [ref=e1312]: This design matches professional icon marketplace layouts while demonstrating clear transparency about what users receive.
+                      - heading "JavaScript Implementation" [level=2] [ref=e1313]
+                      - paragraph [ref=e1314]: "This simple implementation uses Ezoic's rewarded ads API to offer exclusive downloads:"
+                      - generic [ref=e1315]:
+                        - generic [ref=e1316]:
+                          - generic [ref=e1317]: javascript
+                          - button "Copy Code" [ref=e1318] [cursor=pointer]
+                        - code [ref=e1320]: "// Initialize Ezoic Rewarded Ads window.ezstandalone = window.ezstandalone || {cmd: []}; window.ezRewardedAds = window.ezRewardedAds || {cmd: []}; ezstandalone.cmd.push(function () { ezstandalone.showAds(12); }); // Add to your download button function initializeRewardedDownload() { const downloadButton = document.getElementById(\"unlock-download-btn\"); downloadButton.addEventListener(\"click\", function () { // Show rewarded ad instead of immediate download window.ezRewardedAds.cmd.push(function () { window.ezRewardedAds.requestWithOverlay( function (result) { if (result.status && result.reward) { // User watched ad - enable download enableDownload(); } else { // Handle case where ad is unavailable console.log(\"Ad failed to load:\", result.msg); } }, // Optional: customize ad overlay dialog { header: \"Unlock Download\", body: [\"Plants and Flowers Icon Pack\", \"Complete package with commercial license\"], accept: \"Watch Ad\", cancel: \"Cancel\", }, ); }); }); } function enableDownload() { const button = document.getElementById(\"unlock-download-btn\"); button.textContent = \"Download Now\"; button.onclick = function () { // Your existing download logic window.location.href = \"/your-download-url.zip\"; }; } // Initialize when page loads document.addEventListener(\"DOMContentLoaded\", initializeRewardedDownload);"
+                      - paragraph [ref=e1321]:
+                        - strong [ref=e1322]: "What this code does:"
+                      - paragraph [ref=e1323]:
+                        - strong [ref=e1324]: "Initialization (Lines 2-6):"
+                      - list [ref=e1325]:
+                        - listitem [ref=e1326]: Add Ezoic rewarded ads to your page
+                      - paragraph [ref=e1327]:
+                        - strong [ref=e1328]: "Button Integration (Lines 9-35):"
+                      - list [ref=e1329]:
+                        - listitem [ref=e1330]: Replace direct download with rewarded ad trigger
+                        - listitem [ref=e1331]: Handle ad completion to unlock download
+                      - paragraph [ref=e1332]:
+                        - strong [ref=e1333]: "Download Enable (Lines 37-44):"
+                      - list [ref=e1334]:
+                        - listitem [ref=e1335]: Update button after successful ad view
+                      - heading "Simple HTML Implementation" [level=2] [ref=e1336]
+                      - paragraph [ref=e1337]: "Publishers only need to implement the core functionality around their existing download button:"
+                      - generic [ref=e1338]:
+                        - generic [ref=e1339]:
+                          - generic [ref=e1340]: html
+                          - button "Copy Code" [ref=e1341] [cursor=pointer]
+                        - code [ref=e1343]:
+                          - generic [ref=e1344]:
+                            - generic [ref=e1345]: <div
+                            - text: class
+                            - generic [ref=e1346]: ="download-section"
+                            - text: ">"
+                          - generic [ref=e1347]:
+                            - generic [ref=e1348]: <div
+                            - text: class
+                            - generic [ref=e1349]: ="download-info"
+                            - text: ">"
+                          - generic [ref=e1350]:
+                            - generic [ref=e1351]: <h3
+                            - text: ">"
+                          - text: Premium Download
+                          - generic [ref=e1352]:
+                            - generic [ref=e1353]: </h3
+                            - text: ">"
+                          - generic [ref=e1354]:
+                            - generic [ref=e1355]: <p
+                            - text: ">"
+                          - text: Get the complete icon pack with commercial license
+                          - generic [ref=e1356]:
+                            - generic [ref=e1357]: </p
+                            - text: ">"
+                          - generic [ref=e1358]:
+                            - generic [ref=e1359]: <ul
+                            - text: ">"
+                          - generic [ref=e1360]:
+                            - generic [ref=e1361]: <li
+                            - text: ">"
+                          - text: 6 icons in SVG, PNG formats
+                          - generic [ref=e1362]:
+                            - generic [ref=e1363]: </li
+                            - text: ">"
+                          - generic [ref=e1364]:
+                            - generic [ref=e1365]: <li
+                            - text: ">"
+                          - text: Commercial license included
+                          - generic [ref=e1366]:
+                            - generic [ref=e1367]: </li
+                            - text: ">"
+                          - generic [ref=e1368]:
+                            - generic [ref=e1369]: <li
+                            - text: ">"
+                          - text: 2.1MB ZIP file
+                          - generic [ref=e1370]:
+                            - generic [ref=e1371]: </li
+                            - text: ">"
+                          - generic [ref=e1372]:
+                            - generic [ref=e1373]: </ul
+                            - text: ">"
+                          - generic [ref=e1374]:
+                            - generic [ref=e1375]: </div
+                            - text: ">"
+                          - text: <!-- Button will update to download file when rewarded ad is complete -->
+                          - generic [ref=e1376]:
+                            - generic [ref=e1377]: <button
+                            - text: id
+                            - generic [ref=e1378]: ="unlock-download-btn"
+                            - text: class
+                            - generic [ref=e1379]: ="download-button"
+                            - text: ">"
+                          - text: Watch Ad to Download
+                          - generic [ref=e1380]:
+                            - generic [ref=e1381]: </button
+                            - text: ">"
+                          - generic [ref=e1382]:
+                            - generic [ref=e1383]: </div
+                            - text: ">"
+                      - paragraph [ref=e1384]:
+                        - strong [ref=e1385]: "What this HTML does:"
+                      - paragraph [ref=e1386]:
+                        - strong [ref=e1387]: "Reward Offer (Lines 2-10):"
+                      - list [ref=e1388]:
+                        - listitem [ref=e1389]: "Clear value proposition: Shows exactly what users receive for watching the ad"
+                      - paragraph [ref=e1390]:
+                        - strong [ref=e1391]: "Download Unlock (Lines 13-15):"
+                      - list [ref=e1392]:
+                        - listitem [ref=e1393]: Add Ezoic rewarded ads call to button click
+                        - listitem [ref=e1394]: Update button text and behavior after ad completion
+                        - listitem [ref=e1395]: Integrate with your existing download system
+                      - heading "Download Reward Integration Tips" [level=2] [ref=e1396]
+                      - heading "Clear User Communication" [level=3] [ref=e1397]
+                      - list [ref=e1398]:
+                        - listitem [ref=e1399]: Show exactly what users will receive after watching the ad
+                        - listitem [ref=e1400]: Include file formats, sizes, and licensing terms upfront
+                        - listitem [ref=e1401]: Use preview thumbnails or watermarked samples to demonstrate value
+                      - heading "Content Strategy" [level=3] [ref=e1402]
+                      - list [ref=e1403]:
+                        - listitem [ref=e1404]: "Focus on high-value assets: complete icon sets, premium templates, or commercial licenses"
+                        - listitem [ref=e1405]: Bundle smaller items into valuable packages rather than individual files
+                        - listitem [ref=e1406]: Consider time-limited exclusives for ad-unlocked downloads
+                      - heading "Technical Security" [level=3] [ref=e1407]
+                      - list [ref=e1408]:
+                        - listitem [ref=e1409]: Place download URLs behind server-side verification to prevent bypassing
+                        - listitem [ref=e1410]: Generate temporary download tokens after ad completion
+                        - listitem [ref=e1411]: Implement rate limiting to prevent abuse
+                        - listitem [ref=e1412]: Log ad completion events for analytics
+    - generic [ref=e791]:
+      - img "Ezoic Inc." [ref=e792]
+      - generic [ref=e793]:
+        - text: © 2026
+        - link "Ezoic Inc." [ref=e794] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - generic "Privacy center" [ref=e158] [cursor=pointer]: ⚙

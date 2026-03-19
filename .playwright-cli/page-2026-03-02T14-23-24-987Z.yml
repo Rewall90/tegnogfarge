@@ -1,0 +1,175 @@
+- generic [active] [ref=e1]:
+  - img [ref=e6]
+  - generic [ref=e18]:
+    - banner [ref=e19]:
+      - generic [ref=e20]:
+        - link "Skip to main content" [ref=e23] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=e26]: Skip to main content
+        - generic [ref=e27]:
+          - button "Collapse navigation menu" [ref=e28] [cursor=pointer]:
+            - img [ref=e31]: menu
+          - heading "Ad Manager" [level=2] [ref=e33]:
+            - link "Ad Manager" [ref=e34] [cursor=pointer]:
+              - /url: /22712188410?authuser=0
+              - generic [ref=e35]: Ad Manager
+        - search [ref=e36]:
+          - generic [ref=e41]:
+            - img [ref=e44]: search
+            - generic [ref=e45]:
+              - generic:
+                - generic: Search for tools, features, and more
+              - combobox "Search for tools, features, and more" [ref=e46]
+        - generic [ref=e47]:
+          - button "Help" [ref=e49] [cursor=pointer]:
+            - img [ref=e52]: help_outline
+          - button "Notifications" [ref=e55] [cursor=pointer]:
+            - img [ref=e58]: notifications
+          - button "More options" [ref=e61] [cursor=pointer]:
+            - img [ref=e64]: more_vert
+          - button "Google account" [ref=e68] [cursor=pointer]:
+            - img "Google account (ronincarpenter90@gmail.com)" [ref=e69]
+    - generic [ref=e70]:
+      - navigation "Sidebar" [ref=e72]:
+        - list [ref=e74]:
+          - listitem [ref=e75]:
+            - button "Petter Maurtveten Lund 22712188410" [ref=e76] [cursor=pointer]:
+              - img [ref=e80]: business
+              - generic [ref=e81]:
+                - generic [ref=e82]: Petter Maurtveten Lund
+                - generic [ref=e83]: "22712188410"
+        - heading "Main navigation" [level=2] [ref=e85]
+        - list [ref=e86]:
+          - listitem [ref=e88]:
+            - link "Home" [ref=e89] [cursor=pointer]:
+              - /url: "#home"
+              - img [ref=e93]: home
+              - generic [ref=e95]: Home
+          - listitem [ref=e98]:
+            - button "Delivery" [ref=e99] [cursor=pointer]:
+              - img [ref=e102]: arrow_right
+              - img [ref=e105]: local_shipping
+              - generic [ref=e107]: Delivery
+          - listitem [ref=e110]:
+            - button "Inventory" [ref=e111] [cursor=pointer]:
+              - img [ref=e114]: arrow_right
+              - img [ref=e117]: picture_in_picture
+              - generic [ref=e119]: Inventory
+          - listitem [ref=e122]:
+            - link "Protections" [ref=e123] [cursor=pointer]:
+              - /url: "#protections/list"
+              - img [ref=e127]: verified_user
+              - generic [ref=e129]: Protections
+          - listitem [ref=e132]:
+            - button "Reporting" [ref=e133] [cursor=pointer]:
+              - img [ref=e136]: arrow_right
+              - img [ref=e139]: insert_chart
+              - generic [ref=e141]: Reporting
+          - listitem [ref=e144]:
+            - button "Optimization" [ref=e145] [cursor=pointer]:
+              - img [ref=e148]: arrow_right
+              - img [ref=e151]: insights
+              - generic [ref=e153]: Optimization
+          - listitem [ref=e156]:
+            - link "Privacy & messaging" [ref=e157] [cursor=pointer]:
+              - /url: "#privacy_and_messaging"
+              - img [ref=e160]
+              - generic [ref=e162]: Privacy & messaging
+          - listitem [ref=e165]:
+            - button "Payments" [ref=e166] [cursor=pointer]:
+              - img [ref=e169]: arrow_right
+              - img [ref=e172]: payments
+              - generic [ref=e174]: Payments
+          - generic [ref=e176]:
+            - listitem [ref=e177]:
+              - button "Admin" [expanded] [ref=e178] [cursor=pointer]:
+                - img [ref=e181]: arrow_right
+                - img [ref=e184]: build
+                - generic [ref=e186]: Admin
+            - generic [ref=e188]:
+              - listitem [ref=e189]:
+                - link "Global settings" [ref=e190] [cursor=pointer]:
+                  - /url: "#admin/settings/network"
+                  - img [ref=e193]
+                  - generic [ref=e196]: Global settings
+              - listitem [ref=e198]:
+                - link "Advanced features" [ref=e199] [cursor=pointer]:
+                  - /url: "#admin/advanced_features"
+                  - img [ref=e202]
+                  - generic [ref=e205]: Advanced features
+              - listitem [ref=e207]:
+                - link "Access & authorization" [ref=e208] [cursor=pointer]:
+                  - /url: "#admin/user/list"
+                  - img [ref=e211]
+                  - generic [ref=e214]: Access & authorization
+              - listitem [ref=e216]:
+                - link "Linked accounts" [ref=e217] [cursor=pointer]:
+                  - /url: "#admin/linked_accounts"
+                  - img [ref=e220]
+                  - generic [ref=e223]: Linked accounts
+              - listitem [ref=e225]:
+                - link "Delivery" [ref=e226] [cursor=pointer]:
+                  - /url: "#admin/deliverySettings"
+                  - img [ref=e229]
+                  - generic [ref=e232]: Delivery
+              - listitem [ref=e234]:
+                - link "Inventory" [ref=e235] [cursor=pointer]:
+                  - /url: "#inventory/label/list"
+                  - img [ref=e238]
+                  - generic [ref=e241]: Inventory
+              - listitem [ref=e243]:
+                - link "Video and audio" [ref=e244] [cursor=pointer]:
+                  - /url: "#admin/videoSettings"
+                  - img [ref=e247]
+                  - generic [ref=e250]: Video and audio
+              - listitem [ref=e252]:
+                - link "Companies" [ref=e253] [cursor=pointer]:
+                  - /url: "#admin/company/list"
+                  - img [ref=e256]
+                  - generic [ref=e259]: Companies
+              - listitem [ref=e261]:
+                - link "EU user consent" [ref=e262] [cursor=pointer]:
+                  - /url: "#protections/eu_user_consent"
+                  - img [ref=e265]
+                  - generic [ref=e268]: EU user consent
+              - listitem [ref=e270]:
+                - link "Change history" [ref=e271] [cursor=pointer]:
+                  - /url: "#admin/change_history"
+                  - img [ref=e274]
+                  - generic [ref=e277]: Change history
+              - listitem [ref=e279]:
+                - link "Multiple Customer Management (MCM)" [ref=e280] [cursor=pointer]:
+                  - /url: "#admin/mcm"
+                  - img [ref=e283]
+                  - generic [ref=e286]: Multiple Customer Management (MCM)
+      - main "Main content" [ref=e287]:
+        - generic [ref=e288]:
+          - progressbar "loading" [ref=e293]
+          - generic [ref=e299]:
+            - text: © 2026 Google -
+            - link "Privacy Policy" [ref=e300] [cursor=pointer]:
+              - /url: https://policies.google.com/privacy
+            - text: "-"
+            - link "Help" [ref=e301] [cursor=pointer]:
+              - /url: http://support.google.com/admanager?utm_source=dfp_fe&utm_medium=et&utm_campaign=in-product_link
+            - text: "-"
+            - link "Release notes" [ref=e302] [cursor=pointer]:
+              - /url: https://support.google.com/admanager/answer/179039
+            - text: "-"
+            - link "Blog" [ref=e303] [cursor=pointer]:
+              - /url: https://www.blog.google/products/admanager/
+            - text: "-"
+            - link "Ads Status Dashboard" [ref=e304] [cursor=pointer]:
+              - /url: http://ads.google.com/status#hl=en-US&v=status
+      - contentinfo "Footer" [ref=e305]:
+        - generic [ref=e307]:
+          - text: © 2026 Google -
+          - generic [ref=e308]: Privacy Policy
+          - text: "-"
+          - generic [ref=e309]: Help
+          - text: "-"
+          - generic [ref=e310]: Release notes
+          - text: "-"
+          - generic [ref=e311]: Blog
+          - text: "-"
+          - generic [ref=e312]: Ads Status Dashboard

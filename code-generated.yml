@@ -1,0 +1,200 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e6]:
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - link "Ezoic" [ref=e12] [cursor=pointer]:
+          - /url: /
+          - img "Ezoic" [ref=e13]
+        - generic [ref=e17]: tegnogfarge.no
+        - generic [ref=e18] [cursor=pointer]: + Add a site
+      - generic: 
+      - generic [ref=e19]:
+        - link "Support Resources" [ref=e22] [cursor=pointer]:
+          - /url: https://support.ezoic.com/
+        - generic [ref=e24] [cursor=pointer]: English
+        - generic [ref=e27]:
+          - textbox "Search..." [ref=e28]
+          - 'generic "icon: search" [ref=e30]':
+            - img [ref=e31]
+        - generic [ref=e36] [cursor=pointer]:
+          - 'generic "icon: bell" [ref=e37]':
+            - img [ref=e38]
+          - superscript [ref=e40]:
+            - generic [ref=e41]:
+              - paragraph [ref=e42]: "0"
+              - paragraph [ref=e43]: "1"
+              - paragraph [ref=e44]: "2"
+              - paragraph [ref=e45]: "3"
+              - paragraph [ref=e46]: "4"
+              - paragraph [ref=e47]: "5"
+              - paragraph [ref=e48]: "6"
+              - paragraph [ref=e49]: "7"
+              - paragraph [ref=e50]: "8"
+              - paragraph [ref=e51]: "9"
+              - paragraph [ref=e52]: "0"
+              - paragraph [ref=e53]: "1"
+              - paragraph [ref=e54]: "2"
+              - paragraph [ref=e55]: "3"
+              - paragraph [ref=e56]: "4"
+              - paragraph [ref=e57]: "5"
+              - paragraph [ref=e58]: "6"
+              - paragraph [ref=e59]: "7"
+              - paragraph [ref=e60]: "8"
+              - paragraph [ref=e61]: "9"
+              - paragraph [ref=e62]: "0"
+              - paragraph [ref=e63]: "1"
+              - paragraph [ref=e64]: "2"
+              - paragraph [ref=e65]: "3"
+              - paragraph [ref=e66]: "4"
+              - paragraph [ref=e67]: "5"
+              - paragraph [ref=e68]: "6"
+              - paragraph [ref=e69]: "7"
+              - paragraph [ref=e70]: "8"
+              - paragraph [ref=e71]: "9"
+        - generic [ref=e74] [cursor=pointer]: 
+    - main [ref=e75]:
+      - generic [ref=e80]:
+        - generic [ref=e82]:
+          - img [ref=e84] [cursor=pointer]
+          - generic [ref=e85] [cursor=pointer]: close
+        - generic [ref=e86]:
+          - complementary [ref=e87]:
+            - menu [ref=e89]:
+              - menuitem "web Ad Positions" [ref=e90] [cursor=pointer]:
+                - generic [ref=e91]:
+                  - generic [ref=e92]: web
+                  - text: Ad Positions
+              - menuitem "settings_applications Ad Types" [ref=e93] [cursor=pointer]:
+                - generic [ref=e94]:
+                  - generic [ref=e95]: settings_applications
+                  - text: Ad Types
+              - menuitem "tune Ad Configuration" [ref=e96] [cursor=pointer]:
+                - generic [ref=e97]:
+                  - generic [ref=e98]: tune
+                  - text: Ad Configuration
+              - menuitem "price_change Ad Campaign" [ref=e99] [cursor=pointer]:
+                - generic [ref=e100]:
+                  - generic [ref=e101]: price_change
+                  - text: Ad Campaign
+              - menuitem "settings_ethernet Ad Integration" [ref=e102] [cursor=pointer]:
+                - generic [ref=e103]:
+                  - generic [ref=e104]: settings_ethernet
+                  - text: Ad Integration
+              - menuitem "border_all Ad Transparency" [ref=e105] [cursor=pointer]:
+                - generic [ref=e106]:
+                  - generic [ref=e107]: border_all
+                  - text: Ad Transparency
+              - menuitem "shield Ad Restrictions" [ref=e108] [cursor=pointer]:
+                - generic [ref=e109]:
+                  - generic [ref=e110]: shield
+                  - text: Ad Restrictions
+              - menuitem "data_usage Optimization Goals" [ref=e111] [cursor=pointer]:
+                - generic [ref=e112]:
+                  - generic [ref=e113]: data_usage
+                  - text: Optimization Goals
+              - menuitem "paid Rev. Opportunities" [ref=e114] [cursor=pointer]:
+                - generic [ref=e115]:
+                  - generic [ref=e116]: paid
+                  - text: Rev. Opportunities
+              - menuitem "redeem Rewarded Ads" [ref=e117] [cursor=pointer]:
+                - generic [ref=e118]:
+                  - generic [ref=e119]: redeem
+                  - text: Rewarded Ads
+              - menuitem "folder_special Resources" [ref=e120] [cursor=pointer]:
+                - generic [ref=e121]:
+                  - generic [ref=e122]: folder_special
+                  - text: Resources
+          - main [ref=e123]:
+            - generic [ref=e124]:
+              - generic [ref=e129]:
+                - generic [ref=e130]: Ezoic Ads
+                - generic [ref=e131]: Rewarded Ads
+              - generic [ref=e132]:
+                - generic [ref=e133]:
+                  - heading "Rewarded Ads" [level=2] [ref=e134]
+                  - paragraph [ref=e135]: Learn about rewarded ads and explore implementation examples.
+                - generic [ref=e137]:
+                  - button "Overview" [ref=e138] [cursor=pointer]
+                  - button "Examples" [ref=e139] [cursor=pointer]
+                  - button "Settings" [ref=e140] [cursor=pointer]
+                  - 'button "icon: robot AI Setup Tools BETA" [ref=e141] [cursor=pointer]':
+                    - 'generic "icon: robot"'
+                    - text: AI Setup Tools BETA
+                - generic [ref=e142]:
+                  - generic [ref=e309]:
+                    - tablist [ref=e310]:
+                      - generic [ref=e311]:
+                        - generic:
+                          - generic:
+                            - 'generic "icon: left"':
+                              - img
+                        - generic:
+                          - generic:
+                            - 'generic "icon: right"':
+                              - img
+                        - generic [ref=e315]:
+                          - tab "AI Assisted Setup" [selected] [ref=e316] [cursor=pointer]
+                          - tab "Script Library" [ref=e317] [cursor=pointer]
+                          - tab "Page Rules" [ref=e318] [cursor=pointer]
+                          - tab "A/B Testing" [ref=e319] [cursor=pointer]
+                    - generic:
+                      - tabpanel
+                  - generic [ref=e323]:
+                    - generic [ref=e325]:
+                      - generic [ref=e326] [cursor=pointer]:
+                        - generic [ref=e328]: ✓
+                        - generic [ref=e329]: URL
+                      - generic [ref=e330] [cursor=pointer]:
+                        - generic [ref=e332]: ✓
+                        - generic [ref=e333]: Implementation
+                      - generic [ref=e334] [cursor=pointer]:
+                        - generic [ref=e336]: ✓
+                        - generic [ref=e337]: Disclosure
+                      - generic [ref=e338] [cursor=pointer]:
+                        - generic [ref=e340]: ✓
+                        - generic [ref=e341]: Settings
+                      - generic [ref=e342] [cursor=pointer]:
+                        - generic [ref=e344]: "5"
+                        - generic [ref=e345]: Generate
+                    - generic [ref=e346]:
+                      - heading "Generated Code" [level=3] [ref=e487]
+                      - paragraph [ref=e348]: Your code is ready! Copy and implement it on your website.
+                    - generic [ref=e490]:
+                      - generic [ref=e491]:
+                        - heading "How to test this code:" [level=4] [ref=e501]
+                        - list [ref=e503]:
+                          - listitem [ref=e504]:
+                            - text: "Open this link in any browser, we'll add the code to the page for testing:"
+                            - link "https://tegnogfarge.no/tegneserier/fargelegg-enhjorninger/alv-klipper-haret-til-enhjorningen?rvt=1580" [ref=e505] [cursor=pointer]:
+                              - /url: https://tegnogfarge.no/tegneserier/fargelegg-enhjorninger/alv-klipper-haret-til-enhjorningen?rvt=1580
+                          - listitem [ref=e506]: Test the rewarded ad functionality
+                          - listitem [ref=e507]:
+                            - text: Select "Update or Troubleshoot" to make adjustments or fix any issues
+                            - button "Update or Troubleshoot" [ref=e509] [cursor=pointer]:
+                              - generic: Update or Troubleshoot
+                          - listitem [ref=e510]:
+                            - text: Save this version to your script library or download the production code.
+                            - generic [ref=e511]:
+                              - button "Save to Library" [ref=e512] [cursor=pointer]:
+                                - generic: Save to Library
+                              - generic [ref=e513] [cursor=pointer]: Download Code
+                      - generic [ref=e514]:
+                        - 'button "icon: copy Copy Test Code" [ref=e516] [cursor=pointer]':
+                          - 'generic "icon: copy"':
+                            - img
+                          - generic: Copy Test Code
+                        - code [ref=e518]: "(function() { var downloadLinkSelector = 'a[title=\"Last ned Bilde\"]'; var pdfDownloadPending = false; function handlePDFDownload() { if (pdfDownloadPending) { return; } var downloadLink = document.querySelector(downloadLinkSelector); if (!downloadLink) { console.error('Ezoic Rewarded Ads: Download link not found.'); return; } var pdfUrl = downloadLink.getAttribute('href'); if (!pdfUrl) { console.error('Ezoic Rewarded Ads: Download link has no href.'); return; } if (!window.ezRewardedAds || !window.ezRewardedAds.ready) { console.error('Ezoic Rewarded Ads: API not ready, allowing direct download.'); window.open(pdfUrl, '_blank', 'noopener,noreferrer'); return; } try { window.ezRewardedAds.requestWithOverlay( function(result) { if (result.status) { if (result.reward) { pdfDownloadPending = true; try { window.open(pdfUrl, '_blank', 'noopener,noreferrer'); } catch (e) { console.error('Ezoic Rewarded Ads: Error opening PDF download:', e); } finally { setTimeout(function() { pdfDownloadPending = false; }, 1000); } } else { console.warn('Ezoic Rewarded Ads: User did not complete ad or declined.'); } } else { console.error('Ezoic Rewarded Ads: Ad request failed:', result.msg); } }, { header: \"Se annonse for å laste ned!\", body: [\"For å laste ned fargeleggingsarket må du se en kort annonse.\\nDette hjelper oss å tilby gratis innhold.\"], accept: \"Se annonse\", cancel: \"Avbryt\" }, { rewardName: \"PDF Download - Fargeleggingsark\", rewardOnNoFill: true, alwaysCallback: true } ); } catch (error) { console.error('Ezoic Rewarded Ads: Error triggering rewarded ad:', error); window.open(pdfUrl, '_blank', 'noopener,noreferrer'); } } function attachDownloadInterceptor() { var downloadLink = document.querySelector(downloadLinkSelector); if (!downloadLink) { console.error('Ezoic Rewarded Ads: Download link element not found:', downloadLinkSelector); return; } downloadLink.addEventListener('click', function(event) { event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); handlePDFDownload(); }, true); } function initializeRewardedAds() { if (document.readyState === 'interactive' || document.readyState === 'complete') { attachDownloadInterceptor(); } else { document.addEventListener('DOMContentLoaded', attachDownloadInterceptor); } } window.ezRewardedAds = window.ezRewardedAds || {}; window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || []; initializeRewardedAds(); })();"
+                      - generic [ref=e521]:
+                        - paragraph [ref=e522]: "For JavaScript integration, you need to ensure the Ezoic standalone scripts are loaded. Add this code to your page if not already present:"
+                        - code [ref=e525]: "<script src=\"https://the.gatekeeperconsent.com/cmp.min.js\" data-cfasync=\"false\"></script> <script src=\"https://the.gatekeeperconsent.com/ccpa/v2/standalone.js\" async></script> <script async src=\"//www.ezojs.com/ezoic/sa.min.js\"></script> <script> window.ezstandalone = window.ezstandalone || {}; ezstandalone.cmd = ezstandalone.cmd || []; ezstandalone.cmd.push(function () { ezstandalone.initRewardedAds(); }); </script>"
+                    - 'button "icon: redo Start Over" [ref=e500] [cursor=pointer]':
+                      - 'generic "icon: redo"'
+                      - generic: Start Over
+    - generic [ref=e304]:
+      - img "Ezoic Inc." [ref=e305]
+      - generic [ref=e306]:
+        - text: © 2026
+        - link "Ezoic Inc." [ref=e307] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - generic "Privacy center" [ref=e3] [cursor=pointer]: ⚙

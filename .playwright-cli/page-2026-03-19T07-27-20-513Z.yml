@@ -1,0 +1,413 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - link "Til forsiden" [ref=e8] [cursor=pointer]:
+          - /url: /
+          - img "TegnOgFarge.no Logo" [ref=e9]
+        - navigation "Hovednavigasjon" [ref=e10]:
+          - link "Fargeleggingsark" [ref=e11] [cursor=pointer]:
+            - /url: /alle-underkategorier
+          - link "Kategorier" [ref=e12] [cursor=pointer]:
+            - /url: /hoved-kategori
+          - link "Om Oss" [ref=e13] [cursor=pointer]:
+            - /url: /om-oss
+        - link "Logg inn/Registrer" [ref=e15] [cursor=pointer]:
+          - /url: /login
+    - region "Gratis Fargeleggingsark For Barn og Voksne" [ref=e16]:
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]:
+            - heading "Gratis Fargeleggingsark For Barn og Voksne" [level=1] [ref=e21]
+            - paragraph [ref=e22]:
+              - generic [ref=e23]: Perfekt for hjemme, barnehage og skole. For barn og voksne i alle aldre!
+            - generic [ref=e24]:
+              - search [ref=e26]:
+                - generic [ref=e27]: Search for coloring pages
+                - generic [ref=e28]:
+                  - searchbox "Search for coloring pages" [ref=e29]
+                  - generic:
+                    - img
+              - link "Fargelegg Dagens Motiv" [ref=e31] [cursor=pointer]:
+                - /url: /hoytider/fargelegge-julen-for-barn/glad-pepperkakemann-med-rod-sloyfe
+          - img "Fargelegg og last ned motiver for barn og voksne – helt gratis!" [ref=e34]
+        - generic [ref=e35]:
+          - generic [ref=e36]:
+            - paragraph [ref=e37]: 6000+
+            - paragraph [ref=e38]: Nedlastninger
+          - generic [ref=e39]:
+            - paragraph [ref=e40]: 5780+
+            - paragraph [ref=e41]: Timer Fargelagt
+          - generic [ref=e42]:
+            - paragraph [ref=e43]: 670+
+            - paragraph [ref=e44]: Brukere
+    - main [ref=e45]:
+      - region [ref=e46]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - heading "Fargeleggingsmoro" [level=2] [ref=e49]
+            - paragraph [ref=e50]: Utforsk våre fargeleggingskategorier
+          - list [ref=e51]:
+            - listitem [ref=e52]:
+              - article [ref=e53]:
+                - link "Utforsk Blomster fargeleggingskategori" [ref=e54] [cursor=pointer]:
+                  - /url: /blomster
+                  - img "bildet som illustrere kategorien blomster" [ref=e56]
+                  - heading "Blomster" [level=3] [ref=e58]
+            - listitem [ref=e59]:
+              - article [ref=e60]:
+                - link "Utforsk Dyr fargeleggingskategori" [ref=e61] [cursor=pointer]:
+                  - /url: /dyr
+                  - img "bildet som illustrere kategorien dyr" [ref=e63]
+                  - heading "Dyr" [level=3] [ref=e65]
+            - listitem [ref=e66]:
+              - article [ref=e67]:
+                - link "Utforsk Feiring fargeleggingskategori" [ref=e68] [cursor=pointer]:
+                  - /url: /feiring
+                  - img "bildet som illustrere kategorien Feiring" [ref=e70]
+                  - heading "Feiring" [level=3] [ref=e72]
+            - listitem [ref=e73]:
+              - article [ref=e74]:
+                - link "Utforsk For voksne fargeleggingskategori" [ref=e75] [cursor=pointer]:
+                  - /url: /for-voksne
+                  - img "Kategori 'Voksne' – avslappende fargeleggingsark med motiver som inspirerer til ro og kreativitet." [ref=e77]
+                  - heading "For voksne" [level=3] [ref=e79]
+            - listitem [ref=e80]:
+              - article [ref=e81]:
+                - link "Utforsk Høytider fargeleggingskategori" [ref=e82] [cursor=pointer]:
+                  - /url: /hoytider
+                  - img "bildet som illustrere kategorien Høytider" [ref=e84]
+                  - heading "Høytider" [level=3] [ref=e86]
+            - listitem [ref=e87]:
+              - article [ref=e88]:
+                - link "Utforsk Kjøretøy fargeleggingskategori" [ref=e89] [cursor=pointer]:
+                  - /url: /kjoretoy
+                  - img "bildet som illustrere kategorien kjøretøy" [ref=e91]
+                  - heading "Kjøretøy" [level=3] [ref=e93]
+            - listitem [ref=e94]:
+              - article [ref=e95]:
+                - link "Utforsk Mandala fargeleggingskategori" [ref=e96] [cursor=pointer]:
+                  - /url: /fargelegg-mandala
+                  - img "bildet som illustrere kategorien mandala" [ref=e98]
+                  - heading "Mandala" [level=3] [ref=e100]
+            - listitem [ref=e101]:
+              - article [ref=e102]:
+                - link "Utforsk Måneder fargeleggingskategori" [ref=e103] [cursor=pointer]:
+                  - /url: /maneder
+                  - img "bildet som illustrere kategorien måneder" [ref=e105]
+                  - heading "Måneder" [level=3] [ref=e107]
+            - listitem [ref=e108]:
+              - article [ref=e109]:
+                - link "Utforsk Mat fargeleggingskategori" [ref=e110] [cursor=pointer]:
+                  - /url: /mat
+                  - img "bildet som ilustrere kategorien mat" [ref=e112]
+                  - heading "Mat" [level=3] [ref=e114]
+            - listitem [ref=e115]:
+              - article [ref=e116]:
+                - link "Utforsk Natur fargeleggingskategori" [ref=e117] [cursor=pointer]:
+                  - /url: /natur
+                  - img "bildet som illustrere kategorien natur" [ref=e119]
+                  - heading "Natur" [level=3] [ref=e121]
+            - listitem [ref=e122]:
+              - article [ref=e123]:
+                - link "Utforsk Tegneserier fargeleggingskategori" [ref=e124] [cursor=pointer]:
+                  - /url: /tegneserier
+                  - img "bildet som illustrere kategorien tegneserier" [ref=e126]
+                  - heading "Tegneserier" [level=3] [ref=e128]
+            - listitem [ref=e129]:
+              - article [ref=e130]:
+                - link "Utforsk Vitenskap fargeleggingskategori" [ref=e131] [cursor=pointer]:
+                  - /url: /vitenskap
+                  - img "bildet som illustrere kategorien vitenskap" [ref=e133]
+                  - heading "Vitenskap" [level=3] [ref=e135]
+      - region "Ikke gå glipp av nye fargeleggingsark" [ref=e136]:
+        - generic [ref=e137]:
+          - heading "Ikke gå glipp av nye fargeleggingsark" [level=2] [ref=e138]
+          - paragraph [ref=e139]: Få de nyeste fargeleggingsarkene før alle andre – meld deg på i dag.
+          - generic [ref=e140]:
+            - generic [ref=e141]:
+              - textbox "Din e-postadresse" [ref=e142]:
+                - /placeholder: Skriv inn e-posten din
+              - button "Abonner på nyhetsbrevet" [disabled] [ref=e143]: Abonner
+            - generic:
+              - text: Phone (optional)
+              - textbox
+      - region "Utvalgte Fargeleggingsark" [ref=e147]:
+        - generic [ref=e148]:
+          - generic [ref=e149]:
+            - heading "Utvalgte Fargeleggingsark" [level=2] [ref=e150]
+            - paragraph [ref=e151]: Våre mest populære samlinger
+          - list [ref=e152]:
+            - listitem [ref=e153]:
+              - article [ref=e154]:
+                - link "Utforsk Fargelegge Flagg fargeleggingsark" [ref=e155] [cursor=pointer]:
+                  - /url: /vitenskap/fargelegge-flagg
+                  - figure [ref=e156]:
+                    - img "Flagg som viser USA, Canada, Mexico og Norge som symboliserer kategorien flagg." [ref=e157]
+                  - heading "Fargelegge Flagg" [level=3] [ref=e158]
+            - listitem [ref=e159]:
+              - article [ref=e160]:
+                - link "Utforsk Mandala Fargelegging Dyr fargeleggingsark" [ref=e161] [cursor=pointer]:
+                  - /url: /fargelegg-mandala/mandala-fargelegging-dyr
+                  - figure [ref=e162]:
+                    - img "Mandala bilde med en ape i midten og masse forskjellige mønstre rundt" [ref=e163]
+                  - heading "Mandala Fargelegging Dyr" [level=3] [ref=e164]
+            - listitem [ref=e165]:
+              - article [ref=e166]:
+                - link "Utforsk Fargelegg Bokstaver Og Alfabetet fargeleggingsark" [ref=e167] [cursor=pointer]:
+                  - /url: /vitenskap/fargelegg-bokstaver-og-alfabetet
+                  - figure [ref=e168]:
+                    - img "forskjellige motiver av alle bokstavene i alfabetet for å illustrerer underkategorien bokstaver og alfabet" [ref=e169]
+                  - heading "Fargelegg Bokstaver Og Alfabetet" [level=3] [ref=e170]
+            - listitem [ref=e171]:
+              - article [ref=e172]:
+                - link "Utforsk Fargelegge Julen For Barn fargeleggingsark" [ref=e173] [cursor=pointer]:
+                  - /url: /hoytider/fargelegge-julen-for-barn
+                  - figure [ref=e174]:
+                    - img "julenissen med pakker" [ref=e175]
+                  - heading "Fargelegge Julen For Barn" [level=3] [ref=e176]
+            - listitem [ref=e177]:
+              - article [ref=e178]:
+                - link "Utforsk Fargelegg Sommeren fargeleggingsark" [ref=e179] [cursor=pointer]:
+                  - /url: /natur/fargelegg-sommeren
+                  - figure [ref=e180]:
+                    - img "forskjellige motiver som symboliserer sommeren for å illustrerer underkategorien sommer" [ref=e181]
+                  - heading "Fargelegg Sommeren" [level=3] [ref=e182]
+            - listitem [ref=e183]:
+              - article [ref=e184]:
+                - link "Utforsk Fargelegge Jul fargeleggingsark" [ref=e185] [cursor=pointer]:
+                  - /url: /hoytider/fargelegge-jul
+                  - figure [ref=e186]:
+                    - img "smilende julenisse med sekk full av pakker som vinker til kamera." [ref=e187]
+                  - heading "Fargelegge Jul" [level=3] [ref=e188]
+            - listitem [ref=e189]:
+              - article [ref=e190]:
+                - link "Utforsk Fargelegge Kanin fargeleggingsark" [ref=e191] [cursor=pointer]:
+                  - /url: /dyr/fargelegge-kanin
+                  - figure [ref=e192]:
+                    - img "fargelegge kanin ute i snøen" [ref=e193]
+                  - heading "Fargelegge Kanin" [level=3] [ref=e194]
+            - listitem [ref=e195]:
+              - article [ref=e196]:
+                - link "Utforsk Fargelegge Hest fargeleggingsark" [ref=e197] [cursor=pointer]:
+                  - /url: /dyr/fargelegge-hest
+                  - figure [ref=e198]:
+                    - img "forskjellige fargeleggingsark av hester for å illustrerer underkategorien hest" [ref=e199]
+                  - heading "Fargelegge Hest" [level=3] [ref=e200]
+            - listitem [ref=e201]:
+              - article [ref=e202]:
+                - link "Utforsk Fargelegge Regnbuen fargeleggingsark" [ref=e203] [cursor=pointer]:
+                  - /url: /natur/fargelegge-regnbuen
+                  - figure [ref=e204]:
+                    - img "Regnbuen med fyrtårn under seg" [ref=e205]
+                  - heading "Fargelegge Regnbuen" [level=3] [ref=e206]
+            - listitem [ref=e207]:
+              - article [ref=e208]:
+                - link "Utforsk Fargelegge Lastebil fargeleggingsark" [ref=e209] [cursor=pointer]:
+                  - /url: /kjoretoy/fargelegge-lastebil
+                  - figure [ref=e210]:
+                    - img "forskjellige fargeleggingsark av lastebiler for å illustrerer underkategorien lastebil" [ref=e211]
+                  - heading "Fargelegge Lastebil" [level=3] [ref=e212]
+            - listitem [ref=e213]:
+              - article [ref=e214]:
+                - link "Utforsk Fargelegge Gulrot fargeleggingsark" [ref=e215] [cursor=pointer]:
+                  - /url: /mat/fargelegge-gulrot
+                  - figure [ref=e216]:
+                    - img "forskjellige fargeleggingsark av gulrot for å illustrerer underkategorien gulrot" [ref=e217]
+                  - heading "Fargelegge Gulrot" [level=3] [ref=e218]
+            - listitem [ref=e219]:
+              - article [ref=e220]:
+                - link "Utforsk Fargelegge Krabbe fargeleggingsark" [ref=e221] [cursor=pointer]:
+                  - /url: /dyr/fargelegge-krabbe
+                  - figure [ref=e222]:
+                    - img "krabbe med forskjellige skjell på skjellet." [ref=e223]
+                  - heading "Fargelegge Krabbe" [level=3] [ref=e224]
+      - region "Ofte stilte spørsmål" [ref=e225]:
+        - generic [ref=e226]:
+          - heading "Ofte stilte spørsmål" [level=2] [ref=e227]
+          - paragraph [ref=e228]: Her finner du svar på vanlige spørsmål om plattformen og hvordan du bruker den.
+          - group "Ofte stilte spørsmål" [ref=e229]:
+            - article [ref=e230]:
+              - generic [ref=e231]:
+                - heading "Hvordan registrerer jeg meg?" [level=3] [ref=e232]
+                - button "Vis svaret på hvordan registrerer jeg meg?" [ref=e233] [cursor=pointer]:
+                  - img [ref=e234]
+              - paragraph [ref=e236]: For å registere deg, klikk på "Registrer deg" knappen på hjemmesiden. Fyll ut skjemaet med nødvendig informasjon. Når du har sendt inn, vil du motta en bekreftelse e-post.
+            - article [ref=e237]:
+              - generic [ref=e238]:
+                - heading "Er det gratis?" [level=3] [ref=e239]
+                - button "Vis svaret på er det gratis?" [ref=e240] [cursor=pointer]:
+                  - img [ref=e241]
+              - paragraph [ref=e243]: Ja, plattformen er helt gratis å bruke. Du kan begynne å fargelegge med en gang uten å registrere deg.
+            - article [ref=e244]:
+              - generic [ref=e245]:
+                - heading "Hvordan lagrer jeg arbeidet?" [level=3] [ref=e246]
+                - button "Vis svaret på hvordan lagrer jeg arbeidet?" [ref=e247] [cursor=pointer]:
+                  - img [ref=e248]
+              - paragraph [ref=e250]: Du kan laste ned ditt ferdigfargede arbeid som en bildefil når du er ferdig. Det er også mulig å skrive ut fargeleggingene direkte fra nettleseren for fysiske kopier.
+            - article [ref=e251]:
+              - generic [ref=e252]:
+                - heading "Hvilken alder er dette egnet for?" [level=3] [ref=e253]
+                - button "Vis svaret på hvilken alder er dette egnet for?" [ref=e254] [cursor=pointer]:
+                  - img [ref=e255]
+              - paragraph [ref=e257]: Fargeleggingssiden er egnet for alle aldre, fra små barn til voksne. Vi har enkle motiver for de minste og mer detaljerte tegninger for eldre barn og voksne.
+            - article [ref=e258]:
+              - generic [ref=e259]:
+                - heading "Er dette pedagogisk nyttig for barn?" [level=3] [ref=e260]
+                - button "Vis svaret på er dette pedagogisk nyttig for barn?" [ref=e261] [cursor=pointer]:
+                  - img [ref=e262]
+              - paragraph [ref=e264]: Ja, fargelegging utvikler barns kreativitet, finmotorikk og fargeforståelse. Du kan både fargelegge digitalt eller laste ned og skrive ut arkene for fysisk fargelegging. Det er en trygg og lærerik aktivitet som kombinerer teknologi med kunstnerisk uttrykk.
+            - article [ref=e265]:
+              - generic [ref=e266]:
+                - heading "Er innholdet trygt for barn?" [level=3] [ref=e267]
+                - button "Vis svaret på er innholdet trygt for barn?" [ref=e268] [cursor=pointer]:
+                  - img [ref=e269]
+              - paragraph [ref=e271]: Alle våre fargeleggingstegninger er familievennlige og trygge for barn. Vi har kun positive motiver uten vold eller upassende innhold.
+          - generic [ref=e272]:
+            - heading "Har du fortsatt spørsmål?" [level=3] [ref=e273]
+            - paragraph [ref=e274]: Ta kontakt med oss, så hjelper vi deg så raskt som mulig.
+            - link "Kontakt oss med dine spørsmål" [ref=e275] [cursor=pointer]:
+              - /url: /kontakt
+              - text: Kontakt oss
+    - contentinfo [ref=e276]:
+      - generic [ref=e277]:
+        - generic [ref=e278]:
+          - generic [ref=e279]:
+            - paragraph [ref=e280]: Bli med på vårt nyhetsbrev for å holde deg oppdatert om funksjoner og nyheter.
+            - generic [ref=e281]:
+              - generic [ref=e282]:
+                - textbox "Din e-postadresse" [ref=e283]:
+                  - /placeholder: Skriv inn e-posten din
+                - button "Abonner på nyhetsbrevet" [disabled] [ref=e284]: Abonner
+              - generic:
+                - text: Phone (optional)
+                - textbox
+          - generic [ref=e288]:
+            - generic [ref=e289]:
+              - heading "Informasjon" [level=3] [ref=e290]
+              - list [ref=e291]:
+                - listitem [ref=e292]:
+                  - link "Om TegnOgFarge.no" [ref=e293] [cursor=pointer]:
+                    - /url: /om-oss
+                - listitem [ref=e294]:
+                  - link "Om Skribenten" [ref=e295] [cursor=pointer]:
+                    - /url: /om-skribenten
+                - listitem [ref=e296]:
+                  - link "Kontakt Oss" [ref=e297] [cursor=pointer]:
+                    - /url: /kontakt
+                - listitem [ref=e298]:
+                  - link "Vilkår og Betingelser" [ref=e299] [cursor=pointer]:
+                    - /url: /vilkar-og-betingelser
+                - listitem [ref=e300]:
+                  - link "Personvernerklæring" [ref=e301] [cursor=pointer]:
+                    - /url: /personvernerklaering
+                - listitem [ref=e302]:
+                  - link "Lisensieringspolicy" [ref=e303] [cursor=pointer]:
+                    - /url: /lisensieringspolicy
+                - listitem [ref=e304]:
+                  - link "Fjerning av Innhold" [ref=e305] [cursor=pointer]:
+                    - /url: /fjerning-av-innhold
+                - listitem [ref=e306]:
+                  - link "Svensk" [ref=e307] [cursor=pointer]:
+                    - /url: /sv
+                    - img [ref=e308]
+                    - text: Svensk
+                - listitem [ref=e310]:
+                  - link "Tysk" [ref=e311] [cursor=pointer]:
+                    - /url: /de
+                    - img [ref=e312]
+                    - text: Tysk
+            - generic [ref=e314]:
+              - heading "Populære Kategorier" [level=3] [ref=e315]
+              - list [ref=e316]:
+                - listitem [ref=e317]:
+                  - link "Tegneserier" [ref=e318] [cursor=pointer]:
+                    - /url: /tegneserier
+                - listitem [ref=e319]:
+                  - link "Mandala" [ref=e320] [cursor=pointer]:
+                    - /url: /fargelegg-mandala
+                - listitem [ref=e321]:
+                  - link "Vitenskap" [ref=e322] [cursor=pointer]:
+                    - /url: /vitenskap
+                - listitem [ref=e323]:
+                  - link "Kjøretøy" [ref=e324] [cursor=pointer]:
+                    - /url: /kjoretoy
+                - listitem [ref=e325]:
+                  - link "Dyr" [ref=e326] [cursor=pointer]:
+                    - /url: /dyr
+                - listitem [ref=e327]:
+                  - link "Natur" [ref=e328] [cursor=pointer]:
+                    - /url: /natur
+                - listitem [ref=e329]:
+                  - link "Blomster" [ref=e330] [cursor=pointer]:
+                    - /url: /blomster
+            - generic [ref=e331]:
+              - heading "Populære Sider" [level=3] [ref=e332]
+              - list [ref=e333]:
+                - listitem [ref=e334]:
+                  - link "Enhjørninger" [ref=e335] [cursor=pointer]:
+                    - /url: /tegneserier/fargelegg-enhjorninger
+                - listitem [ref=e336]:
+                  - link "Sommeren" [ref=e337] [cursor=pointer]:
+                    - /url: /natur/fargelegg-sommeren
+                - listitem [ref=e338]:
+                  - link "Biler" [ref=e339] [cursor=pointer]:
+                    - /url: /kjoretoy/fargelegg-biler
+                - listitem [ref=e340]:
+                  - link "Prinsesser" [ref=e341] [cursor=pointer]:
+                    - /url: /tegneserier/fargelegg-prinsesser
+                - listitem [ref=e342]:
+                  - link "Høstens Motiver" [ref=e343] [cursor=pointer]:
+                    - /url: /natur/fargelegg-hostens-motiver
+                - listitem [ref=e344]:
+                  - link "Hunder" [ref=e345] [cursor=pointer]:
+                    - /url: /dyr/fargelegg-hunder
+                - listitem [ref=e346]:
+                  - link "Gresskar" [ref=e347] [cursor=pointer]:
+                    - /url: /mat/fargelegg-gresskar
+            - generic [ref=e348]:
+              - heading "Følg oss" [level=3] [ref=e349]
+              - list [ref=e350]:
+                - listitem [ref=e351]:
+                  - img [ref=e353]
+                  - link "Facebook" [ref=e355] [cursor=pointer]:
+                    - /url: https://www.facebook.com/profile.php?id=61577707270746
+                - listitem [ref=e356]:
+                  - img [ref=e358]
+                  - link "Instagram" [ref=e360] [cursor=pointer]:
+                    - /url: https://www.instagram.com/tegnogfarge.no/
+                - listitem [ref=e361]:
+                  - img [ref=e363]
+                  - link "YouTube" [ref=e365] [cursor=pointer]:
+                    - /url: /#
+                - listitem [ref=e366]:
+                  - img [ref=e368]
+                  - link "Pinterest" [ref=e370] [cursor=pointer]:
+                    - /url: https://no.pinterest.com/TegnOgFarge/
+        - generic [ref=e372]:
+          - paragraph [ref=e373]: © 2026 TegnOgFarge.no. Alle rettigheter reservert.
+          - navigation "Juridisk informasjon":
+            - list
+  - generic [ref=e375]:
+    - generic [ref=e376]:
+      - heading "Vi respekterer personvernet ditt" [level=2] [ref=e377]
+      - paragraph [ref=e378]: Vi bruker informasjonskapsler for å forbedre nettleseropplevelsen din, vise personlig tilpassede annonser eller innhold, og analysere trafikken vår. Ved å klikke på "Godta alle", samtykker du til vår bruk av informasjonskapsler.
+    - generic [ref=e379]:
+      - button "Aksepter alle informasjonskapsler" [ref=e380] [cursor=pointer]: Aksepter alt
+      - generic [ref=e381]:
+        - button "Tilpass samtykkepreferanser" [ref=e382] [cursor=pointer]: Tilpass
+        - button "Avvis alle informasjonskapsler" [ref=e383] [cursor=pointer]: Avvis
+  - generic [ref=e387]:
+    - heading "Privacy & Transparency" [level=2] [ref=e388]
+    - paragraph [ref=e390]: tegnogfarge.no and our partners ask for your consent to use your personal data, and to store and/or access information on your device. This includes using your personal data for personalised advertising and content, advertising and content measurement, audience research and services development. An example of data being processed may be a unique identifier stored in a cookie. Your personal data may be stored by, accessed by, and shared with 1102 partners, or used specifically by this site. You can change your settings or withdraw consent at any time, the link to do so is in our privacy policy at the bottom of this page. Some vendors may process your personal data on the basis of legitimate interest, which you can object to by managing your settings below.
+    - paragraph [ref=e391]:
+      - generic [ref=e392]:
+        - button "Manage Settings" [ref=e393] [cursor=pointer]
+        - button "Continue with Recommended Cookies" [ref=e394] [cursor=pointer]
+    - generic [ref=e395]:
+      - link "Vendor List" [ref=e396] [cursor=pointer]:
+        - /url: javascript:void(0);
+      - generic [ref=e397]: "|"
+      - link "Privacy Policy" [ref=e398] [cursor=pointer]:
+        - /url: https://tegnogfarge.no/personvernerklaering

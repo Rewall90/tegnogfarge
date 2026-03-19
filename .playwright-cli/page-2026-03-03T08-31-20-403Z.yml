@@ -1,0 +1,451 @@
+- generic [ref=e2]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - button "Main menu" [ref=e7] [cursor=pointer]:
+          - img [ref=e8]
+        - link "Google Search Console" [ref=e12] [cursor=pointer]:
+          - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+          - img [ref=e13]
+      - generic [ref=e14]:
+        - search [ref=e16]:
+          - generic [ref=e22]:
+            - textbox [disabled] [ref=e23]: Inspect any URL in "https://tegnogfarge.no/"
+            - combobox "Inspect any URL in https://tegnogfarge.no/" [ref=e24]
+          - button "Search" [ref=e25] [cursor=pointer]:
+            - img [ref=e26]
+        - generic [ref=e29]:
+          - generic [ref=e31]:
+            - button "Help" [ref=e33] [cursor=pointer]:
+              - generic [ref=e36]: 
+            - button "User settings" [ref=e38] [cursor=pointer]:
+              - img [ref=e41]
+          - 'button "Unread messages: 45" [ref=e45] [cursor=pointer]':
+            - generic [ref=e47]:
+              - generic [ref=e48]: 
+              - generic [ref=e50]: "45"
+      - generic [ref=e52]:
+        - button "Google apps" [ref=e56] [cursor=pointer]:
+          - img [ref=e57]
+        - 'button "Google Account: Petter Lund (ronincarpenter90@gmail.com)" [ref=e62] [cursor=pointer]':
+          - img [ref=e64]
+  - dialog "navigational drawer" [ref=e68]:
+    - navigation "Primary" [ref=e71]:
+      - button "Search property" [ref=e75] [cursor=pointer]:
+        - img [ref=e77]
+        - combobox "https://tegnogfarge.no/" [ref=e84]
+        - generic [ref=e85]: 
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - generic [ref=e88]:
+            - link "Overview" [ref=e90] [cursor=pointer]:
+              - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e92]: home
+              - generic [ref=e94]: Overview
+            - link "Insights" [ref=e97] [cursor=pointer]:
+              - /url: ./search-console/performance/insights?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e99]: lightbulb_2
+              - generic [ref=e101]: Insights
+            - button "URL inspection" [ref=e104] [cursor=pointer]:
+              - generic [ref=e106]: search
+              - generic [ref=e108]: URL inspection
+          - generic [ref=e112]:
+            - button "Performance report section" [expanded] [ref=e113] [cursor=pointer]:
+              - generic [ref=e114]:
+                - generic [ref=e117]: Performance
+                - img [ref=e121]
+            - generic [ref=e126]:
+              - link "Search results" [ref=e128] [cursor=pointer]:
+                - /url: ./search-console/performance/search-analytics?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e130]: google
+                - generic [ref=e132]: Search results
+              - link "Discover" [ref=e135] [cursor=pointer]:
+                - /url: ./search-console/performance/discover?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - img [ref=e137]
+                - generic [ref=e143]: Discover
+          - generic [ref=e147]:
+            - button "Indexing report section" [expanded] [ref=e148] [cursor=pointer]:
+              - generic [ref=e149]:
+                - generic [ref=e152]: Indexing
+                - img [ref=e156]
+            - generic [ref=e161]:
+              - link "Pages" [ref=e163] [cursor=pointer]:
+                - /url: ./search-console/index?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e165]: file_copy
+                - generic [ref=e167]: Pages
+              - link "Sitemaps" [ref=e170] [cursor=pointer]:
+                - /url: ./search-console/sitemaps?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e172]: account_tree
+                - generic [ref=e174]: Sitemaps
+              - link "Removals" [ref=e177] [cursor=pointer]:
+                - /url: ./search-console/removals?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e179]: visibility_off
+                - generic [ref=e181]: Removals
+          - generic [ref=e185]:
+            - button "Experience report section" [expanded] [ref=e186] [cursor=pointer]:
+              - generic [ref=e187]:
+                - generic [ref=e190]: Experience
+                - img [ref=e194]
+            - generic [ref=e199]:
+              - link "Core Web Vitals" [ref=e201] [cursor=pointer]:
+                - /url: ./search-console/core-web-vitals?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e203]: speed
+                - generic [ref=e205]: Core Web Vitals
+              - link "HTTPS" [ref=e208] [cursor=pointer]:
+                - /url: ./search-console/https?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e210]: lock
+                - generic [ref=e212]: HTTPS
+          - generic [ref=e216]:
+            - button "Enhancements report section" [expanded] [ref=e217] [cursor=pointer]:
+              - generic [ref=e218]:
+                - generic [ref=e221]: Enhancements
+                - img [ref=e225]
+            - generic [ref=e230]:
+              - link "Breadcrumbs" [ref=e232] [cursor=pointer]:
+                - /url: ./search-console/r/breadcrumbs?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e234]: layers
+                - generic [ref=e236]: Breadcrumbs
+              - link "Image Metadata" [ref=e239] [cursor=pointer]:
+                - /url: ./search-console/r/image-licenses?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e241]: layers
+                - generic [ref=e243]: Image Metadata
+          - button "Security & Manual Actions report section" [ref=e248] [cursor=pointer]:
+            - generic [ref=e249]:
+              - generic [ref=e252]: Security & Manual Actions
+              - img [ref=e256]
+          - generic [ref=e258]:
+            - link "Links report" [ref=e260] [cursor=pointer]:
+              - /url: ./search-console/links?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e262]: link_2
+              - generic [ref=e264]: Links
+            - link "Achievements" [ref=e267] [cursor=pointer]:
+              - /url: ./search-console/achievements?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e269]: trophy
+              - generic [ref=e271]: Achievements
+            - link "Settings" [ref=e274] [cursor=pointer]:
+              - /url: ./search-console/settings?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e276]: settings
+              - generic [ref=e278]: Settings
+        - generic [ref=e280]:
+          - generic [ref=e282]:
+            - button "Submit feedback" [ref=e284] [cursor=pointer]:
+              - generic [ref=e286]: feedback
+              - generic [ref=e288]: Submit feedback
+            - button "About Search Console" [ref=e291] [cursor=pointer]:
+              - generic [ref=e293]: info
+              - generic [ref=e295]: About Search Console
+          - generic [ref=e299]:
+            - link "Privacy" [ref=e300] [cursor=pointer]:
+              - /url: https://myaccount.google.com/privacypolicy?hl=en
+            - link "Terms" [ref=e301] [cursor=pointer]:
+              - /url: https://myaccount.google.com/termsofservice?hl=en
+  - generic [ref=e306]:
+    - generic [ref=e309]:
+      - navigation "Breadcrumbs" [ref=e311]:
+        - heading "Page indexing" [level=1] [ref=e314]
+      - button "EXPORT" [ref=e317] [cursor=pointer]:
+        - generic [ref=e320]:
+          - generic [ref=e321]: 
+          - generic [ref=e322]: EXPORT
+    - generic [ref=e323]:
+      - generic [ref=e325]:
+        - listbox [ref=e328] [cursor=pointer]:
+          - option "All known pages" [selected] [ref=e329]
+          - option "All submitted pages"
+          - option "Unsubmitted pages only"
+          - generic:
+            - option "/de-sitemap.xml"
+            - option "/image-sitemap.xml"
+            - option "/pages-sitemap.xml"
+            - option "/sitemap.xml"
+            - option "/sv-sitemap.xml"
+        - generic [ref=e332]: "Last update: 2/24/26"
+      - main [ref=e334]:
+        - generic [ref=e335]:
+          - generic [ref=e337]:
+            - generic [ref=e338]:
+              - generic [ref=e340]:
+                - generic [ref=e341] [cursor=pointer]:
+                  - button "Not indexed 8.67K 8 reasons" [ref=e342]:
+                    - generic [ref=e346]:
+                      - generic "Not indexed" [ref=e347]:
+                        - generic [ref=e348]: 
+                        - generic [ref=e349]: Not indexed
+                      - generic "8,671" [ref=e350]: 8.67K
+                      - generic [ref=e351]: 8 reasons
+                  - button "null" [ref=e354]:
+                    - generic [ref=e355]: 
+                - generic [ref=e356] [cursor=pointer]:
+                  - button "Indexed 6.44K" [ref=e357]:
+                    - generic [ref=e361]:
+                      - generic "Indexed" [ref=e362]:
+                        - generic [ref=e363]: 
+                        - generic [ref=e364]: Indexed
+                      - generic "6,438" [ref=e365]: 6.44K
+                  - button "null" [ref=e368]:
+                    - generic [ref=e369]: 
+              - generic [ref=e370]:
+                - checkbox "Impressions" [ref=e371] [cursor=pointer]
+                - generic [ref=e374]: Impressions
+              - generic [ref=e375]:
+                - generic [ref=e377]: Pages
+                - img [ref=e380]:
+                  - generic [ref=e381]:
+                    - generic [ref=e382]:
+                      - generic [ref=e384]: 12/3/25
+                      - generic [ref=e386]: 12/14/25
+                      - generic [ref=e388]: 12/25/25
+                      - generic [ref=e390]: 1/5/26
+                      - generic [ref=e392]: 1/16/26
+                      - generic [ref=e394]: 1/27/26
+                      - generic [ref=e396]: 2/7/26
+                      - generic [ref=e398]: 2/18/26
+                    - generic [ref=e399]:
+                      - generic [ref=e401]: 18K
+                      - generic [ref=e403]: 12K
+                      - generic [ref=e405]: 6K
+                      - generic [ref=e407]: "0"
+                    - generic [ref=e702]:
+                      - button [ref=e704] [cursor=pointer]:
+                        - generic [ref=e707]: "1"
+                      - button [ref=e709] [cursor=pointer]:
+                        - generic [ref=e712]: "1"
+                      - button [ref=e714] [cursor=pointer]:
+                        - generic [ref=e717]: "1"
+            - link "View data about indexed pages" [ref=e718] [cursor=pointer]:
+              - /url: ./search-console/index/drilldown?resource_id=https%3A%2F%2Ftegnogfarge.no%2F&pages=ALL_URLS
+              - generic [ref=e721]:
+                - generic [ref=e723]: check_circle
+                - generic [ref=e724]: View data about indexed pages
+                - generic [ref=e726]: 
+          - generic [ref=e729]:
+            - generic [ref=e731]:
+              - generic [ref=e734]:
+                - generic [ref=e735]: info_filled
+                - generic [ref=e736]:
+                  - generic [ref=e737]: Why pages aren’t indexed
+                  - generic [ref=e738]: Pages that aren’t indexed can’t be served on Google
+              - button "Filter table rows" [ref=e743] [cursor=pointer]:
+                - generic [ref=e746]: 
+            - table [ref=e749]:
+              - rowgroup [ref=e750]:
+                - row "Reason Source null Validation Trend Pages" [ref=e751]:
+                  - columnheader "Reason" [ref=e752]:
+                    - generic [ref=e754]: Reason
+                    - img [ref=e756] [cursor=pointer]
+                  - columnheader "Source null" [ref=e758]:
+                    - generic [ref=e760]:
+                      - text: Source
+                      - button "null" [ref=e763] [cursor=pointer]:
+                        - generic [ref=e764]: 
+                    - img [ref=e766] [cursor=pointer]
+                  - columnheader "Validation" [ref=e768]:
+                    - generic [ref=e770]: Validation
+                    - img [ref=e772] [cursor=pointer]
+                  - columnheader "Trend" [ref=e774]:
+                    - generic [ref=e776]: Trend
+                  - columnheader "Pages" [ref=e777]:
+                    - img [ref=e779] [cursor=pointer]
+                    - generic [ref=e782]: Pages
+              - rowgroup [ref=e783]:
+                - row "Excluded by ‘noindex’ tag Website Not Started 4,085" [ref=e784]:
+                  - cell "Excluded by ‘noindex’ tag" [ref=e785]:
+                    - generic "Excluded by ‘noindex’ tag" [ref=e787]
+                  - cell "Website" [ref=e788]:
+                    - generic [ref=e790]: Website
+                  - cell "Not Started" [ref=e791]:
+                    - generic [ref=e794]:
+                      - generic [ref=e795]: 
+                      - text: Not Started
+                  - cell [ref=e796]:
+                    - img [ref=e799]
+                  - cell "4,085" [ref=e801]:
+                    - generic [ref=e803]: 4,085
+                - row "Not found (404) Website Not Started 3,278" [ref=e804]:
+                  - cell "Not found (404)" [ref=e805]:
+                    - generic "Not found (404)" [ref=e807]
+                  - cell "Website" [ref=e808]:
+                    - generic [ref=e810]: Website
+                  - cell "Not Started" [ref=e811]:
+                    - generic [ref=e814]:
+                      - generic [ref=e815]: 
+                      - text: Not Started
+                  - cell [ref=e816]:
+                    - img [ref=e819]
+                  - cell "3,278" [ref=e821]:
+                    - generic [ref=e823]: 3,278
+                - row "Blocked by robots.txt Website Not Started 351" [ref=e824]:
+                  - cell "Blocked by robots.txt" [ref=e825]:
+                    - generic "Blocked by robots.txt" [ref=e827]
+                  - cell "Website" [ref=e828]:
+                    - generic [ref=e830]: Website
+                  - cell "Not Started" [ref=e831]:
+                    - generic [ref=e834]:
+                      - generic [ref=e835]: 
+                      - text: Not Started
+                  - cell [ref=e836]:
+                    - img [ref=e839]
+                  - cell "351" [ref=e840]:
+                    - generic [ref=e842]: "351"
+                - row "Alternate page with proper canonical tag Website Not Started 93" [ref=e843]:
+                  - cell "Alternate page with proper canonical tag" [ref=e844]:
+                    - generic "Alternate page with proper canonical tag" [ref=e846]
+                  - cell "Website" [ref=e847]:
+                    - generic [ref=e849]: Website
+                  - cell "Not Started" [ref=e850]:
+                    - generic [ref=e853]:
+                      - generic [ref=e854]: 
+                      - text: Not Started
+                  - cell [ref=e855]:
+                    - img [ref=e858]
+                  - cell "93" [ref=e859]:
+                    - generic [ref=e861]: "93"
+                - row "Page with redirect Website Not Started 83" [ref=e862]:
+                  - cell "Page with redirect" [ref=e863]:
+                    - generic "Page with redirect" [ref=e865]
+                  - cell "Website" [ref=e866]:
+                    - generic [ref=e868]: Website
+                  - cell "Not Started" [ref=e869]:
+                    - generic [ref=e872]:
+                      - generic [ref=e873]: 
+                      - text: Not Started
+                  - cell [ref=e874]:
+                    - img [ref=e877]
+                  - cell "83" [ref=e878]:
+                    - generic [ref=e880]: "83"
+                - row "Crawled - currently not indexed Google systems Not Started 644" [ref=e881]:
+                  - cell "Crawled - currently not indexed" [ref=e882]:
+                    - generic "Crawled - currently not indexed" [ref=e884]
+                  - cell "Google systems" [ref=e885]:
+                    - generic [ref=e887]: Google systems
+                  - cell "Not Started" [ref=e888]:
+                    - generic [ref=e891]:
+                      - generic [ref=e892]: 
+                      - text: Not Started
+                  - cell [ref=e893]:
+                    - img [ref=e896]
+                  - cell "644" [ref=e898]:
+                    - generic [ref=e900]: "644"
+                - row "Duplicate, Google chose different canonical than user Google systems Not Started 121" [ref=e901]:
+                  - cell "Duplicate, Google chose different canonical than user" [ref=e902]:
+                    - generic "Duplicate, Google chose different canonical than user" [ref=e904]
+                  - cell "Google systems" [ref=e905]:
+                    - generic [ref=e907]: Google systems
+                  - cell "Not Started" [ref=e908]:
+                    - generic [ref=e911]:
+                      - generic [ref=e912]: 
+                      - text: Not Started
+                  - cell [ref=e913]:
+                    - img [ref=e916]
+                  - cell "121" [ref=e917]:
+                    - generic [ref=e919]: "121"
+                - row "Discovered - currently not indexed Google systems Not Started 16" [ref=e920]:
+                  - cell "Discovered - currently not indexed" [ref=e921]:
+                    - generic "Discovered - currently not indexed" [ref=e923]
+                  - cell "Google systems" [ref=e924]:
+                    - generic [ref=e926]: Google systems
+                  - cell "Not Started" [ref=e927]:
+                    - generic [ref=e930]:
+                      - generic [ref=e931]: 
+                      - text: Not Started
+                  - cell [ref=e932]:
+                    - img [ref=e935]
+                  - cell "16" [ref=e936]:
+                    - generic [ref=e938]: "16"
+                - row "Soft 404 Website N/A 0" [ref=e939]:
+                  - cell "Soft 404" [ref=e940]:
+                    - generic "Soft 404" [ref=e942]
+                  - cell "Website" [ref=e943]:
+                    - generic [ref=e945]: Website
+                  - cell "N/A" [ref=e946]:
+                    - generic [ref=e949]: N/A
+                  - cell [ref=e950]:
+                    - img [ref=e953]
+                  - cell "0" [ref=e954]:
+                    - generic [ref=e956]: "0"
+                - row "Duplicate without user-selected canonical Website N/A 0" [ref=e957]:
+                  - cell "Duplicate without user-selected canonical" [ref=e958]:
+                    - generic "Duplicate without user-selected canonical" [ref=e960]
+                  - cell "Website" [ref=e961]:
+                    - generic [ref=e963]: Website
+                  - cell "N/A" [ref=e964]:
+                    - generic [ref=e967]: N/A
+                  - cell [ref=e968]:
+                    - img [ref=e971]
+                  - cell "0" [ref=e972]:
+                    - generic [ref=e974]: "0"
+            - generic [ref=e977]:
+              - generic [ref=e979]:
+                - generic [ref=e980]: "Rows per page:"
+                - listbox "Number of rows per page" [ref=e981] [cursor=pointer]:
+                  - option "5"
+                  - option "10" [selected] [ref=e982]
+                  - option "25"
+                  - option "50"
+                  - option "100"
+                  - option "250"
+                  - option "500"
+              - generic [ref=e983]:
+                - generic [ref=e984]: 1-10 of 10
+                - generic [ref=e985]:
+                  - generic [ref=e987]: 
+                  - generic [ref=e989]: 
+          - generic [ref=e992]:
+            - generic [ref=e994]:
+              - generic [ref=e997]:
+                - generic [ref=e998]: warning
+                - generic [ref=e999]:
+                  - generic [ref=e1000]: Improve page appearance
+                  - generic [ref=e1001]: Pages with these issues are indexed, but their search result appearance can be improved
+              - button "Filter table rows" [ref=e1006] [cursor=pointer]:
+                - generic [ref=e1009]: 
+            - table [ref=e1012]:
+              - rowgroup [ref=e1013]:
+                - row "Reason Source null Validation Trend Pages" [ref=e1014]:
+                  - columnheader "Reason" [ref=e1015]:
+                    - generic [ref=e1017]: Reason
+                    - img [ref=e1019] [cursor=pointer]
+                  - columnheader "Source null" [ref=e1021]:
+                    - generic [ref=e1023]:
+                      - text: Source
+                      - button "null" [ref=e1026] [cursor=pointer]:
+                        - generic [ref=e1027]: 
+                    - img [ref=e1029] [cursor=pointer]
+                  - columnheader "Validation" [ref=e1031]:
+                    - generic [ref=e1033]: Validation
+                    - img [ref=e1035] [cursor=pointer]
+                  - columnheader "Trend" [ref=e1037]:
+                    - generic [ref=e1039]: Trend
+                  - columnheader "Pages" [ref=e1040]:
+                    - img [ref=e1042] [cursor=pointer]
+                    - generic [ref=e1045]: Pages
+              - rowgroup [ref=e1046]:
+                - row "Indexed, though blocked by robots.txt Website Not Started 1" [ref=e1047]:
+                  - cell "Indexed, though blocked by robots.txt" [ref=e1048]:
+                    - generic "Indexed, though blocked by robots.txt" [ref=e1050]
+                  - cell "Website" [ref=e1051]:
+                    - generic [ref=e1053]: Website
+                  - cell "Not Started" [ref=e1054]:
+                    - generic [ref=e1057]:
+                      - generic [ref=e1058]: 
+                      - text: Not Started
+                  - cell [ref=e1059]:
+                    - img [ref=e1062]
+                  - cell "1" [ref=e1064]:
+                    - generic [ref=e1066]: "1"
+            - generic [ref=e1069]:
+              - generic [ref=e1071]:
+                - generic [ref=e1072]: "Rows per page:"
+                - listbox "Number of rows per page" [ref=e1073] [cursor=pointer]:
+                  - option "5"
+                  - option "10" [selected] [ref=e1074]
+                  - option "25"
+                  - option "50"
+                  - option "100"
+                  - option "250"
+                  - option "500"
+              - generic [ref=e1075]:
+                - generic [ref=e1076]: 1-1 of 1
+                - generic [ref=e1077]:
+                  - generic [ref=e1079]: 
+                  - generic [ref=e1081]: 

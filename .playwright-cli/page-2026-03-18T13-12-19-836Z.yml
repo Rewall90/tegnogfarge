@@ -1,0 +1,235 @@
+- generic [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - link "Ezoic" [ref=e10] [cursor=pointer]:
+          - /url: /
+          - img "Ezoic" [ref=e11]
+        - generic [ref=e15]: tegnogfarge.no
+        - generic [ref=e16] [cursor=pointer]: + Add a site
+      - menu [ref=e19]:
+        - menuitem "Home" [ref=e20] [cursor=pointer]:
+          - link [ref=e21]:
+            - /url: /dashboard
+            - img [ref=e22]
+        - menuitem "EzoicAds" [ref=e23] [cursor=pointer]:
+          - link [ref=e24]:
+            - /url: /ezoicads
+            - img [ref=e25]
+        - menuitem "Identity" [ref=e26] [cursor=pointer]:
+          - link [ref=e27]:
+            - /url: /identity
+            - img [ref=e28]
+        - menuitem "Videos" [ref=e29] [cursor=pointer]:
+          - link [ref=e30]:
+            - /url: /video
+            - img [ref=e31]
+        - menuitem "Analytics" [ref=e32] [cursor=pointer]:
+          - link [ref=e33]:
+            - /url: https://analytics.ezoic.com/reports/default
+            - img [ref=e34]
+        - menuitem "Settings" [ref=e35] [cursor=pointer]:
+          - link [ref=e36]:
+            - /url: /settings
+            - img [ref=e37]
+        - menuitem "" [ref=e38] [cursor=pointer]:
+          - generic [ref=e42]: 
+      - generic [ref=e43]:
+        - link "Support Resources" [ref=e46] [cursor=pointer]:
+          - /url: https://support.ezoic.com/
+        - generic [ref=e48] [cursor=pointer]: English
+        - generic [ref=e51]:
+          - textbox "Search..." [ref=e52]
+          - 'generic "icon: search" [ref=e54]':
+            - img [ref=e55]
+        - generic [ref=e60] [cursor=pointer]:
+          - 'generic "icon: bell" [ref=e61]':
+            - img [ref=e62]
+          - superscript [ref=e64]:
+            - generic [ref=e65]:
+              - paragraph [ref=e66]: "0"
+              - paragraph [ref=e67]: "1"
+              - paragraph [ref=e68]: "2"
+              - paragraph [ref=e69]: "3"
+              - paragraph [ref=e70]: "4"
+              - paragraph [ref=e71]: "5"
+              - paragraph [ref=e72]: "6"
+              - paragraph [ref=e73]: "7"
+              - paragraph [ref=e74]: "8"
+              - paragraph [ref=e75]: "9"
+              - paragraph [ref=e76]: "0"
+              - paragraph [ref=e77]: "1"
+              - paragraph [ref=e78]: "2"
+              - paragraph [ref=e79]: "3"
+              - paragraph [ref=e80]: "4"
+              - paragraph [ref=e81]: "5"
+              - paragraph [ref=e82]: "6"
+              - paragraph [ref=e83]: "7"
+              - paragraph [ref=e84]: "8"
+              - paragraph [ref=e85]: "9"
+              - paragraph [ref=e86]: "0"
+              - paragraph [ref=e87]: "1"
+              - paragraph [ref=e88]: "2"
+              - paragraph [ref=e89]: "3"
+              - paragraph [ref=e90]: "4"
+              - paragraph [ref=e91]: "5"
+              - paragraph [ref=e92]: "6"
+              - paragraph [ref=e93]: "7"
+              - paragraph [ref=e94]: "8"
+              - paragraph [ref=e95]: "9"
+        - generic [ref=e98] [cursor=pointer]: 
+    - main [ref=e99]:
+      - generic [ref=e104]:
+        - generic [ref=e106]:
+          - img [ref=e108] [cursor=pointer]
+          - generic [ref=e109] [cursor=pointer]: close
+        - generic [ref=e110]:
+          - complementary [ref=e111]:
+            - menu [ref=e113]:
+              - menuitem "web Ad Positions" [ref=e114] [cursor=pointer]:
+                - generic [ref=e115]:
+                  - generic [ref=e116]: web
+                  - text: Ad Positions
+              - menuitem "settings_applications Ad Types" [ref=e117] [cursor=pointer]:
+                - generic [ref=e118]:
+                  - generic [ref=e119]: settings_applications
+                  - text: Ad Types
+              - menuitem "tune Ad Configuration" [ref=e120] [cursor=pointer]:
+                - generic [ref=e121]:
+                  - generic [ref=e122]: tune
+                  - text: Ad Configuration
+              - menuitem "price_change Ad Campaign" [ref=e123] [cursor=pointer]:
+                - generic [ref=e124]:
+                  - generic [ref=e125]: price_change
+                  - text: Ad Campaign
+              - menuitem "settings_ethernet Ad Integration" [ref=e126] [cursor=pointer]:
+                - generic [ref=e127]:
+                  - generic [ref=e128]: settings_ethernet
+                  - text: Ad Integration
+              - menuitem "border_all Ad Transparency" [ref=e129] [cursor=pointer]:
+                - generic [ref=e130]:
+                  - generic [ref=e131]: border_all
+                  - text: Ad Transparency
+              - menuitem "shield Ad Restrictions" [ref=e132] [cursor=pointer]:
+                - generic [ref=e133]:
+                  - generic [ref=e134]: shield
+                  - text: Ad Restrictions
+              - menuitem "data_usage Optimization Goals" [ref=e135] [cursor=pointer]:
+                - generic [ref=e136]:
+                  - generic [ref=e137]: data_usage
+                  - text: Optimization Goals
+              - menuitem "paid Rev. Opportunities" [ref=e138] [cursor=pointer]:
+                - generic [ref=e139]:
+                  - generic [ref=e140]: paid
+                  - text: Rev. Opportunities
+              - menuitem "redeem Rewarded Ads" [ref=e141] [cursor=pointer]:
+                - generic [ref=e142]:
+                  - generic [ref=e143]: redeem
+                  - text: Rewarded Ads
+              - menuitem "folder_special Resources" [ref=e144] [cursor=pointer]:
+                - generic [ref=e145]:
+                  - generic [ref=e146]: folder_special
+                  - text: Resources
+          - main [ref=e147]:
+            - generic [ref=e148]:
+              - generic [ref=e153]:
+                - generic [ref=e154]: Ezoic Ads
+                - generic [ref=e155]: Rewarded Ads
+              - generic [ref=e156]:
+                - generic [ref=e157]:
+                  - heading "Rewarded Ads" [level=2] [ref=e158]
+                  - paragraph [ref=e159]: Learn about rewarded ads and explore implementation examples.
+                - generic [ref=e161]:
+                  - button "Overview" [ref=e162] [cursor=pointer]
+                  - button "Examples" [ref=e163] [cursor=pointer]
+                  - button "Settings" [ref=e164] [cursor=pointer]
+                  - 'button "icon: robot AI Setup Tools BETA" [ref=e165] [cursor=pointer]':
+                    - 'generic "icon: robot"'
+                    - text: AI Setup Tools BETA
+                - generic [ref=e166]:
+                  - generic [ref=e168]:
+                    - tablist [ref=e169]:
+                      - generic [ref=e170]:
+                        - generic:
+                          - generic:
+                            - 'generic "icon: left"':
+                              - img
+                        - generic:
+                          - generic:
+                            - 'generic "icon: right"':
+                              - img
+                        - generic [ref=e174]:
+                          - tab "AI Assisted Setup" [selected] [ref=e175] [cursor=pointer]
+                          - tab "Script Library" [ref=e176] [cursor=pointer]
+                          - tab "Page Rules" [ref=e177] [cursor=pointer]
+                          - tab "A/B Testing" [ref=e178] [cursor=pointer]
+                    - generic:
+                      - tabpanel
+                  - generic [ref=e454]:
+                    - generic [ref=e456]:
+                      - generic [ref=e457] [cursor=pointer]:
+                        - generic [ref=e459]: ✓
+                        - generic [ref=e460]: URL
+                      - generic [ref=e461] [cursor=pointer]:
+                        - generic [ref=e463]: ✓
+                        - generic [ref=e464]: Implementation
+                      - generic [ref=e465] [cursor=pointer]:
+                        - generic [ref=e467]: "3"
+                        - generic [ref=e468]: Disclosure
+                      - generic [ref=e469]:
+                        - generic [ref=e471]: "4"
+                        - generic [ref=e472]: Settings
+                      - generic [ref=e473]:
+                        - generic [ref=e475]: "5"
+                        - generic [ref=e476]: Generate
+                    - generic [ref=e477]:
+                      - heading "Ad Disclosure" [level=3] [ref=e545]
+                      - paragraph [ref=e479]: Determine how users will be informed about watching an ad and what they'll receive.
+                    - generic [ref=e547]:
+                      - paragraph [ref=e550]: You must inform users that they need to watch an ad to continue. This disclosure must be clear and presented before the ad is shown.
+                      - generic [ref=e552]:
+                        - generic [ref=e553] [cursor=pointer]:
+                          - generic [ref=e554]:
+                            - generic [ref=e555]: Use Ezoic's Disclosure Modal
+                            - 'generic "icon: check-circle" [ref=e556]':
+                              - img [ref=e557]
+                          - generic [ref=e559]: Ezoic will automatically generate a modal prompting the user to watch an ad in exchange for the reward.
+                        - generic [ref=e560] [cursor=pointer]:
+                          - generic [ref=e562]: Add Custom Disclosure
+                          - generic [ref=e563]:
+                            - text: Customize instructions for adding disclosure to your site.
+                            - text: "Example: Change the 'Reveal Results' button to 'Watch Ad To Reveal Results'"
+                      - generic [ref=e565]:
+                        - generic [ref=e566]:
+                          - generic [ref=e567]: Header (Title)
+                          - textbox "Watch Ad to Continue?" [ref=e568]
+                        - generic [ref=e569]:
+                          - generic [ref=e570]: Body (Message Lines)
+                          - textbox "Enter each line of the message on a separate line" [ref=e571]
+                        - generic [ref=e573]:
+                          - generic [ref=e574]:
+                            - generic [ref=e575]: Accept Button Text
+                            - textbox "Watch ad" [ref=e576]
+                          - generic [ref=e577]:
+                            - generic [ref=e578]: Cancel Button Text
+                            - textbox "Cancel" [ref=e579]
+                      - tablist [ref=e582]:
+                        - 'button "icon: right Global Settings (applied across all pages) Customize with a logo or button colors to match your site''s styles" [ref=e583] [cursor=pointer]':
+                          - 'generic "icon: right" [ref=e584]':
+                            - img [ref=e585]
+                          - generic [ref=e587]:
+                            - generic [ref=e588]: Global Settings (applied across all pages)
+                            - generic [ref=e589]: Customize with a logo or button colors to match your site's styles
+                    - generic [ref=e498]:
+                      - button "Previous" [ref=e544] [cursor=pointer]:
+                        - generic: Previous
+                      - button "Next" [active] [ref=e499] [cursor=pointer]:
+                        - generic: Next
+    - generic [ref=e235]:
+      - img "Ezoic Inc." [ref=e236]
+      - generic [ref=e237]:
+        - text: © 2026
+        - link "Ezoic Inc." [ref=e238] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - generic "Privacy center" [ref=e239] [cursor=pointer]: ⚙

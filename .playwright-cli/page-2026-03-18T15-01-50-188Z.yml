@@ -1,0 +1,189 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - banner [ref=e5]:
+      - generic [ref=e6]:
+        - link "Skip to main content" [ref=e9] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=e12]: Skip to main content
+        - generic [ref=e13]:
+          - button "Collapse navigation menu" [ref=e14] [cursor=pointer]:
+            - img [ref=e17]: menu
+          - heading "Ad Manager" [level=2] [ref=e19]:
+            - link "Ad Manager" [ref=e20] [cursor=pointer]:
+              - /url: /22712188410?authuser=0
+              - generic [ref=e21]: Ad Manager
+        - search [ref=e22]:
+          - generic [ref=e27]:
+            - img [ref=e30]: search
+            - generic [ref=e31]:
+              - generic:
+                - generic: Search for tools, features, and more
+              - combobox "Search for tools, features, and more" [ref=e32]
+        - generic [ref=e33]:
+          - button "Help" [ref=e35] [cursor=pointer]:
+            - img [ref=e38]: help_outline
+          - generic [ref=e43]:
+            - button "Notifications, 2 new alerts" [ref=e44] [cursor=pointer]:
+              - img [ref=e47]: notifications
+            - generic [ref=e50]: "2"
+          - button "More options" [ref=e52] [cursor=pointer]:
+            - img [ref=e55]: more_vert
+          - button "Google account" [ref=e59] [cursor=pointer]:
+            - img "Google account (ronincarpenter90@gmail.com)" [ref=e60]
+    - generic [ref=e61]:
+      - navigation "Sidebar" [ref=e63]:
+        - generic [ref=e64]:
+          - list [ref=e66]:
+            - listitem [ref=e67]:
+              - button "Petter Maurtveten Lund 22712188410" [ref=e68] [cursor=pointer]:
+                - img [ref=e72]: business
+                - generic [ref=e73]:
+                  - generic [ref=e74]: Petter Maurtveten Lund
+                  - generic [ref=e75]: "22712188410"
+          - heading "Main navigation" [level=2] [ref=e77]
+          - list [ref=e78]:
+            - listitem [ref=e80]:
+              - link "Home" [ref=e81] [cursor=pointer]:
+                - /url: "#home"
+                - img [ref=e85]: home
+                - generic [ref=e87]: Home
+            - generic [ref=e89]:
+              - listitem [ref=e90]:
+                - button "Delivery" [expanded] [ref=e91] [cursor=pointer]:
+                  - img [ref=e94]: arrow_right
+                  - img [ref=e97]: local_shipping
+                  - generic [ref=e99]: Delivery
+              - generic [ref=e638]:
+                - listitem [ref=e639]:
+                  - link "Orders" [ref=e640] [cursor=pointer]:
+                    - /url: "#delivery/order/list"
+                    - img [ref=e643]
+                    - generic [ref=e646]: Orders
+                - listitem [ref=e648]:
+                  - link "Line items" [ref=e649] [cursor=pointer]:
+                    - /url: "#delivery/line_item/list"
+                    - img [ref=e652]
+                    - generic [ref=e655]: Line items
+                - listitem [ref=e657]:
+                  - link "Creatives" [ref=e658] [cursor=pointer]:
+                    - /url: "#creatives/creative/list/view=standard"
+                    - img [ref=e661]
+                    - generic [ref=e664]: Creatives
+                - listitem [ref=e666]:
+                  - link "Native" [ref=e667] [cursor=pointer]:
+                    - /url: "#creatives/native_style/list"
+                    - img [ref=e670]
+                    - generic [ref=e673]: Native
+                - listitem [ref=e675]:
+                  - link "Delivery tools" [ref=e676] [cursor=pointer]:
+                    - /url: "#troubleshooting/landing"
+                    - img [ref=e679]
+                    - generic [ref=e682]: Delivery tools
+            - listitem [ref=e102]:
+              - button "Inventory" [ref=e103] [cursor=pointer]:
+                - img [ref=e106]: arrow_right
+                - img [ref=e109]: picture_in_picture
+                - generic [ref=e111]: Inventory
+            - listitem [ref=e114]:
+              - link "Protections" [ref=e115] [cursor=pointer]:
+                - /url: "#protections/list"
+                - img [ref=e119]: verified_user
+                - generic [ref=e121]: Protections
+            - listitem [ref=e124]:
+              - button "Reporting" [ref=e125] [cursor=pointer]:
+                - img [ref=e128]: arrow_right
+                - img [ref=e131]: insert_chart
+                - generic [ref=e133]: Reporting
+            - listitem [ref=e136]:
+              - button "Optimization" [ref=e137] [cursor=pointer]:
+                - img [ref=e140]: arrow_right
+                - img [ref=e143]: insights
+                - generic [ref=e145]: Optimization
+            - listitem [ref=e148]:
+              - link "Privacy & messaging" [ref=e149] [cursor=pointer]:
+                - /url: "#privacy_and_messaging"
+                - img [ref=e152]
+                - generic [ref=e154]: Privacy & messaging
+            - listitem [ref=e157]:
+              - button "Payments" [ref=e158] [cursor=pointer]:
+                - img [ref=e161]: arrow_right
+                - img [ref=e164]: payments
+                - generic [ref=e166]: Payments
+            - listitem [ref=e169]:
+              - button "Admin" [ref=e170] [cursor=pointer]:
+                - img [ref=e173]: arrow_right
+                - img [ref=e176]: build
+                - generic [ref=e178]: Admin
+      - main "Main content" [ref=e180]:
+        - generic [ref=e181]:
+          - generic [ref=e1328]:
+            - generic [ref=e1333]:
+              - navigation "Breadcrumbs" [ref=e1335]:
+                - link "All orders" [ref=e1336] [cursor=pointer]:
+                  - /url: "#delivery/order/list/"
+                - img [ref=e1338]: chevron_right
+                - link "TegnOgFarge" [ref=e1339] [cursor=pointer]:
+                  - /url: "#delivery/order/list/filter=eJx9zbEKwjAYBOB3uTlDEFohW3HqKI7iEMwVfwyN_EkDUvLubQdXxzv47lZMEgv1kuYgRdKc4e4r3vzCYcyDPl9SGWCQPlRfkh79bc_Vx4Vwk4-ZzfzIECq1SKaOfxB6e-ptf-5sh_YwyPT70XWhHhtoGwgNMPE."
+                - img [ref=e1341]: chevron_right
+                - link "Rewarded Ads Order" [ref=e1342] [cursor=pointer]:
+                  - /url: "#delivery/order/order_overview/order_id=4013697347&tab=line_items"
+                - img [ref=e1344]: chevron_right
+              - heading "New line item" [level=1] [ref=e1347]
+            - generic [ref=e1349]:
+              - generic [ref=e1352]:
+                - generic [ref=e1353]: Ad type
+                - generic [ref=e1354]: What kind of ad do you want to serve?
+                - generic [ref=e1355]:
+                  - generic [ref=e1356]:
+                    - generic [ref=e1358]:
+                      - generic [ref=e1359]: Display
+                      - generic [ref=e1360]:
+                        - text: Create a variety of rich ad experiences from standard image ads and Campaign Manager 360 URLs to native formats and custom solutions.
+                        - link "Learn more about display creative types" [ref=e1361] [cursor=pointer]:
+                          - /url: https://support.google.com/admanager/answer/9317128
+                          - text: Learn more
+                    - button "Select display ad" [ref=e1364] [cursor=pointer]:
+                      - generic [ref=e1365]: Select display ad
+                  - generic [ref=e1367]:
+                    - generic [ref=e1369]:
+                      - generic [ref=e1370]: Video or audio
+                      - generic [ref=e1371]:
+                        - text: Buyers want to serve video or audio ads during streaming content, or video ads that play outside of a video player. Includes rewarded video ads, as well as in-feed and in-article video ads.
+                        - link "Learn more about video and audio creative types" [ref=e1372] [cursor=pointer]:
+                          - /url: https://support.google.com/admanager/answer/9317029
+                          - text: Learn more
+                    - button "Select video or audio ad" [ref=e1375] [cursor=pointer]:
+                      - generic [ref=e1376]: Select video or audio ad
+              - text: "* * * * * *"
+              - generic "Warning"
+            - button "Cancel" [ref=e1385] [cursor=pointer]:
+              - generic [ref=e1386]: Cancel
+          - generic [ref=e819]:
+            - text: © 2026 Google -
+            - link "Privacy Policy" [ref=e820] [cursor=pointer]:
+              - /url: https://policies.google.com/privacy
+            - text: "-"
+            - link "Help" [ref=e821] [cursor=pointer]:
+              - /url: http://support.google.com/admanager?utm_source=dfp_fe&utm_medium=et&utm_campaign=in-product_link
+            - text: "-"
+            - link "Release notes" [ref=e822] [cursor=pointer]:
+              - /url: https://support.google.com/admanager/answer/179039
+            - text: "-"
+            - link "Blog" [ref=e823] [cursor=pointer]:
+              - /url: https://www.blog.google/products/admanager/
+            - text: "-"
+            - link "Ads Status Dashboard" [ref=e824] [cursor=pointer]:
+              - /url: http://ads.google.com/status#hl=en-US&v=status
+      - contentinfo "Footer" [ref=e630]:
+        - generic [ref=e632]:
+          - text: © 2026 Google -
+          - generic [ref=e633]: Privacy Policy
+          - text: "-"
+          - generic [ref=e634]: Help
+          - text: "-"
+          - generic [ref=e635]: Release notes
+          - text: "-"
+          - generic [ref=e636]: Blog
+          - text: "-"
+          - generic [ref=e637]: Ads Status Dashboard
+  - status [ref=e1306]

@@ -1,0 +1,59 @@
+{
+  "summary": {
+    "totalNorwegian": 3277,
+    "totalDuplicates": 16,
+    "critical": 0,
+    "medium": 14,
+    "low": 2,
+    "drafts": 0
+  },
+  "sameURL": [],
+  "hasDraft": [],
+  "differentCategory": [
+    {
+      "slug": "isbjorn-star-pa-isen",
+      "versions": [
+        {
+          "id": "drawingImage-isbjorn-star-pa-isen-1760936372",
+          "url": "/natur/fargelegge-vinter/isbjorn-star-pa-isen",
+          "category": "Natur",
+          "subcategory": "Fargelegge Vinter",
+          "downloads": 0
+        },
+        {
+          "id": "drawingImage-isbjorn-star-pa-isen-1763368193",
+          "url": "/dyr/fargelegge-bjorn/isbjorn-star-pa-isen",
+          "category": "Dyr",
+          "subcategory": "Fargelegge Bjørn",
+          "downloads": 0
+        }
+      ]
+    },
+    {
+      "slug": "nissen-kjorer-slede-med-reinsdyr",
+      "versions": [
+        {
+          "id": "drawingImage-nissen-kjorer-slede-med-reinsdyr-1759554632",
+          "url": "/hoytider/fargelegge-julen-for-barn/nissen-kjorer-slede-med-reinsdyr",
+          "category": "Høytider",
+          "subcategory": "Fargelegge Julen For Barn",
+          "downloads": 0
+        },
+        {
+          "id": "drawingImage-nissen-kjorer-slede-med-reinsdyr-1759637849",
+          "url": "/hoytider/fargelegge-julenissen/nissen-kjorer-slede-med-reinsdyr",
+          "category": "Høytider",
+          "subcategory": "Fargelegge Julenissen",
+          "downloads": 0
+        },
+        {
+          "id": "drawingImage-nissen-kjorer-slede-med-reinsdyr-1761461340",
+          "url": "/dyr/fargelegge-reinsdyr/nissen-kjorer-slede-med-reinsdyr",
+          "category": "Dyr",
+          "subcategory": "Fargelegge Reinsdyr",
+          "downloads": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,312 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - link "Ezoic Docs Logo" [ref=e4] [cursor=pointer]:
+        - /url: https://docs.ezoic.com/
+        - img "Ezoic Docs Logo" [ref=e6]
+      - list [ref=e7]:
+        - listitem [ref=e8]:
+          - generic [ref=e9]:
+            - img [ref=e11]
+            - searchbox [ref=e13]
+        - listitem [ref=e14]:
+          - link "Docs" [ref=e15] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/
+            - generic [ref=e16]: Docs
+        - listitem [ref=e17]:
+          - checkbox [ref=e19] [cursor=pointer]
+  - generic [ref=e21]:
+    - complementary [ref=e22]:
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - heading "Setup Toggle Section" [level=2] [ref=e26]:
+            - link "Setup" [ref=e27] [cursor=pointer]:
+              - /url: https://docs.ezoic.com/docs/ezoicads/
+            - button "Toggle Section" [ref=e28] [cursor=pointer]: ▸
+          - generic [ref=e29]:
+            - heading "Preface" [level=3] [ref=e30]:
+              - link "Preface" [ref=e31] [cursor=pointer]:
+                - /url: https://docs.ezoic.com/docs/ezoicads/getting-started/
+            - 'heading "Step 1: Site Integration" [level=3] [ref=e32]':
+              - 'link "Step 1: Site Integration" [ref=e33] [cursor=pointer]':
+                - /url: https://docs.ezoic.com/docs/ezoicads/integration/
+            - 'heading "Step 2: Ads.txt Setup" [level=3] [ref=e34]':
+              - 'link "Step 2: Ads.txt Setup" [ref=e35] [cursor=pointer]':
+                - /url: https://docs.ezoic.com/docs/ezoicads/adstxt/
+            - 'heading "Step 3: Ad Placements" [level=3] [ref=e36]':
+              - 'link "Step 3: Ad Placements" [ref=e37] [cursor=pointer]':
+                - /url: https://docs.ezoic.com/docs/ezoicads/implementation/
+            - heading "Dynamic Content" [level=3] [ref=e38]:
+              - link "Dynamic Content" [ref=e39] [cursor=pointer]:
+                - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/
+            - navigation [ref=e40]:
+              - list [ref=e41]:
+                - listitem [ref=e42]:
+                  - link "Changing Pages" [ref=e43] [cursor=pointer]:
+                    - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#changing-pages
+                - listitem [ref=e44]:
+                  - link "New Content" [ref=e45] [cursor=pointer]:
+                    - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#new-content
+                - listitem [ref=e46]:
+                  - link "Changing content" [ref=e47] [cursor=pointer]:
+                    - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#changing-content
+                - listitem [ref=e48]:
+                  - link "Infinite Scroll" [ref=e49] [cursor=pointer]:
+                    - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#infinite-scroll
+                - listitem [ref=e50]:
+                  - link "Removing all placeholders" [ref=e51] [cursor=pointer]:
+                    - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#removing-all-placeholders
+                - listitem [ref=e52]:
+                  - link "Show all placeholders" [ref=e53] [cursor=pointer]:
+                    - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#show-all-placeholders
+            - heading "Troubleshooting" [level=3] [ref=e54]:
+              - link "Troubleshooting" [ref=e55] [cursor=pointer]:
+                - /url: https://docs.ezoic.com/docs/ezoicads/troubleshooting/
+        - heading "Privacy Toggle Section" [level=2] [ref=e57]:
+          - link "Privacy" [ref=e58] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/privacy/
+          - button "Toggle Section" [ref=e59] [cursor=pointer]: ▸
+        - heading "Advanced Toggle Section" [level=2] [ref=e61]:
+          - link "Advanced" [ref=e62] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicadsadvanced/
+          - button "Toggle Section" [ref=e63] [cursor=pointer]: ▸
+        - generic [ref=e64]:
+          - heading "Identity Toggle Section" [level=2] [ref=e65]:
+            - link "Identity" [ref=e66] [cursor=pointer]:
+              - /url: https://docs.ezoic.com/docs/identity/
+            - button "Toggle Section" [ref=e67] [cursor=pointer]: ▸
+          - text: ▸
+        - heading "Custom Events Toggle Section" [level=2] [ref=e69]:
+          - link "Custom Events" [ref=e70] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/customevents/
+          - button "Toggle Section" [ref=e71] [cursor=pointer]: ▸
+        - heading "Legacy Features Toggle Section" [level=2] [ref=e73]:
+          - link "Legacy Features" [ref=e74] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoic-legacy-features/
+          - button "Toggle Section" [ref=e75] [cursor=pointer]: ▸
+    - main [ref=e76]:
+      - heading "Dynamic Content" [level=1] [ref=e77]
+      - paragraph [ref=e78]: This section is for websites where content loads or changes dynamically. For example, a modal may appear when a user clicks a button, or the page may change without a full reload.
+      - heading "Changing Pages Link to this section" [level=2] [ref=e79]:
+        - text: Changing Pages
+        - link "Link to this section" [ref=e80] [cursor=pointer]:
+          - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#changing-pages
+          - text: 🔗
+      - paragraph [ref=e81]:
+        - text: When switching between pageviews dynamically, it is important to re-call
+        - code [ref=e82]: ezstandalone.showAds()
+        - text: to force ads to refresh on the new URL.
+      - generic [ref=e83]:
+        - code [ref=e86]:
+          - generic [ref=e88]: <script>
+          - generic [ref=e90]: "ezstandalone.cmd.push(function () {"
+          - generic [ref=e92]: ezstandalone.showAds();
+          - generic [ref=e94]: "});"
+          - generic [ref=e96]: </script>
+        - generic [ref=e97]:
+          - link "Copy" [ref=e98] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e99]
+          - link "Toggle line numbers" [ref=e101] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e102]
+        - generic [ref=e104]: html
+      - paragraph [ref=e105]: Calling this function with no values will automatically call every existing placeholder on the new page. It will also refresh the anchor and video ad locations.
+      - heading "New Content Link to this section" [level=2] [ref=e106]:
+        - text: New Content
+        - link "Link to this section" [ref=e107] [cursor=pointer]:
+          - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#new-content
+          - text: 🔗
+      - paragraph [ref=e108]:
+        - text: For additional placeholders within the same pageview, you can use the
+        - code [ref=e109]: ezstandalone.showAds
+        - text: function.
+      - paragraph [ref=e110]:
+        - text: If a user clicks a button, new content loads, and placeholders
+        - code [ref=e111]: "104"
+        - text: and
+        - code [ref=e112]: "105"
+        - text: are added,
+        - code [ref=e113]: ezstandalone.showAds
+        - text: should be used to display them.
+      - generic [ref=e114]:
+        - code [ref=e117]:
+          - generic [ref=e119]: <script>
+          - generic [ref=e121]: "ezstandalone.cmd.push(function () {"
+          - generic [ref=e123]: // call new placeholders
+          - generic [ref=e125]: ezstandalone.showAds(104, 105);
+          - generic [ref=e127]: "});"
+          - generic [ref=e129]: </script>
+        - generic [ref=e130]:
+          - link "Copy" [ref=e131] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e132]
+          - link "Toggle line numbers" [ref=e134] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e135]
+        - generic [ref=e137]: html
+      - heading "Changing content Link to this section" [level=2] [ref=e138]:
+        - text: Changing content
+        - link "Link to this section" [ref=e139] [cursor=pointer]:
+          - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#changing-content
+          - text: 🔗
+      - paragraph [ref=e140]:
+        - text: If the content changes within the same pageview and a placeholder is no longer needed or visible, the placeholder needs to be properly cleaned up using
+        - code [ref=e141]: ezstandalone.destroyPlaceholders
+        - text: .
+      - generic [ref=e142]:
+        - code [ref=e145]:
+          - generic [ref=e147]: <script>
+          - generic [ref=e149]: "window.ezstandalone.cmd.push(function () {"
+          - generic [ref=e151]: // destroy placeholders
+          - generic [ref=e153]: ezstandalone.destroyPlaceholders(104, 105);
+          - generic [ref=e155]: "});"
+          - generic [ref=e157]: </script>
+        - generic [ref=e158]:
+          - link "Copy" [ref=e159] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e160]
+          - link "Toggle line numbers" [ref=e162] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e163]
+        - generic [ref=e165]: html
+      - paragraph [ref=e166]:
+        - text: If this content becomes visible again, you can recall these locations using
+        - code [ref=e167]: ezstandalone.showAds
+        - text: ", such as in the \"New Content\" example above."
+      - heading "Infinite Scroll Link to this section" [level=2] [ref=e168]:
+        - text: Infinite Scroll
+        - link "Link to this section" [ref=e169] [cursor=pointer]:
+          - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#infinite-scroll
+          - text: 🔗
+      - paragraph [ref=e170]:
+        - text: For sites which implement an infinite scroll, it is recommended to use unique placeholder IDs on each subsequent article, which can be called using
+        - code [ref=e171]: ezstandalone.showAds
+        - text: when the new article loads. For example, Article 1 may contain placeholders
+        - code [ref=e172]: "102"
+        - text: ","
+        - code [ref=e173]: "103"
+        - text: and
+        - code [ref=e174]: "104"
+        - text: ", while Article 2 may contain placeholders"
+        - code [ref=e175]: "105"
+        - text: and
+        - code [ref=e176]: "106"
+        - text: .
+      - paragraph [ref=e177]: "When the first article loads:"
+      - generic [ref=e178]:
+        - code [ref=e181]:
+          - generic [ref=e183]: <script>
+          - generic [ref=e185]: "window.ezstandalone = window.ezstandalone || {};"
+          - generic [ref=e187]: ezstandalone.cmd = ezstandalone.cmd || [];
+          - generic [ref=e189]: "ezstandalone.cmd.push(function () {"
+          - generic [ref=e191]: ezstandalone.showAds(102, 103, 104);
+          - generic [ref=e193]: "});"
+          - generic [ref=e195]: </script>
+        - generic [ref=e196]:
+          - link "Copy" [ref=e197] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e198]
+          - link "Toggle line numbers" [ref=e200] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e201]
+        - generic [ref=e203]: html
+      - paragraph [ref=e204]: "When the user scrolls to the second article, the next set of ads will be loaded using:"
+      - generic [ref=e205]:
+        - code [ref=e208]:
+          - generic [ref=e210]: <script>
+          - generic [ref=e212]: "window.ezstandalone.cmd.push(function () {"
+          - generic [ref=e214]: // call new placeholders
+          - generic [ref=e216]: ezstandalone.showAds(105, 106);
+          - generic [ref=e218]: "});"
+          - generic [ref=e220]: </script>
+        - generic [ref=e221]:
+          - link "Copy" [ref=e222] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e223]
+          - link "Toggle line numbers" [ref=e225] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e226]
+        - generic [ref=e228]: html
+      - generic [ref=e229]:
+        - text: It is recommended to create a set of
+        - code [ref=e230]: in-content
+        - text: placeholders specifically for infinite scroll.
+      - paragraph [ref=e231]:
+        - text: If placeholder IDs are reused in the newly loaded articles, then
+        - code [ref=e232]: ezstandalone.destroyPlaceholders
+        - text: must be used prior to
+        - code [ref=e233]: ezstandalone.showAds
+        - text: . It is important - however - that the original placeholders are destroyed in the HTML, as having multiple instances of the same placeholder ID on a page will cause unpredictable ad behaviour.
+      - generic [ref=e234]:
+        - text: When using
+        - code [ref=e235]: ezstandalone.destroyPlaceholders
+        - text: ", make sure you don't call it too early. This could cause the ads on the page the user is currently viewing to disappear!"
+      - heading "Removing all placeholders Link to this section" [level=2] [ref=e236]:
+        - text: Removing all placeholders
+        - link "Link to this section" [ref=e237] [cursor=pointer]:
+          - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#removing-all-placeholders
+          - text: 🔗
+      - paragraph [ref=e238]:
+        - text: You can remove all placeholders on the page by using the
+        - code [ref=e239]: destroyAll
+        - text: function.
+      - generic [ref=e240]:
+        - code [ref=e243]:
+          - generic [ref=e245]: <script>
+          - generic [ref=e247]: "window.ezstandalone.cmd.push(function () {"
+          - generic [ref=e249]: ezstandalone.destroyAll();
+          - generic [ref=e251]: "});"
+          - generic [ref=e253]: </script>
+        - generic [ref=e254]:
+          - link "Copy" [ref=e255] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e256]
+          - link "Toggle line numbers" [ref=e258] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e259]
+        - generic [ref=e261]: html
+      - paragraph [ref=e262]:
+        - text: As with
+        - code [ref=e263]: destroyPlaceholders
+        - text: "- these locations can later be recalled with the"
+        - code [ref=e264]: showAds
+        - text: function.
+      - heading "Show all placeholders Link to this section" [level=2] [ref=e265]:
+        - text: Show all placeholders
+        - link "Link to this section" [ref=e266] [cursor=pointer]:
+          - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#show-all-placeholders
+          - text: 🔗
+      - paragraph [ref=e267]:
+        - text: You can call ads in every placeholder on a given page by using the
+        - code [ref=e268]: showAds
+        - text: function, without defining any value.
+      - generic [ref=e269]:
+        - code [ref=e272]:
+          - generic [ref=e274]: <script>
+          - generic [ref=e276]: "window.ezstandalone.cmd.push(function () {"
+          - generic [ref=e278]: ezstandalone.showAds();
+          - generic [ref=e280]: "});"
+          - generic [ref=e282]: </script>
+        - generic [ref=e283]:
+          - link "Copy" [ref=e284] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e285]
+          - link "Toggle line numbers" [ref=e287] [cursor=pointer]:
+            - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#
+            - img [ref=e288]
+        - generic [ref=e290]: html
+      - generic [ref=e291]:
+        - 'link "Step 3: Ad Placements" [ref=e293] [cursor=pointer]':
+          - /url: https://docs.ezoic.com/docs/ezoicads/implementation/
+          - generic [ref=e294]: "Step 3: Ad Placements"
+        - link "Troubleshooting" [ref=e296] [cursor=pointer]:
+          - /url: https://docs.ezoic.com/docs/ezoicads/troubleshooting/
+          - generic [ref=e297]: Troubleshooting
+  - contentinfo [ref=e298]:
+    - generic [ref=e299]:
+      - paragraph [ref=e300]: © 2026
+      - link "Back to top" [ref=e301] [cursor=pointer]:
+        - /url: https://docs.ezoic.com/docs/ezoicads/dynamic-content/#pagetop
+  - img
+  - img

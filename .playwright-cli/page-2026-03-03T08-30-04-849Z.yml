@@ -1,0 +1,305 @@
+- generic [ref=e2]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - button "Main menu" [ref=e7] [cursor=pointer]:
+          - img [ref=e8]
+        - link "Google Search Console" [ref=e12] [cursor=pointer]:
+          - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+          - img [ref=e13]
+      - generic [ref=e14]:
+        - search [ref=e16]:
+          - generic [ref=e22]:
+            - textbox [disabled] [ref=e23]: Inspect any URL in "https://tegnogfarge.no/"
+            - combobox "Inspect any URL in https://tegnogfarge.no/" [ref=e24]
+          - button "Search" [ref=e25] [cursor=pointer]:
+            - img [ref=e26]
+        - generic [ref=e29]:
+          - generic [ref=e31]:
+            - button "Help" [ref=e33] [cursor=pointer]:
+              - generic [ref=e36]: 
+            - button "User settings" [ref=e38] [cursor=pointer]:
+              - img [ref=e41]
+          - 'button "Unread messages: 45" [ref=e45] [cursor=pointer]':
+            - generic [ref=e47]:
+              - generic [ref=e48]: 
+              - generic [ref=e50]: "45"
+      - generic [ref=e52]:
+        - button "Google apps" [ref=e56] [cursor=pointer]:
+          - img [ref=e57]
+        - 'button "Google Account: Petter Lund (ronincarpenter90@gmail.com)" [ref=e62] [cursor=pointer]':
+          - img [ref=e64]
+  - dialog "navigational drawer" [ref=e68]:
+    - navigation "Primary" [ref=e71]:
+      - button "Search property" [ref=e75] [cursor=pointer]:
+        - img [ref=e77]
+        - combobox "https://tegnogfarge.no/" [ref=e84]
+        - generic [ref=e85]: 
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - generic [ref=e88]:
+            - link "Overview" [ref=e90] [cursor=pointer]:
+              - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e92]: home
+              - generic [ref=e94]: Overview
+            - link "Insights" [ref=e97] [cursor=pointer]:
+              - /url: ./search-console/performance/insights?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e99]: lightbulb_2
+              - generic [ref=e101]: Insights
+            - button "URL inspection" [ref=e104] [cursor=pointer]:
+              - generic [ref=e106]: search
+              - generic [ref=e108]: URL inspection
+          - generic [ref=e112]:
+            - button "Performance report section" [expanded] [ref=e113] [cursor=pointer]:
+              - generic [ref=e114]:
+                - generic [ref=e117]: Performance
+                - img [ref=e121]
+            - generic [ref=e126]:
+              - link "Search results" [ref=e128] [cursor=pointer]:
+                - /url: ./search-console/performance/search-analytics?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e130]: google
+                - generic [ref=e132]: Search results
+              - link "Discover" [ref=e135] [cursor=pointer]:
+                - /url: ./search-console/performance/discover?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - img [ref=e137]
+                - generic [ref=e143]: Discover
+          - generic [ref=e147]:
+            - button "Indexing report section" [expanded] [ref=e148] [cursor=pointer]:
+              - generic [ref=e149]:
+                - generic [ref=e152]: Indexing
+                - img [ref=e156]
+            - generic [ref=e161]:
+              - link "Pages" [ref=e163] [cursor=pointer]:
+                - /url: ./search-console/index?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e165]: file_copy
+                - generic [ref=e167]: Pages
+              - link "Sitemaps" [ref=e170] [cursor=pointer]:
+                - /url: ./search-console/sitemaps?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e172]: account_tree
+                - generic [ref=e174]: Sitemaps
+              - link "Removals" [ref=e177] [cursor=pointer]:
+                - /url: ./search-console/removals?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e179]: visibility_off
+                - generic [ref=e181]: Removals
+          - generic [ref=e185]:
+            - button "Experience report section" [expanded] [ref=e186] [cursor=pointer]:
+              - generic [ref=e187]:
+                - generic [ref=e190]: Experience
+                - img [ref=e194]
+            - generic [ref=e199]:
+              - link "Core Web Vitals" [ref=e201] [cursor=pointer]:
+                - /url: ./search-console/core-web-vitals?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e203]: speed
+                - generic [ref=e205]: Core Web Vitals
+              - link "HTTPS" [ref=e208] [cursor=pointer]:
+                - /url: ./search-console/https?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e210]: lock
+                - generic [ref=e212]: HTTPS
+          - generic [ref=e216]:
+            - button "Enhancements report section" [expanded] [ref=e217] [cursor=pointer]:
+              - generic [ref=e218]:
+                - generic [ref=e221]: Enhancements
+                - img [ref=e225]
+            - generic [ref=e230]:
+              - link "Breadcrumbs" [ref=e232] [cursor=pointer]:
+                - /url: ./search-console/r/breadcrumbs?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e234]: layers
+                - generic [ref=e236]: Breadcrumbs
+              - link "Image Metadata" [ref=e239] [cursor=pointer]:
+                - /url: ./search-console/r/image-licenses?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+                - generic [ref=e241]: layers
+                - generic [ref=e243]: Image Metadata
+          - button "Security & Manual Actions report section" [ref=e248] [cursor=pointer]:
+            - generic [ref=e249]:
+              - generic [ref=e252]: Security & Manual Actions
+              - img [ref=e256]
+          - generic [ref=e258]:
+            - link "Links report" [ref=e260] [cursor=pointer]:
+              - /url: ./search-console/links?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e262]: link_2
+              - generic [ref=e264]: Links
+            - link "Achievements" [ref=e267] [cursor=pointer]:
+              - /url: ./search-console/achievements?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e269]: trophy
+              - generic [ref=e271]: Achievements
+            - link "Settings" [ref=e274] [cursor=pointer]:
+              - /url: ./search-console/settings?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+              - generic [ref=e276]: settings
+              - generic [ref=e278]: Settings
+        - generic [ref=e280]:
+          - generic [ref=e282]:
+            - button "Submit feedback" [ref=e284] [cursor=pointer]:
+              - generic [ref=e286]: feedback
+              - generic [ref=e288]: Submit feedback
+            - button "About Search Console" [ref=e291] [cursor=pointer]:
+              - generic [ref=e293]: info
+              - generic [ref=e295]: About Search Console
+          - generic [ref=e299]:
+            - link "Privacy" [ref=e300] [cursor=pointer]:
+              - /url: https://myaccount.google.com/privacypolicy?hl=en
+            - link "Terms" [ref=e301] [cursor=pointer]:
+              - /url: https://myaccount.google.com/termsofservice?hl=en
+  - generic [ref=e303]:
+    - navigation "Breadcrumbs" [ref=e308]:
+      - heading "Overview" [level=1] [ref=e311]
+    - main [ref=e315]:
+      - generic [ref=e316]:
+        - generic [ref=e321]:
+          - generic [ref=e322]:
+            - generic [ref=e323]: lightbulb_outline
+            - generic [ref=e324]: Get insights into your site's Search performance
+          - generic [ref=e327]:
+            - generic [ref=e329]: chevron_right
+            - generic [ref=e330]: Explore your insights
+            - link "Explore your insights" [ref=e331] [cursor=pointer]:
+              - /url: ./search-console/performance/insights?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+        - generic [ref=e333]:
+          - generic [ref=e334]:
+            - generic [ref=e335]: Performance
+            - generic [ref=e338]:
+              - generic [ref=e340]: chevron_right
+              - generic [ref=e341]: Full report
+              - link "Full report" [ref=e342] [cursor=pointer]:
+                - /url: ./search-console/performance/search-analytics?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+          - generic [ref=e345]:
+            - generic [ref=e350]: 5,083 total web search clicks
+            - img [ref=e354]:
+              - generic [ref=e355]:
+                - generic [ref=e356]:
+                  - generic [ref=e358]: 12/2/25
+                  - generic [ref=e360]: 12/14/25
+                  - generic [ref=e362]: 12/26/25
+                  - generic [ref=e364]: 1/7/26
+                  - generic [ref=e366]: 1/19/26
+                  - generic [ref=e368]: 1/31/26
+                  - generic [ref=e370]: 2/12/26
+                  - generic [ref=e372]: 2/24/26
+                - generic [ref=e373]:
+                  - generic [ref=e375]: "300"
+                  - generic [ref=e377]: "200"
+                  - generic [ref=e379]: "100"
+                  - generic [ref=e381]: "0"
+        - generic [ref=e390]:
+          - generic [ref=e391]:
+            - generic [ref=e392]: Indexing
+            - generic [ref=e395]:
+              - generic [ref=e397]: chevron_right
+              - generic [ref=e398]: Full report
+              - link "Full report" [ref=e399] [cursor=pointer]:
+                - /url: ./search-console/index?resource_id=https%3A%2F%2Ftegnogfarge.no%2F
+          - generic [ref=e402]:
+            - generic [ref=e404]:
+              - generic [ref=e407]: 8,671 not indexed pages
+              - generic [ref=e410]: 6,438 indexed pages
+            - img [ref=e414]:
+              - generic [ref=e415]:
+                - generic [ref=e416]:
+                  - generic [ref=e418]: 12/3/25
+                  - generic [ref=e420]: 12/14/25
+                  - generic [ref=e422]: 12/25/25
+                  - generic [ref=e424]: 1/5/26
+                  - generic [ref=e426]: 1/16/26
+                  - generic [ref=e428]: 1/27/26
+                  - generic [ref=e430]: 2/7/26
+                  - generic [ref=e432]: 2/18/26
+                - generic [ref=e433]:
+                  - generic [ref=e435]: 9K
+                  - generic [ref=e437]: 6K
+                  - generic [ref=e439]: 3K
+                  - generic [ref=e441]: "0"
+        - generic [ref=e462]:
+          - generic [ref=e464]: Experience
+          - table [ref=e468]:
+            - rowgroup [ref=e469]:
+              - row "Type Good Needs improvement Poor Trend" [ref=e470]:
+                - columnheader "Type" [ref=e471]
+                - columnheader [ref=e472]
+                - columnheader "Good" [ref=e473]
+                - columnheader "Needs improvement" [ref=e474]
+                - columnheader "Poor" [ref=e475]
+                - columnheader "Trend" [ref=e476]
+                - columnheader [ref=e477]
+            - rowgroup [ref=e478]:
+              - row "Core Web Vitals Mobile Desktop 2,606 2,606 0 0 0 0 Open report" [ref=e479]:
+                - cell "Core Web Vitals" [ref=e480]:
+                  - generic [ref=e482]: Core Web Vitals
+                - cell "Mobile Desktop" [ref=e483]:
+                  - generic [ref=e485]:
+                    - generic [ref=e486]: Mobile
+                    - generic [ref=e487]: Desktop
+                - cell "2,606 2,606" [ref=e488]:
+                  - generic [ref=e489]:
+                    - generic [ref=e490]: 2,606
+                    - generic [ref=e491]: 2,606
+                - cell "0 0" [ref=e492]:
+                  - generic [ref=e493]:
+                    - generic [ref=e494]: "0"
+                    - generic [ref=e495]: "0"
+                - cell "0 0" [ref=e496]:
+                  - generic [ref=e497]:
+                    - generic [ref=e498]: "0"
+                    - generic [ref=e499]: "0"
+                - cell [ref=e500]:
+                  - generic [ref=e501]:
+                    - img [ref=e503]
+                    - img [ref=e506]
+                - cell "Open report" [ref=e508]:
+                  - button "Open report" [ref=e511] [cursor=pointer]:
+                    - generic [ref=e512]: chevron_right
+              - row "HTTPS Non HTTPS" [ref=e513]:
+                - columnheader [ref=e514]
+                - columnheader [ref=e515]
+                - columnheader "HTTPS" [ref=e516]
+                - columnheader [ref=e517]
+                - columnheader "Non HTTPS" [ref=e518]
+                - columnheader [ref=e519]
+                - columnheader [ref=e520]
+              - row "HTTPS 2,649 0 Open report" [ref=e521]:
+                - cell "HTTPS" [ref=e522]:
+                  - generic [ref=e524]: HTTPS
+                - cell [ref=e525]
+                - cell "2,649" [ref=e526]:
+                  - generic [ref=e528]: 2,649
+                - cell [ref=e529]
+                - cell "0" [ref=e530]:
+                  - generic [ref=e532]: "0"
+                - cell [ref=e533]:
+                  - img [ref=e536]
+                - cell "Open report" [ref=e538]:
+                  - button "Open report" [ref=e541] [cursor=pointer]:
+                    - generic [ref=e542]: chevron_right
+        - generic [ref=e544]:
+          - generic [ref=e546]: Enhancements
+          - table [ref=e550]:
+            - rowgroup [ref=e551]:
+              - row "Type Valid Invalid Trend" [ref=e552]:
+                - columnheader "Type" [ref=e553]
+                - columnheader "Valid" [ref=e554]
+                - columnheader "Invalid" [ref=e555]
+                - columnheader "Trend" [ref=e556]
+                - columnheader [ref=e557]
+            - rowgroup [ref=e558]:
+              - row "Breadcrumbs 2,339 0 Open report" [ref=e559]:
+                - cell "Breadcrumbs" [ref=e560]:
+                  - generic [ref=e562]: Breadcrumbs
+                - cell "2,339" [ref=e563]:
+                  - generic [ref=e565]: 2,339
+                - cell "0" [ref=e566]:
+                  - generic [ref=e568]: "0"
+                - cell [ref=e569]:
+                  - img [ref=e572]
+                - cell "Open report" [ref=e574]:
+                  - button "Open report" [ref=e577] [cursor=pointer]:
+                    - generic [ref=e578]: chevron_right
+              - row "Image Metadata 2,349 0 Open report" [ref=e579]:
+                - cell "Image Metadata" [ref=e580]:
+                  - generic [ref=e582]: Image Metadata
+                - cell "2,349" [ref=e583]:
+                  - generic [ref=e585]: 2,349
+                - cell "0" [ref=e586]:
+                  - generic [ref=e588]: "0"
+                - cell [ref=e589]:
+                  - img [ref=e592]
+                - cell "Open report" [ref=e594]:
+                  - button "Open report" [ref=e597] [cursor=pointer]:
+                    - generic [ref=e598]: chevron_right

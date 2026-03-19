@@ -1,0 +1,478 @@
+- generic [ref=e1]:
+  - generic [ref=e8]:
+    - generic [ref=e10]:
+      - link [ref=e13] [cursor=pointer]:
+        - /url: /
+        - img [ref=e16]
+      - generic [ref=e21]:
+        - link [ref=e23] [cursor=pointer]:
+          - /url: /accounts/login/?next=%2Flivetutenmelk%2F&source=desktop_nav
+          - text: Logg inn
+        - link [ref=e25] [cursor=pointer]:
+          - /url: /accounts/emailsignup/
+          - text: Registrer deg
+    - main [ref=e26]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - link [ref=e36] [cursor=pointer]:
+              - /url: /livetutenmelk/
+              - img [ref=e37]
+            - generic [ref=e38]:
+              - generic [ref=e39]:
+                - generic [ref=e40]:
+                  - heading [level=2] [ref=e43]:
+                    - generic [ref=e44]: livetutenmelk
+                  - button [ref=e46] [cursor=pointer]:
+                    - img [ref=e48]
+                - generic [ref=e53]: Livet uten melk - Melkefri mat
+                - generic [ref=e54]:
+                  - link [ref=e56] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e57]:
+                      - generic [ref=e58]: "366"
+                      - text: innlegg
+                  - link [ref=e60] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e61]:
+                      - generic [ref=e62]: 9 069
+                      - text: følgere
+                  - link [ref=e64] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e65]:
+                      - text: Følger
+                      - generic [ref=e66]: 1 689
+              - generic [ref=e68]:
+                - generic [ref=e70]: Kjøkken/matlaging
+                - generic [ref=e71]:
+                  - button [ref=e72] [cursor=pointer]: Mat-og helselærer fra Karmøy som lager melkefri mat, men også litt plantebasert😋🌿 Her får du tips til oppskrifter,
+                  - generic [ref=e73]:
+                    - text: ...
+                    - button [ref=e74] [cursor=pointer]:
+                      - generic [ref=e75]: mer
+          - generic [ref=e80]:
+            - button [ref=e82] [cursor=pointer]:
+              - generic [ref=e84]: Følg
+            - button [ref=e86] [cursor=pointer]: Send melding
+          - menu [ref=e88]:
+            - generic [ref=e90]:
+              - list [ref=e92]:
+                - listitem [ref=e93]
+                - listitem [ref=e94]
+                - listitem [ref=e95]:
+                  - menuitem [ref=e97] [cursor=pointer]:
+                    - link [ref=e98]:
+                      - /url: /stories/highlights/18108074053630574/
+                      - button [disabled] [ref=e99]:
+                        - img [ref=e102]
+                    - generic [ref=e105]: "2026"
+                - listitem [ref=e106]:
+                  - menuitem [ref=e108] [cursor=pointer]:
+                    - link [ref=e109]:
+                      - /url: /stories/highlights/18412165402075214/
+                      - button [disabled] [ref=e110]:
+                        - img [ref=e113]
+                    - generic [ref=e116]: Stavanger🌸
+                - listitem [ref=e117]:
+                  - menuitem [ref=e119] [cursor=pointer]:
+                    - link [ref=e120]:
+                      - /url: /stories/highlights/18018220373416805/
+                      - button [disabled] [ref=e121]:
+                        - img [ref=e124]
+                    - generic [ref=e127]: 2025✨
+                - listitem [ref=e128]:
+                  - menuitem [ref=e130] [cursor=pointer]:
+                    - link [ref=e131]:
+                      - /url: /stories/highlights/17918762376034455/
+                      - button [disabled] [ref=e132]:
+                        - img [ref=e135]
+                    - generic [ref=e138]: Mat 2025
+                - listitem [ref=e139]:
+                  - menuitem [ref=e141] [cursor=pointer]:
+                    - link [ref=e142]:
+                      - /url: /stories/highlights/18077072542271787/
+                      - button [disabled] [ref=e143]:
+                        - img [ref=e146]
+                    - generic [ref=e149]: Produkter
+                - listitem [ref=e150]:
+                  - menuitem [ref=e152] [cursor=pointer]:
+                    - link [ref=e153]:
+                      - /url: /stories/highlights/18319997206012056/
+                      - button [disabled] [ref=e154]:
+                        - img [ref=e157]
+                    - generic [ref=e160]: Ut å spise😋
+                - listitem [ref=e161]:
+                  - menuitem [ref=e163] [cursor=pointer]:
+                    - link [ref=e164]:
+                      - /url: /stories/highlights/18086883034610332/
+                      - button [disabled] [ref=e165]:
+                        - img [ref=e168]
+                    - generic [ref=e171]: Sommer25
+                - listitem [ref=e172]:
+                  - menuitem [ref=e174] [cursor=pointer]:
+                    - link [ref=e175]:
+                      - /url: /stories/highlights/17998285094656773/
+                      - button [disabled] [ref=e176]:
+                        - img [ref=e179]
+                    - generic [ref=e182]: Oslo🏙️
+                - listitem [ref=e183]:
+                  - menuitem [ref=e185] [cursor=pointer]:
+                    - link [ref=e186]:
+                      - /url: /stories/highlights/18347465023081399/
+                      - button [disabled] [ref=e187]:
+                        - img [ref=e190]
+                    - generic [ref=e193]: Mallorca☀️
+                - listitem [ref=e194]:
+                  - menuitem [ref=e196] [cursor=pointer]:
+                    - link [ref=e197]:
+                      - /url: /stories/highlights/17868299565288471/
+                      - button [disabled] [ref=e198]:
+                        - img [ref=e201]
+                    - generic [ref=e204]: Bergen🏔️
+                - listitem [ref=e205]:
+                  - menuitem [ref=e207] [cursor=pointer]:
+                    - link [ref=e208]:
+                      - /url: /stories/highlights/17879413964230403/
+                      - button [disabled] [ref=e209]:
+                        - img [ref=e212]
+                    - generic [ref=e215]: Mat og drikke
+                - listitem [ref=e216]:
+                  - menuitem [ref=e218] [cursor=pointer]:
+                    - link [ref=e219]:
+                      - /url: /stories/highlights/17884537107021057/
+                      - button [disabled] [ref=e220]:
+                        - img [ref=e223]
+                    - generic [ref=e226]: 2024🫶
+                - listitem [ref=e227]:
+                  - menuitem [ref=e229] [cursor=pointer]:
+                    - link [ref=e230]:
+                      - /url: /stories/highlights/18037035598081042/
+                      - button [disabled] [ref=e231]:
+                        - img [ref=e234]
+                    - generic [ref=e237]: Tips & Råd
+                - listitem [ref=e238]:
+                  - menuitem [ref=e240] [cursor=pointer]:
+                    - link [ref=e241]:
+                      - /url: /stories/highlights/18105459943406513/
+                      - button [disabled] [ref=e242]:
+                        - img [ref=e245]
+                    - generic [ref=e248]: Sommer24
+              - button [ref=e249] [cursor=pointer]
+        - tablist [ref=e252]:
+          - link [ref=e254] [cursor=pointer]:
+            - /url: /livetutenmelk/
+            - img [ref=e256]
+          - link [ref=e267] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e269]
+          - link [ref=e272] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e274]
+        - generic [ref=e278]:
+          - generic [ref=e281]:
+            - generic [ref=e282]:
+              - link [ref=e284] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DS5JbqqCMHP/
+                - img [ref=e287]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e290] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DSuu73siIjq/
+                - img [ref=e293]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e296] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DSQPe0LDW29/
+                - img [ref=e299]
+                - generic:
+                  - generic:
+                    - img
+            - generic [ref=e301]:
+              - link [ref=e303] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DR4cmpKiAVT/
+                - img [ref=e306]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e309] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DQpb_6ojUjH/
+                - img [ref=e312]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e315] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DPl1RVpCGFR/
+                - img [ref=e318]
+                - generic:
+                  - generic:
+                    - img
+            - generic [ref=e320]:
+              - link [ref=e322] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DPjfG0ECDTJ/
+                - img [ref=e325]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e328] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DObNVyciNRi/
+                - img [ref=e331]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e334] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DMXjLCVKpQR/
+                - img [ref=e337]
+                - generic:
+                  - generic:
+                    - img
+            - generic [ref=e339]:
+              - link [ref=e341] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DMFhKNcqBv8/
+                - img [ref=e344]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e347] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DKZ2crgKbVd/
+                - img [ref=e350]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e353] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DJ7RwlrKUio/
+                - img [ref=e356]
+                - generic:
+                  - generic:
+                    - img
+            - generic [ref=e358]:
+              - link [ref=e360] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DJmmWl7KFGx/
+                - img [ref=e363]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e366] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DJHEV2pK4Uj/
+                - img [ref=e369]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e372] [cursor=pointer]:
+                - /url: /livetutenmelk/p/DJCdjkAqbh1/
+                - img [ref=e375]
+                - generic:
+                  - generic:
+                    - img
+            - generic [ref=e377]:
+              - link [ref=e379] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DIi2XIAqDKF/
+                - img [ref=e382]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e385] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DIeiYXNKzcd/
+                - img [ref=e388]
+                - generic:
+                  - generic:
+                    - img
+              - link [ref=e391] [cursor=pointer]:
+                - /url: /livetutenmelk/reel/DIMT8lVKlAM/
+                - img [ref=e394]
+                - generic:
+                  - generic:
+                    - img
+          - button [ref=e396] [cursor=pointer]:
+            - generic [ref=e398]: Vis flere innlegg fra livetutenmelk
+    - contentinfo [ref=e399]:
+      - generic [ref=e400]:
+        - generic [ref=e402]:
+          - link [ref=e404] [cursor=pointer]:
+            - /url: https://about.meta.com/
+            - generic [ref=e405]: Meta
+          - link [ref=e407] [cursor=pointer]:
+            - /url: https://about.instagram.com/
+            - generic [ref=e408]: Om
+          - link [ref=e410] [cursor=pointer]:
+            - /url: https://about.instagram.com/blog/
+            - generic [ref=e411]: Blogg
+          - link [ref=e413] [cursor=pointer]:
+            - /url: https://about.instagram.com/about-us/careers
+            - generic [ref=e414]: Jobb
+          - link [ref=e416] [cursor=pointer]:
+            - /url: https://help.instagram.com/
+            - generic [ref=e417]: Hjelp
+          - link [ref=e419] [cursor=pointer]:
+            - /url: https://developers.facebook.com/docs/instagram
+            - generic [ref=e420]: API
+          - link [ref=e422] [cursor=pointer]:
+            - /url: /legal/privacy/
+            - generic [ref=e423]: Personvern
+          - link [ref=e425] [cursor=pointer]:
+            - /url: /legal/terms/
+            - generic [ref=e426]: Betingelser
+          - link [ref=e428] [cursor=pointer]:
+            - /url: /explore/locations/
+            - generic [ref=e429]: Steder
+          - link [ref=e431] [cursor=pointer]:
+            - /url: /web/lite/
+            - generic [ref=e432]: Instagram Lite
+          - link [ref=e434] [cursor=pointer]:
+            - /url: https://www.meta.ai/?utm_source=foa_web_footer
+            - generic [ref=e435]: Meta AI
+          - link [ref=e437] [cursor=pointer]:
+            - /url: https://www.threads.com/
+            - generic [ref=e438]: Threads
+          - link [ref=e440] [cursor=pointer]:
+            - /url: https://www.facebook.com/help/instagram/261704639352628
+            - generic [ref=e441]: Opplasting av kontakter og ikke-brukere
+          - link [ref=e443] [cursor=pointer]:
+            - /url: /accounts/meta_verified/?entrypoint=web_footer
+            - generic [ref=e444]: Meta Verified
+        - generic [ref=e445]:
+          - generic [ref=e446] [cursor=pointer]:
+            - generic [ref=e447]:
+              - generic [ref=e448]: Norsk
+              - img [ref=e451]
+            - combobox [ref=e453]
+          - generic [ref=e455]: © 2026 Instagram from Meta
+  - dialog [ref=e462]:
+    - generic [ref=e465]:
+      - generic [ref=e466]:
+        - generic [ref=e468] [cursor=pointer]:
+          - img "Språk" [ref=e469]
+          - combobox "Bytt visningsspråk" [ref=e473]:
+            - option "Afrikaans"
+            - option "العربية"
+            - option "Čeština"
+            - option "Dansk"
+            - option "Deutsch"
+            - option "Ελληνικά"
+            - option "English"
+            - option "English (UK)"
+            - option "Español (España)"
+            - option "Español"
+            - option "فارسی"
+            - option "Suomi"
+            - option "Français"
+            - option "עברית"
+            - option "Bahasa Indonesia"
+            - option "Italiano"
+            - option "日本語"
+            - option "한국어"
+            - option "Bahasa Melayu"
+            - option "Norsk" [selected]
+            - option "Nederlands"
+            - option "Polski"
+            - option "Português (Brasil)"
+            - option "Português (Portugal)"
+            - option "Русский"
+            - option "Svenska"
+            - option "ภาษาไทย"
+            - option "Filipino"
+            - option "Türkçe"
+            - option "中文(简体)"
+            - option "中文(台灣)"
+            - option "বাংলা"
+            - option "ગુજરાતી"
+            - option "हिन्दी"
+            - option "Hrvatski"
+            - option "Magyar"
+            - option "ಕನ್ನಡ"
+            - option "മലയാളം"
+            - option "मराठी"
+            - option "नेपाली"
+            - option "ਪੰਜਾਬੀ"
+            - option "සිංහල"
+            - option "Slovenčina"
+            - option "தமிழ்"
+            - option "తెలుగు"
+            - option "اردو"
+            - option "Tiếng Việt"
+            - option "中文(香港)"
+            - option "Български"
+            - option "Français (Canada)"
+            - option "Română"
+            - option "Српски"
+            - option "Українська"
+        - generic [ref=e474]:
+          - generic [ref=e475]:
+            - heading "Vil du tillate bruk av informasjonskapsler fra Instagram i denne nettleseren?" [active] [level=2] [ref=e477]
+            - generic [ref=e478]:
+              - generic [ref=e481]:
+                - text: Vi bruker informasjonskapsler og lignende teknologi som hjelp til å levere og forbedre innhold i
+                - link "Meta-produkter" [ref=e482] [cursor=pointer]:
+                  - /url: https://www.facebook.com/help/1561485474074139
+                - text: . Vi bruker dem også til å gi en tryggere opplevelse ved å bruke informasjon vi får fra informasjonskapsler på og utenfor Instagram, samt til å levere og forbedre Meta-produkter for personer som har en konto.
+              - list [ref=e483]:
+                - listitem [ref=e484]: "Nødvendige informasjonskapsler: Disse informasjonskapslene kreves for å bruke Meta-produkter og er nødvendige for at nettstedene våre skal fungere som tilsiktet."
+                - listitem [ref=e485]: "Informasjonskapsler fra andre selskaper: Vi bruker disse informasjonskapslene til å vise deg annonser utenfor Meta-produkter, og for å levere funksjoner som kart og videoer i Meta-produkter. Disse informasjonskapslene er valgfrie."
+              - generic [ref=e488]:
+                - text: Du har kontroll over de valgfrie informasjonskapslene vi bruker. Finn ut mer om informasjonskapsler og hvordan vi bruker dem, og gå gjennom eller endre valgene dine når som helst i våre
+                - link "retningslinjer for informasjonskapsler" [ref=e489] [cursor=pointer]:
+                  - /url: /legal/cookies/
+                - text: .
+          - generic [ref=e491]: Om informasjonskapsler
+          - generic [ref=e492]:
+            - generic [ref=e493]:
+              - img "informasjonskapsel" [ref=e495]
+              - generic [ref=e498]: Hva er informasjonskapsler?
+              - button "Finn ut mer" [ref=e500] [cursor=pointer]
+            - generic [ref=e502]:
+              - img "skjold" [ref=e504]
+              - generic [ref=e508]: Hvorfor bruker vi informasjonskapsler?
+              - button "Finn ut mer" [ref=e510] [cursor=pointer]
+          - generic [ref=e511]:
+            - generic [ref=e512]:
+              - img "meta-logo" [ref=e514]
+              - generic [ref=e517]: Hva er Meta-produkter?
+              - button "Finn ut mer" [ref=e519] [cursor=pointer]
+            - generic [ref=e521]:
+              - img "filter" [ref=e523]
+              - generic [ref=e526]: Dine valg for informasjonskapsler
+              - button "Finn ut mer" [ref=e528] [cursor=pointer]
+          - generic [ref=e530]:
+            - generic [ref=e531]: Valgfrie informasjonskapsler
+            - generic [ref=e532]:
+              - generic [ref=e533]:
+                - generic [ref=e535]: Informasjonskapsler fra andre selskaper
+                - generic [ref=e537]:
+                  - text: Vi bruker informasjonskapsler fra
+                  - link "andre selskaper" [ref=e538] [cursor=pointer]:
+                    - /url: https://privacycenter.instagram.com/policies/cookies/?annotations[0]=explanation%2F3_companies_list
+                  - text: for å vise deg annonser utenfor produktene våre, og for å levere funksjoner som kart, betalingstjenester og video.
+              - switch "Informasjonskapsler fra andre bedrifter" [ref=e541] [cursor=pointer]
+            - button "Velg informasjonskapsler etter kategori Vinkeltegn" [ref=e543] [cursor=pointer]:
+              - generic [ref=e544]:
+                - heading "Velg informasjonskapsler etter kategori" [level=4] [ref=e546]
+                - img "Vinkeltegn" [ref=e548]
+            - button "Slik bruker vi disse informasjonskapslene Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e551] [cursor=pointer]:
+              - generic [ref=e552]:
+                - heading "Slik bruker vi disse informasjonskapslene" [level=5] [ref=e554]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e556]
+            - button "Hvis du tillater disse informasjonskapslene Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e559] [cursor=pointer]:
+              - generic [ref=e560]:
+                - heading "Hvis du tillater disse informasjonskapslene" [level=5] [ref=e562]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e564]
+            - button "Hvis du ikke tillater disse informasjonskapslene Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e567] [cursor=pointer]:
+              - generic [ref=e568]:
+                - heading "Hvis du ikke tillater disse informasjonskapslene" [level=5] [ref=e570]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e572]
+          - generic [ref=e575]:
+            - generic [ref=e576]: Andre måter du kan kontrollere informasjonen din på
+            - button "Administrer annonseopplevelsen din i kontosenteret Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e578] [cursor=pointer]:
+              - generic [ref=e579]:
+                - heading "Administrer annonseopplevelsen din i kontosenteret" [level=5] [ref=e581]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e583]
+            - button "Mer informasjon om annonsering på nettet Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e586] [cursor=pointer]:
+              - generic [ref=e587]:
+                - heading "Mer informasjon om annonsering på nettet" [level=5] [ref=e589]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e591]
+            - button "Kontrollere informasjonskapsler med nettleserinnstillinger Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e594] [cursor=pointer]:
+              - generic [ref=e595]:
+                - heading "Kontrollere informasjonskapsler med nettleserinnstillinger" [level=5] [ref=e597]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e599]
+      - button "Tillat alle informasjonskapsler" [ref=e601] [cursor=pointer]
+      - button "Avvis valgfrie informasjonskapsler" [ref=e602] [cursor=pointer]

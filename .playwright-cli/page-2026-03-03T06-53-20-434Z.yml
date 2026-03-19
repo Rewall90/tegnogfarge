@@ -1,0 +1,134 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - img "Search Console" [ref=e7]
+    - link "Start nå" [ref=e9] [cursor=pointer]:
+      - /url: https://accounts.google.com/ServiceLogin?service=sitemaps&hl=no&continue=https://search.google.com/search-console?utm_source%3Dabout-page
+      - generic [ref=e12]: Start nå
+  - generic [ref=e13]:
+    - generic [ref=e18]:
+      - generic [ref=e19]: Oppnå bedre resultater på Google Søk
+      - generic [ref=e20]:
+        - generic [ref=e21]: Verktøyene og rapportene i Search Console hjelper deg med å måle nettstedets søketrafikk og ytelse, løse problemer og få nettstedet til å skinne i Google Søk-resultater
+        - link "Start nå" [ref=e23] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?service=sitemaps&hl=no&continue=https://search.google.com/search-console?utm_source%3Dabout-page
+          - generic [ref=e26]: Start nå
+    - generic [ref=e31]:
+      - generic [ref=e32]: Optimaliser innholdet ditt med Søkeanalyse
+      - generic [ref=e33]: Se hvilke søk som fører brukere til nettstedet ditt. Analysér nettstedets visninger, klikk og posisjon på Google Søk.
+    - generic [ref=e38]:
+      - generic [ref=e39]: Få innholdet ditt på Google
+      - generic [ref=e40]: Send inn nettstedkart og individuelle nettadresser for gjennomsøking. Gå gjennom indeksdekningen din for å sjekke at Google har den mest aktuelle visningen av nettstedet ditt.
+    - generic [ref=e45]:
+      - generic [ref=e46]: Bli varslet om problemer på nettstedet ditt, og korriger dem
+      - generic [ref=e47]: Motta e-postvarsler når Google identifiserer problemer på nettstedet ditt. Se hvilke nettadresser som er berørt av disse problemene, og fortell Google når du har løst dem.
+    - generic [ref=e52]:
+      - generic [ref=e53]: Forstå hvordan Google Søk ser sidene dine
+      - generic [ref=e54]: Verktøyet for gjennomgang av nettadresser gir detaljert informasjon om gjennomsøking, indeksering og visning av sidene dine, direkte fra Google-indeksen.
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - generic [ref=e58]: Search Console-opplæring
+        - generic [ref=e59]: Finn ut hvordan du optimaliserer utseendet ditt i søk på Google og øker den organiske trafikken til nettstedet ditt
+      - generic [ref=e60]:
+        - link "Introduksjon til Google Search Console" [ref=e61] [cursor=pointer]:
+          - /url: https://www.youtube.com/watch?v=ONr5Z7VhNFI&list=PLKoqnv2vTMUOnQn-lNDfT38X9gA_CHxTo&index=1
+          - generic [ref=e64]:
+            - generic [ref=e67]: 
+            - generic [ref=e68]: Introduksjon til Google Search Console
+        - link "7 alternativer for å bekrefte eierskap av nettsteder" [ref=e69] [cursor=pointer]:
+          - /url: https://www.youtube.com/watch?v=N4PmE3LysUM&list=PLKoqnv2vTMUOnQn-lNDfT38X9gA_CHxTo&index=8
+          - generic [ref=e72]:
+            - generic [ref=e75]: 
+            - generic [ref=e76]: 7 alternativer for å bekrefte eierskap av nettsteder
+        - link "Resultatrapporter i Search Console" [ref=e77] [cursor=pointer]:
+          - /url: https://www.youtube.com/watch?v=wTwnFcWUM3k&list=PLKoqnv2vTMUOnQn-lNDfT38X9gA_CHxTo&index=6
+          - generic [ref=e80]:
+            - generic [ref=e83]: 
+            - generic [ref=e84]: Resultatrapporter i Search Console
+        - link "Verktøy for gjennomgang av nettadresse" [ref=e85] [cursor=pointer]:
+          - /url: https://www.youtube.com/watch?v=Pe_-TkdbXN0&list=PLKoqnv2vTMUOnQn-lNDfT38X9gA_CHxTo&index=5
+          - generic [ref=e88]:
+            - generic [ref=e91]: 
+            - generic [ref=e92]: Verktøy for gjennomgang av nettadresse
+      - link "Flere videoer" [ref=e94] [cursor=pointer]:
+        - /url: https://www.youtube.com/playlist?list=PLKoqnv2vTMUOnQn-lNDfT38X9gA_CHxTo
+        - generic [ref=e97]: Flere videoer
+    - generic [ref=e99]:
+      - generic [ref=e100]: "Optimaliser og forbedre nettstedet ditt:"
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - generic [ref=e104]: AMP
+          - generic [ref=e105]: Overvåk, test og spor AMP-sidene dine med verktøy og rapporter i Search Console.
+          - link "Mer informasjon" [ref=e106] [cursor=pointer]:
+            - /url: https://support.google.com/webmasters/answer/7450883?hl=no
+        - generic [ref=e107]:
+          - generic [ref=e109]: Kjernestatistikk for nett
+          - generic [ref=e110]: Følg med på Core Web Vitals for nettstedet ditt på mobil og datamaskin med Search Console-rapporter.
+          - link "Mer informasjon" [ref=e111] [cursor=pointer]:
+            - /url: https://support.google.com/webmasters/answer/9205520?hl=no
+        - generic [ref=e112]:
+          - generic [ref=e114]: Rike resultater
+          - generic [ref=e115]: Oppskrifter, jobber eller andre strukturerte data kan vises som rike resultater på Google Søk. Overvåk og gjør dem enda bedre ved hjelp av rapportene i Search Console.
+          - link "Mer informasjon" [ref=e116] [cursor=pointer]:
+            - /url: https://support.google.com/webmasters/answer/7552505?hl=no
+    - generic [ref=e119]:
+      - generic [ref=e120]: Få nettstedet ditt til å skinne i Google Søk-resultater.
+      - link "Gå til Google Search Console" [ref=e122] [cursor=pointer]:
+        - /url: https://accounts.google.com/ServiceLogin?service=sitemaps&hl=no&continue=https://search.google.com/search-console?utm_source%3Dabout-page
+        - text: Gå til Google Search Console
+        - generic [ref=e123]: 
+    - generic [ref=e125]:
+      - generic [ref=e126]:
+        - generic [ref=e127]: "Følg oss på:"
+        - generic [ref=e128]:
+          - link [ref=e129] [cursor=pointer]:
+            - /url: https://twitter.com/googlewmc
+            - img [ref=e130]
+          - link [ref=e132] [cursor=pointer]:
+            - /url: https://plus.google.com/s/googlewebmasters?hl=no
+            - generic [ref=e133]: 
+          - link [ref=e134] [cursor=pointer]:
+            - /url: https://webmasters.googleblog.com/?hl=no
+            - generic [ref=e135]: 
+          - link [ref=e136] [cursor=pointer]:
+            - /url: https://www.youtube.com/user/GoogleWebmasterHelp
+            - generic [ref=e137]: 
+      - generic [ref=e139]:
+        - generic [ref=e140]:
+          - generic [ref=e141]: Ressurser for nettutviklere
+          - link "Brukerstøtte" [ref=e142] [cursor=pointer]:
+            - /url: https://support.google.com/webmasters?hl=no
+          - link "Hjelpeforum" [ref=e143] [cursor=pointer]:
+            - /url: https://support.google.com/webmasters/go/community?hl=no
+          - link "Webmaster Academy" [ref=e144] [cursor=pointer]:
+            - /url: https://support.google.com/webmasters/answer/6001102?hl=no
+        - generic [ref=e145]:
+          - generic [ref=e146]: For bedrifter
+          - link "Google for bedrifter" [ref=e147] [cursor=pointer]:
+            - /url: https://www.google.com/services/
+          - link "Google Ads" [ref=e148] [cursor=pointer]:
+            - /url: https://www.google.com/ads/?ww-ww-et-g-aw-a-webmaster_1-footer!o2
+          - link "Digitalt Verksted" [ref=e149] [cursor=pointer]:
+            - /url: https://digitalgarage.withgoogle.com/?utm_source=Engagement&utm_medium=ep&utm_term=SMB&utm_content=UK%20Webmast%20footer&utm_campaign=Q1_2016%20UK%20Webmast%20footer
+        - generic [ref=e150]:
+          - generic [ref=e151]: Utviklersett
+          - link "Søk for utviklere" [ref=e152] [cursor=pointer]:
+            - /url: https://developers.google.com/search/
+          - link "Web Fundamentals" [ref=e153] [cursor=pointer]:
+            - /url: https://developers.google.com/web/fundamentals/
+          - link "App-indeksering" [ref=e154] [cursor=pointer]:
+            - /url: https://developers.google.com/app-indexing/?hl=no
+        - generic [ref=e155]:
+          - generic [ref=e156]: Relaterte produkter
+          - link "Google Analytics" [ref=e157] [cursor=pointer]:
+            - /url: https://www.google.com/analytics/
+          - link "G Suite" [ref=e158] [cursor=pointer]:
+            - /url: https://gsuite.google.com?hl=no
+      - generic [ref=e159]:
+        - link "Hjelp" [ref=e160] [cursor=pointer]:
+          - /url: https://support.google.com/webmasters/?hl=no
+        - link "Google" [ref=e161] [cursor=pointer]:
+          - /url: https://www.google.com/?hl=no
+        - link "Personvern" [ref=e162] [cursor=pointer]:
+          - /url: https://policies.google.com/privacy?hl=no
+        - link "Vilkår" [ref=e163] [cursor=pointer]:
+          - /url: https://policies.google.com/terms?hl=no

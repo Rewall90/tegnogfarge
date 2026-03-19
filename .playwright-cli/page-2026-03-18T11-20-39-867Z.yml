@@ -1,0 +1,219 @@
+- generic [ref=e1]:
+  - generic [ref=e9]:
+    - generic [ref=e11]:
+      - generic [ref=e12]:
+        - img [ref=e14]
+        - generic [ref=e20]: Se hverdagsøyeblikk fra nære venner.
+      - generic [ref=e30]:
+        - generic [ref=e37]: Logg inn på Instagram
+        - generic [ref=e42]:
+          - generic [ref=e46]:
+            - textbox [active] [ref=e47]
+            - generic: Mobilnummer, brukernavn eller e-postadresse
+          - generic [ref=e51]:
+            - textbox [ref=e52]
+            - generic: Passord
+          - button [disabled] [ref=e55]:
+            - generic [ref=e58]: Logg inn
+          - link [ref=e61] [cursor=pointer]:
+            - /url: https://www.instagram.com/accounts/password/reset/?next=%2Fdigge_oppskrifter%2F
+            - generic [ref=e64]: Glemt passordet?
+          - button [ref=e67] [cursor=pointer]:
+            - generic [ref=e68]:
+              - img [ref=e70]
+              - generic [ref=e73]: Logg inn med Facebook
+          - link [ref=e76] [cursor=pointer]:
+            - /url: /accounts/emailsignup/?next=%2Fdigge_oppskrifter%2F
+            - generic [ref=e79]: Opprett ny konto
+          - img [ref=e81]
+    - separator [ref=e89]
+    - contentinfo [ref=e91]:
+      - generic [ref=e92]:
+        - generic [ref=e94]:
+          - link [ref=e96] [cursor=pointer]:
+            - /url: https://about.meta.com/
+            - generic [ref=e97]: Meta
+          - link [ref=e99] [cursor=pointer]:
+            - /url: https://about.instagram.com/
+            - generic [ref=e100]: Om
+          - link [ref=e102] [cursor=pointer]:
+            - /url: https://about.instagram.com/blog/
+            - generic [ref=e103]: Blogg
+          - link [ref=e105] [cursor=pointer]:
+            - /url: https://about.instagram.com/about-us/careers
+            - generic [ref=e106]: Jobb
+          - link [ref=e108] [cursor=pointer]:
+            - /url: https://help.instagram.com/
+            - generic [ref=e109]: Hjelp
+          - link [ref=e111] [cursor=pointer]:
+            - /url: https://developers.facebook.com/docs/instagram
+            - generic [ref=e112]: API
+          - link [ref=e114] [cursor=pointer]:
+            - /url: /legal/privacy/?next=%2Fdigge_oppskrifter%2F
+            - generic [ref=e115]: Personvern
+          - link [ref=e117] [cursor=pointer]:
+            - /url: /legal/terms/?next=%2Fdigge_oppskrifter%2F
+            - generic [ref=e118]: Betingelser
+          - link [ref=e120] [cursor=pointer]:
+            - /url: /explore/locations/?next=%2Fdigge_oppskrifter%2F
+            - generic [ref=e121]: Steder
+          - link [ref=e123] [cursor=pointer]:
+            - /url: /web/lite/?next=%2Fdigge_oppskrifter%2F
+            - generic [ref=e124]: Instagram Lite
+          - link [ref=e126] [cursor=pointer]:
+            - /url: https://www.meta.ai/?utm_source=foa_web_footer
+            - generic [ref=e127]: Meta AI
+          - link [ref=e129] [cursor=pointer]:
+            - /url: https://www.threads.com/
+            - generic [ref=e130]: Threads
+          - link [ref=e132] [cursor=pointer]:
+            - /url: https://www.facebook.com/help/instagram/261704639352628?next=%2Fdigge_oppskrifter%2F
+            - generic [ref=e133]: Opplasting av kontakter og ikke-brukere
+          - link [ref=e135] [cursor=pointer]:
+            - /url: /accounts/meta_verified/?entrypoint=web_footer&next=%2Fdigge_oppskrifter%2F
+            - generic [ref=e136]: Meta Verified
+        - generic [ref=e137]:
+          - generic [ref=e138] [cursor=pointer]:
+            - generic [ref=e139]:
+              - generic [ref=e140]: Norsk
+              - img [ref=e143]
+            - combobox [ref=e145]
+          - generic [ref=e147]: © 2026 Instagram from Meta
+  - dialog [ref=e154]:
+    - generic [ref=e157]:
+      - generic [ref=e158]:
+        - generic [ref=e160] [cursor=pointer]:
+          - img "Språk" [ref=e161]
+          - combobox "Bytt visningsspråk" [ref=e165]:
+            - option "Afrikaans"
+            - option "العربية"
+            - option "Čeština"
+            - option "Dansk"
+            - option "Deutsch"
+            - option "Ελληνικά"
+            - option "English"
+            - option "English (UK)"
+            - option "Español (España)"
+            - option "Español"
+            - option "فارسی"
+            - option "Suomi"
+            - option "Français"
+            - option "עברית"
+            - option "Bahasa Indonesia"
+            - option "Italiano"
+            - option "日本語"
+            - option "한국어"
+            - option "Bahasa Melayu"
+            - option "Norsk" [selected]
+            - option "Nederlands"
+            - option "Polski"
+            - option "Português (Brasil)"
+            - option "Português (Portugal)"
+            - option "Русский"
+            - option "Svenska"
+            - option "ภาษาไทย"
+            - option "Filipino"
+            - option "Türkçe"
+            - option "中文(简体)"
+            - option "中文(台灣)"
+            - option "বাংলা"
+            - option "ગુજરાતી"
+            - option "हिन्दी"
+            - option "Hrvatski"
+            - option "Magyar"
+            - option "ಕನ್ನಡ"
+            - option "മലയാളം"
+            - option "मराठी"
+            - option "नेपाली"
+            - option "ਪੰਜਾਬੀ"
+            - option "සිංහල"
+            - option "Slovenčina"
+            - option "தமிழ்"
+            - option "తెలుగు"
+            - option "اردو"
+            - option "Tiếng Việt"
+            - option "中文(香港)"
+            - option "Български"
+            - option "Français (Canada)"
+            - option "Română"
+            - option "Српски"
+            - option "Українська"
+        - generic [ref=e166]:
+          - generic [ref=e167]:
+            - heading "Vil du tillate bruk av informasjonskapsler fra Instagram i denne nettleseren?" [level=2] [ref=e169]
+            - generic [ref=e170]:
+              - generic [ref=e173]:
+                - text: Vi bruker informasjonskapsler og lignende teknologi som hjelp til å levere og forbedre innhold i
+                - link "Meta-produkter" [ref=e174] [cursor=pointer]:
+                  - /url: https://www.facebook.com/help/1561485474074139
+                - text: . Vi bruker dem også til å gi en tryggere opplevelse ved å bruke informasjon vi får fra informasjonskapsler på og utenfor Instagram, samt til å levere og forbedre Meta-produkter for personer som har en konto.
+              - list [ref=e175]:
+                - listitem [ref=e176]: "Nødvendige informasjonskapsler: Disse informasjonskapslene kreves for å bruke Meta-produkter og er nødvendige for at nettstedene våre skal fungere som tilsiktet."
+                - listitem [ref=e177]: "Informasjonskapsler fra andre selskaper: Vi bruker disse informasjonskapslene til å vise deg annonser utenfor Meta-produkter, og for å levere funksjoner som kart og videoer i Meta-produkter. Disse informasjonskapslene er valgfrie."
+              - generic [ref=e180]:
+                - text: Du har kontroll over de valgfrie informasjonskapslene vi bruker. Finn ut mer om informasjonskapsler og hvordan vi bruker dem, og gå gjennom eller endre valgene dine når som helst i våre
+                - link "retningslinjer for informasjonskapsler" [ref=e181] [cursor=pointer]:
+                  - /url: /legal/cookies/
+                - text: .
+          - generic [ref=e183]: Om informasjonskapsler
+          - generic [ref=e184]:
+            - generic [ref=e185]:
+              - img "informasjonskapsel" [ref=e187]
+              - generic [ref=e190]: Hva er informasjonskapsler?
+              - button "Finn ut mer" [ref=e192] [cursor=pointer]
+            - generic [ref=e194]:
+              - img "skjold" [ref=e196]
+              - generic [ref=e200]: Hvorfor bruker vi informasjonskapsler?
+              - button "Finn ut mer" [ref=e202] [cursor=pointer]
+          - generic [ref=e203]:
+            - generic [ref=e204]:
+              - img "meta-logo" [ref=e206]
+              - generic [ref=e209]: Hva er Meta-produkter?
+              - button "Finn ut mer" [ref=e211] [cursor=pointer]
+            - generic [ref=e213]:
+              - img "filter" [ref=e215]
+              - generic [ref=e218]: Dine valg for informasjonskapsler
+              - button "Finn ut mer" [ref=e220] [cursor=pointer]
+          - generic [ref=e222]:
+            - generic [ref=e223]: Valgfrie informasjonskapsler
+            - generic [ref=e224]:
+              - generic [ref=e225]:
+                - generic [ref=e227]: Informasjonskapsler fra andre selskaper
+                - generic [ref=e229]:
+                  - text: Vi bruker informasjonskapsler fra
+                  - link "andre selskaper" [ref=e230] [cursor=pointer]:
+                    - /url: https://privacycenter.instagram.com/policies/cookies/?annotations[0]=explanation%2F3_companies_list
+                  - text: for å vise deg annonser utenfor produktene våre, og for å levere funksjoner som kart, betalingstjenester og video.
+              - switch "Informasjonskapsler fra andre bedrifter" [ref=e233] [cursor=pointer]
+            - button "Velg informasjonskapsler etter kategori Vinkeltegn" [ref=e235] [cursor=pointer]:
+              - generic [ref=e236]:
+                - heading "Velg informasjonskapsler etter kategori" [level=4] [ref=e238]
+                - img "Vinkeltegn" [ref=e240]
+            - button "Slik bruker vi disse informasjonskapslene Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e243] [cursor=pointer]:
+              - generic [ref=e244]:
+                - heading "Slik bruker vi disse informasjonskapslene" [level=5] [ref=e246]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e248]
+            - button "Hvis du tillater disse informasjonskapslene Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e251] [cursor=pointer]:
+              - generic [ref=e252]:
+                - heading "Hvis du tillater disse informasjonskapslene" [level=5] [ref=e254]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e256]
+            - button "Hvis du ikke tillater disse informasjonskapslene Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e259] [cursor=pointer]:
+              - generic [ref=e260]:
+                - heading "Hvis du ikke tillater disse informasjonskapslene" [level=5] [ref=e262]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e264]
+          - generic [ref=e267]:
+            - generic [ref=e268]: Andre måter du kan kontrollere informasjonen din på
+            - button "Administrer annonseopplevelsen din i kontosenteret Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e270] [cursor=pointer]:
+              - generic [ref=e271]:
+                - heading "Administrer annonseopplevelsen din i kontosenteret" [level=5] [ref=e273]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e275]
+            - button "Mer informasjon om annonsering på nettet Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e278] [cursor=pointer]:
+              - generic [ref=e279]:
+                - heading "Mer informasjon om annonsering på nettet" [level=5] [ref=e281]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e283]
+            - button "Kontrollere informasjonskapsler med nettleserinnstillinger Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e286] [cursor=pointer]:
+              - generic [ref=e287]:
+                - heading "Kontrollere informasjonskapsler med nettleserinnstillinger" [level=5] [ref=e289]
+                - img "Vinkeltegnikon for å se delen om å godta informasjonskapsler" [ref=e291]
+      - button "Tillat alle informasjonskapsler" [ref=e293] [cursor=pointer]
+      - button "Avvis valgfrie informasjonskapsler" [ref=e294] [cursor=pointer]

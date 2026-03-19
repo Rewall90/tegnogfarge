@@ -1,0 +1,219 @@
+- generic [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - link "Ezoic" [ref=e10] [cursor=pointer]:
+          - /url: /
+          - img "Ezoic" [ref=e11]
+        - generic [ref=e15]: tegnogfarge.no
+        - generic [ref=e16] [cursor=pointer]: + Add a site
+      - menu [ref=e178]:
+        - menuitem "Home" [ref=e179] [cursor=pointer]:
+          - link [ref=e180]:
+            - /url: /dashboard
+            - img [ref=e181]
+        - menuitem "EzoicAds" [ref=e182] [cursor=pointer]:
+          - link [ref=e183]:
+            - /url: /ezoicads
+            - img [ref=e184]
+        - menuitem "Identity" [ref=e185] [cursor=pointer]:
+          - link [ref=e186]:
+            - /url: /identity
+            - img [ref=e187]
+        - menuitem "Videos" [ref=e188] [cursor=pointer]:
+          - link [ref=e189]:
+            - /url: /video
+            - img [ref=e190]
+        - menuitem "Analytics" [ref=e191] [cursor=pointer]:
+          - link [ref=e192]:
+            - /url: https://analytics.ezoic.com/reports/default
+            - img [ref=e193]
+        - menuitem "Settings" [ref=e194] [cursor=pointer]:
+          - link [ref=e195]:
+            - /url: /settings
+            - img [ref=e196]
+        - menuitem "" [ref=e197] [cursor=pointer]:
+          - generic [ref=e201]: 
+      - generic [ref=e17]:
+        - link "Support Resources" [ref=e20] [cursor=pointer]:
+          - /url: https://support.ezoic.com/
+        - generic [ref=e22] [cursor=pointer]: English
+        - generic [ref=e25]:
+          - textbox "Search..." [ref=e26]
+          - 'generic "icon: search" [ref=e28]':
+            - img [ref=e29]
+        - generic [ref=e34] [cursor=pointer]:
+          - 'generic "icon: bell" [ref=e35]':
+            - img [ref=e36]
+          - superscript [ref=e38]:
+            - generic [ref=e39]:
+              - paragraph [ref=e40]: "0"
+              - paragraph [ref=e41]: "1"
+              - paragraph [ref=e42]: "2"
+              - paragraph [ref=e43]: "3"
+              - paragraph [ref=e44]: "4"
+              - paragraph [ref=e45]: "5"
+              - paragraph [ref=e46]: "6"
+              - paragraph [ref=e47]: "7"
+              - paragraph [ref=e48]: "8"
+              - paragraph [ref=e49]: "9"
+              - paragraph [ref=e50]: "0"
+              - paragraph [ref=e51]: "1"
+              - paragraph [ref=e52]: "2"
+              - paragraph [ref=e53]: "3"
+              - paragraph [ref=e54]: "4"
+              - paragraph [ref=e55]: "5"
+              - paragraph [ref=e56]: "6"
+              - paragraph [ref=e57]: "7"
+              - paragraph [ref=e58]: "8"
+              - paragraph [ref=e59]: "9"
+              - paragraph [ref=e60]: "0"
+              - paragraph [ref=e61]: "1"
+              - paragraph [ref=e62]: "2"
+              - paragraph [ref=e63]: "3"
+              - paragraph [ref=e64]: "4"
+              - paragraph [ref=e65]: "5"
+              - paragraph [ref=e66]: "6"
+              - paragraph [ref=e67]: "7"
+              - paragraph [ref=e68]: "8"
+              - paragraph [ref=e69]: "9"
+        - generic [ref=e72] [cursor=pointer]: 
+    - main [ref=e127]:
+      - generic [ref=e205]:
+        - generic [ref=e207]:
+          - img [ref=e209] [cursor=pointer]
+          - generic [ref=e210] [cursor=pointer]: close
+        - generic [ref=e211]:
+          - complementary [ref=e212]:
+            - menu [ref=e214]:
+              - menuitem "web Ad Positions" [ref=e215] [cursor=pointer]:
+                - generic [ref=e216]:
+                  - generic [ref=e217]: web
+                  - text: Ad Positions
+              - menuitem "settings_applications Ad Types" [ref=e218] [cursor=pointer]:
+                - generic [ref=e219]:
+                  - generic [ref=e220]: settings_applications
+                  - text: Ad Types
+              - menuitem "tune Ad Configuration" [ref=e221] [cursor=pointer]:
+                - generic [ref=e222]:
+                  - generic [ref=e223]: tune
+                  - text: Ad Configuration
+              - menuitem "price_change Ad Campaign" [ref=e224] [cursor=pointer]:
+                - generic [ref=e225]:
+                  - generic [ref=e226]: price_change
+                  - text: Ad Campaign
+              - menuitem "settings_ethernet Ad Integration" [ref=e227] [cursor=pointer]:
+                - generic [ref=e228]:
+                  - generic [ref=e229]: settings_ethernet
+                  - text: Ad Integration
+              - menuitem "border_all Ad Transparency" [ref=e230] [cursor=pointer]:
+                - generic [ref=e231]:
+                  - generic [ref=e232]: border_all
+                  - text: Ad Transparency
+              - menuitem "shield Ad Restrictions" [ref=e233] [cursor=pointer]:
+                - generic [ref=e234]:
+                  - generic [ref=e235]: shield
+                  - text: Ad Restrictions
+              - menuitem "data_usage Optimization Goals" [ref=e236] [cursor=pointer]:
+                - generic [ref=e237]:
+                  - generic [ref=e238]: data_usage
+                  - text: Optimization Goals
+              - menuitem "paid Rev. Opportunities" [ref=e239] [cursor=pointer]:
+                - generic [ref=e240]:
+                  - generic [ref=e241]: paid
+                  - text: Rev. Opportunities
+              - menuitem "redeem Rewarded Ads" [ref=e242] [cursor=pointer]:
+                - generic [ref=e243]:
+                  - generic [ref=e244]: redeem
+                  - text: Rewarded Ads
+              - menuitem "folder_special Resources" [ref=e245] [cursor=pointer]:
+                - generic [ref=e246]:
+                  - generic [ref=e247]: folder_special
+                  - text: Resources
+          - main [ref=e248]:
+            - generic [ref=e249]:
+              - generic [ref=e254]:
+                - generic [ref=e255]: Ezoic Ads
+                - generic [ref=e256]: Rewarded Ads
+              - generic [ref=e843]:
+                - generic [ref=e844]:
+                  - heading "Rewarded Ads" [level=2] [ref=e845]
+                  - paragraph [ref=e846]: Learn about rewarded ads and explore implementation examples.
+                - generic [ref=e848]:
+                  - button "Overview" [ref=e849] [cursor=pointer]
+                  - button "Examples" [ref=e850] [cursor=pointer]
+                  - button "Settings" [active] [ref=e851] [cursor=pointer]
+                  - 'button "icon: robot AI Setup Tools BETA" [ref=e852] [cursor=pointer]':
+                    - 'generic "icon: robot"'
+                    - text: AI Setup Tools BETA
+                - generic [ref=e1012]:
+                  - generic [ref=e1013]:
+                    - heading "Automatic Content Lock" [level=3] [ref=e1014]
+                    - paragraph [ref=e1015]: Automatic Content Lock is a site-wide rewarded ad system that blocks users from continuing to browse after a certain number of pageviews, requiring them to watch a rewarded ad to continue.
+                  - generic [ref=e1016]:
+                    - generic [ref=e1017]:
+                      - generic [ref=e1018]:
+                        - heading "Enable Automatic Content Lock" [level=4] [ref=e1019]
+                        - paragraph [ref=e1020]: When enabled, further pageviews will be blocked behind a rewarded ad.
+                      - switch [ref=e1022] [cursor=pointer]
+                    - generic [ref=e1023]:
+                      - generic [ref=e1024]:
+                        - heading "Minimum Pageviews" [level=4] [ref=e1025]
+                        - paragraph [ref=e1026]: Minimum number of pageviews before the content blocker is shown. 0 means on immediately on landing page.
+                      - generic [ref=e1028]:
+                        - generic [ref=e1029]:
+                          - button "Increase Value" [ref=e1030] [cursor=pointer]:
+                            - 'generic "icon: up" [ref=e1031]':
+                              - img [ref=e1032]
+                          - button "Decrease Value" [ref=e1034] [cursor=pointer]:
+                            - 'generic "icon: down" [ref=e1035]':
+                              - img [ref=e1036]
+                        - spinbutton [ref=e1039]: "3"
+                    - generic [ref=e1040]:
+                      - generic [ref=e1041]:
+                        - heading "Cooldown Time" [level=4] [ref=e1042]
+                        - paragraph [ref=e1043]: Amount of time before another content blocker is shown, in hours. Can be a decimal.
+                      - generic [ref=e1045]:
+                        - generic [ref=e1046]:
+                          - button "Increase Value" [ref=e1047] [cursor=pointer]:
+                            - 'generic "icon: up" [ref=e1048]':
+                              - img [ref=e1049]
+                          - button "Decrease Value" [ref=e1051] [cursor=pointer]:
+                            - 'generic "icon: down" [ref=e1052]':
+                              - img [ref=e1053]
+                        - spinbutton [ref=e1056]: "1"
+                    - generic [ref=e1057]:
+                      - generic [ref=e1058]:
+                        - heading "Logo Image" [level=4] [ref=e1059]
+                        - paragraph [ref=e1060]: Display a logo along with the content blocker instructions. We recommend 500x100 px for best results.
+                      - 'button "icon: upload Upload Logo" [ref=e1062] [cursor=pointer]':
+                        - 'generic "icon: upload"':
+                          - img
+                        - generic: Upload Logo
+                    - generic [ref=e1063]:
+                      - generic [ref=e1064]:
+                        - heading "Accept Button Background Color" [level=4] [ref=e1065]
+                        - paragraph [ref=e1066]: Change the background color for the content blocker watch ad button. Click on the color block to select a color.
+                      - generic [ref=e1067]:
+                        - textbox [ref=e1068] [cursor=pointer]: "#4caf50"
+                        - textbox [disabled] [ref=e1069]: "#4CAF50"
+                    - generic [ref=e1070]:
+                      - generic [ref=e1071]:
+                        - heading "Accept Button Text Color" [level=4] [ref=e1072]
+                        - paragraph [ref=e1073]: Change the text color for the content blocker watch ad button. Click on the color block to select a color.
+                      - generic [ref=e1074]:
+                        - textbox [ref=e1075] [cursor=pointer]: "#ffffff"
+                        - textbox [disabled] [ref=e1076]: "#FFFFFF"
+                  - generic [ref=e1077]:
+                    - button "Reset" [disabled] [ref=e1078]:
+                      - generic: Reset
+                    - button "Save Settings" [disabled] [ref=e1079]:
+                      - generic: Save Settings
+    - generic [ref=e156]:
+      - img "Ezoic Inc." [ref=e157]
+      - generic [ref=e158]:
+        - text: © 2026
+        - link "Ezoic Inc." [ref=e159] [cursor=pointer]:
+          - /url: https://www.ezoic.com/
+        - text: All rights reserved
+  - generic "Privacy center" [ref=e175] [cursor=pointer]: ⚙

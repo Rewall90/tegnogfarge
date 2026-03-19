@@ -1,0 +1,195 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - button "Main menu" [ref=e7] [cursor=pointer]:
+            - img [ref=e8]
+          - link "Google Search Console" [ref=e12] [cursor=pointer]:
+            - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+            - img [ref=e13]
+        - generic [ref=e14]:
+          - search [ref=e16]:
+            - generic [ref=e22]:
+              - textbox [disabled] [ref=e23]: Inspect any URL in "https://tegnogfarge.no/de/"
+              - combobox "Inspect any URL in https://tegnogfarge.no/de/" [ref=e24]
+            - button "Search" [ref=e25] [cursor=pointer]:
+              - img [ref=e26]
+          - generic [ref=e29]:
+            - generic [ref=e31]:
+              - button "Help" [ref=e33] [cursor=pointer]:
+                - generic [ref=e36]: 
+              - button "User settings" [ref=e38] [cursor=pointer]:
+                - img [ref=e41]
+            - 'button "Unread messages: 12" [ref=e828] [cursor=pointer]':
+              - generic [ref=e47]:
+                - generic [ref=e48]: 
+                - generic [ref=e1285]: "12"
+        - generic [ref=e50]:
+          - button "Google apps" [ref=e54] [cursor=pointer]:
+            - img [ref=e55]
+          - 'button "Google Account: Petter Lund (ronincarpenter90@gmail.com)" [ref=e60] [cursor=pointer]':
+            - img [ref=e62]
+    - dialog "navigational drawer" [ref=e66]:
+      - navigation "Primary" [ref=e69]:
+        - button "Search property" [ref=e73] [cursor=pointer]:
+          - img [ref=e75]
+          - combobox "https://tegnogfarge.no/de/" [ref=e82]
+          - generic [ref=e83]: 
+        - generic [ref=e84]:
+          - generic [ref=e85]:
+            - generic [ref=e86]:
+              - link "Overview" [ref=e88] [cursor=pointer]:
+                - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e90]: home
+                - generic [ref=e92]: Overview
+              - link "Insights" [ref=e95] [cursor=pointer]:
+                - /url: ./search-console/performance/insights?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e97]: lightbulb_2
+                - generic [ref=e99]: Insights
+              - link "Performance" [ref=e102] [cursor=pointer]:
+                - /url: ./search-console/performance/search-analytics?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e104]: trending_up
+                - generic [ref=e106]: Performance
+              - button "URL inspection" [ref=e109] [cursor=pointer]:
+                - generic [ref=e111]: search
+                - generic [ref=e113]: URL inspection
+            - generic [ref=e117]:
+              - button "Indexing report section" [expanded] [ref=e118] [cursor=pointer]:
+                - generic [ref=e119]:
+                  - generic [ref=e122]: Indexing
+                  - img [ref=e126]
+              - generic [ref=e131]:
+                - link "Pages" [ref=e133] [cursor=pointer]:
+                  - /url: ./search-console/index?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e135]: file_copy
+                  - generic [ref=e137]: Pages
+                - link "Sitemaps" [ref=e140] [cursor=pointer]:
+                  - /url: ./search-console/sitemaps?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e142]: account_tree
+                  - generic [ref=e144]: Sitemaps
+                - link "Removals" [ref=e147] [cursor=pointer]:
+                  - /url: ./search-console/removals?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e149]: visibility_off
+                  - generic [ref=e151]: Removals
+            - generic [ref=e155]:
+              - button "Experience report section" [expanded] [ref=e156] [cursor=pointer]:
+                - generic [ref=e157]:
+                  - generic [ref=e160]: Experience
+                  - img [ref=e164]
+              - generic [ref=e169]:
+                - link "Core Web Vitals" [ref=e171] [cursor=pointer]:
+                  - /url: ./search-console/core-web-vitals?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e173]: speed
+                  - generic [ref=e175]: Core Web Vitals
+                - link "HTTPS" [ref=e178] [cursor=pointer]:
+                  - /url: ./search-console/https?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e180]: lock
+                  - generic [ref=e182]: HTTPS
+            - generic [ref=e186]:
+              - button "Enhancements report section" [expanded] [ref=e187] [cursor=pointer]:
+                - generic [ref=e188]:
+                  - generic [ref=e191]: Enhancements
+                  - img [ref=e195]
+              - generic [ref=e200]:
+                - link "Breadcrumbs" [ref=e202] [cursor=pointer]:
+                  - /url: ./search-console/r/breadcrumbs?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e204]: layers
+                  - generic [ref=e206]: Breadcrumbs
+                - link "Image Metadata" [ref=e209] [cursor=pointer]:
+                  - /url: ./search-console/r/image-licenses?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                  - generic [ref=e211]: layers
+                  - generic [ref=e213]: Image Metadata
+            - button "Security & Manual Actions report section" [ref=e218] [cursor=pointer]:
+              - generic [ref=e219]:
+                - generic [ref=e222]: Security & Manual Actions
+                - img [ref=e226]
+            - generic [ref=e228]:
+              - link "Links report" [ref=e230] [cursor=pointer]:
+                - /url: ./search-console/links?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e232]: link_2
+                - generic [ref=e234]: Links
+              - link "Achievements" [ref=e237] [cursor=pointer]:
+                - /url: ./search-console/achievements?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e239]: trophy
+                - generic [ref=e241]: Achievements
+              - link "Settings" [ref=e244] [cursor=pointer]:
+                - /url: ./search-console/settings?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e246]: settings
+                - generic [ref=e248]: Settings
+          - generic [ref=e250]:
+            - generic [ref=e252]:
+              - button "Submit feedback" [ref=e254] [cursor=pointer]:
+                - generic [ref=e256]: feedback
+                - generic [ref=e258]: Submit feedback
+              - button "About Search Console" [ref=e261] [cursor=pointer]:
+                - generic [ref=e263]: info
+                - generic [ref=e265]: About Search Console
+            - generic [ref=e269]:
+              - link "Privacy" [ref=e270] [cursor=pointer]:
+                - /url: https://myaccount.google.com/privacypolicy?hl=en
+              - link "Terms" [ref=e271] [cursor=pointer]:
+                - /url: https://myaccount.google.com/termsofservice?hl=en
+    - generic [ref=e1287]:
+      - navigation "Breadcrumbs" [ref=e1292]:
+        - heading "Sitemaps" [level=1] [ref=e1295]
+      - main [ref=e1299]:
+        - generic [ref=e1302]:
+          - generic [ref=e1303]: Add a new sitemap
+          - generic [ref=e1304]:
+            - generic [ref=e1305]:
+              - generic [ref=e1306]: https://tegnogfarge.no/de/
+              - generic [ref=e1311]:
+                - textbox "Enter sitemap URL" [active] [ref=e1312]
+                - generic: Enter sitemap URL
+            - button "Submit" [disabled] [ref=e1316]:
+              - generic [ref=e1319]: Submit
+        - generic [ref=e1323]:
+          - generic [ref=e1324]:
+            - heading "Submitted sitemaps" [level=1] [ref=e1325]:
+              - generic [ref=e1326]: Submitted sitemaps
+            - button "Filter table rows" [ref=e1329] [cursor=pointer]:
+              - generic [ref=e1332]: 
+          - table [ref=e1334]:
+            - rowgroup [ref=e1335]:
+              - row "Sitemap Type Submitted Last read Status Discovered pages Discovered videos" [ref=e1336]:
+                - columnheader "Sitemap" [ref=e1337]:
+                  - text: Sitemap
+                  - img [ref=e1339] [cursor=pointer]
+                - columnheader "Type" [ref=e1341]:
+                  - text: Type
+                  - img [ref=e1343] [cursor=pointer]
+                - columnheader "Submitted" [ref=e1345]:
+                  - text: Submitted
+                  - img [ref=e1347] [cursor=pointer]
+                - columnheader "Last read" [ref=e1349]:
+                  - text: Last read
+                  - img [ref=e1351] [cursor=pointer]
+                - columnheader "Status" [ref=e1353]:
+                  - text: Status
+                  - img [ref=e1355] [cursor=pointer]
+                - columnheader "Discovered pages" [ref=e1357]:
+                  - img [ref=e1359] [cursor=pointer]
+                  - text: Discovered pages
+                - columnheader "Discovered videos" [ref=e1361]:
+                  - img [ref=e1363] [cursor=pointer]
+                  - text: Discovered videos
+                - columnheader [ref=e1365]
+            - rowgroup
+          - generic [ref=e1368]:
+            - generic [ref=e1370]:
+              - generic [ref=e1371]: "Rows per page:"
+              - listbox "Number of rows per page" [ref=e1372] [cursor=pointer]:
+                - option "5"
+                - option "10" [selected] [ref=e1373]
+                - option "25"
+                - option "50"
+                - option "100"
+                - option "250"
+                - option "500"
+            - generic [ref=e1374]:
+              - generic [ref=e1375]: 0-0 of 0
+              - generic [ref=e1376]:
+                - generic [ref=e1378]: 
+                - generic [ref=e1380]: 
+  - generic [ref=e1222]: Sitemaps

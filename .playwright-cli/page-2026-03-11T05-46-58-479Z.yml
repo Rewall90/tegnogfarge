@@ -1,0 +1,232 @@
+- generic [ref=e4]:
+  - button "Skip to content" [ref=e6]:
+    - generic [ref=e8]: Skip to content
+  - generic [ref=e10]:
+    - banner [ref=e12]:
+      - generic [ref=e14]:
+        - button "Main menu" [ref=e16] [cursor=pointer]:
+          - img [ref=e19]: menu
+        - link "Google AdSense" [ref=e20] [cursor=pointer]:
+          - /url: /adsense/u/0/pub-2852837430993050/home
+      - heading "Home" [level=1] [ref=e23]
+      - generic [ref=e25]:
+        - button "Help" [ref=e27] [cursor=pointer]:
+          - img [ref=e30]: help
+        - button "Notifications" [ref=e34] [cursor=pointer]:
+          - img [ref=e39]: notifications
+        - button "Google account" [ref=e42] [cursor=pointer]:
+          - img "Google account (ronincarpenter90@gmail.com)" [ref=e44]
+    - generic:
+      - navigation:
+        - menu:
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "AdSense for YouTube":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: video_youtube
+                    - generic: AdSense for YouTube
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Home":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: home
+                    - generic: Home
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Ads":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: picture_in_picture
+                    - generic: Ads
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Sites":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: drive_site
+                    - generic: Sites
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Privacy & messaging":
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Privacy & messaging
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Brand safety":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: arrow_right
+                    - generic:
+                      - generic:
+                        - img: not_interested
+                    - generic: Brand safety
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Reports":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: assessment
+                    - generic: Reports
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Optimization":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: arrow_right
+                    - generic:
+                      - generic:
+                        - img: trending_up
+                    - generic: Optimization
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Policy center":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: policy
+                    - generic: Policy center
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Payments":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: arrow_right
+                    - generic:
+                      - img
+                    - generic: Payments
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Account":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: arrow_right
+                    - generic:
+                      - generic:
+                        - img: settings
+                    - generic: Account
+          - generic:
+            - generic:
+              - generic:
+                - menuitem "Feedback":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img: feedback
+                    - generic: Feedback
+        - generic:
+          - generic:
+            - generic:
+              - link "Privacy":
+                - /url: https://www.google.com/intl/en_US/policies/privacy
+              - link "Terms":
+                - /url: https://adsense.google.com/adsense/terms?rc=NO&ce=2
+    - generic [ref=e45]:
+      - region "Notifications" [ref=e47]:
+        - generic [ref=e50]:
+          - img [ref=e52]: error_outline
+          - generic [ref=e53]: Alert
+          - generic [ref=e54]:
+            - status [ref=e55]:
+              - generic [ref=e57]: Earnings at risk - You need to fix some ads.txt file issues to avoid severe impact to your revenue.
+            - generic [ref=e59]:
+              - button "Go to site management to fix issues" [ref=e61] [cursor=pointer]:
+                - generic [ref=e62]: Fix now
+              - link "Learn more about the ads.txt file, Opens in a new tab" [ref=e66] [cursor=pointer]:
+                - generic [ref=e67]:
+                  - text: Learn more
+                  - img [ref=e69]: open_in_new
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - button "Previous warning notification" [disabled] [ref=e74]:
+              - generic:
+                - generic:
+                  - img: chevron_left
+            - generic "Notification 1 of 2" [ref=e75]: 1 / 2
+            - button "Next warning notification" [ref=e76] [cursor=pointer]:
+              - img [ref=e79]: chevron_right
+          - generic [ref=e81]:
+            - img [ref=e83]: warning_amber
+            - generic [ref=e84]: Warning
+            - generic [ref=e85]:
+              - status [ref=e86]:
+                - generic [ref=e88]: Due to the war in Ukraine, we will pause monetization of content that exploits, dismisses, or condones the war
+              - button "Dismiss" [ref=e92] [cursor=pointer]:
+                - generic [ref=e93]: Dismiss
+      - main "Home" [active] [ref=e96]:
+        - generic [ref=e99]:
+          - generic [ref=e100]:
+            - generic [ref=e102]:
+              - article "Estimated earnings" [ref=e108]:
+                - generic [ref=e110]:
+                  - heading "Estimated earnings" [level=2] [ref=e111]: Estimated earnings
+                  - button "See more options — Estimated earnings" [ref=e115] [cursor=pointer]:
+                    - img [ref=e118]: more_vert
+                - generic [ref=e122]:
+                  - generic [ref=e123]:
+                    - heading "Today so far" [level=3] [ref=e124]
+                    - generic [ref=e125]:
+                      - generic [ref=e126]: NOK0.00
+                      - generic [ref=e127]: NOK0.00
+                  - generic [ref=e128]:
+                    - heading "Yesterday" [level=3] [ref=e129]
+                    - generic [ref=e130]:
+                      - generic [ref=e131]: NOK0.00
+                      - generic [ref=e132]: NOK0.00
+                    - generic [ref=e133]:
+                      - generic [ref=e135]: +NOK0.00
+                      - generic [ref=e136]: unchanged
+                    - generic [ref=e137]: vs same day last week
+                  - generic [ref=e138]:
+                    - heading "Last 7 days" [level=3] [ref=e139]
+                    - generic [ref=e140]:
+                      - generic [ref=e141]: NOK0.00
+                      - generic [ref=e142]: NOK0.00
+                    - generic [ref=e143]:
+                      - generic [ref=e145]: +NOK0.00
+                      - generic [ref=e146]: unchanged
+                    - generic [ref=e147]: vs previous 7 days
+                  - generic [ref=e148]:
+                    - heading "This month" [level=3] [ref=e149]
+                    - generic [ref=e150]:
+                      - generic [ref=e151]: NOK0.00
+                      - generic [ref=e152]: NOK0.00
+                    - generic [ref=e153]:
+                      - generic [ref=e155]: +NOK0.00
+                      - generic [ref=e156]: unchanged
+                    - generic [ref=e157]: vs same period last year
+              - article "Balance" [ref=e163]:
+                - generic [ref=e165]:
+                  - heading "Balance" [level=2] [ref=e166]: Balance
+                  - button "See more options — Balance" [ref=e170] [cursor=pointer]:
+                    - img [ref=e173]: more_vert
+                - generic [ref=e177]:
+                  - generic [ref=e178]: NOK 167.09
+                  - generic [ref=e179]: Last payment
+                  - generic [ref=e180]: NOK0.00
+            - button "View more cards" [ref=e184] [cursor=pointer]:
+              - img [ref=e187]: expand_more
+          - generic [ref=e189]: © 2026 Google.

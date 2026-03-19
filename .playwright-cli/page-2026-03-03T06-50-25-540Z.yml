@@ -1,0 +1,444 @@
+- generic [ref=e2]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - button [ref=e568] [cursor=pointer]:
+          - img [ref=e8]
+        - link [ref=e569] [cursor=pointer]:
+          - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+          - img [ref=e13]
+      - generic [ref=e14]:
+        - search [ref=e16]:
+          - generic [ref=e22]:
+            - textbox [disabled] [ref=e23]: Inspect any URL in "https://tegnogfarge.no/de/"
+            - combobox [ref=e570]
+          - button [ref=e571] [cursor=pointer]:
+            - img [ref=e26]
+        - generic [ref=e29]:
+          - generic [ref=e31]:
+            - button [ref=e572] [cursor=pointer]:
+              - generic [ref=e36]: 
+            - button [ref=e573] [cursor=pointer]:
+              - img [ref=e41]
+          - button [ref=e574] [cursor=pointer]:
+            - generic [ref=e48]: 
+      - generic [ref=e50]:
+        - button [ref=e575] [cursor=pointer]:
+          - img [ref=e55]
+        - button [ref=e576] [cursor=pointer]:
+          - img [ref=e62]
+  - dialog [ref=e577]:
+    - navigation [ref=e578]:
+      - button [ref=e579] [cursor=pointer]:
+        - img [ref=e75]
+        - combobox [ref=e580]: https://tegnogfarge.no/de/
+        - generic [ref=e83]: 
+      - generic [ref=e84]:
+        - generic [ref=e85]:
+          - generic [ref=e86]:
+            - link [ref=e581] [cursor=pointer]:
+              - /url: ./search-console?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+              - generic [ref=e90]: home
+              - generic [ref=e92]: Overview
+            - link [ref=e582] [cursor=pointer]:
+              - /url: ./search-console/performance/insights?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+              - generic [ref=e97]: lightbulb_2
+              - generic [ref=e99]: Insights
+            - link [ref=e583] [cursor=pointer]:
+              - /url: ./search-console/performance/search-analytics?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+              - generic [ref=e104]: trending_up
+              - generic [ref=e106]: Performance
+            - button [ref=e584] [cursor=pointer]:
+              - generic [ref=e111]: search
+              - generic [ref=e113]: URL inspection
+          - generic [ref=e117]:
+            - button [expanded] [ref=e585] [cursor=pointer]:
+              - generic [ref=e119]:
+                - generic [ref=e122]: Indexing
+                - img [ref=e126]
+            - generic [ref=e131]:
+              - link [ref=e586] [cursor=pointer]:
+                - /url: ./search-console/index?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e135]: file_copy
+                - generic [ref=e137]: Pages
+              - link [ref=e587] [cursor=pointer]:
+                - /url: ./search-console/sitemaps?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e142]: account_tree
+                - generic [ref=e144]: Sitemaps
+              - link [ref=e588] [cursor=pointer]:
+                - /url: ./search-console/removals?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e149]: visibility_off
+                - generic [ref=e151]: Removals
+          - generic [ref=e155]:
+            - button [expanded] [ref=e589] [cursor=pointer]:
+              - generic [ref=e157]:
+                - generic [ref=e160]: Experience
+                - img [ref=e164]
+            - generic [ref=e169]:
+              - link [ref=e590] [cursor=pointer]:
+                - /url: ./search-console/core-web-vitals?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e173]: speed
+                - generic [ref=e175]: Core Web Vitals
+              - link [ref=e591] [cursor=pointer]:
+                - /url: ./search-console/https?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e180]: lock
+                - generic [ref=e182]: HTTPS
+          - generic [ref=e186]:
+            - button [expanded] [ref=e592] [cursor=pointer]:
+              - generic [ref=e188]:
+                - generic [ref=e191]: Enhancements
+                - img [ref=e195]
+            - generic [ref=e200]:
+              - link [ref=e593] [cursor=pointer]:
+                - /url: ./search-console/r/breadcrumbs?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e204]: layers
+                - generic [ref=e206]: Breadcrumbs
+              - link [ref=e594] [cursor=pointer]:
+                - /url: ./search-console/r/image-licenses?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+                - generic [ref=e211]: layers
+                - generic [ref=e213]: Image Metadata
+          - button [ref=e595] [cursor=pointer]:
+            - generic [ref=e219]:
+              - generic [ref=e222]: Security & Manual Actions
+              - img [ref=e226]
+          - generic [ref=e228]:
+            - link [ref=e596] [cursor=pointer]:
+              - /url: ./search-console/links?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+              - generic [ref=e232]: link_2
+              - generic [ref=e234]: Links
+            - link [ref=e597] [cursor=pointer]:
+              - /url: ./search-console/achievements?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+              - generic [ref=e239]: trophy
+              - generic [ref=e241]: Achievements
+            - link [ref=e598] [cursor=pointer]:
+              - /url: ./search-console/settings?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+              - generic [ref=e246]: settings
+              - generic [ref=e248]: Settings
+        - generic [ref=e250]:
+          - generic [ref=e252]:
+            - button [ref=e599] [cursor=pointer]:
+              - generic [ref=e256]: feedback
+              - generic [ref=e258]: Submit feedback
+            - button [ref=e600] [cursor=pointer]:
+              - generic [ref=e263]: info
+              - generic [ref=e265]: About Search Console
+          - generic [ref=e269]:
+            - link [ref=e601] [cursor=pointer]:
+              - /url: https://myaccount.google.com/privacypolicy?hl=en
+              - text: Privacy
+            - link [ref=e602] [cursor=pointer]:
+              - /url: https://myaccount.google.com/termsofservice?hl=en
+              - text: Terms
+  - generic [ref=e273]:
+    - navigation [ref=e603]:
+      - heading [level=1] [ref=e604]: Overview
+    - main [ref=e285]:
+      - generic [ref=e286]:
+        - generic [ref=e291]:
+          - generic [ref=e292]:
+            - generic [ref=e293]: lightbulb_outline
+            - generic [ref=e294]: Get insights into your site's Search performance
+          - generic [ref=e297]:
+            - generic [ref=e299]: chevron_right
+            - generic [ref=e300]: Explore your insights
+            - link [ref=e605] [cursor=pointer]:
+              - /url: ./search-console/performance/insights?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+        - generic [ref=e303]:
+          - generic [ref=e304]:
+            - generic [ref=e305]: Performance
+            - generic [ref=e308]:
+              - generic [ref=e310]: chevron_right
+              - generic [ref=e311]: Full report
+              - link [ref=e606] [cursor=pointer]:
+                - /url: ./search-console/performance/search-analytics?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+          - generic [ref=e315]:
+            - generic [ref=e320]: 0 total web search clicks
+            - img [ref=e324]:
+              - generic [ref=e325]:
+                - generic [ref=e326]:
+                  - generic [ref=e328]: 12/2/25
+                  - generic [ref=e330]: 12/14/25
+                  - generic [ref=e332]: 12/26/25
+                  - generic [ref=e334]: 1/7/26
+                  - generic [ref=e336]: 1/19/26
+                  - generic [ref=e338]: 1/31/26
+                  - generic [ref=e340]: 2/12/26
+                  - generic [ref=e342]: 2/24/26
+                - generic [ref=e343]:
+                  - generic [ref=e345]: "3"
+                  - generic [ref=e347]: "2"
+                  - generic [ref=e349]: "1"
+                  - generic [ref=e351]: "0"
+        - generic [ref=e355]:
+          - generic [ref=e356]:
+            - generic [ref=e357]: Indexing
+            - generic [ref=e360]:
+              - generic [ref=e362]: chevron_right
+              - generic [ref=e363]: Full report
+              - link [ref=e607] [cursor=pointer]:
+                - /url: ./search-console/index?resource_id=https%3A%2F%2Ftegnogfarge.no%2Fde%2F
+          - generic [ref=e367]:
+            - generic [ref=e369]:
+              - generic [ref=e372]: 4,995 not indexed pages
+              - generic [ref=e375]: 69 indexed pages
+            - img [ref=e379]:
+              - generic [ref=e380]:
+                - generic [ref=e381]:
+                  - generic [ref=e383]: 12/3/25
+                  - generic [ref=e385]: 12/14/25
+                  - generic [ref=e387]: 12/25/25
+                  - generic [ref=e389]: 1/5/26
+                  - generic [ref=e391]: 1/16/26
+                  - generic [ref=e393]: 1/27/26
+                  - generic [ref=e395]: 2/7/26
+                  - generic [ref=e397]: 2/18/26
+                - generic [ref=e398]:
+                  - generic [ref=e400]: 6K
+                  - generic [ref=e402]: 4K
+                  - generic [ref=e404]: 2K
+                  - generic [ref=e406]: "0"
+        - generic [ref=e427]:
+          - generic [ref=e429]: Experience
+          - table [ref=e433]:
+            - rowgroup [ref=e434]:
+              - row [ref=e608]:
+                - columnheader [ref=e609]: Type
+                - columnheader [ref=e437]
+                - columnheader [ref=e610]: Good
+                - columnheader [ref=e611]: Needs improvement
+                - columnheader [ref=e612]: Poor
+                - columnheader [ref=e613]: Trend
+                - columnheader [ref=e442]
+            - rowgroup [ref=e443]:
+              - row [ref=e614]:
+                - cell [ref=e615]:
+                  - generic [ref=e447]: Core Web Vitals
+                - cell [ref=e616]:
+                  - generic [ref=e450]:
+                    - generic [ref=e451]: Mobile
+                    - generic [ref=e452]: Desktop
+                - cell [ref=e617]:
+                  - generic [ref=e454]:
+                    - generic [ref=e455]: "35"
+                    - generic [ref=e456]: "35"
+                - cell [ref=e618]:
+                  - generic [ref=e458]:
+                    - generic [ref=e459]: "0"
+                    - generic [ref=e460]: "0"
+                - cell [ref=e619]:
+                  - generic [ref=e462]:
+                    - generic [ref=e463]: "0"
+                    - generic [ref=e464]: "0"
+                - cell [ref=e465]:
+                  - generic [ref=e466]:
+                    - img [ref=e468]
+                    - img [ref=e471]
+                - cell [ref=e620]:
+                  - button [ref=e621] [cursor=pointer]:
+                    - generic [ref=e477]: chevron_right
+              - row [ref=e622]:
+                - columnheader [ref=e479]
+                - columnheader [ref=e480]
+                - columnheader [ref=e623]: HTTPS
+                - columnheader [ref=e482]
+                - columnheader [ref=e624]: Non HTTPS
+                - columnheader [ref=e484]
+                - columnheader [ref=e485]
+              - row [ref=e625]:
+                - cell [ref=e626]:
+                  - generic [ref=e489]: HTTPS
+                - cell [ref=e490]
+                - cell [ref=e627]:
+                  - generic [ref=e493]: "35"
+                - cell [ref=e494]
+                - cell [ref=e628]:
+                  - generic [ref=e497]: "0"
+                - cell [ref=e498]:
+                  - img [ref=e501]
+                - cell [ref=e629]:
+                  - button [ref=e630] [cursor=pointer]:
+                    - generic [ref=e507]: chevron_right
+        - generic [ref=e509]:
+          - generic [ref=e511]: Enhancements
+          - table [ref=e515]:
+            - rowgroup [ref=e516]:
+              - row [ref=e631]:
+                - columnheader [ref=e632]: Type
+                - columnheader [ref=e633]: Valid
+                - columnheader [ref=e634]: Invalid
+                - columnheader [ref=e635]: Trend
+                - columnheader [ref=e522]
+            - rowgroup [ref=e523]:
+              - row [ref=e636]:
+                - cell [ref=e637]:
+                  - generic [ref=e527]: Breadcrumbs
+                - cell [ref=e638]:
+                  - generic [ref=e530]: "0"
+                - cell [ref=e639]:
+                  - generic [ref=e533]: "0"
+                - cell [ref=e534]:
+                  - img [ref=e537]
+                - cell [ref=e640]:
+                  - button [ref=e641] [cursor=pointer]:
+                    - generic [ref=e543]: chevron_right
+              - row [ref=e642]:
+                - cell [ref=e643]:
+                  - generic [ref=e547]: Image Metadata
+                - cell [ref=e644]:
+                  - generic [ref=e550]: "0"
+                - cell [ref=e645]:
+                  - generic [ref=e553]: "0"
+                - cell [ref=e554]:
+                  - img [ref=e557]
+                - cell [ref=e646]:
+                  - button [ref=e647] [cursor=pointer]:
+                    - generic [ref=e563]: chevron_right
+  - dialog [active] [ref=e650]:
+    - generic [ref=e653]:
+      - generic [ref=e654]:
+        - generic [ref=e655]:
+          - generic [ref=e656]: Messages
+          - generic [ref=e657]: https://tegnogfarge.no/de/
+        - button "Close" [ref=e659] [cursor=pointer]:
+          - generic [ref=e662]: 
+      - listbox "Dropdown of categories, used to filter messages" [ref=e664] [cursor=pointer]:
+        - option "All types" [selected] [ref=e665]
+        - generic:
+          - option "Indexing" [disabled]
+          - option "Page indexing": Page indexing (4)
+          - option "Video indexing": Video indexing (1)
+          - option "Experience" [disabled]
+          - option "Core Web Vitals": Core Web Vitals (1)
+          - option "Shopping" [disabled]
+          - option "Merchant listings": Merchant listings (2)
+          - option "Settings" [disabled]
+          - option "Associations": Associations (1)
+          - option "Other" [disabled]
+          - option "General": General (3)
+        - generic [ref=e666]: 
+      - generic [ref=e667]:
+        - checkbox "Checkbox used to select a message" [ref=e669] [cursor=pointer]
+        - generic [ref=e672]: 12 unread out of 12
+      - generic [ref=e673]:
+        - generic [ref=e674]:
+          - checkbox "Checkbox used to select all messages" [ref=e675] [cursor=pointer]
+          - button "New reasons prevent pages from being indexed on site https://tegnogfarge.no/de/" [ref=e679] [cursor=pointer]:
+            - generic [ref=e683]:
+              - generic [ref=e684]: New reasons prevent pages from being indexed on site https://tegnogfarge.no/de/
+              - generic [ref=e685]:
+                - generic [ref=e686]: Feb 18, 2026
+                - generic [ref=e687]: •
+                - generic [ref=e688]: Page indexing
+        - generic [ref=e689]:
+          - checkbox "Checkbox used to select all messages" [ref=e690] [cursor=pointer]
+          - button "Monitor the Google Search traffic to https://tegnogfarge.no/de/" [ref=e694] [cursor=pointer]:
+            - generic [ref=e698]:
+              - generic [ref=e699]: Monitor the Google Search traffic to https://tegnogfarge.no/de/
+              - generic [ref=e700]:
+                - generic [ref=e701]: Feb 2, 2026
+                - generic [ref=e702]: •
+                - generic [ref=e703]: General
+        - generic [ref=e704]:
+          - checkbox "Checkbox used to select all messages" [ref=e705] [cursor=pointer]
+          - button "New reasons prevent pages from being indexed on site https://tegnogfarge.no/de/" [ref=e709] [cursor=pointer]:
+            - generic [ref=e713]:
+              - generic [ref=e714]: New reasons prevent pages from being indexed on site https://tegnogfarge.no/de/
+              - generic [ref=e715]:
+                - generic [ref=e716]: Feb 2, 2026
+                - generic [ref=e717]: •
+                - generic [ref=e718]: Page indexing
+        - generic [ref=e719]:
+          - checkbox "Checkbox used to select all messages" [ref=e720] [cursor=pointer]
+          - button "We're validating your Page indexing issue fixes for site https://tegnogfarge.no/de/" [ref=e724] [cursor=pointer]:
+            - generic [ref=e728]:
+              - generic [ref=e729]: We're validating your Page indexing issue fixes for site https://tegnogfarge.no/de/
+              - generic [ref=e730]:
+                - generic [ref=e731]: Jan 28, 2026
+                - generic [ref=e732]: •
+                - generic [ref=e733]: Page indexing
+        - generic [ref=e734]:
+          - checkbox "Checkbox used to select all messages" [ref=e735] [cursor=pointer]
+          - button "New reasons prevent pages from being indexed on site https://tegnogfarge.no/de/" [ref=e739] [cursor=pointer]:
+            - generic [ref=e743]:
+              - generic [ref=e744]: New reasons prevent pages from being indexed on site https://tegnogfarge.no/de/
+              - generic [ref=e745]:
+                - generic [ref=e746]: Dec 18, 2025
+                - generic [ref=e747]: •
+                - generic [ref=e748]: Page indexing
+        - generic [ref=e749]:
+          - checkbox "Checkbox used to select all messages" [ref=e750] [cursor=pointer]
+          - button "Get started using Search Console with https://tegnogfarge.no/de/" [ref=e754] [cursor=pointer]:
+            - generic [ref=e758]:
+              - generic [ref=e759]: Get started using Search Console with https://tegnogfarge.no/de/
+              - generic [ref=e760]:
+                - generic [ref=e761]: Dec 3, 2025
+                - generic [ref=e762]: •
+                - generic [ref=e763]: General
+                - generic [ref=e764]: •
+                - generic [ref=e765]: sent to you directly
+        - generic [ref=e766]:
+          - checkbox "Checkbox used to select all messages" [ref=e767] [cursor=pointer]
+          - button "Core Web Vitals INP issues detected on your website https://teksttips.no/" [ref=e771] [cursor=pointer]:
+            - generic [ref=e775]:
+              - generic [ref=e776]: Core Web Vitals INP issues detected on your website https://teksttips.no/
+              - generic [ref=e777]:
+                - generic [ref=e778]: Jul 11, 2023
+                - generic [ref=e779]: •
+                - generic [ref=e780]: Core Web Vitals
+                - generic [ref=e781]: •
+                - generic [ref=e782]: sent to you directly
+        - generic [ref=e783]:
+          - checkbox "Checkbox used to select all messages" [ref=e784] [cursor=pointer]
+          - button "New helpful information added to your Search Console Insights" [ref=e788] [cursor=pointer]:
+            - generic [ref=e792]:
+              - generic [ref=e793]: New helpful information added to your Search Console Insights
+              - generic [ref=e794]:
+                - generic [ref=e795]: Jun 19, 2023
+                - generic [ref=e796]: •
+                - generic [ref=e797]: General
+                - generic [ref=e798]: •
+                - generic [ref=e799]: sent to you directly
+        - generic [ref=e800]:
+          - checkbox "Checkbox used to select all messages" [ref=e801] [cursor=pointer]
+          - button "Missing shipping information in your Merchant Listings on your site https://kattehule.no/" [ref=e805] [cursor=pointer]:
+            - generic [ref=e809]:
+              - generic [ref=e810]: Missing shipping information in your Merchant Listings on your site https://kattehule.no/
+              - generic [ref=e811]:
+                - generic [ref=e812]: May 4, 2023
+                - generic [ref=e813]: •
+                - generic [ref=e814]: Merchant listings
+                - generic [ref=e815]: •
+                - generic [ref=e816]: sent to you directly
+        - generic [ref=e817]:
+          - checkbox "Checkbox used to select all messages" [ref=e818] [cursor=pointer]
+          - button "Merchant listing issues found on your site https://kattehule.no/" [ref=e822] [cursor=pointer]:
+            - generic [ref=e826]:
+              - generic [ref=e827]: Merchant listing issues found on your site https://kattehule.no/
+              - generic [ref=e828]:
+                - generic [ref=e829]: Oct 6, 2022
+                - generic [ref=e830]: •
+                - generic [ref=e831]: Merchant listings
+                - generic [ref=e832]: •
+                - generic [ref=e833]: sent to you directly
+        - generic [ref=e834]:
+          - checkbox "Checkbox used to select all messages" [ref=e835] [cursor=pointer]
+          - button "Video indexing issues found on your site https://teksttips.no/" [ref=e839] [cursor=pointer]:
+            - generic [ref=e843]:
+              - generic [ref=e844]: Video indexing issues found on your site https://teksttips.no/
+              - generic [ref=e845]:
+                - generic [ref=e846]: Aug 23, 2022
+                - generic [ref=e847]: •
+                - generic [ref=e848]: Video indexing
+                - generic [ref=e849]: •
+                - generic [ref=e850]: sent to you directly
+        - generic [ref=e851]:
+          - checkbox "Checkbox used to select all messages" [ref=e852] [cursor=pointer]
+          - button "Search Console Insights now supports Google Analytics 4" [ref=e856] [cursor=pointer]:
+            - generic [ref=e860]:
+              - generic [ref=e861]: Search Console Insights now supports Google Analytics 4
+              - generic [ref=e862]:
+                - generic [ref=e863]: Jul 20, 2022
+                - generic [ref=e864]: •
+                - generic [ref=e865]: Associations
+                - generic [ref=e866]: •
+                - generic [ref=e867]: sent to you directly

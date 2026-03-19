@@ -1,0 +1,239 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link "osTicket — Customer Support System" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - img "osTicket — Customer Support System" [ref=e7]
+    - link "Logout" [ref=e8] [cursor=pointer]:
+      - /url: /logout.php
+  - generic [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e14]:
+        - heading "Get Support" [level=4] [ref=e15]
+        - generic [ref=e18]:
+          - textbox "Search articles" [ref=e19]
+          - button "search" [ref=e20] [cursor=pointer]:
+            - generic [ref=e21]: search
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - generic [ref=e24]:
+            - generic [ref=e25]: Welcome
+            - generic [ref=e26]: petterlund@hotmail.no
+          - button "Avatar L1" [ref=e27] [cursor=pointer]:
+            - generic [ref=e28]:
+              - img "Avatar" [ref=e29]
+              - generic "Level 1" [ref=e30]: L1
+        - navigation:
+          - list:
+            - listitem:
+              - link:
+                - /url: https://pubdash.ezoic.com/account/details
+            - listitem:
+              - link:
+                - /url: https://pubdash.ezoic.com/dashboard
+            - listitem:
+              - link:
+                - /url: https://analytics.ezoic.com/reports/default
+            - listitem:
+              - link:
+                - /url: https://pubdash.ezoic.com/levels
+            - listitem:
+              - link:
+                - /url: https://pubdash.ezoic.com/account/payment/settings
+            - listitem:
+              - link:
+                - /url: /logout.php
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - heading "Your Dedicated Support Resources" [level=2] [ref=e33]
+        - generic [ref=e34]:
+          - button "rocket Support Chat Chat for quick help on your account, product assistance, and more." [active] [ref=e35] [cursor=pointer]:
+            - generic [ref=e37]: rocket
+            - generic [ref=e38]:
+              - heading "Support Chat" [level=3] [ref=e40]
+              - paragraph [ref=e41]: Chat for quick help on your account, product assistance, and more.
+          - button "diversity_3 Support Community Get Help - Ask Questions and Receive Support from Ezoic Staff" [ref=e42] [cursor=pointer]:
+            - generic [ref=e44]: diversity_3
+            - generic [ref=e45]:
+              - heading "Support Community" [level=3] [ref=e47]
+              - paragraph [ref=e48]: Get Help - Ask Questions and Receive Support from Ezoic Staff
+      - generic [ref=e49]:
+        - heading "Additional Resources" [level=2] [ref=e50]
+        - generic [ref=e51]:
+          - button "auto_stories Knowledge Base Browse basic information about each product and feature" [ref=e52] [cursor=pointer]:
+            - generic [ref=e54]: auto_stories
+            - generic [ref=e55]:
+              - heading "Knowledge Base" [level=3] [ref=e57]
+              - paragraph [ref=e58]: Browse basic information about each product and feature
+          - button "history_edu Blogs Stay up to date on market trends and helpful insights from our team" [ref=e59] [cursor=pointer]:
+            - generic [ref=e61]: history_edu
+            - generic [ref=e62]:
+              - heading "Blogs" [level=3] [ref=e64]
+              - paragraph [ref=e65]: Stay up to date on market trends and helpful insights from our team
+          - button "code_blocks Developer Docs Explore technical documentation for JavaScript Integration, Ezoic Identity, and more" [ref=e66] [cursor=pointer]:
+            - generic [ref=e68]: code_blocks
+            - generic [ref=e69]:
+              - heading "Developer Docs" [level=3] [ref=e71]
+              - paragraph [ref=e72]: Explore technical documentation for JavaScript Integration, Ezoic Identity, and more
+      - generic [ref=e73]:
+        - heading "Didn't Find What You Were Looking For?" [level=2] [ref=e74]
+        - generic [ref=e75]:
+          - button "rate_review Suggest An Article" [ref=e76] [cursor=pointer]:
+            - generic [ref=e78]: rate_review
+            - heading "Suggest An Article" [level=3] [ref=e81]
+          - button "thumbs_up_down Submit Feedback" [ref=e82] [cursor=pointer]:
+            - generic [ref=e84]: thumbs_up_down
+            - heading "Submit Feedback" [level=3] [ref=e87]
+      - text:        
+  - generic [ref=e89]:
+    - generic [ref=e90]:
+      - generic [ref=e91]:
+        - generic [ref=e92]: Additional Ezoic Resources
+        - list [ref=e93]:
+          - listitem [ref=e94]:
+            - link "Ezoic System Status" [ref=e95] [cursor=pointer]:
+              - /url: https://ezoicstatus.com/
+          - listitem [ref=e96]:
+            - link "Ezoic Ad Revenue Index" [ref=e97] [cursor=pointer]:
+              - /url: https://adrevenueindex.ezoic.com/
+          - listitem [ref=e98]:
+            - link "Ezoic.com" [ref=e99] [cursor=pointer]:
+              - /url: https://www.ezoic.com/
+      - generic [ref=e100]:
+        - text: © 2026 Ezoic Inc. |
+        - link "Privacy Policy" [ref=e101] [cursor=pointer]:
+          - /url: https://www.ezoic.com/privacy-policy/
+    - generic [ref=e102]:
+      - generic [ref=e104] [cursor=pointer]:
+        - generic [ref=e105]: dark_mode
+        - generic [ref=e106]: light_mode
+      - generic [ref=e108]:
+        - link "English (United States)" [ref=e109] [cursor=pointer]:
+          - /url: /?lang=en_US
+        - link "Deutsch (German)" [ref=e110] [cursor=pointer]:
+          - /url: /?lang=de
+        - link "français (French)" [ref=e111] [cursor=pointer]:
+          - /url: /?lang=fr
+        - link "italiano (Italian)" [ref=e112] [cursor=pointer]:
+          - /url: /?lang=it
+        - link "español (España) (Spanish (Spain))" [ref=e113] [cursor=pointer]:
+          - /url: /?lang=es_ES
+  - generic:
+    - button [ref=e115] [cursor=pointer]:
+      - img [ref=e116]
+    - generic [ref=e131]:
+      - generic [ref=e132]:
+        - img "Ezoic" [ref=e134]
+        - button "expand_more" [ref=e137] [cursor=pointer]:
+          - generic [ref=e138]: expand_more
+      - iframe [ref=e139]:
+        - generic [active] [ref=f2e1]:
+          - main [ref=f2e5]:
+            - generic [ref=f2e6]:
+              - generic [ref=f2e7]:
+                - generic [ref=f2e8]:
+                  - generic [ref=f2e9]:
+                    - button [ref=f2e10] [cursor=pointer]:
+                      - generic [ref=f2e12]: 󰮫
+                    - button "Resolving Ezoic MCM setup issue" [ref=f2e13] [cursor=pointer]:
+                      - heading "Resolving Ezoic MCM setup issue" [level=1] [ref=f2e14]
+                      - generic [ref=f2e15]: 󰲶
+                  - button [ref=f2e17] [cursor=pointer]:
+                    - generic [ref=f2e19]: 󰆃
+                - generic [ref=f2e21]:
+                  - generic [ref=f2e24]: "Hi, I need help with my Google Ad Manager MCM setup for tegnogfarge.no. My Ad Manager account (network code: 22712188410, email: ronincarpenter90@gmail.com) shows the Ezoic MCM invitation (network code: 1254144) as \"Deactivated by Ad Manager\". I received a new invitation email from Google, clicked \"View request\" and then \"Continue\", but the status remains \"Deactivated by Ad Manager\". On the Ezoic dashboard it still shows \"Invited\". Could you please help clear the old deactivated MCM relationship and resend a fresh invitation so I can properly accept it? Thank you."
+                  - generic [ref=f2e26]:
+                    - generic [ref=f2e27]:
+                      - generic [ref=f2e28]: 󰄬
+                      - generic [ref=f2e29]: knowledge_base_search
+                    - generic [ref=f2e30]:
+                      - generic [ref=f2e31]: 󰄬
+                      - generic [ref=f2e32]: knowledge_base_search
+                    - generic [ref=f2e33]:
+                      - generic [ref=f2e34]: 󰄬
+                      - generic [ref=f2e35]: knowledge_base_search
+                    - generic [ref=f2e36]:
+                      - paragraph [ref=f2e37]: I understand you're having trouble accepting the MCM invitation - the "Deactivated by Ad Manager" status can be frustrating. Unfortunately, I don't have specific documentation about resolving deactivated MCM relationships or how to clear and reissue invitations in this particular situation.
+                      - paragraph [ref=f2e38]: "Here's what I can tell you based on the MCM process:"
+                      - heading "Typical MCM Invitation Issues" [level=4] [ref=f2e39]
+                      - paragraph [ref=f2e40]: "When MCM invitations show issues, common troubleshooting steps include:"
+                      - list [ref=f2e41]:
+                        - listitem [ref=f2e42]: Using a Chrome browser and opening the invitation link in an incognito window
+                        - listitem [ref=f2e43]: Ensuring you're signing in with the correct email address (the one you provided to Ezoic)
+                        - listitem [ref=f2e44]: "Clicking on the blue Ezoic link under \"Parent Publisher\" and following the steps to accept the invitation if your Ad Manager account shows \"pending: child must accept\""
+                      - heading "Browser-Related Issues" [level=4] [ref=f2e45]
+                      - paragraph [ref=f2e46]: If you clicked "View request" and then "Continue" but the status remains deactivated, try accessing the invitation in a Chrome incognito window, as this resolves many acceptance issues.
+                      - heading "What I Don't Have Information On" [level=4] [ref=f2e47]
+                      - paragraph [ref=f2e48]: "I don't have specific documentation about:"
+                      - list [ref=f2e49]:
+                        - listitem [ref=f2e50]: The "Deactivated by Ad Manager" status and how to resolve it
+                        - listitem [ref=f2e51]: The process for clearing old deactivated MCM relationships
+                        - listitem [ref=f2e52]: How to manually trigger a fresh invitation when a deactivated relationship exists
+                      - paragraph [ref=f2e53]: Since your Ezoic dashboard still shows "Invited" and you're experiencing this specific deactivation issue, this appears to be a technical matter that requires coordination between the Ezoic and Google systems to resolve properly.
+                    - generic [ref=f2e54]:
+                      - button [ref=f2e55] [cursor=pointer]:
+                        - generic [ref=f2e57]: 󰔔
+                      - button [ref=f2e58] [cursor=pointer]:
+                        - generic [ref=f2e60]: 󰔒
+                  - generic [ref=f2e63]: Can I please speak to a human support agent? This is a technical issue that the AI bot cannot resolve. I need someone from Ezoic to clear the deactivated MCM relationship on your end and coordinate with Google to send a fresh invitation. I have already tried resending the invite and clicking the email link but the old deactivated status is blocking it.
+                  - generic [ref=f2e65]:
+                    - generic [ref=f2e66]:
+                      - paragraph [ref=f2e67]: I completely understand your frustration with this MCM invitation issue - dealing with a deactivated status that won't clear is definitely something that needs proper attention.
+                      - paragraph [ref=f2e68]: While I can't directly connect you with support here, the Ezoic community forum is a great place to get help with technical issues like this. The community includes both experienced publishers who may have encountered similar MCM problems and Ezoic staff members who can look into account-specific situations and coordinate the kind of backend fixes you're describing.
+                      - paragraph [ref=f2e69]: Your issue is clearly documented (the deactivated MCM relationship blocking new invitations despite multiple attempts), which will help anyone assisting you understand exactly what needs to be resolved.
+                    - generic [ref=f2e70]:
+                      - button [ref=f2e71] [cursor=pointer]:
+                        - generic [ref=f2e73]: 󰔔
+                      - button [ref=f2e74] [cursor=pointer]:
+                        - generic [ref=f2e76]: 󰔒
+                  - generic [ref=f2e80]:
+                    - generic [ref=f2e81]: 󰻞
+                    - generic [ref=f2e82]: Escalation was declined. The conversation continued.
+                  - generic [ref=f2e85]:
+                    - paragraph [ref=f2e86]: Was this conversation helpful?
+                    - generic [ref=f2e87]:
+                      - button "Yes" [ref=f2e88] [cursor=pointer]:
+                        - generic [ref=f2e89]:
+                          - generic [ref=f2e90]: 󰔔
+                          - text: "Yes"
+                      - button "No" [ref=f2e91] [cursor=pointer]:
+                        - generic [ref=f2e92]:
+                          - generic [ref=f2e93]: 󰔒
+                          - text: "No"
+                - generic [ref=f2e95]:
+                  - textbox "Message..." [ref=f2e96]
+                  - button [disabled] [ref=f2e97]:
+                    - generic [ref=f2e98]: 󰁝
+              - navigation [ref=f2e99]:
+                - generic [ref=f2e100]:
+                  - generic [ref=f2e101]:
+                    - img [ref=f2e103]
+                    - button [ref=f2e104] [cursor=pointer]:
+                      - generic [ref=f2e106]: 󰅖
+                  - list [ref=f2e108]:
+                    - listitem [ref=f2e109] [cursor=pointer]:
+                      - generic [ref=f2e111]:
+                        - generic [ref=f2e112]: 󰆃
+                        - text: New chat
+                  - generic [ref=f2e114]:
+                    - button "Active chats" [ref=f2e115] [cursor=pointer]:
+                      - generic [ref=f2e116]: Active chats
+                      - generic [ref=f2e117]: 󰅀
+                    - list [ref=f2e119]:
+                      - listitem [ref=f2e120] [cursor=pointer]:
+                        - generic [ref=f2e122]: Resolving Ezoic MCM setup issue
+                        - button [ref=f2e124]:
+                          - generic [ref=f2e126]: 󰇙
+                  - generic [ref=f2e129]:
+                    - img "Petter" [ref=f2e131]
+                    - generic [ref=f2e133]: Petter
+                    - button [ref=f2e134] [cursor=pointer]:
+                      - generic [ref=f2e136]: 󰇙
+          - generic:
+            - tooltip
+            - tooltip
+            - tooltip
+            - tooltip
+            - tooltip
+            - tooltip
+            - tooltip
+  - generic "Privacy center" [ref=e129] [cursor=pointer]: ⚙
