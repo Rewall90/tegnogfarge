@@ -81,22 +81,26 @@ export function EzoicScripts() {
         async
         src="//www.ezojs.com/ezoic/sa.min.js"
         strategy="afterInteractive"
+        onLoad={() => {
+          console.log('[Ezoic] sa.min.js loaded, initializing...');
+        }}
       />
 
       {/* Ezoic Standalone Initialization + Rewarded Ads */}
+      {/* Using beforeInteractive to ensure it runs before sa.min.js processes queue */}
       <Script
         id="ezoic-standalone-init"
-        strategy="afterInteractive"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: `
-            console.log('[Ezoic Init] Starting initialization...');
+            console.log('[Ezoic Init] Starting initialization (beforeInteractive)...');
             window.ezstandalone = window.ezstandalone || {};
             ezstandalone.cmd = ezstandalone.cmd || [];
             window.ezRewardedAds = window.ezRewardedAds || {};
             window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || [];
-            console.log('[Ezoic Init] Objects created, ezstandalone.enabled:', window.ezstandalone.enabled);
+            console.log('[Ezoic Init] Objects created, ezstandalone type:', typeof window.ezstandalone);
             ezstandalone.cmd.push(function () {
-              console.log('[Ezoic Init] CMD callback executing...');
+              console.log('[Ezoic Init] ✓ CMD callback executing!');
               console.log('[Ezoic Init] Calling setIsSinglePageApplication(true)');
               ezstandalone.setIsSinglePageApplication(true);
               console.log('[Ezoic Init] Calling showAds(118)');
