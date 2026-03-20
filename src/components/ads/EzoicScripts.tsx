@@ -24,7 +24,7 @@ export function EzoicScripts() {
     ez.cmd = ez.cmd || [];
     ez.cmd.push(function () {
       if (ez.enabled && typeof ez.showAds === 'function') {
-        ez.showAds(118);
+        ez.showAds();
       }
       if (typeof ez.initRewardedAds === 'function') {
         console.log('[Ezoic SPA] Calling initRewardedAds() on route change to:', window.location.pathname);
@@ -51,8 +51,8 @@ export function EzoicScripts() {
               console.log('[Ezoic Init] ✓ CMD callback executing!');
               console.log('[Ezoic Init] Calling setIsSinglePageApplication(true)');
               ezstandalone.setIsSinglePageApplication(true);
-              console.log('[Ezoic Init] Calling showAds(118)');
-              ezstandalone.showAds(118);
+              console.log('[Ezoic Init] Calling showAds()');
+              ezstandalone.showAds();
               console.log('[Ezoic Init] Calling initRewardedAds()');
               ezstandalone.initRewardedAds();
               console.log('[Ezoic Init] All calls complete. ezstandalone.enabled:', window.ezstandalone.enabled);
