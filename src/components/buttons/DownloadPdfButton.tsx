@@ -38,7 +38,7 @@ export function DownloadPdfButton({
       size="xl"
       className={className}
       ariaLabel={title}
-      external={false}
+      external={true} // Must be true for vanilla JS event listeners to work (Ezoic rewarded ads)
     >
       {title}
     </Button>
