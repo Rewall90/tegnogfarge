@@ -31,9 +31,34 @@ export function EzoicScripts() {
 
   return (
     <>
-      {/* Initialize _ezconsent from stored preferences for returning users.
-          First-time visitors: leave unset so Gatekeeper can handle consent natively.
-          Setting _ezconsent to false before Gatekeeper loads causes a deadlock. */}
+      {/* Ezoic Standalone Initialization - MUST BE FIRST (as high as possible in head) */}
+      <Script
+        id="ezoic-standalone-init"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            console.log('[Ezoic Init] Starting initialization (beforeInteractive)...');
+            window.ezstandalone = window.ezstandalone || {};
+            ezstandalone.cmd = ezstandalone.cmd || [];
+            window.ezRewardedAds = window.ezRewardedAds || {};
+            window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || [];
+            console.log('[Ezoic Init] Objects created, ezstandalone type:', typeof window.ezstandalone);
+            ezstandalone.cmd.push(function () {
+              console.log('[Ezoic Init] ✓ CMD callback executing!');
+              console.log('[Ezoic Init] Calling setIsSinglePageApplication(true)');
+              ezstandalone.setIsSinglePageApplication(true);
+              console.log('[Ezoic Init] Calling showAds(118)');
+              ezstandalone.showAds(118);
+              console.log('[Ezoic Init] Calling initRewardedAds()');
+              ezstandalone.initRewardedAds();
+              console.log('[Ezoic Init] All calls complete. ezstandalone.enabled:', window.ezstandalone.enabled);
+            });
+            console.log('[Ezoic Init] CMD pushed to queue. Queue length:', ezstandalone.cmd.length);
+          `,
+        }}
+      />
+
+      {/* Initialize _ezconsent from stored preferences for returning users */}
       <Script
         id="ezoic-consent-init"
         strategy="beforeInteractive"
@@ -59,7 +84,7 @@ export function EzoicScripts() {
         }}
       />
 
-      {/* Ezoic Gatekeeper Consent Scripts - Required for rewarded ads pipeline */}
+      {/* Ezoic Gatekeeper Consent Scripts */}
       <Script
         src="https://cmp.gatekeeperconsent.com/min.js"
         data-cfasync="false"
@@ -76,41 +101,13 @@ export function EzoicScripts() {
         strategy="afterInteractive"
       />
 
-      {/* Ezoic Header Script - Loads asynchronously */}
+      {/* Ezoic Header Script */}
       <Script
         async
         src="//www.ezojs.com/ezoic/sa.min.js"
         strategy="afterInteractive"
         onLoad={() => {
           console.log('[Ezoic] sa.min.js loaded, initializing...');
-        }}
-      />
-
-      {/* Ezoic Standalone Initialization + Rewarded Ads */}
-      {/* Using beforeInteractive to ensure it runs before sa.min.js processes queue */}
-      <Script
-        id="ezoic-standalone-init"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            console.log('[Ezoic Init] Starting initialization (beforeInteractive)...');
-            window.ezstandalone = window.ezstandalone || {};
-            ezstandalone.cmd = ezstandalone.cmd || [];
-            window.ezRewardedAds = window.ezRewardedAds || {};
-            window.ezRewardedAds.cmd = window.ezRewardedAds.cmd || [];
-            console.log('[Ezoic Init] Objects created, ezstandalone type:', typeof window.ezstandalone);
-            ezstandalone.cmd.push(function () {
-              console.log('[Ezoic Init] ✓ CMD callback executing!');
-              console.log('[Ezoic Init] Calling setIsSinglePageApplication(true)');
-              ezstandalone.setIsSinglePageApplication(true);
-              console.log('[Ezoic Init] Calling showAds(118)');
-              ezstandalone.showAds(118);
-              console.log('[Ezoic Init] Calling initRewardedAds()');
-              ezstandalone.initRewardedAds();
-              console.log('[Ezoic Init] All calls complete. ezstandalone.enabled:', window.ezstandalone.enabled);
-            });
-            console.log('[Ezoic Init] CMD pushed to queue. Queue length:', ezstandalone.cmd.length);
-          `,
         }}
       />
 
