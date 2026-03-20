@@ -155,73 +155,62 @@ export function EzoicScripts() {
                 // Fix #1: Add data-google-interstitial attribute (Ezoic backend signal)
                 downloadButton.setAttribute('data-google-interstitial', 'false');
 
-                var originalClickHandlers = [];
-                var originalHref = downloadButton.getAttribute('href');
+                // Use event delegation on document to handle clicks even if React re-renders the button
+                document.addEventListener('click', function(e) {
+                  // Check if the clicked element is our download button
+                  var target = e.target;
 
-                // Fix #3: Handler capture/restore pattern (for analytics tracking)
-                function captureOriginalHandlers() {
-                  if (downloadButton.onclick) {
-                    originalClickHandlers.push({type: 'inline', handler: downloadButton.onclick});
-                  }
-                }
+                  // Traverse up to find the download link (in case user clicked child element)
+                  while (target && target !== document) {
+                    if (target.tagName === 'A' && target.getAttribute('aria-label') === 'Last ned Bilde') {
+                      console.log(L, 'Click intercepted via delegation!');
+                      e.preventDefault();
+                      e.stopPropagation();
+                      e.stopImmediatePropagation();
 
-                function removeOriginalHandlers() {
-                  downloadButton.onclick = null;
-                }
+                      var downloadHref = target.getAttribute('href');
 
-                function restoreOriginalHandlers() {
-                  originalClickHandlers.forEach(function(item) {
-                    if (item.type === 'inline') {
-                      downloadButton.onclick = item.handler;
-                    }
-                  });
-                }
-
-                function handleDownloadClick(e) {
-                  e.preventDefault();
-                  e.stopPropagation();
-
-                  if (!window.ezRewardedAds || !window.ezRewardedAds.ready) {
-                    console.warn(L, 'API not ready, allowing download');
-                    window.open(originalHref, '_blank', 'noopener,noreferrer');
-                    return;
-                  }
-
-                  try {
-                    console.log(L, 'requestWithOverlay: calling...');
-                    window.ezRewardedAds.requestWithOverlay(
-                      function(result) {
-                        console.log(L, 'requestWithOverlay: result:', JSON.stringify(result));
-                        if (result.status && result.reward) {
-                          console.log(L, 'Ad completed successfully');
-                          window.open(originalHref, '_blank', 'noopener,noreferrer');
-                          restoreOriginalHandlers();
-                        } else {
-                          console.log(L, 'User closed ad early');
-                        }
-                      },
-                      {
-                        header: "Se annonse for \\u00e5 laste ned!",
-                        body: ["For \\u00e5 laste ned fargeleggingsarket m\\u00e5 du se en kort annonse.\\nDette hjelper oss \\u00e5 tilby gratis innhold."],
-                        accept: "Se annonse",
-                        cancel: "Avbryt"
-                      },
-                      {
-                        rewardName: "PDF Download - Fargeleggingsark",
-                        rewardOnNoFill: true
+                      if (!window.ezRewardedAds || !window.ezRewardedAds.ready) {
+                        console.warn(L, 'API not ready, allowing download');
+                        window.open(downloadHref, '_blank', 'noopener,noreferrer');
+                        return false;
                       }
-                    );
-                  } catch (error) {
-                    console.error(L, 'Error showing rewarded ad:', error);
-                    window.open(originalHref, '_blank', 'noopener,noreferrer');
-                    restoreOriginalHandlers();
-                  }
-                }
 
-                captureOriginalHandlers();
-                removeOriginalHandlers();
-                downloadButton.addEventListener('click', handleDownloadClick, true);
-                console.log(L, 'Download button protection initialized');
+                      try {
+                        console.log(L, 'requestWithOverlay: calling...');
+                        window.ezRewardedAds.requestWithOverlay(
+                          function(result) {
+                            console.log(L, 'requestWithOverlay: result:', JSON.stringify(result));
+                            if (result.status && result.reward) {
+                              console.log(L, 'Ad completed successfully');
+                              window.open(downloadHref, '_blank', 'noopener,noreferrer');
+                            } else {
+                              console.log(L, 'User closed ad early');
+                            }
+                          },
+                          {
+                            header: "Se annonse for \\u00e5 laste ned!",
+                            body: ["For \\u00e5 laste ned fargeleggingsarket m\\u00e5 du se en kort annonse.\\nDette hjelper oss \\u00e5 tilby gratis innhold."],
+                            accept: "Se annonse",
+                            cancel: "Avbryt"
+                          },
+                          {
+                            rewardName: "PDF Download - Fargeleggingsark",
+                            rewardOnNoFill: true
+                          }
+                        );
+                      } catch (error) {
+                        console.error(L, 'Error showing rewarded ad:', error);
+                        window.open(downloadHref, '_blank', 'noopener,noreferrer');
+                      }
+
+                      return false;
+                    }
+                    target = target.parentElement;
+                  }
+                }, true); // Use capture phase
+
+                console.log(L, 'Download button protection initialized (event delegation)');
               }
 
               // Fix #4: Retry logic (20 attempts = 10 seconds)
