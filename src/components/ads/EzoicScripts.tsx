@@ -16,14 +16,18 @@ export function EzoicScripts() {
     }
 
     const ez = (window as any).ezstandalone;
-    if (!ez || !ez.enabled) return;
+    if (!ez) return;
 
+    // Re-initialize rewarded ads on every route change
+    // Note: ezstandalone.enabled may be false (display ads disabled),
+    // but rewarded ads should still work independently
     ez.cmd = ez.cmd || [];
     ez.cmd.push(function () {
-      if (typeof ez.showAds === 'function') {
+      if (ez.enabled && typeof ez.showAds === 'function') {
         ez.showAds(118);
       }
       if (typeof ez.initRewardedAds === 'function') {
+        console.log('[Ezoic SPA] Calling initRewardedAds() on route change to:', window.location.pathname);
         ez.initRewardedAds();
       }
     });
